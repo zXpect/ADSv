@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "125108376031",
+    "project_id": "adsv-d87e1",
+    "storage_bucket": "adsv-d87e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125108376031:android:099a0cba0e4e4f0e46746a",
+        "android_client_info": {
+          "package_name": "com.project.ads"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmSX2DEjIarC3acpn2xoL5Gfe-rW6-JrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

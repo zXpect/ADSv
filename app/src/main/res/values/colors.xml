@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#FFFF7500</color>
+    <color name="colorPrimaryDark">#C15A02</color>
+    <color name="colorPrimaryLight">#FD8B29</color>
+    <color name="colorAccent">#FA9B4B</color>
+    <color name="background_color">#F5F5F5</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
+    <color name="star_color">#FFC107</color>
+    <color name="button_color">#FFFF7500</color>
+
+</resources>
