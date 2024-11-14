@@ -7,10 +7,12 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText mTextInputEmail;
     private TextInputEditText mTextInputPassword;
     private Button mButtonUserLogin;
-    private Button mButtonUserRegister;
+    private TextView mButtonUserRegister;
     private SignInButton mGoogleSignInButton;
     private TextView mForgotPasswordTextView;
     private FirebaseAuth mAuth;
@@ -66,6 +68,9 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private int loginAttempts = 0;
     private long lastLoginAttemptTime = 0;
+    private ImageButton mGoogleSignInImageButton;
+
+    private static final String USER_TYPE_KEY = "user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,20 +86,29 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
+        mPref = getApplicationContext().getSharedPreferences("tipo_usuario", MODE_PRIVATE);
 
         tilEmail = findViewById(R.id.til_email);
         tilPassword = findViewById(R.id.til_password);
         mTextInputEmail = findViewById(R.id.editTextTextEmailAddress2);
         mTextInputPassword = findViewById(R.id.editTextTextPassword);
         mButtonUserLogin = findViewById(R.id.login);
-        mButtonUserRegister = findViewById(R.id.button2);
+        mButtonUserRegister = findViewById(R.id.register_text);
         mGoogleSignInButton = findViewById(R.id.google_sign_in_button);
+        mGoogleSignInImageButton = findViewById(R.id.google_sign_in_image_button);
         mForgotPasswordTextView = findViewById(R.id.forgot_password);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Iniciando sesión...");
         progressDialog.setCancelable(false);
+
+        // Aseguramos que el tipo de usuario esté definido al iniciar
+        if (!mPref.contains(USER_TYPE_KEY)) {
+            // Si no hay tipo de usuario definido, establecemos uno por defecto
+            SharedPreferences.Editor editor = mPref.edit();
+            editor.putString(USER_TYPE_KEY, "cliente");
+            editor.apply();
+        }
     }
 
     private void setupFirebase() {
@@ -116,8 +130,21 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        mButtonUserRegister.setOnClickListener(v -> register());
-        mGoogleSignInButton.setOnClickListener(v -> signInWithGoogle());
+        mButtonUserRegister.setOnClickListener(v -> {
+            String currentUserType = mPref.getString(USER_TYPE_KEY, "cliente");
+            Log.d("LoginActivity", "Tipo de usuario actual: " + currentUserType);
+
+            Intent intent;
+            if ("cliente".equals(currentUserType)) {
+                intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                Log.d("LoginActivity", "Redirigiendo a registro de cliente");
+            } else {
+                intent = new Intent(LoginActivity.this, RegisterWorkerActivity.class);
+                Log.d("LoginActivity", "Redirigiendo a registro de trabajador");
+            }
+            startActivity(intent);
+        });
+        mGoogleSignInImageButton.setOnClickListener(v -> signInWithGoogle());
         mForgotPasswordTextView.setOnClickListener(v -> resetPassword());
     }
 
@@ -254,15 +281,39 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleSuccessfulLogin() {
         loginAttempts = 0;
-        String user = mPref.getString("user", "");
-        Class<?> destinationActivity = user.equals("cliente") ?
-                HomeUserActivity.class : HomeWorkerActivity.class;
+        String currentUserType = mPref.getString(USER_TYPE_KEY, "cliente");
+        Log.d("LoginActivity", "Login exitoso - Tipo de usuario: " + currentUserType);
+
+        Intent intent;
+        if ("cliente".equals(currentUserType)) {
+            intent = new Intent(LoginActivity.this, HomeUserActivity.class);
+            Log.d("LoginActivity", "Redirigiendo a home de cliente");
+        } else {
+            intent = new Intent(LoginActivity.this, HomeWorkerActivity.class);
+            Log.d("LoginActivity", "Redirigiendo a home de trabajador");
+        }
 
         Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, destinationActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    // Método para cambiar el tipo de usuario (útil para testing y debugging)
+    public void switchUserType() {
+        String currentType = mPref.getString(USER_TYPE_KEY, "cliente");
+        String newType = "cliente".equals(currentType) ? "trabajador" : "cliente";
+
+        SharedPreferences.Editor editor = mPref.edit();
+        editor.putString(USER_TYPE_KEY, newType);
+        editor.apply();
+
+        Log.d("LoginActivity", "Tipo de usuario cambiado a: " + newType);
+    }
+
+    // Método para obtener el tipo de usuario actual
+    public String getCurrentUserType() {
+        return mPref.getString(USER_TYPE_KEY, "cliente");
     }
 
     private void handleFailedLogin(Exception exception) {
