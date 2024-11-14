@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
     private long lastLoginAttemptTime = 0;
     private ImageButton mGoogleSignInImageButton;
 
-    private static final String USER_TYPE_KEY = "user";
+    private static final String USER_TYPE_KEY = "typeUser";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        mPref = getApplicationContext().getSharedPreferences("tipo_usuario", MODE_PRIVATE);
+        mPref = getApplicationContext().getSharedPreferences(USER_TYPE_KEY, MODE_PRIVATE);
 
         tilEmail = findViewById(R.id.til_email);
         tilPassword = findViewById(R.id.til_password);
@@ -102,13 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Iniciando sesión...");
         progressDialog.setCancelable(false);
 
-        // Aseguramos que el tipo de usuario esté definido al iniciar
-        if (!mPref.contains(USER_TYPE_KEY)) {
-            // Si no hay tipo de usuario definido, establecemos uno por defecto
-            SharedPreferences.Editor editor = mPref.edit();
-            editor.putString(USER_TYPE_KEY, "cliente");
-            editor.apply();
-        }
+
     }
 
     private void setupFirebase() {
@@ -130,20 +124,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        mButtonUserRegister.setOnClickListener(v -> {
-            String currentUserType = mPref.getString(USER_TYPE_KEY, "cliente");
-            Log.d("LoginActivity", "Tipo de usuario actual: " + currentUserType);
-
-            Intent intent;
-            if ("cliente".equals(currentUserType)) {
-                intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                Log.d("LoginActivity", "Redirigiendo a registro de cliente");
-            } else {
-                intent = new Intent(LoginActivity.this, RegisterWorkerActivity.class);
-                Log.d("LoginActivity", "Redirigiendo a registro de trabajador");
-            }
-            startActivity(intent);
-        });
+        mButtonUserRegister.setOnClickListener(v -> register());
         mGoogleSignInImageButton.setOnClickListener(v -> signInWithGoogle());
         mForgotPasswordTextView.setOnClickListener(v -> resetPassword());
     }
@@ -281,40 +262,18 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleSuccessfulLogin() {
         loginAttempts = 0;
-        String currentUserType = mPref.getString(USER_TYPE_KEY, "cliente");
-        Log.d("LoginActivity", "Login exitoso - Tipo de usuario: " + currentUserType);
-
-        Intent intent;
-        if ("cliente".equals(currentUserType)) {
-            intent = new Intent(LoginActivity.this, HomeUserActivity.class);
-            Log.d("LoginActivity", "Redirigiendo a home de cliente");
-        } else {
-            intent = new Intent(LoginActivity.this, HomeWorkerActivity.class);
-            Log.d("LoginActivity", "Redirigiendo a home de trabajador");
-        }
+        String user = mPref.getString("user", "");
+        Class<?> destinationActivity = user.equals("cliente") ?
+                HomeUserActivity.class : HomeWorkerActivity.class;
 
         Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, destinationActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
 
-    // Método para cambiar el tipo de usuario (útil para testing y debugging)
-    public void switchUserType() {
-        String currentType = mPref.getString(USER_TYPE_KEY, "cliente");
-        String newType = "cliente".equals(currentType) ? "trabajador" : "cliente";
 
-        SharedPreferences.Editor editor = mPref.edit();
-        editor.putString(USER_TYPE_KEY, newType);
-        editor.apply();
-
-        Log.d("LoginActivity", "Tipo de usuario cambiado a: " + newType);
-    }
-
-    // Método para obtener el tipo de usuario actual
-    public String getCurrentUserType() {
-        return mPref.getString(USER_TYPE_KEY, "cliente");
-    }
 
     private void handleFailedLogin(Exception exception) {
         loginAttempts++;
