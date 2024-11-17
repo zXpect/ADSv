@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.ads.activities.MainActivity;
 import com.ads.providers.AuthProvider;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.project.ads.R;
 
 public class HomeUserActivity extends AppCompatActivity {
@@ -28,146 +30,284 @@ public class HomeUserActivity extends AppCompatActivity {
     NavigationView navigationView;
     Toolbar toolbar;
     private AuthProvider mAuthProvider;
+    private FirebaseCrashlytics crashlytics;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_user);
 
-        initProviders();
+        // Inicializar Crashlytics y Functions al inicio de la actividad
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        crashlytics = FirebaseCrashlytics.getInstance();
 
-        // Inicializar vistas del Navigation Drawer
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        toolbar = findViewById(R.id.toolbar);
 
-        // Configurar Toolbar
-        setSupportActionBar(toolbar);
+        try {
+            setContentView(R.layout.activity_home_user);
+            initProviders();
+            setupViews();
+            setupNavigation();
+            setupMapButton();
+            setupStatusBar();
 
-        // Configurar Navigation Drawer
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
-        );
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+            // Registrar información del usuario si está disponible
+            if (mAuthProvider != null && mAuthProvider.getId() != null) {
+                String userId = mAuthProvider.getId();
+                crashlytics.setUserId(userId);
+                crashlytics.setCustomKey("user_type", "client");
 
-        // Mantener tu código existente del botón
-        mButtonViewMap = findViewById(R.id.vermapa);
-        mButtonViewMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewMapClient();
+                // Registrar evento de login para Firebase Functions
+                Bundle params = new Bundle();
+                params.putString("user_id", userId);
+                params.putString("login_method", "email");
+                mFirebaseAnalytics.logEvent("user_login", params);
             }
-        });
 
-        // Configurar listener para los items del menú
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                int id = item.getItemId();
+        } catch (Exception e) {
+            logError("onCreate", e);
+        }
+    }
+    // Método helper para logging consistente
+    private void logError(String methodName, Exception e) {
+        // Registrar en Crashlytics
+        crashlytics.log("Error en " + methodName);
+        crashlytics.recordException(e);
 
-                if (id == R.id.nav_home) {
-                    Toast.makeText(HomeUserActivity.this, "Inicio", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_profile) {
-                    Toast.makeText(HomeUserActivity.this, "Perfil", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_settings) {
-                    Toast.makeText(HomeUserActivity.this, "Configuración", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_faq) {
-                    // Navegar a WebViewActivity
-                    Intent intent = new Intent(HomeUserActivity.this, WebViewActivity.class);
-                    startActivity(intent);
-                } else if (id == R.id.action_logout) {
-                    logout();
+        // Registrar detalles adicionales para análisis
+        Bundle params = new Bundle();
+        params.putString("error_method", methodName);
+        params.putString("error_message", e.getMessage());
+        params.putString("error_type", e.getClass().getSimpleName());
+        mFirebaseAnalytics.logEvent("app_error", params);
+
+        // Mostrar mensaje al usuario
+        Toast.makeText(this, "Error en la aplicación", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setupViews() {
+        try {
+            drawerLayout = findViewById(R.id.drawer_layout);
+            navigationView = findViewById(R.id.nav_view);
+            toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+
+            // Añadir botón de prueba
+            Button testButton = findViewById(R.id.test_crashlytics); // Necesitarás añadir este botón en el layout
+            if (testButton != null) {
+                testButton.setOnClickListener(v -> {
+                    // Mostrar diálogo de confirmación antes de forzar el crash
+                    new AlertDialog.Builder(this)
+                            .setTitle("Test de Crashlytics")
+                            .setMessage("¿Estás seguro de que quieres generar un crash de prueba?")
+                            .setPositiveButton("Sí", (dialog, which) -> testCrashlytics())
+                            .setNegativeButton("No", null)
+                            .show();
+                });
+            }
+        } catch (Exception e) {
+            crashlytics.log("Error al configurar las vistas principales");
+            crashlytics.recordException(e);
+        }
+    }
+
+    private void setupNavigation() {
+        try {
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawerLayout, toolbar,
+                    R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close
+            );
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+
+            navigationView.setNavigationItemSelectedListener(item -> {
+                try {
+                    handleNavigationItemSelected(item);
+                } catch (Exception e) {
+                    crashlytics.log("Error en navegación: " + item.getTitle());
+                    crashlytics.recordException(e);
                 }
-
-                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            }
-        });
+            });
+        } catch (Exception e) {
+            crashlytics.log("Error al configurar la navegación");
+            crashlytics.recordException(e);
+        }
+    }
 
-        // Barra de estado transparente
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
+    private void handleNavigationItemSelected(MenuItem item) {
+        try {
+            String itemName = item.getTitle().toString();
+            crashlytics.log("Usuario seleccionó: " + itemName);
+
+            // Registrar navegación para análisis
+            Bundle params = new Bundle();
+            params.putString("item_name", itemName);
+            mFirebaseAnalytics.logEvent("navigation_selected", params);
+
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                Toast.makeText(this, "Inicio", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_profile) {
+                Toast.makeText(this, "Perfil", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_settings) {
+                Toast.makeText(this, "Configuración", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_faq) {
+                startActivity(new Intent(this, WebViewActivity.class));
+            } else if (id == R.id.action_logout) {
+                logout();
+            }
+
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } catch (Exception e) {
+            logError("handleNavigation", e);
+        }
+    }
+
+    private void setupMapButton() {
+        try {
+            mButtonViewMap = findViewById(R.id.vermapa);
+            mButtonViewMap.setOnClickListener(v -> {
+                crashlytics.log("Usuario intentó abrir el mapa");
+                viewMapClient();
+            });
+        } catch (Exception e) {
+            crashlytics.log("Error al configurar el botón del mapa");
+            crashlytics.recordException(e);
+        }
+    }
+
+    private void setupStatusBar() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
+            }
+        } catch (Exception e) {
+            crashlytics.log("Error al configurar la barra de estado");
+            crashlytics.recordException(e);
         }
     }
 
     private void initProviders() {
-        mAuthProvider = new AuthProvider();
+        try {
+            mAuthProvider = new AuthProvider();
+        } catch (Exception e) {
+            crashlytics.log("Error al inicializar AuthProvider");
+            crashlytics.recordException(e);
+            Toast.makeText(this, "Error al inicializar servicios de autenticación", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void viewMapClient() {
-        Intent intent = new Intent(HomeUserActivity.this, MapClientActivity.class);
-        startActivity(intent);
+        try {
+            crashlytics.log("Abriendo MapClientActivity");
+            Intent intent = new Intent(this, MapClientActivity.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            crashlytics.recordException(e);
+            Toast.makeText(this, "No se pudo abrir el mapa", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onBackPressed() {
-        // Manejo del botón atrás cuando el drawer está abierto
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        try {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
+        } catch (Exception e) {
+            crashlytics.recordException(e);
             super.onBackPressed();
         }
     }
 
     private void logout() {
         try {
-            AlertDialog.Builder builder = new AlertDialog.Builder(HomeUserActivity.this);
+            crashlytics.log("Usuario iniciando proceso de logout");
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Cerrar Sesión")
                     .setMessage("¿Estás seguro que deseas cerrar sesión?")
-                    .setCancelable(false);  // Evita que el diálogo se cierre al tocar fuera
-
-            // Botón positivo (Sí)
-            builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    try {
-                        // Luego hacemos logout
-                        if (mAuthProvider != null) {
-                            mAuthProvider.logOut();
+                    .setCancelable(false)
+                    .setPositiveButton("Sí", (dialog, which) -> {
+                        try {
+                            performLogout();
+                        } catch (Exception e) {
+                            crashlytics.log("Error en proceso de logout");
+                            crashlytics.recordException(e);
+                            Toast.makeText(this, "Error al cerrar sesión", Toast.LENGTH_SHORT).show();
                         }
+                    })
+                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss());
 
-                        // Finalmente navegamos al MainActivity
-                        Intent intent = new Intent(HomeUserActivity.this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Limpia el stack de actividades
-                        startActivity(intent);
-                        finish();
-                    } catch (Exception e) {
-                        Toast.makeText(HomeUserActivity.this,
-                                "Error al cerrar sesión: " + e.getMessage(),
-                                Toast.LENGTH_LONG).show();
+            runOnUiThread(() -> {
+                try {
+                    if (!isFinishing()) {
+                        builder.create().show();
                     }
+                } catch (Exception e) {
+                    crashlytics.recordException(e);
+                    Toast.makeText(this, "Error al mostrar diálogo", Toast.LENGTH_SHORT).show();
                 }
             });
+        } catch (Exception e) {
+            crashlytics.recordException(e);
+            Toast.makeText(this, "Error al procesar logout", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-            // Botón negativo (No)
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+    private void performLogout() {
+        try {
+            crashlytics.log("Ejecutando logout");
 
-            // Crear y mostrar el diálogo en el UI thread
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    AlertDialog dialog = builder.create();
-                    if (!isFinishing()) {  // Verifica que la actividad no esté terminando
-                        dialog.show();
-                    }
-                }
-            });
+            // Registrar evento de logout
+            if (mAuthProvider != null && mAuthProvider.getId() != null) {
+                Bundle params = new Bundle();
+                params.putString("user_id", mAuthProvider.getId());
+                mFirebaseAnalytics.logEvent("user_logout", params);
+            }
+
+            if (mAuthProvider != null) {
+                mAuthProvider.logOut();
+            }
+
+            // Limpiar datos de Crashlytics
+            crashlytics.setUserId("");
+            crashlytics.setCustomKey("user_type", "none");
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
 
         } catch (Exception e) {
-            Toast.makeText(HomeUserActivity.this,
-                    "Error al mostrar diálogo: " + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
+            logError("performLogout", e);
+        }
+    }
+    // Añade este método en la clase HomeUserActivity
+    private void testCrashlytics() {
+        try {
+            // Registrar información previa al crash para mejor análisis
+            crashlytics.log("Iniciando test de Crashlytics");
+            Bundle params = new Bundle();
+            params.putString("test_type", "forced_crash");
+            params.putString("test_timestamp", String.valueOf(System.currentTimeMillis()));
+            mFirebaseAnalytics.logEvent("crashlytics_test", params);
+
+            // Forzar un NullPointerException
+            String testString = null;
+            int length = testString.length(); // Esto causará un NullPointerException
+        } catch (Exception e) {
+            // Registrar el error con información adicional
+            crashlytics.setCustomKey("test_crash", true);
+            crashlytics.setCustomKey("test_time", System.currentTimeMillis());
+            logError("testCrashlytics", e);
+
+            // Re-lanzar la excepción para que Crashlytics la capture completamente
+            throw new RuntimeException("Test de Crashlytics", e);
         }
     }
 }
