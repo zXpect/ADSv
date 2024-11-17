@@ -7,6 +7,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.project.ads.R;
+
 import org.json.JSONObject;
 import org.json.JSONException;
 import android.content.Context;
@@ -15,11 +17,14 @@ import java.util.HashMap;
 
 public class NotificationProvider {
     private static final String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    private static final String SERVER_KEY = "AIzaSyCGMZsmM3PZrixtClLxk6JUJiEw8rab87A"; // Obtén esto de la consola de Firebase
+    private static String SERVER_KEY;
     private final Context context;
 
     public NotificationProvider(Context context) {
         this.context = context;
+        if (SERVER_KEY == null) {
+            SERVER_KEY = context.getString(R.string.fcm_server_key);
+        }
     }
 
     public Task<Void> sendNotificationToWorker(String workerToken, String title, String body, Map<String, Object> requestData) {

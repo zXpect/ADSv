@@ -111,6 +111,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/worker_card" />
 
+            <Button
+                android:id="@+id/test_crashlytics"
+                android:layout_width="190dp"
+                android:layout_height="51dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/colorAccent"
+                android:text="Test Crashlytics"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vermapa" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
