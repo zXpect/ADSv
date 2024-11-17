@@ -76,8 +76,12 @@ public class HomeUserActivity extends AppCompatActivity {
                     Toast.makeText(HomeUserActivity.this, "Perfil", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.nav_settings) {
                     Toast.makeText(HomeUserActivity.this, "Configuración", Toast.LENGTH_SHORT).show();
-                }else if (id == R.id.action_logout) {
-                   logout();
+                } else if (id == R.id.nav_faq) {
+                    // Navegar a WebViewActivity
+                    Intent intent = new Intent(HomeUserActivity.this, WebViewActivity.class);
+                    startActivity(intent);
+                } else if (id == R.id.action_logout) {
+                    logout();
                 }
 
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -85,7 +89,7 @@ public class HomeUserActivity extends AppCompatActivity {
             }
         });
 
-        // Barra de estado trasnpaerente
+        // Barra de estado transparente
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
@@ -94,7 +98,6 @@ public class HomeUserActivity extends AppCompatActivity {
 
     private void initProviders() {
         mAuthProvider = new AuthProvider();
-
     }
 
     private void viewMapClient() {
@@ -111,6 +114,7 @@ public class HomeUserActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
     private void logout() {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(HomeUserActivity.this);
@@ -166,6 +170,4 @@ public class HomeUserActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
     }
-
-
 }

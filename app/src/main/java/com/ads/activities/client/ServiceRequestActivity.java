@@ -3,14 +3,21 @@ package com.ads.activities.client;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.ads.providers.RequestProvider;
+import com.ads.providers.NotificationProvider;
+import com.ads.providers.TokenProvider;
+import com.ads.providers.WorkerProvider;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +25,9 @@ import java.util.Map;
 public class ServiceRequestActivity extends AppCompatActivity {
 
     private RequestProvider mRequestProvider;
+    private NotificationProvider mNotificationProvider;
+    private TokenProvider mTokenProvider;
+    private WorkerProvider mWorkerProvider;
     private TextInputEditText addressInput;
     private AutoCompleteTextView serviceTypeInput;
     private TextInputEditText descriptionInput;
@@ -28,10 +38,17 @@ public class ServiceRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_request);
         setupStatusBar();
+        initProviders();
         initViews();
         setupServiceTypeDropdown();
         setupSendRequestButton();
+    }
+
+    private void initProviders() {
         mRequestProvider = new RequestProvider(this);
+        mNotificationProvider = new NotificationProvider(this);
+        mTokenProvider = new TokenProvider();
+        mWorkerProvider = new WorkerProvider();
     }
 
     private void setupStatusBar() {
@@ -95,6 +112,9 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private void submitRequest(String address, String description, String serviceType) {
         String clientId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Map<String, Object> requestData = new HashMap<>();
+        String requestId = mRequestProvider.getmDatabase().push().getKey();
+
+        requestData.put("id", requestId);
         requestData.put("client_id", clientId);
         requestData.put("address", address);
         requestData.put("description", description);
@@ -105,11 +125,68 @@ public class ServiceRequestActivity extends AppCompatActivity {
         mRequestProvider.createRequest(requestData)
                 .addOnSuccessListener(aVoid -> {
                     showToast("Solicitud creada con éxito");
+                    // Buscar trabajadores disponibles y enviar notificaciones
+                    findAvailableWorkersAndNotify(requestData);
                     navigateToVerifyRequest(address, serviceType);
                 })
                 .addOnFailureListener(e -> {
                     showToast("Error al crear la solicitud: " + e.getMessage());
                 });
+    }
+
+    private void findAvailableWorkersAndNotify(Map<String, Object> requestData) {
+        mWorkerProvider.getWorkers().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot workerSnapshot : dataSnapshot.getChildren()) {
+                    String workerId = workerSnapshot.getKey();
+                    if (workerId != null) {
+                        sendNotificationToWorker(workerId, requestData);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ServiceRequest", "Error getting workers: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    private void sendNotificationToWorker(String workerId, Map<String, Object> requestData) {
+        mTokenProvider.mDatabase.child(workerId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot tokenSnapshot) {
+                if (tokenSnapshot.exists()) {
+                    String workerToken = tokenSnapshot.child("token").getValue(String.class);
+                    if (workerToken != null) {
+                        String title = "Nueva Solicitud de Servicio";
+                        String body = "Tipo: " + requestData.get("service_type") +
+                                "\nDirección: " + requestData.get("address");
+
+                        // Crear datos adicionales para la notificación
+                        Map<String, Object> notificationData = new HashMap<>();
+                        notificationData.put("requestId", (String) requestData.get("id"));
+                        notificationData.put("title", title);
+                        notificationData.put("body", body);
+                        notificationData.put("clientId", (String) requestData.get("client_id"));
+
+                        mNotificationProvider.sendNotificationToWorker(workerToken, title, body, notificationData)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Notification", "Notification sent successfully to worker: " + workerId);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Notification", "Error sending notification: " + e.getMessage());
+                                });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ServiceRequest", "Error getting worker token: " + databaseError.getMessage());
+            }
+        });
     }
 
     private void navigateToVerifyRequest(String address, String serviceType) {

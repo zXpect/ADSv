@@ -1,17 +1,23 @@
 package com.ads.providers;
 
 import android.content.Context;
+import android.util.Log;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import java.util.Map;
+import java.util.HashMap;
 
 public class RequestProvider {
 
     private final DatabaseReference mDatabaseReference;
     private final NotificationProvider notificationProvider;
+    private final TokenProvider tokenProvider;
+    private final WorkerProvider workerProvider;
     private final Context context;
 
     public RequestProvider(Context context) {
@@ -20,6 +26,8 @@ public class RequestProvider {
                 .getReference()
                 .child("requests");
         this.notificationProvider = new NotificationProvider(context);
+        this.tokenProvider = new TokenProvider();
+        this.workerProvider = new WorkerProvider();
     }
 
     public Task<Void> createRequest(Map<String, Object> requestData) {
@@ -28,26 +36,129 @@ public class RequestProvider {
             return Tasks.forException(new Exception("Failed to generate request ID"));
         }
         requestData.put("request_id", requestId);
-        return mDatabaseReference.child(requestId).setValue(requestData);
+
+        // Primero guardamos la solicitud
+        Task<Void> saveTask = mDatabaseReference.child(requestId).setValue(requestData);
+
+        // Luego notificamos a los trabajadores disponibles
+        return saveTask.continueWithTask(task -> {
+            if (task.isSuccessful()) {
+                return notifyAvailableWorkers(requestData);
+            } else {
+                throw task.getException();
+            }
+        });
     }
 
-    public Task<Void> createRequestAndNotify(Map<String, Object> requestData, String workerToken) {
-        String requestId = mDatabaseReference.push().getKey();
-        if (requestId == null) {
-            return Tasks.forException(new Exception("Failed to generate request ID"));
-        }
+    private Task<Void> notifyAvailableWorkers(Map<String, Object> requestData) {
+        return workerProvider.getAvailableWorkers().continueWithTask(workersTask -> {
+            if (!workersTask.isSuccessful()) {
+                return Tasks.forException(workersTask.getException());
+            }
 
-        requestData.put("request_id", requestId);
+            DataSnapshot workersSnapshot = workersTask.getResult();
+            if (!workersSnapshot.exists()) {
+                return Tasks.forException(new Exception("No available workers found"));
+            }
 
-        Task<Void> saveTask = mDatabaseReference.child(requestId).setValue(requestData);
-        Task<Void> notificationTask = notificationProvider.sendNotificationToWorker(
-                workerToken,
-                "Nueva solicitud",
-                "Tienes una nueva solicitud de servicio",
-                requestData
-        );
+            // Crear las tareas de notificación para cada trabajador
+            java.util.List<Task<Void>> notificationTasks = new java.util.ArrayList<>();
 
-        return Tasks.whenAll(saveTask, notificationTask);
+            for (DataSnapshot workerSnapshot : workersSnapshot.getChildren()) {
+                String workerId = workerSnapshot.getKey();
+                if (workerId != null) {
+                    Task<Void> notificationTask = sendWorkerNotification(workerId, requestData);
+                    notificationTasks.add(notificationTask);
+                }
+            }
+
+            return Tasks.whenAll(notificationTasks);
+        });
+    }
+
+    private Task<Void> sendWorkerNotification(String workerId, Map<String, Object> requestData) {
+        return tokenProvider.mDatabase.child(workerId).get().continueWithTask(tokenTask -> {
+            if (!tokenTask.isSuccessful() || !tokenTask.getResult().exists()) {
+                Log.w("RequestProvider", "No token found for worker: " + workerId);
+                return Tasks.forResult(null);
+            }
+
+            String token = tokenTask.getResult().child("token").getValue(String.class);
+            if (token == null) {
+                return Tasks.forResult(null);
+            }
+
+            // Preparar los datos de la notificación
+            String title = "Nueva Solicitud de Servicio";
+            String body = String.format("Tipo: %s\nDirección: %s",
+                    requestData.get("service_type"),
+                    requestData.get("address"));
+
+            Map<String, Object> notificationData = new HashMap<>();
+            notificationData.put("request_id", (String) requestData.get("request_id"));
+            notificationData.put("client_id", (String) requestData.get("client_id"));
+            notificationData.put("service_type", (String) requestData.get("service_type"));
+            notificationData.put("address", (String) requestData.get("address"));
+            notificationData.put("status", "pending");
+
+            return notificationProvider.sendNotificationToWorker(token, title, body, notificationData);
+        });
+    }
+
+    public Task<Void> updateRequestStatus(String requestId, String status, String workerId) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("status", status);
+        updates.put("worker_id", workerId);
+        updates.put("updated_at", System.currentTimeMillis());
+
+        return mDatabaseReference.child(requestId).updateChildren(updates);
+    }
+
+    public Task<Void> acceptRequest(String requestId, String workerId) {
+        return updateRequestStatus(requestId, "accepted", workerId)
+                .continueWithTask(task -> {
+                    if (task.isSuccessful()) {
+                        // Notificar al cliente que su solicitud fue aceptada
+                        return notifyClientRequestAccepted(requestId);
+                    }
+                    return Tasks.forException(task.getException());
+                });
+    }
+
+    private Task<Void> notifyClientRequestAccepted(String requestId) {
+        return mDatabaseReference.child(requestId).get().continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                return Tasks.forException(task.getException());
+            }
+
+            DataSnapshot requestSnapshot = task.getResult();
+            String clientId = requestSnapshot.child("client_id").getValue(String.class);
+            if (clientId == null) {
+                return Tasks.forException(new Exception("Client ID not found"));
+            }
+
+            return tokenProvider.mDatabase.child(clientId).get().continueWithTask(tokenTask -> {
+                if (!tokenTask.isSuccessful() || !tokenTask.getResult().exists()) {
+                    return Tasks.forResult(null);
+                }
+
+                String token = tokenTask.getResult().child("token").getValue(String.class);
+                if (token == null) {
+                    return Tasks.forResult(null);
+                }
+
+                Map<String, Object> notificationData = new HashMap<>();
+                notificationData.put("request_id", requestId);
+                notificationData.put("type", "request_accepted");
+
+                return notificationProvider.sendNotificationToWorker(
+                        token,
+                        "Solicitud Aceptada",
+                        "Tu solicitud de servicio ha sido aceptada",
+                        notificationData
+                );
+            });
+        });
     }
 
     public void getRequests(ValueEventListener callback) {
@@ -66,11 +177,18 @@ public class RequestProvider {
         mDatabaseReference.child(requestId).removeEventListener(listener);
     }
 
-    public Task<Void> updateRequestStatus(String requestId, String status) {
-        return mDatabaseReference.child(requestId).child("status").setValue(status);
-    }
-
     public DatabaseReference getRequestReference() {
         return mDatabaseReference;
+    }
+
+    public DatabaseReference getmDatabase() {
+        return mDatabaseReference;
+    }
+
+    public DatabaseReference getWorkers() {
+        return FirebaseDatabase.getInstance()
+                .getReference()
+                .child("User")
+                .child("Trabajadores");
     }
 }

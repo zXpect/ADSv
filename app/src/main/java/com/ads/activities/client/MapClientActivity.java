@@ -134,9 +134,6 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         generateToken();
 
 
-
-
-
 // Hacer la barra de estado transparente
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();

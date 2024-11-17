@@ -12,7 +12,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class TokenProvider {
 
-    DatabaseReference mDatabase;
+    public DatabaseReference mDatabase;
 
     public TokenProvider() {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Tokens");
