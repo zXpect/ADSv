@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="google_maps_key" templateMargeStrategy="preserve" translatable="false">AIzaSyA1K3nY92xSrxLuEePwXS-iV33E2zMLyP0</string>
-    <string name="fcm_server_key">AIzaSyCGMZsmM3PZrixtClLxk6JUJiEw8rab87A</string>
-</resources>
