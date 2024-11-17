@@ -19,8 +19,8 @@ public class ClientProvider {
     public Task<Void> create(Client client){
         Map<String, Object> map = new HashMap<>();
         map.put("name", client.getName());
-        map.put("lastName", client.getName());
-        map.put("email", client.getName());
+        map.put("lastName", client.getLastName());
+        map.put("email", client.getEmail());
 
         return mDataBase.child(client.getId()).setValue(map);
     }

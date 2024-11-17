@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.ads.activities.client.HomeUserActivity;
 import com.ads.activities.worker.HomeWorkerActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.project.ads.R;
 
 
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
+
 
         mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
         SharedPreferences.Editor editor = mPref.edit();
@@ -70,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
     @Override
     protected void onStart() {
         super.onStart();

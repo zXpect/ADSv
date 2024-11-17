@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class NotificationProvider {
     private static final String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    private static final String SERVER_KEY = "TU_SERVER_KEY_DE_FIREBASE"; // Obtén esto de la consola de Firebase
+    private static final String SERVER_KEY = "AIzaSyCGMZsmM3PZrixtClLxk6JUJiEw8rab87A"; // Obtén esto de la consola de Firebase
     private final Context context;
 
     public NotificationProvider(Context context) {

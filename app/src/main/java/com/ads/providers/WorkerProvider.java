@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ads.models.Worker;
 
@@ -11,10 +12,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WorkerProvider {
-    DatabaseReference mDataBase;
+    private final DatabaseReference mDataBase;
 
     public WorkerProvider() {
         mDataBase = FirebaseDatabase.getInstance().getReference().child("User").child("Trabajadores");
+    }
+
+    // Added getter for mDatabase
+    public DatabaseReference getmDatabase() {
+        return mDataBase;
+    }
+
+    // Added getWorkers method
+    public DatabaseReference getWorkers() {
+        return mDataBase;
+    }
+
+    // Added getAvailableWorkers method
+    public Task<DataSnapshot> getAvailableWorkers() {
+        Query availableWorkersQuery = mDataBase.orderByChild("isAvailable").equalTo(true);
+        return availableWorkersQuery.get();
     }
 
     public Task<Void> create(Worker worker) {
@@ -23,6 +40,8 @@ public class WorkerProvider {
         map.put("lastName", worker.getLastName());
         map.put("email", worker.getEmail());
         map.put("work", worker.getWork());
+        map.put("isAvailable", true); // O false, según la disponibilidad inicial del trabajador
+
         return mDataBase.child(worker.getId()).setValue(map);
     }
 
