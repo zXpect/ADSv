@@ -37,10 +37,7 @@ import android.widget.Toast;
 
 import com.ads.activities.MainActivity;
 import com.ads.models.Worker;
-import com.ads.providers.AuthProvider;
-import com.ads.providers.GeofireProvider;
-import com.ads.providers.TokenProvider;
-import com.ads.providers.WorkerProvider;
+import com.ads.providers.*;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.Status;
