@@ -65,12 +65,12 @@
             android:name="com.ads.activities.LoginActivity"
             android:exported="false"
             android:parentActivityName="com.ads.activities.MainActivity" />
+
         <activity
             android:name="com.ads.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

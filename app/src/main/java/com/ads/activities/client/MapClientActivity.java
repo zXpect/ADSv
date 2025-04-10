@@ -257,15 +257,15 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-
-
     private void initToolbar() {
         setSupportActionBar(findViewById(R.id.toolbar_color));
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.map_client_title);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true); // Habilita el botón de regreso
         }
     }
+
 
     private void initProviders() {
         mAuthProvider = new AuthProvider();
@@ -309,6 +309,9 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
             });
         }
     }
+
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -571,12 +574,13 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_logout_client) {
-            logout();
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // Cierra la actividad y regresa a la anterior
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     private void logout() {
         mAuthProvider.logOut();
@@ -595,4 +599,6 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     void generateToken(){
         mTokenProvider.create(mAuthProvider.getId());
     }
+
+
 }

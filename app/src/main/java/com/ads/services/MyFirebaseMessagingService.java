@@ -49,7 +49,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(channel);
         }
 
-        // Asumiendo que tienes una actividad llamada RequestDetailActivity
+
         Intent intent = new Intent(this, RequestDetailActivity.class);
         intent.putExtra("requestId", data.get("requestId"));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
