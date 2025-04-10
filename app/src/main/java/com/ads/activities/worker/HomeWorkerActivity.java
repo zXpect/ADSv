@@ -156,17 +156,14 @@ public class HomeWorkerActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
-                        // Primero desconectamos
-                        disconnect();
-
-                        // Luego hacemos logout
                         if (mAuthProvider != null) {
                             mAuthProvider.logOut();
                         }
 
-                        // Finalmente navegamos al MainActivity
+                        disconnect();
+
                         Intent intent = new Intent(HomeWorkerActivity.this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Limpia el stack de actividades
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                     } catch (Exception e) {
@@ -174,6 +171,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
                                 "Error al cerrar sesión: " + e.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
+
                 }
             });
 

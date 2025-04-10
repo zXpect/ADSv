@@ -16,7 +16,7 @@ public class MyToolbar {
         activity.getSupportActionBar().setTitle(tittle);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(upButton);
         if (upButton) {
-            toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FF8C00"), PorterDuff.Mode.SRC_ATOP); // Naranja
+            toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FF8C00"), PorterDuff.Mode.SRC_ATOP);
         }
 
     }
@@ -28,6 +28,5 @@ public class MyToolbar {
         if (upButton) {
             toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FF8C00"), PorterDuff.Mode.SRC_ATOP); // Naranja
         }
-
     }
 }

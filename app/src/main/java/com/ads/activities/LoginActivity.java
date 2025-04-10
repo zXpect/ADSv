@@ -78,14 +78,15 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_login);
 
         initializeViews();
-        setupFirebase();
         setupToolbar();
+        setupFirebase();
         setupListeners();
         setupStatusBar();
         setupGoogleSignIn();
     }
 
     private void initializeViews() {
+
         mPref = getApplicationContext().getSharedPreferences(USER_TYPE_KEY, MODE_PRIVATE);
 
         tilEmail = findViewById(R.id.til_email);
