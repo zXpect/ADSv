@@ -1,61 +1,75 @@
 package com.ads.providers;
 
 import android.util.Log;
+
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
-import com.project.ads.R;
 
 import org.json.JSONObject;
 import org.json.JSONException;
 import android.content.Context;
-import java.util.Map;
+
 import java.util.HashMap;
+import java.util.Map;
 
 public class NotificationProvider {
     private static final String FCM_API = "https://fcm.googleapis.com/fcm/send";
     private static String SERVER_KEY;
     private final Context context;
+    private static final String NETLIFY_FUNCTION_URL = "https://adsv.netlify.app/.netlify/functions/sendNotification";
 
     public NotificationProvider(Context context) {
         this.context = context;
-        if (SERVER_KEY == null) {
-            SERVER_KEY = context.getString(R.string.fcm_server_key);
-        }
     }
 
-    public Task<Void> sendNotificationToWorker(String workerToken, String title, String body, Map<String, Object> requestData) {
+
+    public Task<Void> sendNotificationViaNetlify(String workerToken, String title, String body, Map<String, Object> requestData) {
         TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
 
         try {
-            JSONObject notification = new JSONObject();
-            notification.put("title", title);
-            notification.put("body", body);
+            JSONObject json = new JSONObject();
+            json.put("token", workerToken);
+            json.put("title", title);
+            json.put("body", body);
 
             JSONObject data = new JSONObject();
             for (Map.Entry<String, Object> entry : requestData.entrySet()) {
                 data.put(entry.getKey(), String.valueOf(entry.getValue()));
             }
+            json.put("data", data);
 
-            JSONObject mainObj = new JSONObject();
-            mainObj.put("to", workerToken);
-            mainObj.put("notification", notification);
-            mainObj.put("data", data);
-            mainObj.put("priority", "high");
+            Log.d("NotificationDebug", "URL de la función Netlify: " + NETLIFY_FUNCTION_URL);
+            Log.d("NotificationDebug", "Payload de la notificación: " + json.toString());
 
             JsonObjectRequest request = new JsonObjectRequest(
                     Request.Method.POST,
-                    FCM_API,
-                    mainObj,
+                    NETLIFY_FUNCTION_URL + "/.netlify/functions/sendNotification", // Asegúrate de que esta ruta sea correcta
+                    json,
                     response -> {
-                        Log.d("FCM", "Notification sent successfully");
+                        Log.d("NotificationDebug", "Respuesta de Netlify: " + response.toString());
                         taskCompletionSource.setResult(null);
                     },
                     error -> {
-                        Log.e("FCM", "Error sending notification: " + error.getMessage());
+                        Log.e("NotificationDebug", "Error al enviar notificación: " + error.toString());
+
+                        // Detalle del error de red
+                        if (error.networkResponse != null) {
+                            Log.e("NotificationDebug", "Código de error: " + error.networkResponse.statusCode);
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                Log.e("NotificationDebug", "Cuerpo de la respuesta: " + responseBody);
+                            } catch (Exception e) {
+                                Log.e("NotificationDebug", "No se pudo obtener el cuerpo del error");
+                            }
+                        } else {
+                            Log.e("NotificationDebug", "Error de conexión o timeout");
+                        }
+
                         taskCompletionSource.setException(error);
                     }
             ) {
@@ -63,17 +77,21 @@ public class NotificationProvider {
                 public Map<String, String> getHeaders() {
                     Map<String, String> headers = new HashMap<>();
                     headers.put("Content-Type", "application/json");
-                    headers.put("Authorization", "key=" + SERVER_KEY);
                     return headers;
                 }
             };
 
-            // Añadir a la cola de peticiones
+            // Configurar un timeout más largo para áreas con conexión lenta
+            request.setRetryPolicy(new DefaultRetryPolicy(
+                    30000, // 30 segundos de timeout
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             requestQueue.add(request);
 
         } catch (JSONException e) {
-            Log.e("FCM", "Error creating JSON: " + e.getMessage());
+            Log.e("NotificationDebug", "Error creando el JSON: " + e.getMessage(), e);
             taskCompletionSource.setException(e);
         }
 
