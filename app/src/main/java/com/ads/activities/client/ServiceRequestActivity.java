@@ -154,12 +154,18 @@ public class ServiceRequestActivity extends AppCompatActivity {
     }
 
     private void sendNotificationToWorker(String workerId, Map<String, Object> requestData) {
+        Log.d("NotificationDebug", "Intentando enviar notificación al trabajador: " + workerId);
+
         mTokenProvider.mDatabase.child(workerId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot tokenSnapshot) {
                 if (tokenSnapshot.exists()) {
+                    Log.d("NotificationDebug", "Datos del token encontrados para el trabajador");
+
                     String workerToken = tokenSnapshot.child("token").getValue(String.class);
                     if (workerToken != null) {
+                        Log.d("NotificationDebug", "Token del trabajador: " + workerToken.substring(0, Math.min(10, workerToken.length())) + "...");
+
                         String title = "Nueva Solicitud de Servicio";
                         String body = "Tipo: " + requestData.get("service_type") +
                                 "\nDirección: " + requestData.get("address");
@@ -171,20 +177,39 @@ public class ServiceRequestActivity extends AppCompatActivity {
                         notificationData.put("body", body);
                         notificationData.put("clientId", (String) requestData.get("client_id"));
 
-                        mNotificationProvider.sendNotificationToWorker(workerToken, title, body, notificationData)
+                        // Añadir timestamp para debug
+                        notificationData.put("timestamp", String.valueOf(System.currentTimeMillis()));
+
+                        Log.d("NotificationDebug", "Datos de notificación preparados: " + notificationData);
+
+                        mNotificationProvider.sendNotificationViaNetlify(workerToken, title, body, notificationData)
                                 .addOnSuccessListener(aVoid -> {
-                                    Log.d("Notification", "Notification sent successfully to worker: " + workerId);
+                                    Log.d("NotificationDebug", "✅ Notificación enviada exitosamente al trabajador: " + workerId);
+                                    // Mostrar un toast para confirmación visual
+                                    runOnUiThread(() ->
+                                            Toast.makeText(ServiceRequestActivity.this,
+                                                    "Notificación enviada al trabajador", Toast.LENGTH_SHORT).show()
+                                    );
                                 })
                                 .addOnFailureListener(e -> {
-                                    Log.e("Notification", "Error sending notification: " + e.getMessage());
+                                    Log.e("NotificationDebug", "❌ Error enviando notificación: " + e.getMessage(), e);
+                                    // Mostrar error en UI
+                                    runOnUiThread(() ->
+                                            Toast.makeText(ServiceRequestActivity.this,
+                                                    "Error al enviar notificación: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                                    );
                                 });
+                    } else {
+                        Log.e("NotificationDebug", "❌ Token del trabajador es null");
                     }
+                } else {
+                    Log.e("NotificationDebug", "❌ No se encontraron datos de token para el trabajador: " + workerId);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e("ServiceRequest", "Error getting worker token: " + databaseError.getMessage());
+                Log.e("NotificationDebug", "❌ Error obteniendo token del trabajador: " + databaseError.getMessage());
             }
         });
     }

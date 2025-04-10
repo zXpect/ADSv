@@ -101,7 +101,7 @@ public class RequestProvider {
             notificationData.put("address", (String) requestData.get("address"));
             notificationData.put("status", "pending");
 
-            return notificationProvider.sendNotificationToWorker(token, title, body, notificationData);
+            return notificationProvider.sendNotificationViaNetlify(token, title, body, notificationData);
         });
     }
 
@@ -151,7 +151,7 @@ public class RequestProvider {
                 notificationData.put("request_id", requestId);
                 notificationData.put("type", "request_accepted");
 
-                return notificationProvider.sendNotificationToWorker(
+                return notificationProvider.sendNotificationViaNetlify(
                         token,
                         "Solicitud Aceptada",
                         "Tu solicitud de servicio ha sido aceptada",
