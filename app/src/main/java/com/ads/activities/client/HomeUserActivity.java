@@ -91,19 +91,6 @@ public class HomeUserActivity extends AppCompatActivity {
             toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
 
-            // Añadir botón de prueba
-            Button testButton = findViewById(R.id.test_crashlytics); // Necesitarás añadir este botón en el layout
-            if (testButton != null) {
-                testButton.setOnClickListener(v -> {
-                    // Mostrar diálogo de confirmación antes de forzar el crash
-                    new AlertDialog.Builder(this)
-                            .setTitle("Test de Crashlytics")
-                            .setMessage("¿Estás seguro de que quieres generar un crash de prueba?")
-                            .setPositiveButton("Sí", (dialog, which) -> testCrashlytics())
-                            .setNegativeButton("No", null)
-                            .show();
-                });
-            }
         } catch (Exception e) {
             crashlytics.log("Error al configurar las vistas principales");
             crashlytics.recordException(e);

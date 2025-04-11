@@ -1,5 +1,6 @@
 package com.ads.activities.client;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private AutoCompleteTextView serviceTypeInput;
     private TextInputEditText descriptionInput;
     private MaterialButton sendRequestButton;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,12 +111,28 @@ public class ServiceRequestActivity extends AppCompatActivity {
         submitRequest(address, description, serviceType);
     }
 
+    private void showProgressDialog(String message) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+        }
+        progressDialog.setMessage(message);
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+
+
     private void submitRequest(String address, String description, String serviceType) {
         String clientId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Map<String, Object> requestData = new HashMap<>();
-        String requestId = mRequestProvider.getmDatabase().push().getKey();
 
-        requestData.put("id", requestId);
         requestData.put("client_id", clientId);
         requestData.put("address", address);
         requestData.put("description", description);
@@ -122,36 +140,30 @@ public class ServiceRequestActivity extends AppCompatActivity {
         requestData.put("status", "pending");
         requestData.put("timestamp", System.currentTimeMillis());
 
+        // Mostrar indicador de progreso
+        showProgressDialog("Enviando solicitud...");
+
         mRequestProvider.createRequest(requestData)
                 .addOnSuccessListener(aVoid -> {
+                    hideProgressDialog();
                     showToast("Solicitud creada con éxito");
-                    // Buscar trabajadores disponibles y enviar notificaciones
-                    findAvailableWorkersAndNotify(requestData);
                     navigateToVerifyRequest(address, serviceType);
                 })
                 .addOnFailureListener(e -> {
-                    showToast("Error al crear la solicitud: " + e.getMessage());
+                    hideProgressDialog();
+                    Log.e("ServiceRequest", "Error creating request: ", e);
+
+                    // Mostrar un mensaje de error más amigable
+                    String errorMessage = "Error al crear la solicitud";
+                    if (e.getCause() instanceof com.android.volley.ServerError) {
+                        errorMessage = "Error de conexión con el servidor. Intenta de nuevo más tarde.";
+                    }
+
+                    showToast(errorMessage);
                 });
     }
 
-    private void findAvailableWorkersAndNotify(Map<String, Object> requestData) {
-        mWorkerProvider.getWorkers().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot workerSnapshot : dataSnapshot.getChildren()) {
-                    String workerId = workerSnapshot.getKey();
-                    if (workerId != null) {
-                        sendNotificationToWorker(workerId, requestData);
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("ServiceRequest", "Error getting workers: " + databaseError.getMessage());
-            }
-        });
-    }
 
     private void sendNotificationToWorker(String workerId, Map<String, Object> requestData) {
         Log.d("NotificationDebug", "Intentando enviar notificación al trabajador: " + workerId);

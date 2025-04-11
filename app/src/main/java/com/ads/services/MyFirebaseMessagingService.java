@@ -49,13 +49,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        // Aquí deberías enviar el token actualizado a tu servidor
+
         sendRegistrationToServer(token);
     }
 
     private void sendRegistrationToServer(String token) {
-        // Implementar la lógica para guardar el token en Firebase Database
-        // Esto actualizará el token en la base de datos cuando se refresque
+
         new TokenProvider().saveToken(token);
     }
 
