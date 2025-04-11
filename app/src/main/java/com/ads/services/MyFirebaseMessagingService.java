@@ -6,92 +6,102 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.ads.activities.worker.RequestDetailActivity;
+import com.ads.activities.worker.HomeWorkerActivity;
+import com.ads.providers.TokenProvider;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.ads.providers.AuthProvider;
-import com.ads.providers.WorkerProvider;
 import com.project.ads.R;
 
-import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    private static final String TAG = "FCMService";
+    private static final String CHANNEL_ID = "high_importance_channel";
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+        Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        Map<String, String> data = remoteMessage.getData();
-        String requestId = data.get("requestId");
+        // Revisar si el mensaje contiene datos
+        if (remoteMessage.getData().size() > 0) {
+            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+        }
 
+        // Revisar si el mensaje contiene una notificación
         if (remoteMessage.getNotification() != null) {
-            showNotification(
-                    remoteMessage.getNotification().getTitle(),
-                    remoteMessage.getNotification().getBody(),
-                    data
-            );
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+
+            String title = remoteMessage.getNotification().getTitle();
+            String body = remoteMessage.getNotification().getBody();
+
+            // También puedes obtener los datos adicionales
+            String requestId = remoteMessage.getData().get("requestId");
+            String clientId = remoteMessage.getData().get("clientId");
+
+            sendNotification(title, body, requestId, clientId);
         }
     }
 
-    private void showNotification(String title, String body, Map<String, String> data) {
-        String channelId = "requests";
+    @Override
+    public void onNewToken(@NonNull String token) {
+        Log.d(TAG, "Refreshed token: " + token);
+        // Aquí deberías enviar el token actualizado a tu servidor
+        sendRegistrationToServer(token);
+    }
+
+    private void sendRegistrationToServer(String token) {
+        // Implementar la lógica para guardar el token en Firebase Database
+        // Esto actualizará el token en la base de datos cuando se refresque
+        new TokenProvider().saveToken(token);
+    }
+
+    private void sendNotification(String title, String messageBody, String requestId, String clientId) {
+        Intent intent = new Intent(this, HomeWorkerActivity.class);
+
+        // Agregar datos relevantes al intent
+        if (requestId != null) {
+            intent.putExtra("requestId", requestId);
+        }
+        if (clientId != null) {
+            intent.putExtra("clientId", clientId);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_IMMUTABLE);
+
+        createNotificationChannel();
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_worker_vector) // Asegúrate de tener este recurso
+                        .setContentTitle(title)
+                        .setContentText(messageBody)
+                        .setAutoCancel(true)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent);
+
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    channelId,
-                    "Solicitudes",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            notificationManager.createNotificationChannel(channel);
-        }
-
-
-        Intent intent = new Intent(this, RequestDetailActivity.class);
-        intent.putExtra("requestId", data.get("requestId"));
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                this,
-                0,
-                intent,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.logo) //
-                .setContentTitle(title)
-                .setContentText(body)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent);
-
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(0, notificationBuilder.build());
     }
 
-    @Override
-    public void onNewToken(String token) {
-        super.onNewToken(token);
+    private void createNotificationChannel() {
+        // Crear el canal de notificación, pero solo en API 26+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Notificaciones importantes";
+            String description = "Canal para notificaciones de alta prioridad";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
 
-        AuthProvider authProvider = new AuthProvider(this);
-        String workerId = authProvider.getId();
-
-        if (workerId != null) {
-            // Guardar token localmente
-            authProvider.saveFCMToken(token);
-
-            // Actualizar token en la base de datos
-            WorkerProvider workerProvider = new WorkerProvider();
-            workerProvider.updateWorkerFCMToken(workerId, token)
-                    .addOnSuccessListener(aVoid -> {
-                        // Token actualizado exitosamente
-                    })
-                    .addOnFailureListener(e -> {
-                        // Manejar el error
-                    });
+            // Registrar el canal con el sistema
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }

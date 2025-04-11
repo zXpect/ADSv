@@ -18,15 +18,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NotificationProvider {
-    private static final String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    private static String SERVER_KEY;
-    private final Context context;
+    private static final String TAG = "NotificationDebug";
+    // URL correcta de la función Netlify
     private static final String NETLIFY_FUNCTION_URL = "https://adsv.netlify.app/.netlify/functions/sendNotification";
+    private final Context context;
 
     public NotificationProvider(Context context) {
         this.context = context;
     }
-
 
     public Task<Void> sendNotificationViaNetlify(String workerToken, String title, String body, Map<String, Object> requestData) {
         TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
@@ -43,31 +42,38 @@ public class NotificationProvider {
             }
             json.put("data", data);
 
-            Log.d("NotificationDebug", "URL de la función Netlify: " + NETLIFY_FUNCTION_URL);
-            Log.d("NotificationDebug", "Payload de la notificación: " + json.toString());
+            Log.d(TAG, "URL de la función Netlify: " + NETLIFY_FUNCTION_URL);
+            Log.d(TAG, "Payload de la notificación: " + json.toString());
+            // Logs detallados para debug
+            Log.d("NotificationDebug", "=== ENVIANDO NOTIFICACIÓN ===");
+            Log.d("NotificationDebug", "URL: " + NETLIFY_FUNCTION_URL);
+            Log.d("NotificationDebug", "Token: " + workerToken.substring(0, Math.min(20, workerToken.length())) + "...");
+            Log.d("NotificationDebug", "Título: " + title);
+            Log.d("NotificationDebug", "Cuerpo: " + body);
+            Log.d("NotificationDebug", "Payload completo: " + json.toString());
 
             JsonObjectRequest request = new JsonObjectRequest(
                     Request.Method.POST,
-                    NETLIFY_FUNCTION_URL + "/.netlify/functions/sendNotification", // Asegúrate de que esta ruta sea correcta
+                    NETLIFY_FUNCTION_URL,
                     json,
                     response -> {
-                        Log.d("NotificationDebug", "Respuesta de Netlify: " + response.toString());
+                        Log.d("NotificationDebug", "✅ ÉXITO: " + response.toString());
                         taskCompletionSource.setResult(null);
                     },
                     error -> {
-                        Log.e("NotificationDebug", "Error al enviar notificación: " + error.toString());
+                        Log.e("NotificationDebug", "❌ ERROR: " + error.toString());
 
                         // Detalle del error de red
                         if (error.networkResponse != null) {
-                            Log.e("NotificationDebug", "Código de error: " + error.networkResponse.statusCode);
+                            Log.e(TAG, "Código de error: " + error.networkResponse.statusCode);
                             try {
                                 String responseBody = new String(error.networkResponse.data, "utf-8");
-                                Log.e("NotificationDebug", "Cuerpo de la respuesta: " + responseBody);
+                                Log.e(TAG, "Cuerpo de la respuesta: " + responseBody);
                             } catch (Exception e) {
-                                Log.e("NotificationDebug", "No se pudo obtener el cuerpo del error");
+                                Log.e(TAG, "No se pudo obtener el cuerpo del error");
                             }
                         } else {
-                            Log.e("NotificationDebug", "Error de conexión o timeout");
+                            Log.e(TAG, "Error de conexión o timeout");
                         }
 
                         taskCompletionSource.setException(error);
@@ -91,7 +97,7 @@ public class NotificationProvider {
             requestQueue.add(request);
 
         } catch (JSONException e) {
-            Log.e("NotificationDebug", "Error creando el JSON: " + e.getMessage(), e);
+            Log.e(TAG, "Error creando el JSON: " + e.getMessage(), e);
             taskCompletionSource.setException(e);
         }
 

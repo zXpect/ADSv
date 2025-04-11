@@ -1,90 +1,98 @@
-const axios = require('axios');
+    // functions/sendNotification.js
+    const admin = require('firebase-admin');
+    const serviceAccount = require('./serviceAccountKey.json');
 
-exports.handler = async (event, context) => {
-  // Verificar método
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ success: false, error: 'Method Not Allowed' }),
-    };
-  }
-
-  // Verificar clave FCM
-  const SERVER_KEY = process.env.FCM_SERVER_KEY;
-  if (!SERVER_KEY) {
-    console.error('FCM_SERVER_KEY no está configurada en las variables de entorno');
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: 'FCM Server Key no está configurada'
-      }),
-    };
-  }
-
-  try {
-    // Analizar el cuerpo de la solicitud
-    const { token, title, body, data } = JSON.parse(event.body);
-
-    // Validación de campos requeridos
-    if (!token) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ success: false, error: 'Token FCM requerido' }),
-      };
+    // Inicializar Firebase Admin solo una vez
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
     }
 
-    console.log(`Enviando notificación a token: ${token.substring(0, 6)}...`);
+    exports.handler = async function(event, context) {
+      // Permitir CORS para la app Android
+      const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      };
 
-    const FCM_API = 'https://fcm.googleapis.com/fcm/send';
-
-    const notification = {
-      to: token,
-      notification: {
-        title: title || 'Nueva solicitud',
-        body: body || 'Tienes una nueva solicitud de servicio',
-        sound: 'default',
-        click_action: 'FLUTTER_NOTIFICATION_CLICK'
-      },
-      data: data || {},
-      priority: 'high',
-    };
-
-    // Realizar la solicitud a FCM usando axios
-    const response = await axios.post(FCM_API, notification, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `key=${SERVER_KEY}`
+      // Manejar solicitudes OPTIONS para CORS pre-flight
+      if (event.httpMethod === 'OPTIONS') {
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ message: 'Preflight request successful' })
+        };
       }
-    });
 
-    const result = response.data;
-    console.log('Respuesta FCM:', JSON.stringify(result));
+      // Procesar sólo solicitudes POST
+      if (event.httpMethod !== 'POST') {
+        return {
+          statusCode: 405,
+          headers,
+          body: JSON.stringify({ message: 'Method not allowed' })
+        };
+      }
 
-    // Verificar la respuesta de FCM
-    if (result.failure > 0 || (result.success !== undefined && result.success === 0)) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          success: false,
-          message: 'Error enviando notificación a FCM',
-          result
-        }),
-      };
-    }
+      try {
+        // Parsear el cuerpo de la solicitud
+        const body = JSON.parse(event.body);
+        console.log('Recibida solicitud de notificación:', body);
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true, result }),
+        // Extraer datos
+        const { token, title, body: messageBody, data } = body;
+
+        if (!token) {
+          return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ message: 'Token no proporcionado' })
+          };
+        }
+
+        // Crear mensaje para FCM
+        const message = {
+          token,
+          notification: {
+            title,
+            body: messageBody
+          },
+          data: data || {},
+          android: {
+            priority: 'high',
+            notification: {
+              sound: 'default',
+              priority: 'high',
+              channelId: 'high_importance_channel'
+            }
+          }
+        };
+
+        // Enviar la notificación
+        console.log('Enviando mensaje FCM:', message);
+        const response = await admin.messaging().send(message);
+        console.log('Notificación enviada correctamente:', response);
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            success: true,
+            messageId: response
+          })
+        };
+
+      } catch (error) {
+        console.error('Error al enviar la notificación:', error);
+
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({
+            success: false,
+            error: error.message
+          })
+        };
+      }
     };
-  } catch (error) {
-    console.error('Error en la función Netlify:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: error.message || 'Error interno del servidor'
-      }),
-    };
-  }
-};
