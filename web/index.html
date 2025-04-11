@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Solicitar Servicio</title>
+    <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 117, 0, 0.3);
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      border: 2px solid #FFFF7500;
+      background: url('https://i.imgur.com/VHJ6l13.png') no-repeat center/cover;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      margin-top: 1rem;
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 10px;
+      border: 1px solid #FFFF7500;
+      background-color: #2a2a2a;
+      color: white;
+      margin-top: 0.3rem;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 1rem;
+      background-color: #FFFF7500;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #e86400;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+    <div class="avatar"></div>
+    <h2>Nombre del Trabajador</h2>
+
+    <form id="serviceForm">
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" required>
+
+        <label for="tipo">Tipo de Servicio</label>
+        <select id="tipo" required>
+            <option value="Jardinería">Jardinería</option>
+            <option value="Carpintería">Carpintería</option>
+            <option value="Electricidad">Electricidad</option>
+            <option value="Plomería">Plomería</option>
+        </select>
+
+        <label for="descripcion">Descripción del servicio</label>
+        <textarea id="descripcion" rows="4" required></textarea>
+
+        <button type="submit">SIGUIENTE</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('serviceForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const direccion = document.getElementById('direccion').value;
+      const tipo = document.getElementById('tipo').value;
+      const descripcion = document.getElementById('descripcion').value;
+
+      const payload = {
+        token: "eOdE13jxT5-9c67gUUWBNx:APA91bGQ19goIACezsNxsRVNsm80_3NWRfvMYIFwY-8jHhIExa_qJDGMZBCTGpBxiPtxOVbiXmjWsqBckrnwYgVlKM8kw25AF173kt4vDltfWwUIqJVrIUU",
+        title: `Nueva solicitud de ${tipo}`,
+        body: `Dirección: ${direccion}\nDescripción: ${descripcion}`,
+        data: {
+          tipo,
+          direccion,
+          descripcion
+        }
+      };
+
+      try {
+        const response = await fetch('https://adsv.netlify.app/.netlify/functions/sendNotification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          alert('Notificación enviada con éxito');
+        } else {
+          alert('Error al enviar notificación: ' + result.error);
+        }
+      } catch (err) {
+        alert('Error en la solicitud: ' + err.message);
+      }
+    });
+
+  </script>
+</body>
+</html>

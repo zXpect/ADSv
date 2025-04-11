@@ -18,61 +18,64 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NotificationProvider {
-    private static final String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    private static String SERVER_KEY;
-    private final Context context;
+    private static final String TAG = "NotificationDebug";
+    // URL correcta de la función Netlify
     private static final String NETLIFY_FUNCTION_URL = "https://adsv.netlify.app/.netlify/functions/sendNotification";
+    private final Context context;
 
     public NotificationProvider(Context context) {
         this.context = context;
     }
 
-
-    public Task<Void> sendNotificationViaNetlify(String workerToken, String title, String body, Map<String, Object> requestData) {
+    // Modificación sugerida para NotificationProvider.java
+    public Task<Void> sendNotificationViaNetlify(String token, String title, String body, Map<String, Object> data) {
         TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
 
         try {
-            JSONObject json = new JSONObject();
-            json.put("token", workerToken);
-            json.put("title", title);
-            json.put("body", body);
 
-            JSONObject data = new JSONObject();
-            for (Map.Entry<String, Object> entry : requestData.entrySet()) {
-                data.put(entry.getKey(), String.valueOf(entry.getValue()));
+            String url = "https://adsv.netlify.app/.netlify/functions/sendNotification";
+
+            // Para depuración
+            Log.d("NotificationProvider", "Enviando notificación a: " + url);
+            Log.d("NotificationProvider", "Token: " + token);
+            Log.d("NotificationProvider", "Datos: " + data.toString());
+
+            JSONObject jsonBody = new JSONObject();
+            try {
+                jsonBody.put("token", token);
+                jsonBody.put("title", title);
+                jsonBody.put("body", body);
+
+                JSONObject dataJson = new JSONObject();
+                for (Map.Entry<String, Object> entry : data.entrySet()) {
+                    dataJson.put(entry.getKey(), entry.getValue());
+                }
+                jsonBody.put("data", dataJson);
+
+                Log.d("NotificationProvider", "JSON a enviar: " + jsonBody.toString());
+            } catch (JSONException e) {
+                Log.e("NotificationProvider", "Error creando JSON: ", e);
+                taskCompletionSource.setException(e);
+                return taskCompletionSource.getTask();
             }
-            json.put("data", data);
 
-            Log.d("NotificationDebug", "URL de la función Netlify: " + NETLIFY_FUNCTION_URL);
-            Log.d("NotificationDebug", "Payload de la notificación: " + json.toString());
-
-            JsonObjectRequest request = new JsonObjectRequest(
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.POST,
-                    NETLIFY_FUNCTION_URL + "/.netlify/functions/sendNotification", // Asegúrate de que esta ruta sea correcta
-                    json,
+                    url,
+                    jsonBody,
                     response -> {
-                        Log.d("NotificationDebug", "Respuesta de Netlify: " + response.toString());
+                        Log.d("NotificationProvider", "Respuesta recibida: " + response.toString());
                         taskCompletionSource.setResult(null);
                     },
                     error -> {
-                        Log.e("NotificationDebug", "Error al enviar notificación: " + error.toString());
-
-                        // Detalle del error de red
+                        Log.e("NotificationProvider", "Error en la solicitud: " + error.toString());
+                        // Mostrar más detalles del error si están disponibles
                         if (error.networkResponse != null) {
-                            Log.e("NotificationDebug", "Código de error: " + error.networkResponse.statusCode);
-                            try {
-                                String responseBody = new String(error.networkResponse.data, "utf-8");
-                                Log.e("NotificationDebug", "Cuerpo de la respuesta: " + responseBody);
-                            } catch (Exception e) {
-                                Log.e("NotificationDebug", "No se pudo obtener el cuerpo del error");
-                            }
-                        } else {
-                            Log.e("NotificationDebug", "Error de conexión o timeout");
+                            Log.e("NotificationProvider", "Código de estado: " + error.networkResponse.statusCode);
+                            Log.e("NotificationProvider", "Datos: " + new String(error.networkResponse.data));
                         }
-
                         taskCompletionSource.setException(error);
-                    }
-            ) {
+                    }) {
                 @Override
                 public Map<String, String> getHeaders() {
                     Map<String, String> headers = new HashMap<>();
@@ -81,17 +84,18 @@ public class NotificationProvider {
                 }
             };
 
-            // Configurar un timeout más largo para áreas con conexión lenta
-            request.setRetryPolicy(new DefaultRetryPolicy(
-                    30000, // 30 segundos de timeout
+            // Aumentar el timeout si es necesario
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    30000,  // 30 segundos de timeout
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
+            // Agregar a la cola de Volley
             RequestQueue requestQueue = Volley.newRequestQueue(context);
-            requestQueue.add(request);
+            requestQueue.add(jsonObjectRequest);
 
-        } catch (JSONException e) {
-            Log.e("NotificationDebug", "Error creando el JSON: " + e.getMessage(), e);
+        } catch (Exception e) {
+            Log.e("NotificationProvider", "Error general: ", e);
             taskCompletionSource.setException(e);
         }
 

@@ -25,6 +25,7 @@ import com.ads.activities.client.RegisterActivity;
 import com.ads.activities.worker.HomeWorkerActivity;
 import com.ads.activities.worker.RegisterWorkerActivity;
 import com.ads.includes.MyToolbar;
+import com.ads.providers.TokenProvider;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -43,6 +44,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.project.ads.R;
 
 import java.util.regex.Pattern;
@@ -83,6 +85,28 @@ public class LoginActivity extends AppCompatActivity {
         setupListeners();
         setupStatusBar();
         setupGoogleSignIn();
+
+        // Obtener y guardar el token FCM
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w("FCM", "Fetching FCM registration token failed", task.getException());
+                        return;
+                    }
+
+                    // Obtener el nuevo token FCM
+                    String token = task.getResult();
+
+                    // Si el usuario está autenticado, guardar el token
+                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        new TokenProvider().saveToken(token);
+                        Log.d("FCM", "Token guardado para: " + userId);
+                    }
+
+                    // Log y debug
+                    Log.d("FCM", "Token: " + token);
+                });
     }
 
     private void initializeViews() {

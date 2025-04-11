@@ -31,10 +31,12 @@ public class RequestProvider {
     }
 
     public Task<Void> createRequest(Map<String, Object> requestData) {
+        Log.d("RequestProvider", "createRequest() called");
         String requestId = mDatabaseReference.push().getKey();
         if (requestId == null) {
             return Tasks.forException(new Exception("Failed to generate request ID"));
         }
+        Log.d("RequestProvider", "Request data: " + requestData.toString());
         requestData.put("request_id", requestId);
 
         // Primero guardamos la solicitud
@@ -50,17 +52,22 @@ public class RequestProvider {
         });
     }
 
+    // En RequestProvider.java, añade más logs para depurar
     private Task<Void> notifyAvailableWorkers(Map<String, Object> requestData) {
+        Log.d("RequestProvider", "Initiating notification to available workers");
         return workerProvider.getAvailableWorkers().continueWithTask(workersTask -> {
             if (!workersTask.isSuccessful()) {
+                Log.e("RequestProvider", "Failed to get available workers", workersTask.getException());
                 return Tasks.forException(workersTask.getException());
             }
 
             DataSnapshot workersSnapshot = workersTask.getResult();
             if (!workersSnapshot.exists()) {
+                Log.e("RequestProvider", "No available workers found");
                 return Tasks.forException(new Exception("No available workers found"));
             }
 
+            Log.d("RequestProvider", "Found " + workersSnapshot.getChildrenCount() + " available workers");
             // Crear las tareas de notificación para cada trabajador
             java.util.List<Task<Void>> notificationTasks = new java.util.ArrayList<>();
 
