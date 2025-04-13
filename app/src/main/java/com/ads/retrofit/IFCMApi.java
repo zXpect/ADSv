@@ -1,9 +1,18 @@
 package com.ads.retrofit;
 
+import com.ads.models.FCMBody;
+import com.ads.models.FCMResponse;
+
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface IFCMApi {
-
-
+    @Headers({
+            "Content-Type:application/json",
+            "Authorization:Bearer ya29.c.c0ASRK0GYKQgxCcU5KV1UK8DfjMUMDfaoFnjAaHeUyG6G5NuR0rRSXdyWchePUwU-dZk7dC83j2LsupFwMmIDtqzSWn6DQcsVg7zhUhP5u42ODQilsZNtpkKBBbNpyjmxCG9sSBT0zvIk5AMybSr1xNbwNEFWBwqiHXZe5PszJdKi4jMEivJctxrTCD2zMdj0Oi5OuZC6ztXO3JtHSdTq-P5_nTvQ_2Ay8JUmHQ4mxXyMoumS4Pe7fd4kaIAfvN9fifv-JEw0uhBZLMc_GKzXul58oiwy2EZ5Rny0D2Y97OhpGQAEgryKg0fFcGiPCsfJtcDAiUXcmlbvpLqNldkI3A9iCNYSo5grxnSJJ1lFxQowDOz5fo3PMT3ApL385Cp283uzSsSx2RRSoMYvQvbs2XwutiWV9yhBuhWheqMRR-oB64qhQnanSy5-0y31aQrbuihQ7MBb9Icfawq2ia-uenMlIxpi_wZZtBU9Mwo1cezBpi92zsYZenia_3jl6-_mh1Q_wrlzdq2qS52ee31cxwxnUh9rYnm-ShiojmfQ477nWVBwMsYgsFfiB02keqnFY-iS5S0t5dOhXRlWXOueXFWoSmr_a3QRuVBxiWzQy9iuWOtdO8aJ0MuRlvQ4J1Bovm5aeR_nvvafMmsxg3g4QZ7yZfMUl91I5k8fXRdMb9Q59YBpB4s2UyBISaq7yfRkW8F2Fs1kVWtg3i9uvZrfJwnR29Ork71vkvR8aIliV-QMlgnIkhgeOpYMbY495gx31qm94kbehapu-Y7o7-Sc021_QuW0fi_5RUB_xVBw3a_sByJ0z97zU_SgVsyjoRjXW7topy-_vzvlrpkX510SgZMJRQIcSSd22cw3r6jJ5oy093v-iUt11WnIwJtnz9BpMbwl1dRmeh7OOmUxUu3-m6RpMJ16IkOI3WtyuyYu31Yg2waQfROFvjUgx8Qius704SoRXfxyws4tzfMhnzlx93mR29kiFR2lYMkIOmw1U47on_Ydv138h-ow"
+    })
+    @POST("v1/projects/adsv-d87e1/messages:send")
+    Call<FCMResponse> send(@Body FCMBody body);
 }

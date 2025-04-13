@@ -2,6 +2,8 @@ package com.ads.providers;
 
 import android.content.Context;
 import android.util.Log;
+import com.ads.models.FCMBody;
+import com.ads.models.FCMResponse;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DatabaseReference;
@@ -11,13 +13,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import java.util.Map;
 import java.util.HashMap;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RequestProvider {
 
     private final DatabaseReference mDatabaseReference;
-    private final NotificationProvider notificationProvider;
-    private final TokenProvider tokenProvider;
-    private final WorkerProvider workerProvider;
+    private final NotificationProvider mNotificationProvider;
+    private final TokenProvider mTokenProvider;
+    private final WorkerProvider mWorkerProvider;
     private final Context context;
 
     public RequestProvider(Context context) {
@@ -25,90 +30,85 @@ public class RequestProvider {
         this.mDatabaseReference = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("requests");
-        this.notificationProvider = new NotificationProvider(context);
-        this.tokenProvider = new TokenProvider();
-        this.workerProvider = new WorkerProvider();
+        this.mNotificationProvider = new NotificationProvider();
+        this.mTokenProvider = new TokenProvider();
+        this.mWorkerProvider = new WorkerProvider();
     }
 
-    public Task<Void> createRequest(Map<String, Object> requestData) {
-        Log.d("RequestProvider", "createRequest() called");
-        String requestId = mDatabaseReference.push().getKey();
-        if (requestId == null) {
-            return Tasks.forException(new Exception("Failed to generate request ID"));
-        }
-        Log.d("RequestProvider", "Request data: " + requestData.toString());
-        requestData.put("request_id", requestId);
+    public Task<DatabaseReference> createRequest(Map<String, Object> data) {
+        DatabaseReference newRef = mDatabaseReference.push();
+        String id = newRef.getKey();
+        data.put("id", id);
 
-        // Primero guardamos la solicitud
-        Task<Void> saveTask = mDatabaseReference.child(requestId).setValue(requestData);
-
-        // Luego notificamos a los trabajadores disponibles
-        return saveTask.continueWithTask(task -> {
+        // Retorna una Task que se completará con la referencia completa
+        return newRef.setValue(data).continueWith(task -> {
             if (task.isSuccessful()) {
-                return notifyAvailableWorkers(requestData);
+                Log.d("RequestProvider", "Solicitud creada con éxito: " + id);
+
+                // Verificar si la solicitud tiene un ID de trabajador específico
+                if (data.containsKey("worker_id")) {
+                    String workerId = (String) data.get("worker_id");
+                    // Enviar notificación al trabajador seleccionado
+                    sendNotificationToWorker(workerId, data);
+                }
+
+                return newRef;
             } else {
+                Log.e("RequestProvider", "Error al crear solicitud", task.getException());
                 throw task.getException();
             }
         });
     }
 
-    // En RequestProvider.java, añade más logs para depurar
-    private Task<Void> notifyAvailableWorkers(Map<String, Object> requestData) {
-        Log.d("RequestProvider", "Initiating notification to available workers");
-        return workerProvider.getAvailableWorkers().continueWithTask(workersTask -> {
-            if (!workersTask.isSuccessful()) {
-                Log.e("RequestProvider", "Failed to get available workers", workersTask.getException());
-                return Tasks.forException(workersTask.getException());
-            }
+    // Método para enviar notificación a un trabajador específico
+    private void sendNotificationToWorker(String workerId, Map<String, Object> requestData) {
+        Log.d("RequestProvider", "Enviando notificación al trabajador: " + workerId);
 
-            DataSnapshot workersSnapshot = workersTask.getResult();
-            if (!workersSnapshot.exists()) {
-                Log.e("RequestProvider", "No available workers found");
-                return Tasks.forException(new Exception("No available workers found"));
-            }
+        mTokenProvider.getToken(workerId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                String token = task.getResult().child("token").getValue(String.class);
 
-            Log.d("RequestProvider", "Found " + workersSnapshot.getChildrenCount() + " available workers");
-            // Crear las tareas de notificación para cada trabajador
-            java.util.List<Task<Void>> notificationTasks = new java.util.ArrayList<>();
+                if (token != null && !token.isEmpty()) {
+                    Log.d("RequestProvider", "Token del trabajador encontrado: " + token);
 
-            for (DataSnapshot workerSnapshot : workersSnapshot.getChildren()) {
-                String workerId = workerSnapshot.getKey();
-                if (workerId != null) {
-                    Task<Void> notificationTask = sendWorkerNotification(workerId, requestData);
-                    notificationTasks.add(notificationTask);
+                    // Crear datos de la notificación
+                    String title = "Nueva Solicitud de Servicio";
+                    String body = "Tipo: " + requestData.get("service_type") +
+                            "\nDirección: " + requestData.get("address");
+
+                    Map<String, String> notificationData = new HashMap<>();
+                    notificationData.put("title", title);
+                    notificationData.put("body", body);
+                    notificationData.put("requestId", (String) requestData.get("id"));
+                    notificationData.put("clientId", (String) requestData.get("client_id"));
+                    notificationData.put("type", "new_request");
+                    notificationData.put("timestamp", String.valueOf(System.currentTimeMillis()));
+
+                    // Crear el objeto FCMBody
+                    FCMBody fcmBody = new FCMBody(token, "high", notificationData);
+
+                    // Enviar notificación usando Retrofit
+                    mNotificationProvider.sendNotification(fcmBody).enqueue(new Callback<FCMResponse>() {
+                        @Override
+                        public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                            if (response.isSuccessful()) {
+                                Log.d("RequestProvider", "Notificación enviada con éxito");
+                            } else {
+                                Log.e("RequestProvider", "Error al enviar notificación: " + response.message());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<FCMResponse> call, Throwable t) {
+                            Log.e("RequestProvider", "Error en la llamada: " + t.getMessage());
+                        }
+                    });
+                } else {
+                    Log.e("RequestProvider", "Token del trabajador no encontrado");
                 }
+            } else {
+                Log.e("RequestProvider", "Error al obtener token del trabajador", task.getException());
             }
-
-            return Tasks.whenAll(notificationTasks);
-        });
-    }
-
-    private Task<Void> sendWorkerNotification(String workerId, Map<String, Object> requestData) {
-        return tokenProvider.mDatabase.child(workerId).get().continueWithTask(tokenTask -> {
-            if (!tokenTask.isSuccessful() || !tokenTask.getResult().exists()) {
-                Log.w("RequestProvider", "No token found for worker: " + workerId);
-                return Tasks.forResult(null);
-            }
-
-            String token = tokenTask.getResult().child("token").getValue(String.class);
-            if (token == null) {
-                return Tasks.forResult(null);
-            }
-
-            // Preparar los datos de la notificación
-            String title = "Nueva Solicitud de Servicio";
-            String body = String.format("Tipo: %s\nDirección: %s",
-                    requestData.get("service_type"),
-                    requestData.get("address"));
-
-            Map<String, Object> notificationData = new HashMap<>();
-            notificationData.put("request_id", (String) requestData.get("request_id"));
-            notificationData.put("client_id", (String) requestData.get("client_id"));
-            notificationData.put("service_type", (String) requestData.get("service_type"));
-            notificationData.put("address", (String) requestData.get("address"));
-            notificationData.put("status", "pending");
-
-            return notificationProvider.sendNotificationViaNetlify(token, title, body, notificationData);
         });
     }
 
@@ -144,7 +144,7 @@ public class RequestProvider {
                 return Tasks.forException(new Exception("Client ID not found"));
             }
 
-            return tokenProvider.mDatabase.child(clientId).get().continueWithTask(tokenTask -> {
+            return mTokenProvider.getToken(clientId).get().continueWithTask(tokenTask -> {
                 if (!tokenTask.isSuccessful() || !tokenTask.getResult().exists()) {
                     return Tasks.forResult(null);
                 }
@@ -154,16 +154,28 @@ public class RequestProvider {
                     return Tasks.forResult(null);
                 }
 
-                Map<String, Object> notificationData = new HashMap<>();
-                notificationData.put("request_id", requestId);
-                notificationData.put("type", "request_accepted");
+                String title = "Solicitud Aceptada";
+                String body = "Tu solicitud de servicio ha sido aceptada";
 
-                return notificationProvider.sendNotificationViaNetlify(
-                        token,
-                        "Solicitud Aceptada",
-                        "Tu solicitud de servicio ha sido aceptada",
-                        notificationData
-                );
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("requestId", requestId);
+                notificationData.put("type", "request_accepted");
+                notificationData.put("title", title);
+                notificationData.put("body", body);
+                notificationData.put("timestamp", String.valueOf(System.currentTimeMillis()));
+
+                FCMBody fcmBody = new FCMBody(token, "high", notificationData);
+
+                // Crear una tarea personalizada para manejar la respuesta de Retrofit
+                return Tasks.call(() -> {
+                    try {
+                        mNotificationProvider.sendNotification(fcmBody).execute();
+                        return null;
+                    } catch (Exception e) {
+                        Log.e("RequestProvider", "Error sending notification", e);
+                        return null;
+                    }
+                });
             });
         });
     }

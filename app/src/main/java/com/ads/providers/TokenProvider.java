@@ -13,7 +13,6 @@ public class TokenProvider {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Tokens");
     }
 
-    // Método para crear y guardar el token
     public void create(String userId) {
         if (userId == null) return;
 
