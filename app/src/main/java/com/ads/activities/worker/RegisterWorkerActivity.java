@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.ads.includes.MyToolbar;
 import com.ads.models.Worker;
 import com.ads.providers.AuthProvider;
+import com.ads.providers.NotificationProvider;
 import com.ads.providers.WorkerProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,6 +36,7 @@ public class RegisterWorkerActivity extends AppCompatActivity {
     private AutoCompleteTextView mSpinnerWork;
     private ProgressDialog mProgressDialog;
     private CheckBox mCheckBoxTerms;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class RegisterWorkerActivity extends AppCompatActivity {
         mSpinnerWork = findViewById(R.id.spinner_service_type);
         mCheckBoxTerms = findViewById(R.id.checkBox2);
         mProgressDialog = new ProgressDialog(this);
+
     }
 
     private void setupServiceTypeDropdown() {

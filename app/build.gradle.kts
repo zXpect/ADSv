@@ -16,9 +16,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-
-
     }
 
     buildTypes {
@@ -30,17 +27,32 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     buildToolsVersion = "34.0.0"
 
     buildFeatures {
         dataBinding = true
     }
 
+    packaging {
+        resources {
+            excludes += listOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/ASL2.0"
+            )
+        }
+    }
 }
+
 
 dependencies {
 
@@ -72,6 +84,7 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics:19.2.1")
     implementation("com.google.firebase:firebase-analytics:22.1.2")
     implementation("com.google.firebase:firebase-functions:21.1.0")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.15.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

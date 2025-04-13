@@ -8,7 +8,12 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.ads.models.FCMBody;
+import com.ads.models.FCMResponse;
 import com.ads.providers.RequestProvider;
 import com.ads.providers.NotificationProvider;
 import com.ads.providers.TokenProvider;
@@ -18,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import java.util.HashMap;
@@ -34,6 +40,8 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private TextInputEditText descriptionInput;
     private MaterialButton sendRequestButton;
     private ProgressDialog progressDialog;
+    private String mWorkerId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +52,25 @@ public class ServiceRequestActivity extends AppCompatActivity {
         initViews();
         setupServiceTypeDropdown();
         setupSendRequestButton();
+
+        if (getIntent().hasExtra("workerId")) {
+            mWorkerId = getIntent().getStringExtra("workerId");
+            Log.d("ServiceRequestActivity", "ID del trabajador recibido: " + mWorkerId);
+        } else {
+            Log.e("ServiceRequestActivity", "No se recibió ID del trabajador");
+            // Mostrar mensaje y finalizar actividad si no hay ID de trabajador
+            Toast.makeText(this, "Error: No se seleccionó un trabajador", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
     }
 
     private void initProviders() {
         mRequestProvider = new RequestProvider(this);
-        mNotificationProvider = new NotificationProvider(this);
+        mNotificationProvider = new NotificationProvider();
         mTokenProvider = new TokenProvider();
         mWorkerProvider = new WorkerProvider();
+
     }
 
     private void setupStatusBar() {
@@ -134,6 +154,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
         Map<String, Object> requestData = new HashMap<>();
 
         requestData.put("client_id", clientId);
+        requestData.put("worker_id", mWorkerId);
         requestData.put("address", address);
         requestData.put("description", description);
         requestData.put("service_type", serviceType);
@@ -144,8 +165,13 @@ public class ServiceRequestActivity extends AppCompatActivity {
         showProgressDialog("Enviando solicitud...");
 
         mRequestProvider.createRequest(requestData)
-                .addOnSuccessListener(aVoid -> {
+                .addOnSuccessListener(databaseReference -> {
                     hideProgressDialog();
+
+                    // El ID ya está incluido en requestData desde el provider
+                    // Enviar notificación al trabajador
+                    sendNotificationToWorker(mWorkerId, requestData);
+
                     showToast("Solicitud creada con éxito");
                     navigateToVerifyRequest(address, serviceType);
                 })
@@ -153,7 +179,6 @@ public class ServiceRequestActivity extends AppCompatActivity {
                     hideProgressDialog();
                     Log.e("ServiceRequest", "Error creating request: ", e);
 
-                    // Mostrar un mensaje de error más amigable
                     String errorMessage = "Error al crear la solicitud";
                     if (e.getCause() instanceof com.android.volley.ServerError) {
                         errorMessage = "Error de conexión con el servidor. Intenta de nuevo más tarde.";
@@ -164,64 +189,65 @@ public class ServiceRequestActivity extends AppCompatActivity {
     }
 
 
-
     private void sendNotificationToWorker(String workerId, Map<String, Object> requestData) {
-        Log.d("NotificationDebug", "Intentando enviar notificación al trabajador: " + workerId);
+        Log.d("NotificationDebug", "Enviando notificación al trabajador: " + workerId);
 
-        mTokenProvider.mDatabase.child(workerId).addListenerForSingleValueEvent(new ValueEventListener() {
+        // Obtener el token del trabajador usando DatabaseReference
+        DatabaseReference tokenRef = mTokenProvider.getToken(workerId);
+
+        tokenRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot tokenSnapshot) {
-                if (tokenSnapshot.exists()) {
-                    Log.d("NotificationDebug", "Datos del token encontrados para el trabajador");
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists() && dataSnapshot.child("token").exists()) {
+                    String workerToken = dataSnapshot.child("token").getValue(String.class);
 
-                    String workerToken = tokenSnapshot.child("token").getValue(String.class);
-                    if (workerToken != null) {
-                        Log.d("NotificationDebug", "Token del trabajador: " + workerToken.substring(0, Math.min(10, workerToken.length())) + "...");
+                    if (workerToken != null && !workerToken.isEmpty()) {
+                        Log.d("NotificationDebug", "Token del trabajador: " + workerToken);
 
                         String title = "Nueva Solicitud de Servicio";
                         String body = "Tipo: " + requestData.get("service_type") +
                                 "\nDirección: " + requestData.get("address");
 
-                        // Crear datos adicionales para la notificación
-                        Map<String, Object> notificationData = new HashMap<>();
-                        notificationData.put("requestId", (String) requestData.get("id"));
+                        Map<String, String> notificationData = new HashMap<>();
                         notificationData.put("title", title);
                         notificationData.put("body", body);
                         notificationData.put("clientId", (String) requestData.get("client_id"));
 
-                        // Añadir timestamp para debug
+                        // Si tienes un ID de solicitud, agrégalo
+                        if (requestData.containsKey("id")) {
+                            notificationData.put("requestId", (String) requestData.get("id"));
+                        }
+
                         notificationData.put("timestamp", String.valueOf(System.currentTimeMillis()));
 
-                        Log.d("NotificationDebug", "Datos de notificación preparados: " + notificationData);
+                        FCMBody fcmBody = new FCMBody(workerToken, "high", notificationData);
 
-                        mNotificationProvider.sendNotificationViaNetlify(workerToken, title, body, notificationData)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d("NotificationDebug", "✅ Notificación enviada exitosamente al trabajador: " + workerId);
-                                    // Mostrar un toast para confirmación visual
-                                    runOnUiThread(() ->
-                                            Toast.makeText(ServiceRequestActivity.this,
-                                                    "Notificación enviada al trabajador", Toast.LENGTH_SHORT).show()
-                                    );
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e("NotificationDebug", "❌ Error enviando notificación: " + e.getMessage(), e);
-                                    // Mostrar error en UI
-                                    runOnUiThread(() ->
-                                            Toast.makeText(ServiceRequestActivity.this,
-                                                    "Error al enviar notificación: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                                    );
-                                });
+                        mNotificationProvider.sendNotification(fcmBody).enqueue(new retrofit2.Callback<FCMResponse>() {
+                            @Override
+                            public void onResponse(retrofit2.Call<FCMResponse> call, retrofit2.Response<FCMResponse> response) {
+                                if (response.isSuccessful()) {
+                                    Log.d("NotificationDebug", "Notificación enviada con éxito");
+                                } else {
+                                    Log.e("NotificationDebug", "Error al enviar notificación: " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(retrofit2.Call<FCMResponse> call, Throwable t) {
+                                Log.e("NotificationDebug", "Error en la llamada: " + t.getMessage());
+                            }
+                        });
                     } else {
-                        Log.e("NotificationDebug", "❌ Token del trabajador es null");
+                        Log.e("NotificationDebug", "Token del trabajador es nulo o vacío");
                     }
                 } else {
-                    Log.e("NotificationDebug", "❌ No se encontraron datos de token para el trabajador: " + workerId);
+                    Log.e("NotificationDebug", "No se encontró el token del trabajador");
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("NotificationDebug", "❌ Error obteniendo token del trabajador: " + databaseError.getMessage());
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("NotificationDebug", "Error al leer token: " + databaseError.getMessage());
             }
         });
     }
