@@ -67,7 +67,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
 
     private void initProviders() {
         mRequestProvider = new RequestProvider(this);
-        mNotificationProvider = new NotificationProvider();
+        mNotificationProvider = new NotificationProvider(this);
         mTokenProvider = new TokenProvider();
         mWorkerProvider = new WorkerProvider();
 
