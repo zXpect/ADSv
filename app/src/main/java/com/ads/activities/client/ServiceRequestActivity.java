@@ -42,7 +42,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private MaterialButton sendRequestButton;
     private ProgressDialog progressDialog;
     private String mWorkerId;
-    private String mWorkerServiceType; // Variable para almacenar el tipo de servicio del trabajador
+    private String mWorkerServiceType;
 
 
     @Override
@@ -52,7 +52,6 @@ public class ServiceRequestActivity extends AppCompatActivity {
         setupStatusBar();
         initProviders();
         initViews();
-        // Eliminamos setupServiceTypeDropdown() ya que no lo necesitamos más
         setupSendRequestButton();
 
         if (getIntent().hasExtra("workerId")) {
@@ -115,8 +114,6 @@ public class ServiceRequestActivity extends AppCompatActivity {
                         } else {
                             serviceTypeText.setText("No especificado");
                         }
-
-                        // También podemos actualizar el nombre del trabajador si lo deseas
                         TextView workerNameTextView = findViewById(R.id.worker_name);
                         String firstName = dataSnapshot.child("name").exists() ?
                                 dataSnapshot.child("name").getValue(String.class) : "";
@@ -141,7 +138,8 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private void setupSendRequestButton() {
         sendRequestButton.setOnClickListener(v -> {
             if (validateInputs()) {
-                sendServiceRequest();
+                // En lugar de enviar la solicitud aquí, pasamos a la pantalla de verificación
+                navigateToVerifyRequest();
             }
         });
     }
@@ -151,7 +149,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
             showToast("Por favor, ingresa la dirección.");
             return false;
         }
-        // Ya no validamos el tipo de servicio porque ahora viene predefinido
+
         if (descriptionInput.getText().toString().trim().isEmpty()) {
             showToast("Por favor, ingresa una descripción.");
             return false;
@@ -161,14 +159,6 @@ public class ServiceRequestActivity extends AppCompatActivity {
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void sendServiceRequest() {
-        String address = addressInput.getText().toString().trim();
-        String description = descriptionInput.getText().toString().trim();
-        // Usar el tipo de servicio del trabajador
-        String serviceType = mWorkerServiceType != null ? mWorkerServiceType : "No especificado";
-        submitRequest(address, description, serviceType);
     }
 
     private void showProgressDialog(String message) {
@@ -187,138 +177,30 @@ public class ServiceRequestActivity extends AppCompatActivity {
         }
     }
 
-    private void submitRequest(String address, String description, String serviceType) {
-        String clientId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Map<String, Object> requestData = new HashMap<>();
+    private void navigateToVerifyRequest() {
+        String address = addressInput.getText().toString().trim();
+        String description = descriptionInput.getText().toString().trim();
+        String serviceType = mWorkerServiceType != null ? mWorkerServiceType : "No especificado";
 
-        requestData.put("client_id", clientId);
-        requestData.put("worker_id", mWorkerId);
-        requestData.put("address", address);
-        requestData.put("description", description);
-        requestData.put("service_type", serviceType);
-        requestData.put("status", "pending");
-        requestData.put("timestamp", System.currentTimeMillis());
-
-        // Mostrar indicador de progreso
-        showProgressDialog("Enviando solicitud...");
-
-        mRequestProvider.createRequest(requestData)
-                .addOnSuccessListener(databaseReference -> {
-                    hideProgressDialog();
-
-                    // El ID ya está incluido en requestData desde el provider
-                    // Enviar notificación al trabajador
-                    sendNotificationToWorker(mWorkerId, requestData);
-
-                    showToast("Solicitud creada con éxito");
-                    navigateToVerifyRequest(address, serviceType);
-                })
-                .addOnFailureListener(e -> {
-                    hideProgressDialog();
-                    Log.e("ServiceRequest", "Error creating request: ", e);
-
-                    String errorMessage = "Error al crear la solicitud";
-                    if (e.getCause() instanceof com.android.volley.ServerError) {
-                        errorMessage = "Error de conexión con el servidor. Intenta de nuevo más tarde.";
-                    }
-
-                    showToast(errorMessage);
-                });
-    }
-
-
-    private void sendNotificationToWorker(String workerId, Map<String, Object> requestData) {
-        Log.d("NotificationDebug", "Enviando notificación al trabajador: " + workerId);
-
-        // Obtener el token del trabajador usando DatabaseReference
-        DatabaseReference tokenRef = mTokenProvider.getToken(workerId);
-
-        tokenRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() && dataSnapshot.child("token").exists()) {
-                    String workerToken = dataSnapshot.child("token").getValue(String.class);
-
-                    if (workerToken != null && !workerToken.isEmpty()) {
-                        Log.d("NotificationDebug", "Token del trabajador: " + workerToken);
-
-                        String title = "Nueva Solicitud de Servicio";
-                        String body = "Tipo: " + requestData.get("service_type") +
-                                "\nDirección: " + requestData.get("address");
-
-                        Map<String, String> notificationData = new HashMap<>();
-                        notificationData.put("title", title);
-                        notificationData.put("body", body);
-                        notificationData.put("clientId", (String) requestData.get("client_id"));
-
-                        // Si tienes un ID de solicitud, agrégalo
-                        if (requestData.containsKey("id")) {
-                            notificationData.put("requestId", (String) requestData.get("id"));
-                        }
-
-                        notificationData.put("timestamp", String.valueOf(System.currentTimeMillis()));
-
-                        FCMBody fcmBody = new FCMBody(workerToken, "high", notificationData);
-
-                        mNotificationProvider.sendNotification(fcmBody).enqueue(new retrofit2.Callback<FCMResponse>() {
-                            @Override
-                            public void onResponse(retrofit2.Call<FCMResponse> call, retrofit2.Response<FCMResponse> response) {
-                                if (response.isSuccessful()) {
-                                    Log.d("NotificationDebug", "Notificación enviada con éxito");
-                                } else {
-                                    Log.e("NotificationDebug", "Error al enviar notificación: " + response.message());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(retrofit2.Call<FCMResponse> call, Throwable t) {
-                                Log.e("NotificationDebug", "Error en la llamada: " + t.getMessage());
-                            }
-                        });
-                    } else {
-                        Log.e("NotificationDebug", "Token del trabajador es nulo o vacío");
-                    }
-                } else {
-                    Log.e("NotificationDebug", "No se encontró el token del trabajador");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("NotificationDebug", "Error al leer token: " + databaseError.getMessage());
-            }
-        });
-    }
-
-
-    private void navigateToVerifyRequest(String address, String serviceType) {
-        // Preparamos los datos a pasar a la siguiente actividad
         Intent intent = new Intent(this, VerifyRequestActivity.class);
 
-        // Foto del trabajador (por ahora usamos el placeholder)
+        // Información del trabajador
         intent.putExtra("worker_photo", R.drawable.workerlogo);
-
-        // Nombre del trabajador - Obtenemos el nombre que ya cargamos del trabajador
-        String workerName = "Trabajador"; // Valor por defecto
-
         TextView workerNameTextView = findViewById(R.id.worker_name);
-        if (workerNameTextView != null && workerNameTextView.getText() != null) {
-            workerName = workerNameTextView.getText().toString();
-        }
-
+        String workerName = (workerNameTextView != null && workerNameTextView.getText() != null)
+                ? workerNameTextView.getText().toString()
+                : "Trabajador";
         intent.putExtra("worker_name", workerName);
 
-        // Dirección y tipo de servicio (pasados como parámetros)
+        // Información de la solicitud
         intent.putExtra("address", address);
+        intent.putExtra("description", description);
         intent.putExtra("service_type", serviceType);
-
-        // Monto - Por ahora lo dejamos como placeholder
+        intent.putExtra("worker_id", mWorkerId);
         intent.putExtra("amount", "A confirmar");
 
         // Iniciar la actividad
         startActivity(intent);
-
-        // Cerramos esta actividad para que el usuario no pueda volver atrás
-        finish();
+        // No finalizamos esta actividad para permitir volver atrás y editar
     }
 }
