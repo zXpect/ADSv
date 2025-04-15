@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,11 +37,12 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private TokenProvider mTokenProvider;
     private WorkerProvider mWorkerProvider;
     private TextInputEditText addressInput;
-    private AutoCompleteTextView serviceTypeInput;
+    private TextView serviceTypeText;
     private TextInputEditText descriptionInput;
     private MaterialButton sendRequestButton;
     private ProgressDialog progressDialog;
     private String mWorkerId;
+    private String mWorkerServiceType; // Variable para almacenar el tipo de servicio del trabajador
 
 
     @Override
@@ -50,12 +52,14 @@ public class ServiceRequestActivity extends AppCompatActivity {
         setupStatusBar();
         initProviders();
         initViews();
-        setupServiceTypeDropdown();
+        // Eliminamos setupServiceTypeDropdown() ya que no lo necesitamos más
         setupSendRequestButton();
 
         if (getIntent().hasExtra("workerId")) {
             mWorkerId = getIntent().getStringExtra("workerId");
             Log.d("ServiceRequestActivity", "ID del trabajador recibido: " + mWorkerId);
+            // Cargar información del trabajador, incluido su tipo de servicio
+            loadWorkerInfo();
         } else {
             Log.e("ServiceRequestActivity", "No se recibió ID del trabajador");
             // Mostrar mensaje y finalizar actividad si no hay ID de trabajador
@@ -70,7 +74,6 @@ public class ServiceRequestActivity extends AppCompatActivity {
         mNotificationProvider = new NotificationProvider(this);
         mTokenProvider = new TokenProvider();
         mWorkerProvider = new WorkerProvider();
-
     }
 
     private void setupStatusBar() {
@@ -81,19 +84,58 @@ public class ServiceRequestActivity extends AppCompatActivity {
 
     private void initViews() {
         addressInput = findViewById(R.id.et_address);
-        serviceTypeInput = findViewById(R.id.spinner_service_type);
+        serviceTypeText = findViewById(R.id.tv_service_type); // Cambio de ID
         descriptionInput = findViewById(R.id.et_description);
         sendRequestButton = findViewById(R.id.btn_send_request);
     }
 
-    private void setupServiceTypeDropdown() {
-        String[] items = getResources().getStringArray(R.array.service_types);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
-                items
-        );
-        serviceTypeInput.setAdapter(adapter);
+    private void loadWorkerInfo() {
+        showProgressDialog("Cargando información...");
+
+        // Obtener información del trabajador usando el WorkerProvider
+        mWorkerProvider.getWorker(mWorkerId)
+                .addOnSuccessListener(dataSnapshot -> {
+                    hideProgressDialog();
+
+                    if (dataSnapshot.exists()) {
+                        // Obtener el tipo de trabajo del trabajador
+                        if (dataSnapshot.child("work").exists()) {
+                            mWorkerServiceType = dataSnapshot.child("work").getValue(String.class);
+
+                            // Capitalizar la primera letra para mejor presentación
+                            if (mWorkerServiceType != null && !mWorkerServiceType.isEmpty()) {
+                                mWorkerServiceType = mWorkerServiceType.substring(0, 1).toUpperCase() +
+                                        mWorkerServiceType.substring(1).toLowerCase();
+
+                                // Mostrar el tipo de servicio en el TextView
+                                serviceTypeText.setText(mWorkerServiceType);
+                            } else {
+                                serviceTypeText.setText("No especificado");
+                            }
+                        } else {
+                            serviceTypeText.setText("No especificado");
+                        }
+
+                        // También podemos actualizar el nombre del trabajador si lo deseas
+                        TextView workerNameTextView = findViewById(R.id.worker_name);
+                        String firstName = dataSnapshot.child("name").exists() ?
+                                dataSnapshot.child("name").getValue(String.class) : "";
+                        String lastName = dataSnapshot.child("lastName").exists() ?
+                                dataSnapshot.child("lastName").getValue(String.class) : "";
+
+                        String fullName = firstName + " " + lastName;
+                        workerNameTextView.setText(fullName.trim());
+                    } else {
+                        Toast.makeText(ServiceRequestActivity.this,
+                                "No se pudo cargar la información del trabajador", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    hideProgressDialog();
+                    Toast.makeText(ServiceRequestActivity.this,
+                            "Error al cargar datos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("ServiceRequestActivity", "Error loading worker info", e);
+                });
     }
 
     private void setupSendRequestButton() {
@@ -109,10 +151,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
             showToast("Por favor, ingresa la dirección.");
             return false;
         }
-        if (serviceTypeInput.getText().toString().trim().isEmpty()) {
-            showToast("Por favor, selecciona un tipo de servicio.");
-            return false;
-        }
+        // Ya no validamos el tipo de servicio porque ahora viene predefinido
         if (descriptionInput.getText().toString().trim().isEmpty()) {
             showToast("Por favor, ingresa una descripción.");
             return false;
@@ -127,7 +166,8 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private void sendServiceRequest() {
         String address = addressInput.getText().toString().trim();
         String description = descriptionInput.getText().toString().trim();
-        String serviceType = serviceTypeInput.getText().toString().trim();
+        // Usar el tipo de servicio del trabajador
+        String serviceType = mWorkerServiceType != null ? mWorkerServiceType : "No especificado";
         submitRequest(address, description, serviceType);
     }
 
@@ -146,8 +186,6 @@ public class ServiceRequestActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
     }
-
-
 
     private void submitRequest(String address, String description, String serviceType) {
         String clientId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -252,14 +290,35 @@ public class ServiceRequestActivity extends AppCompatActivity {
         });
     }
 
+
     private void navigateToVerifyRequest(String address, String serviceType) {
+        // Preparamos los datos a pasar a la siguiente actividad
         Intent intent = new Intent(this, VerifyRequestActivity.class);
+
+        // Foto del trabajador (por ahora usamos el placeholder)
         intent.putExtra("worker_photo", R.drawable.workerlogo);
-        intent.putExtra("worker_name", "Nombre del Trabajador");
+
+        // Nombre del trabajador - Obtenemos el nombre que ya cargamos del trabajador
+        String workerName = "Trabajador"; // Valor por defecto
+
+        TextView workerNameTextView = findViewById(R.id.worker_name);
+        if (workerNameTextView != null && workerNameTextView.getText() != null) {
+            workerName = workerNameTextView.getText().toString();
+        }
+
+        intent.putExtra("worker_name", workerName);
+
+        // Dirección y tipo de servicio (pasados como parámetros)
         intent.putExtra("address", address);
         intent.putExtra("service_type", serviceType);
-        intent.putExtra("amount", "Monto del Servicio");
+
+        // Monto - Por ahora lo dejamos como placeholder
+        intent.putExtra("amount", "A confirmar");
+
+        // Iniciar la actividad
         startActivity(intent);
-        finish(); // Opcional: cierra esta actividad si no quieres que el usuario regrese a ella
+
+        // Cerramos esta actividad para que el usuario no pueda volver atrás
+        finish();
     }
 }
