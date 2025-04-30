@@ -70,7 +70,7 @@ dependencies {
     implementation("com.firebase:geofire-android-common:3.2.0")
     implementation("com.google.android.libraries.places:places:4.0.0")
     implementation("com.google.firebase:firebase-messaging:24.0.1")
-    implementation("com.google.firebase:firebase-messaging:23.4.0")
+    implementation("com.google.firebase:firebase-messaging:24.1.1")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation ("com.itextpdf:itextg:5.5.10")
     implementation ("com.google.firebase:firebase-storage:20.0.0")
