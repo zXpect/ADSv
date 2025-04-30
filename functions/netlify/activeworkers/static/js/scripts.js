@@ -1,6 +1,6 @@
 // Configuración de Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyBmSX2DEjIarC3acpn2xoL5Gfe-rW6-JrE",
+    apiKey: "**apiKeyTetsAIzaSyBmSX-fortets",
     authDomain: "adsv-d87e1.firebaseapp.com",
     databaseURL: "https://adsv-d87e1-default-rtdb.firebaseio.com",
     projectId: "adsv-d87e1",
