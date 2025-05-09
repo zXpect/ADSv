@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ads.activities.MainActivity;
+import com.ads.helpers.LogoutHelper;
 import com.ads.providers.AuthProvider;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -247,32 +248,7 @@ public class HomeUserActivity extends AppCompatActivity {
     }
 
     private void performLogout() {
-        try {
-            crashlytics.log("Ejecutando logout");
-
-            // Registrar evento de logout
-            if (mAuthProvider != null && mAuthProvider.getId() != null) {
-                Bundle params = new Bundle();
-                params.putString("user_id", mAuthProvider.getId());
-                mFirebaseAnalytics.logEvent("user_logout", params);
-            }
-
-            if (mAuthProvider != null) {
-                mAuthProvider.logOut();
-            }
-
-            // Limpiar datos de Crashlytics
-            crashlytics.setUserId("");
-            crashlytics.setCustomKey("user_type", "none");
-
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-
-        } catch (Exception e) {
-            logError("performLogout", e);
-        }
+        LogoutHelper.performLogout(this, mAuthProvider, crashlytics, mFirebaseAnalytics);
     }
     // Añade este método en la clase HomeUserActivity
     private void testCrashlytics() {

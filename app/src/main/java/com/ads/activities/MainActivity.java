@@ -14,8 +14,6 @@ import android.widget.Toast;
 import com.ads.activities.client.HomeUserActivity;
 import com.ads.activities.worker.HomeWorkerActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Logger;
 import com.project.ads.R;
 
 
@@ -24,12 +22,14 @@ public class MainActivity extends AppCompatActivity {
     Button mButtonClient;
     Button mButtonWorker;
     SharedPreferences mPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
 
+        // Eliminamos la configuración de Firebase aquí
+        // FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
 
         mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
         SharedPreferences.Editor editor = mPref.edit();
@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("user","cliente");
                 editor.apply();
                 goToLogin();
-
             }
 
             private void goToLogin() {
@@ -51,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         mButtonWorker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,30 +59,28 @@ public class MainActivity extends AppCompatActivity {
                 goToLoginWorker();
             }
 
-
             private void goToLoginWorker() {
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
 
-
         // Configurar el color de la barra de estado al color por defecto del sistema
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
         }
-
     }
+
     @Override
     protected void onStart() {
         super.onStart();
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             String user = mPref.getString("user", "");
-            SharedPreferences.Editor editor = mPref.edit();
-            editor.clear(); // Limpiar SharedPreferences
-            editor.apply(); // Aplicar cambios
+
+            // No limpies las SharedPreferences aquí ya que podría causar problemas al navegar
+            // Solo limpiar cuando sea necesario, como al cerrar sesión
 
             if (user.equals("cliente")) {
                 Toast.makeText(MainActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
