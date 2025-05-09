@@ -19,12 +19,10 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.ads.activities.MainActivity;
-import com.ads.activities.client.HomeUserActivity;
-import com.ads.includes.MyToolbar;
+import com.ads.activities.worker.fixdepot.FixDepotActivity;
+import com.ads.helpers.LogoutHelper;
 import com.ads.providers.AuthProvider;
 import com.ads.providers.GeofireProvider;
-import com.ads.providers.WorkerProvider;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationServices;
@@ -155,17 +153,18 @@ public class HomeWorkerActivity extends AppCompatActivity {
             builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
                     try {
-                        if (mAuthProvider != null) {
-                            mAuthProvider.logOut();
+                        // Llamar a disconnect primero si es necesario
+                        try {
+                            disconnect();
+                        } catch (Exception e) {
+                            Toast.makeText(HomeWorkerActivity.this,
+                                    "Error en disconnect: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
                         }
 
-                        disconnect();
-
-                        Intent intent = new Intent(HomeWorkerActivity.this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
+                        LogoutHelper.performLogout(HomeWorkerActivity.this, mAuthProvider, null, null);
                     } catch (Exception e) {
                         Toast.makeText(HomeWorkerActivity.this,
                                 "Error al cerrar sesión: " + e.getMessage(),
