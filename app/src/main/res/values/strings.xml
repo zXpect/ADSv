@@ -124,5 +124,24 @@
     <string name="facebook_login">inicia sesion con Facebook</string>
     <string name="google_login">inicia sesión con Google</string>
     <string name="twitter_login">Inicia sesión con Twitter(X)</string>
+    <string name="filter_by_tool">Filter by Tool</string>
+    <string name="sort_by">sort by</string>
+    <string name="apply">apply</string>
+    <string name="flashlight_description">flashlight_description</string>
+    <string name="search_icon">Buscar</string>
+    <string name="search_tools">Buscar Herramientas</string>
+    <string name="add_to_cart">Agregar al carrito</string>
+    <string name="add_to_favorites">Agregar a Favoritos</string>
+    <string name="filter_tools">Filtrar Herramientas</string>
+    <string name="discount_percentage">Porcentaje de Descuento</string>
+
+    <!-- Sort options for spinner -->
+    <string-array name="sort_options">
+        <item>Distance (closest first)</item>
+        <item>Price (low to high)</item>
+        <item>Price (high to low)</item>
+        <item>Rating (highest first)</item>
+    </string-array>
+
 
 </resources>
