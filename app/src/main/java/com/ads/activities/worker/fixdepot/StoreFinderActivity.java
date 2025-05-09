@@ -63,7 +63,7 @@ public class StoreFinderActivity extends AppCompatActivity implements OnMapReady
         // Initialize toolbar
         mToolbar = findViewById(R.id.toolbar_color);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Find Stores");
+        getSupportActionBar().setTitle("Ferreterías Ubaté");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initialize the location client
@@ -75,7 +75,7 @@ public class StoreFinderActivity extends AppCompatActivity implements OnMapReady
         mapFragment.getMapAsync(this);
 
         // Initialize sorting spinner
-        mSortSpinner = findViewById(R.id.spinnerSort);
+        mSortSpinner = findViewById(R.id.spinnerOrdenamiento);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sort_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -85,7 +85,7 @@ public class StoreFinderActivity extends AppCompatActivity implements OnMapReady
         mToolFilterChipGroup = findViewById(R.id.chipGroupToolFilter);
 
         // Initialize store list
-        mStoreRecyclerView = findViewById(R.id.recyclerViewStores);
+        mStoreRecyclerView = findViewById(R.id.recyclerViewTiendas);
         mStoreRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize store data (in a real app, this would come from a database or API)
@@ -97,7 +97,7 @@ public class StoreFinderActivity extends AppCompatActivity implements OnMapReady
         mStoreRecyclerView.setAdapter(mStoreAdapter);
 
         // Filter apply button
-        mFilterApplyButton = findViewById(R.id.buttonApplyFilter);
+        mFilterApplyButton = findViewById(R.id.botonAplicarFiltro);
 
         setupListeners();
         setupToolChips();
@@ -128,9 +128,10 @@ public class StoreFinderActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void setupToolChips() {
-        // Add tool filter chips
-        String[] tools = {"Hammer", "Screwdriver Set", "Power Drill", "Wrench Set",
-                "Measuring Tape", "Saw", "Level", "Pliers", "Electric Screwdriver"};
+        // Add tool filter chips - Traducido al español
+        String[] tools = {"Martillo", "Juego de Destornilladores", "Taladro Eléctrico", "Juego de Llaves",
+                "Cinta Métrica", "Sierra", "Nivel", "Alicates", "Destornillador Eléctrico",
+                "Cincel", "Pulidora", "Lijadora", "Pistola de Calor"};
 
         for (String tool : tools) {
             Chip chip = new Chip(this);
@@ -151,21 +152,21 @@ public class StoreFinderActivity extends AppCompatActivity implements OnMapReady
         // In a real app, this data would come from a database or API
         mStores = new ArrayList<>();
 
-        // Sample store data with coordinates, ratings, and prices for tools
-        mStores.add(new Store("Hardware City", new LatLng(19.432608, -99.133209), 4.5f,
-                createToolPrices("Hammer", 15.99f, "Screwdriver Set", 25.99f, "Power Drill", 99.99f)));
+        // Sample store data with coordinates in Ubaté, Cundinamarca - Colombia, ratings, and prices for tools in Colombian Pesos
+        mStores.add(new Store("Ferretería Ubatense", new LatLng(5.3098, -73.8148), 4.5f,
+                createToolPrices("Martillo", 65000f, "Juego de Destornilladores", 85000f, "Taladro Eléctrico", 350000f)));
 
-        mStores.add(new Store("Tools & More", new LatLng(19.436054, -99.141264), 4.2f,
-                createToolPrices("Hammer", 12.99f, "Wrench Set", 35.50f, "Measuring Tape", 8.99f)));
+        mStores.add(new Store("El Maestro Ferretería", new LatLng(5.3065, -73.8163), 4.2f,
+                createToolPrices("Martillo", 55000f, "Juego de Llaves", 120000f, "Cinta Métrica", 25000f, "Cincel", 30000f)));
 
-        mStores.add(new Store("Builder's Supply", new LatLng(19.427375, -99.167442), 4.7f,
-                createToolPrices("Power Drill", 89.99f, "Saw", 45.75f, "Level", 18.50f)));
+        mStores.add(new Store("Constructor Ubaté", new LatLng(5.3105, -73.8196), 4.7f,
+                createToolPrices("Taladro Eléctrico", 320000f, "Sierra", 180000f, "Nivel", 42000f, "Pulidora", 210000f)));
 
-        mStores.add(new Store("Handyman's Corner", new LatLng(19.418904, -99.155470), 4.0f,
-                createToolPrices("Pliers", 14.25f, "Electric Screwdriver", 49.99f, "Hammer", 19.99f)));
+        mStores.add(new Store("Todo Herramientas", new LatLng(5.3042, -73.8121), 4.0f,
+                createToolPrices("Alicates", 45000f, "Destornillador Eléctrico", 160000f, "Martillo", 70000f, "Pistola de Calor", 95000f)));
 
-        mStores.add(new Store("Pro Tools", new LatLng(19.444651, -99.151178), 4.8f,
-                createToolPrices("Screwdriver Set", 29.99f, "Power Drill", 119.99f, "Wrench Set", 42.50f)));
+        mStores.add(new Store("Ferretería Central", new LatLng(5.3078, -73.8135), 4.8f,
+                createToolPrices("Juego de Destornilladores", 98000f, "Taladro Eléctrico", 420000f, "Juego de Llaves", 145000f, "Lijadora", 260000f)));
     }
 
     private void applySortAndFilter() {
@@ -317,7 +318,7 @@ public class StoreFinderActivity extends AppCompatActivity implements OnMapReady
                     onMapReady(mMap);
                 }
             } else {
-                Toast.makeText(this, "Location permission is required to show nearby stores", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "El permiso de ubicación es necesario para mostrar tiendas cercanas", Toast.LENGTH_LONG).show();
             }
         }
     }
