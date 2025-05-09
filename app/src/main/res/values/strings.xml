@@ -124,9 +124,9 @@
     <string name="facebook_login">inicia sesion con Facebook</string>
     <string name="google_login">inicia sesión con Google</string>
     <string name="twitter_login">Inicia sesión con Twitter(X)</string>
-    <string name="filter_by_tool">Filter by Tool</string>
-    <string name="sort_by">sort by</string>
-    <string name="apply">apply</string>
+    <string name="filter_by_tool">Filtrar por herramienta</string>
+    <string name="sort_by">Ordenar por</string>
+    <string name="apply">Aplicar</string>
     <string name="flashlight_description">flashlight_description</string>
     <string name="search_icon">Buscar</string>
     <string name="search_tools">Buscar Herramientas</string>
