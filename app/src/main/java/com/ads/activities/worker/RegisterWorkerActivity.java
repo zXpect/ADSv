@@ -4,21 +4,26 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.activities.TermsConditionsActivity;
 import com.ads.includes.MyToolbar;
 import com.ads.models.Worker;
 import com.ads.providers.AuthProvider;
-import com.ads.providers.NotificationProvider;
 import com.ads.providers.WorkerProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,6 +34,8 @@ import com.project.ads.R;
 
 public class RegisterWorkerActivity extends AppCompatActivity {
 
+    private static final String TERMS_URL = "https://sudominio.com/terminos-condiciones.html"; // URL de tus términos y condiciones
+
     private AuthProvider mAuthProvider;
     private WorkerProvider mWorkerProvider;
     private Button mButtonRegister;
@@ -36,6 +43,7 @@ public class RegisterWorkerActivity extends AppCompatActivity {
     private AutoCompleteTextView mSpinnerWork;
     private ProgressDialog mProgressDialog;
     private CheckBox mCheckBoxTerms;
+    private TextView mTextViewTerms;
 
 
     @Override
@@ -48,6 +56,7 @@ public class RegisterWorkerActivity extends AppCompatActivity {
         initializeViews();
         initializeProviders();
         setupServiceTypeDropdown();
+        setupTermsAndConditionsLink();
 
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
@@ -68,8 +77,27 @@ public class RegisterWorkerActivity extends AppCompatActivity {
         mTextInputPassword = findViewById(R.id.password);
         mSpinnerWork = findViewById(R.id.spinner_service_type);
         mCheckBoxTerms = findViewById(R.id.checkBox2);
+        mTextViewTerms = findViewById(R.id.textViewTerms);
         mProgressDialog = new ProgressDialog(this);
+    }
 
+    private void setupTermsAndConditionsLink() {
+        SpannableString spannableString = new SpannableString("Términos y Condiciones");
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                openTermsAndConditions();
+            }
+        };
+        spannableString.setSpan(clickableSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mTextViewTerms.setText(spannableString);
+        mTextViewTerms.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void openTermsAndConditions() {
+        Intent intent = new Intent(RegisterWorkerActivity.this, TermsConditionsActivity.class);
+        intent.putExtra("terms_url", TERMS_URL);
+        startActivity(intent);
     }
 
     private void setupServiceTypeDropdown() {
