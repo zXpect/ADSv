@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.ads.activities.TermsConditionsActivity;
 import com.project.ads.R;
 
 public class MyToolbar {
@@ -28,5 +29,8 @@ public class MyToolbar {
         if (upButton) {
             toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FF8C00"), PorterDuff.Mode.SRC_ATOP); // Naranja
         }
+    }
+
+    public static void show(TermsConditionsActivity termsConditionsActivity, String términosYCondiciones, boolean b) {
     }
 }

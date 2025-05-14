@@ -8,6 +8,9 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Permiso para notificaciones (Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name="com.ads.MyApplication"
         android:allowBackup="true"
@@ -89,9 +92,5 @@
             </intent-filter>
         </service>
     </application>
-
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="@string/google_maps_key" />
 
 </manifest>

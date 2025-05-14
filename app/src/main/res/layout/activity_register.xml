@@ -126,12 +126,24 @@
 
             <CheckBox
                 android:id="@+id/checkBox2"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Acepta los terminos y condiciones de uso"
                 android:buttonTint="@color/colorPrimary"
+                android:text="Acepto los "
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
+
+            <TextView
+                android:id="@+id/textViewTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="términos y condiciones"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/checkBox2"
+                app:layout_constraintTop_toTopOf="@+id/checkBox2"
+                app:layout_constraintBottom_toBottomOf="@+id/checkBox2" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/continue_register"
