@@ -1,6 +1,6 @@
 package com.ads.activities;
 
-import android.app.AlertDialog;
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,16 +9,16 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.ads.activities.client.HomeUserActivity;
 import com.ads.activities.client.RegisterActivity;
@@ -26,18 +26,17 @@ import com.ads.activities.worker.HomeWorkerActivity;
 import com.ads.activities.worker.RegisterWorkerActivity;
 import com.ads.includes.MyToolbar;
 import com.ads.providers.TokenProvider;
+import com.ads.helpers.NotificationPermissionHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -47,13 +46,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.project.ads.R;
 
-import java.util.regex.Pattern;
-
 public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 9001;
     private static final int MAX_LOGIN_ATTEMPTS = 3;
     private static final long LOCK_DURATION_MILLIS = 300000; // 5 minutos
+    private static final String TAG = "LoginActivity";
 
     private SharedPreferences mPref;
     private ProgressDialog progressDialog;
@@ -74,10 +72,23 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String USER_TYPE_KEY = "typeUser";
 
+    // Launcher para solicitar permisos de notificación
+    private ActivityResultLauncher<String> requestPermissionLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
+
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                // Permiso concedido, continuar a la siguiente actividad
+                proceedToNextActivity(getDestinationActivity());
+            } else {
+                // Permiso denegado, continuar a la siguiente actividad
+                proceedToNextActivity(getDestinationActivity());
+            }
+        });
 
         initializeViews();
         setupToolbar();
@@ -94,17 +105,10 @@ public class LoginActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // Obtener el nuevo token FCM
                     String token = task.getResult();
-
-                    // Si el usuario está autenticado, guardar el token
                     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         new TokenProvider().saveToken(token);
-                        Log.d("FCM", "Token guardado para: " + userId);
                     }
-
-                    // Log y debug
                     Log.d("FCM", "Token: " + token);
                 });
     }
@@ -126,8 +130,6 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Iniciando sesión...");
         progressDialog.setCancelable(false);
-
-
     }
 
     private void setupFirebase() {
@@ -287,18 +289,29 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleSuccessfulLogin() {
         loginAttempts = 0;
-        String user = mPref.getString("user", "");
-        Class<?> destinationActivity = user.equals("cliente") ?
-                HomeUserActivity.class : HomeWorkerActivity.class;
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            NotificationPermissionHelper.requestNotificationPermissionIfNeeded(this, requestPermissionLauncher);
+        } else {
+            proceedToNextActivity(getDestinationActivity());
+        }
+    }
+
+    private Class<?> getDestinationActivity() {
+        String user = mPref.getString("user", "");
+        return user.equals("cliente") ? HomeUserActivity.class : HomeWorkerActivity.class;
+    }
+
+    /**
+     * Navega a la siguiente actividad
+     */
+    private void proceedToNextActivity(Class<?> destinationActivity) {
         Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, destinationActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
-
-
 
     private void handleFailedLogin(Exception exception) {
         loginAttempts++;

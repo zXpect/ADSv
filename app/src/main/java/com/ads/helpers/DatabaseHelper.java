@@ -2,8 +2,6 @@ package com.ads.helpers;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,11 +11,11 @@ import com.project.ads.R;
 public class DatabaseHelper {
 
     private DatabaseReference mDatabase;
-    private StorageReference mStorage;
+
 
     public DatabaseHelper() {
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mStorage = FirebaseStorage.getInstance().getReference();
+
     }
 
     public void uploadWorkerIcons(Resources resources) {
@@ -41,18 +39,6 @@ public class DatabaseHelper {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
             byte[] data = baos.toByteArray();
 
-            StorageReference iconRef = mStorage.child("worker_icons/" + workerType + ".png");
-            iconRef.putBytes(data)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        iconRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            String iconUrl = uri.toString();
-                            mDatabase.child("worker_icons").child(workerType).setValue(iconUrl);
-                        });
-                    })
-                    .addOnFailureListener(e -> {
-                        // Manejar cualquier error aquí
-                        System.out.println("Error al subir el icono: " + e.getMessage());
-                    });
         }
     }
 }

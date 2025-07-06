@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.project.ads.R;
+import com.ads.activities.TermsConditionsActivity;
 import com.ads.includes.MyToolbar;
 import com.ads.models.Client;
 import com.ads.providers.AuthProvider;
@@ -40,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final int MAX_PASSWORD_LENGTH = 50;
     private static final int MAX_NAME_LENGTH = 50;
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$");
+    private static final String TERMS_URL = "https://sudominio.com/terminos-condiciones.html"; // URL de tus términos y condiciones
 
     private SharedPreferences mPref;
     private AuthProvider mAuthProvider;
@@ -52,6 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText mTextInputEmail;
     private TextInputEditText mTextInputPassword;
     private CheckBox mCheckBoxTerms;
+    private TextView mTextViewTerms;
 
     // TextInputLayouts para mostrar errores
     private TextInputLayout mTextInputLayoutNames;
@@ -67,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
         initializeComponents();
         setupStatusBar();
         setupClickListeners();
+        setupTermsAndConditionsLink();
     }
 
     private void initializeComponents() {
@@ -83,6 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
         mTextInputEmail = findViewById(R.id.emailAddress);
         mTextInputPassword = findViewById(R.id.Password);
         mCheckBoxTerms = findViewById(R.id.checkBox2);
+        mTextViewTerms = findViewById(R.id.textViewTerms);
 
         // Initialize TextInputLayouts
         mTextInputLayoutNames = findViewById(R.id.textInputLayoutNames);
@@ -109,6 +119,25 @@ public class RegisterActivity extends AppCompatActivity {
                 mButtonRegister.postDelayed(() -> mButtonRegister.setEnabled(true), 1000);
             }
         });
+    }
+
+    private void setupTermsAndConditionsLink() {
+        SpannableString spannableString = new SpannableString("Términos y Condiciones");
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                openTermsAndConditions();
+            }
+        };
+        spannableString.setSpan(clickableSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mTextViewTerms.setText(spannableString);
+        mTextViewTerms.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void openTermsAndConditions() {
+        Intent intent = new Intent(RegisterActivity.this, TermsConditionsActivity.class);
+        intent.putExtra("terms_url", TERMS_URL);
+        startActivity(intent);
     }
 
     private void clickRegister() {

@@ -1,5 +1,7 @@
 package com.ads.activities.client;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -158,7 +160,7 @@ public class VerifyRequestActivity extends AppCompatActivity {
             if (validateData()) {
                 submitRequest();
             } else {
-                Toast.makeText(this, "Datos de solicitud incompletos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Datos de solicitud incompletos", LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -188,16 +190,12 @@ public class VerifyRequestActivity extends AppCompatActivity {
 
         mRequestProvider.createRequest(requestData)
                 .addOnSuccessListener(databaseReference -> {
-                    hideProgressDialog();
-
+                    // No ocultar el progress dialog aquí, esperar a que se envíe la notificación
                     sendNotificationToWorker(mWorkerId, requestData);
-
-                    showToast("Solicitud enviada con éxito");
-                    navigateToServiceCompletion();
                 })
                 .addOnFailureListener(e -> {
                     hideProgressDialog();
-                        Log.e("VerifyRequest", "Error creating request: ", e);
+                    Log.e("VerifyRequest", "Error creating request: ", e);
 
                     String errorMessage = "Error al crear la solicitud";
                     if (e.getCause() instanceof com.android.volley.ServerError) {
@@ -244,16 +242,103 @@ public class VerifyRequestActivity extends AppCompatActivity {
                         mNotificationProvider.sendNotification(fcmBody).enqueue(new retrofit2.Callback<FCMResponse>() {
                             @Override
                             public void onResponse(retrofit2.Call<FCMResponse> call, retrofit2.Response<FCMResponse> response) {
+                                hideProgressDialog();
+
                                 if (response.isSuccessful()) {
                                     Log.d("NotificationDebug", "Notificación enviada con éxito");
+                                    if (response.body() != null) {
+                                        Log.d("NotificationDebug", "FCM Response Success: " + response.body().getSuccess());
+                                    }
+
+                                    showToast("Solicitud enviada con éxito");
+                                    navigateToServiceCompletion();
                                 } else {
                                     Log.e("NotificationDebug", "Error al enviar notificación: " + response.message());
+                                    Log.e("NotificationDebug", "Response Code: " + response.code());
+
+                                    // Mostrar detalles del error
+                                    if (response.errorBody() != null) {
+                                        try {
+                                            String errorBody = response.errorBody().string();
+                                            Log.e("NotificationDebug", "Error Body: " + errorBody);
+                                        } catch (Exception e) {
+                                            Log.e("NotificationDebug", "Error reading error body: " + e.getMessage());
+                                        }
+                                    }
+
+                                    // Analizar tipos de error y mostrar mensaje apropiado al usuario
+                                    String userMessage = getNotificationErrorMessage(response.code(), response.errorBody());
+                                    showToast(userMessage);
+
+                                    // Navegar de todas formas ya que la solicitud se creó exitosamente
+                                    navigateToServiceCompletion();
                                 }
+                            }
+
+                            private String getNotificationErrorMessage(int responseCode, okhttp3.ResponseBody errorBody) {
+                                String userMessage;
+
+                                switch (responseCode) {
+                                    case 400:
+                                        userMessage = "Solicitud creada exitosamente. Error en el formato de la notificación.";
+                                        break;
+                                    case 401:
+                                        userMessage = "Solicitud creada exitosamente. Error de autenticación con el servicio de notificaciones.";
+                                        break;
+                                    case 403:
+                                        userMessage = "Solicitud creada exitosamente. Sin permisos para enviar notificaciones.";
+                                        break;
+                                    case 404:
+                                        userMessage = "Solicitud creada exitosamente. El trabajador no tiene configuradas las notificaciones.";
+                                        break;
+                                    case 429:
+                                        userMessage = "Solicitud creada exitosamente. Límite de notificaciones alcanzado.";
+                                        break;
+                                    case 500:
+                                    case 502:
+                                    case 503:
+                                        userMessage = "Solicitud creada exitosamente. Error temporal del servidor de notificaciones.";
+                                        break;
+                                    default:
+                                        // Intentar obtener más información del error body si está disponible
+                                        String errorDetails = "";
+                                        if (errorBody != null) {
+                                            try {
+                                                errorDetails = errorBody.string();
+                                                // Analizar si contiene información específica sobre el token
+                                                if (errorDetails.contains("not_found") || errorDetails.contains("InvalidRegistration")) {
+                                                    userMessage = "Solicitud creada exitosamente. El trabajador necesita actualizar su aplicación.";
+                                                } else if (errorDetails.contains("MismatchSenderId")) {
+                                                    userMessage = "Solicitud creada exitosamente. Error de configuración de notificaciones.";
+                                                } else {
+                                                    userMessage = "Solicitud creada exitosamente. No se pudo enviar la notificación.";
+                                                }
+                                            } catch (Exception e) {
+                                                Log.e("NotificationDebug", "Error al leer error body: " + e.getMessage());
+                                                userMessage = "Solicitud creada exitosamente. No se pudo enviar la notificación.";
+                                            }
+                                        } else {
+                                            userMessage = "Solicitud creada exitosamente. No se pudo enviar la notificación.";
+                                        }
+                                        break;
+                                }
+
+                                return userMessage;
                             }
 
                             @Override
                             public void onFailure(retrofit2.Call<FCMResponse> call, Throwable t) {
+                                hideProgressDialog();
+
                                 Log.e("NotificationDebug", "Error en la llamada: " + t.getMessage());
+                                Log.e("NotificationDebug", "Error completo: ", t);
+
+                                // Mostrar mensaje de error de conexión
+                                String userMessage = "Solicitud enviada, pero no se pudo notificar al trabajador debido a problemas de conexión.";
+                                showToast(userMessage);
+
+                                // Navegar de todas formas ya que la solicitud se creó exitosamente
+                                navigateToServiceCompletion();
                             }
                         });
                     } else {
@@ -300,6 +385,6 @@ public class VerifyRequestActivity extends AppCompatActivity {
     }
 
     private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, LENGTH_SHORT).show();
     }
 }
