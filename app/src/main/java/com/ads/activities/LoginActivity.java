@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -72,15 +73,22 @@ public class LoginActivity extends AppCompatActivity {
     private static final String USER_TYPE_KEY = "typeUser";
 
     // Launcher para solicitar permisos de notificación
-    private ActivityResultLauncher<String> notificationPermissionLauncher;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
 
-        // Registrar el launcher para permisos de notificación
-        notificationPermissionLauncher = NotificationPermissionHelper.registerForPermissionResult(this);
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                // Permiso concedido, continuar a la siguiente actividad
+                proceedToNextActivity(getDestinationActivity());
+            } else {
+                // Permiso denegado, continuar a la siguiente actividad
+                proceedToNextActivity(getDestinationActivity());
+            }
+        });
 
         initializeViews();
         setupToolbar();
@@ -97,17 +105,10 @@ public class LoginActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // Obtener el nuevo token FCM
                     String token = task.getResult();
-
-                    // Si el usuario está autenticado, guardar el token
                     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         new TokenProvider().saveToken(token);
-                        Log.d("FCM", "Token guardado para: " + userId);
                     }
-
-                    // Log y debug
                     Log.d("FCM", "Token: " + token);
                 });
     }
@@ -288,41 +289,17 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleSuccessfulLogin() {
         loginAttempts = 0;
-        String user = mPref.getString("user", "");
-        Class<?> destinationActivity = user.equals("cliente") ?
-                HomeUserActivity.class : HomeWorkerActivity.class;
 
-        // Para Android 13+ (TIRAMISU), solicitar el permiso de notificación
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Registrar el token FCM después de iniciar sesión
-            registerFCMToken();
-
-            // Solicitar el permiso de notificaciones y esperar la respuesta
-            NotificationPermissionHelper.requestNotificationPermissionWithCallback(
-                    this,
-                    notificationPermissionLauncher,
-                    granted -> proceedToNextActivity(destinationActivity)
-            );
+            NotificationPermissionHelper.requestNotificationPermissionIfNeeded(this, requestPermissionLauncher);
         } else {
-            // Para versiones anteriores, continuar directamente
-            registerFCMToken();
-            proceedToNextActivity(destinationActivity);
+            proceedToNextActivity(getDestinationActivity());
         }
     }
 
-    /**
-     * Registra el token FCM para el usuario actual
-     */
-    private void registerFCMToken() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        String token = task.getResult();
-                        if (mAuth.getCurrentUser() != null) {
-                            new TokenProvider().saveToken(token);
-                        }
-                    }
-                });
+    private Class<?> getDestinationActivity() {
+        String user = mPref.getString("user", "");
+        return user.equals("cliente") ? HomeUserActivity.class : HomeWorkerActivity.class;
     }
 
     /**

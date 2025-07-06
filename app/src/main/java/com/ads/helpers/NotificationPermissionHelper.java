@@ -44,61 +44,14 @@ public class NotificationPermissionHelper {
     }
 
     /**
-     * Registra un launcher para solicitar permisos de notificación
-     * Sin callbacks ni diálogos adicionales
-     */
-    public static ActivityResultLauncher<String> registerForPermissionResult(AppCompatActivity activity) {
-        return activity.registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                isGranted -> {
-                    // No hacemos nada aquí para evitar diálogos adicionales
-                    // El sistema se encarga de mostrar el diálogo estándar de permisos
-                });
-    }
-
-    /**
      * Solicita permisos de notificación si es necesario
-     * Sin diálogos adicionales
      */
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     public static void requestNotificationPermissionIfNeeded(Context context,
                                                              ActivityResultLauncher<String> launcher) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(context,
-                    Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                // Solicitar directamente sin diálogos personalizados
-                launcher.launch(Manifest.permission.POST_NOTIFICATIONS);
-            }
-        }
-    }
-
-    /**
-     * Solicita permiso de notificación con un callback para manejar el resultado
-     * Esta es la función que faltaba en la implementación original
-     */
-    public static void requestNotificationPermissionWithCallback(
-            AppCompatActivity activity,
-            ActivityResultLauncher<String> launcher,
-            PermissionCallback callback) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Si ya tenemos el permiso, llamar directamente al callback con true
-            if (ContextCompat.checkSelfPermission(activity,
-                    Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                callback.onPermissionResult(true);
-                return;
-            }
-
-            // Como no podemos modificar el launcher existente, creamos uno temporal para este caso específico
-            ActivityResultLauncher<String> tempLauncher = activity.registerForActivityResult(
-                    new ActivityResultContracts.RequestPermission(),
-                    isGranted -> callback.onPermissionResult(isGranted)
-            );
-
-            // Solicitamos el permiso con el launcher temporal
-            tempLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-        } else {
-            // Para versiones anteriores a Android 13, no se necesita el permiso explícito
-            callback.onPermissionResult(true);
+        if (ContextCompat.checkSelfPermission(context,
+                Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            launcher.launch(Manifest.permission.POST_NOTIFICATIONS);
         }
     }
 
