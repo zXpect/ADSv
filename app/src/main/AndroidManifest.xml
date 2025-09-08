@@ -51,7 +51,8 @@
             android:exported="false" />
         <activity
             android:name="com.ads.activities.worker.RegisterWorkerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName="com.ads.activities.LoginActivity" />
         <activity
             android:name="com.ads.activities.client.HomeUserActivity"
             android:exported="false" />
@@ -64,6 +65,11 @@
             android:theme="@style/Theme.ADSv" />
         <activity
             android:name="com.ads.activities.client.RegisterActivity"
+            android:exported="false"
+            android:parentActivityName="com.ads.activities.LoginActivity" />
+
+        <activity
+            android:name="com.ads.activities.TermsConditionsActivity"
             android:exported="false"
             android:parentActivityName="com.ads.activities.LoginActivity" />
         <activity
