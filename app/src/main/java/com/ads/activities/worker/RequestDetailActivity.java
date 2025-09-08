@@ -59,6 +59,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "RequestDetailActivity created");
         setContentView(R.layout.activity_request_detail);
         
         // Initialize Firebase
@@ -123,38 +124,66 @@ public class RequestDetailActivity extends AppCompatActivity {
             }
         });
     }
-    
+
+    private boolean isValidRequestId(String id) {
+        return id != null && !id.isEmpty() && !id.equals("null");
+    }
+
     private void loadRequestData() {
+        if (!isValidRequestId(requestId)) {
+            Log.e(TAG, "Invalid request ID: " + requestId);
+            showError("ID de solicitud inválido");
+            return;
+        }
+
         showLoading(true);
-        
-        databaseReference.child("service_requests").child(requestId)
+
+        Log.d(TAG, "Loading request data for ID: " + requestId);
+
+        databaseReference.child("requests").child(requestId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "DataSnapshot exists: " + dataSnapshot.exists());
+
                         if (dataSnapshot.exists()) {
                             try {
                                 // Convert to ServiceRequest object
                                 Map<String, Object> requestData = (Map<String, Object>) dataSnapshot.getValue();
-                                serviceRequest = ServiceRequest.fromMap(requestData);
-                                
-                                if (serviceRequest != null) {
-                                    populateUI(serviceRequest);
-                                    showLoading(false);
+
+                                if (requestData != null) {
+                                    Log.d(TAG, "Request data retrieved: " + requestData.toString());
+                                    serviceRequest = ServiceRequest.fromMap(requestData);
+
+                                    if (serviceRequest != null) {
+                                        // Asegurar que el request_id esté establecido
+                                        if (serviceRequest.getRequest_id() == null) {
+                                            serviceRequest.setRequest_id(requestId);
+                                        }
+
+                                        populateUI(serviceRequest);
+                                        showLoading(false);
+                                    } else {
+                                        Log.e(TAG, "Failed to parse ServiceRequest from data");
+                                        showError("Error al procesar los datos de la solicitud");
+                                    }
                                 } else {
-                                    showError("Error al procesar los datos de la solicitud");
+                                    Log.e(TAG, "Request data is null");
+                                    showError("No se encontraron datos de la solicitud");
                                 }
                             } catch (Exception e) {
                                 Log.e(TAG, "Error parsing request data", e);
-                                showError("Error al cargar los datos de la solicitud");
+                                showError("Error al cargar los datos: " + e.getMessage());
                             }
                         } else {
-                            showError("Solicitud no encontrada");
+                            Log.w(TAG, "Request not found for ID: " + requestId);
+                            showError("Solicitud no encontrada con ID: " + requestId);
                         }
                     }
-                    
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.e(TAG, "Database error: " + databaseError.getMessage());
+                        Log.e(TAG, "Database error: " + databaseError.getMessage() + " (Code: " + databaseError.getCode() + ")");
                         showError("Error de conexión: " + databaseError.getMessage());
                     }
                 });
@@ -216,7 +245,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         updates.put("status", newStatus);
         updates.put("last_updated", System.currentTimeMillis());
         
-        databaseReference.child("service_requests").child(requestId)
+        databaseReference.child("requests").child(requestId)
                 .updateChildren(updates)
                 .addOnSuccessListener(aVoid -> {
                     progressBar.setVisibility(View.GONE);
@@ -239,6 +268,31 @@ public class RequestDetailActivity extends AppCompatActivity {
                     btnReject.setEnabled(true);
                 });
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+
+        // Verificar si hay un nuevo request_id
+        String newRequestId = intent.getStringExtra("request_id");
+        if (newRequestId != null && !newRequestId.equals(requestId)) {
+            Log.d(TAG, "New request ID received: " + newRequestId);
+            requestId = newRequestId;
+            serviceRequest = null; // Reset current request
+            loadRequestData(); // Cargar los nuevos datos
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Recargar datos si volvemos a la actividad y no hay datos cargados
+        if (serviceRequest == null && requestId != null && !requestId.isEmpty()) {
+            loadRequestData();
+        }
+    }
     
     private void showLoading(boolean show) {
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -253,3 +307,5 @@ public class RequestDetailActivity extends AppCompatActivity {
         tvError.setText(message);
     }
 }
+
+

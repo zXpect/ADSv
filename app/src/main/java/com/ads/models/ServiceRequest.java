@@ -15,13 +15,14 @@ public class ServiceRequest {
     private String client_email;
     private double estimated_cost;
     private String urgency_level;
+    private String worker_id; // Campo agregado para el ID del trabajador asignado
 
     public ServiceRequest() {
         // Default constructor required for calls to DataSnapshot.getValue(ServiceRequest.class)
     }
 
-    public ServiceRequest(String request_id, String client_id, String client_name, String address, 
-                         String description, String service_type, String status, long timestamp) {
+    public ServiceRequest(String request_id, String client_id, String client_name, String address,
+                          String description, String service_type, String status, long timestamp) {
         this.request_id = request_id;
         this.client_id = client_id;
         this.client_name = client_name;
@@ -36,7 +37,12 @@ public class ServiceRequest {
     public static ServiceRequest fromMap(Map<String, Object> map) {
         ServiceRequest request = new ServiceRequest();
         if (map != null) {
-            request.setRequest_id((String) map.get("request_id"));
+            // Try both "request_id" and "id" for compatibility
+            String requestId = (String) map.get("request_id");
+            if (requestId == null) {
+                requestId = (String) map.get("id");
+            }
+            request.setRequest_id(requestId);
             request.setClient_id((String) map.get("client_id"));
             request.setClient_name((String) map.get("client_name"));
             request.setAddress((String) map.get("address"));
@@ -45,19 +51,20 @@ public class ServiceRequest {
             request.setStatus((String) map.get("status"));
             request.setClient_phone((String) map.get("client_phone"));
             request.setClient_email((String) map.get("client_email"));
-            
+            request.setWorker_id((String) map.get("worker_id")); // Agregado para mapear worker_id
+
             Object timestamp = map.get("timestamp");
             if (timestamp instanceof Long) {
                 request.setTimestamp((Long) timestamp);
             }
-            
+
             Object cost = map.get("estimated_cost");
             if (cost instanceof Double) {
                 request.setEstimated_cost((Double) cost);
             } else if (cost instanceof Long) {
                 request.setEstimated_cost(((Long) cost).doubleValue());
             }
-            
+
             request.setUrgency_level((String) map.get("urgency_level"));
         }
         return request;
@@ -158,6 +165,15 @@ public class ServiceRequest {
 
     public void setUrgency_level(String urgency_level) {
         this.urgency_level = urgency_level;
+    }
+
+    // Getter y Setter para worker_id
+    public String getWorker_id() {
+        return worker_id;
+    }
+
+    public void setWorker_id(String worker_id) {
+        this.worker_id = worker_id;
     }
 
     public String getStatusDisplayText() {
