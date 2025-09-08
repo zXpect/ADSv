@@ -46,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final int MAX_PASSWORD_LENGTH = 50;
     private static final int MAX_NAME_LENGTH = 50;
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$");
-    private static final String TERMS_URL = "https://sudominio.com/terminos-condiciones.html"; // URL de tus términos y condiciones
+    private static final String TERMS_URL = "https://terminosycondicionesads.netlify.app";
 
     private SharedPreferences mPref;
     private AuthProvider mAuthProvider;
