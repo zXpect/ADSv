@@ -34,7 +34,7 @@ import com.project.ads.R;
 
 public class RegisterWorkerActivity extends AppCompatActivity {
 
-    private static final String TERMS_URL = "https://sudominio.com/terminos-condiciones.html"; // URL de tus términos y condiciones
+    private static final String TERMS_URL = "https://terminosycondicionesads.netlify.app";
 
     private AuthProvider mAuthProvider;
     private WorkerProvider mWorkerProvider;

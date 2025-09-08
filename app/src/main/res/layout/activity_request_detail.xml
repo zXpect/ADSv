@@ -26,7 +26,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_arrow_back"
+                android:src="@drawable/quantum_ic_arrow_back_grey600_24"
                 android:contentDescription="Volver"
                 app:tint="@color/primary_color" />
 
@@ -87,7 +87,7 @@
                         android:text="Pendiente"
                         android:textSize="14sp"
                         android:textColor="@color/white"
-                        android:background="@drawable/status_bg"
+
                         android:padding="8dp"
                         android:layout_marginTop="8dp" />
 
@@ -233,7 +233,7 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_build"
+                            android:src="@drawable/ic_work"
                             android:layout_marginEnd="12dp"
                             app:tint="@color/primary_color" />
 
@@ -301,7 +301,7 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_attach_money"
+                            android:src="@drawable/ic_money"
                             android:layout_marginEnd="12dp"
                             app:tint="@color/primary_color" />
 

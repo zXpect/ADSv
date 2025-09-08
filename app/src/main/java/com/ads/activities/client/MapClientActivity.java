@@ -400,18 +400,25 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
             if (dataSnapshot.exists()) {
                 Worker worker = dataSnapshot.getValue(Worker.class);
                 if (worker != null && !mWorkersMarkers.containsKey(workerId)) {
-                    // Apply filter
+                    // Get worker type with null safety
+                    String workerType = worker.getWork();
+
+                    // Apply filter with null safety
                     if (mCurrentFilter.equals("Todos los servicios") ||
-                            worker.getWork().equalsIgnoreCase(mCurrentFilter)) {
+                            (workerType != null && workerType.equalsIgnoreCase(mCurrentFilter))) {
+
+                        // Create marker with safe icon retrieval
                         Marker marker = mMap.addMarker(new MarkerOptions()
                                 .position(location)
-                                .title(worker.getName())
-                                .icon(getIconForWorkerType(worker.getWork())));
+                                .title(worker.getName() != null ? worker.getName() : "Unknown Worker")
+                                .icon(getIconForWorkerType(workerType)));
                         marker.setTag(workerId);
                         mWorkersMarkers.put(workerId, marker);
                     }
                 }
             }
+        }).addOnFailureListener(exception -> {
+            Log.e(TAG, "Failed to get worker data for ID: " + workerId, exception);
         });
     }
     private void initFilterSpinner() {
@@ -480,31 +487,37 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
     private BitmapDescriptor getIconForWorkerType(String workerType) {
         int iconResource;
-        switch (workerType.toLowerCase()) {
-            case "carpintería":
-                iconResource = R.drawable.icon_carpenter;
-                break;
-            case "ferretería":
-                iconResource = R.drawable.icon_ferreteria;
-                break;
-            case "pintor":
-                iconResource = R.drawable.icon_painter;
-                break;
-            case "electricista":
-                iconResource = R.drawable.icon_electrician;
-                break;
-            case "plomería":
-                iconResource = R.drawable.icon_plumber;
-                break;
-            case "jardinería":
-                iconResource = R.drawable.icon_gardener;
-                break;
-            case "albañilería":
-                iconResource = R.drawable.icon_mason;
-                break;
-            default:
-                iconResource = R.drawable.icon_worker;
-                break;
+
+        // Add null check to prevent NullPointerException
+        if (workerType == null || workerType.trim().isEmpty()) {
+            iconResource = R.drawable.icon_worker; // Default icon for null/empty work type
+        } else {
+            switch (workerType.toLowerCase().trim()) {
+                case "carpintería":
+                    iconResource = R.drawable.icon_carpenter;
+                    break;
+                case "ferretería":
+                    iconResource = R.drawable.icon_ferreteria;
+                    break;
+                case "pintor":
+                    iconResource = R.drawable.icon_painter;
+                    break;
+                case "electricista":
+                    iconResource = R.drawable.icon_electrician;
+                    break;
+                case "plomería":
+                    iconResource = R.drawable.icon_plumber;
+                    break;
+                case "jardinería":
+                    iconResource = R.drawable.icon_gardener;
+                    break;
+                case "albañilería":
+                    iconResource = R.drawable.icon_mason;
+                    break;
+                default:
+                    iconResource = R.drawable.icon_worker;
+                    break;
+            }
         }
         return resizeMapIcon(iconResource, 60, 60);
     }

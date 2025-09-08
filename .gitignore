@@ -18,3 +18,9 @@ local.properties
 # Local Netlify folder
 .netlify
 .qodo
+
+app/src/main/assets/serviceAccountKey.json
+
+app/release/
+
+app/google-services.json
