@@ -33,7 +33,7 @@ public class TermsConditionsActivity extends AppCompatActivity {
         termsUrl = getIntent().getStringExtra("terms_url");
         if (termsUrl == null || termsUrl.isEmpty()) {
             // URL por defecto si no se proporciona una
-            termsUrl = "https://sudominio.com/terminos-condiciones.html";
+            termsUrl = "https://terminosycondicionesads.netlify.app";
         }
 
         setupWebView();
