@@ -60,6 +60,9 @@
             android:name="com.ads.activities.worker.MapWorkerActivity"
             android:exported="false" />
         <activity
+            android:name="com.ads.activities.worker.RequestDetailActivity"
+            android:exported="false" />
+        <activity
             android:name="com.ads.activities.client.MapClientActivity"
             android:exported="false"
             android:theme="@style/Theme.ADSv" />
@@ -76,6 +79,12 @@
             android:name="com.ads.activities.LoginActivity"
             android:exported="false"
             android:parentActivityName="com.ads.activities.MainActivity" />
+
+        <activity
+            android:name="com.ads.activities.worker.PendingRequestsActivity"
+            android:label="Solicitudes Pendientes"
+            android:parentActivityName="com.ads.activities.worker.HomeWorkerActivity"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name="com.ads.activities.MainActivity"
