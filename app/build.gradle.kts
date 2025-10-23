@@ -139,6 +139,9 @@ dependencies {
     // PDF Library
     implementation("com.itextpdf:itextg:5.5.10")
 
+    // CircleImageView para imagen de perfil circular
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
     // Networking Libraries - Versiones estables
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")

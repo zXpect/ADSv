@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:checkableBehavior="single"
+        android:id="@+id/menu_group_main">
+
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
-            android:title="Inicio" />
+            android:title="Inicio"
+            android:iconTint="@color/nav_item_color" />
+
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_person"
-            android:title="Perfil" />
+            android:title="Perfil"
+            android:iconTint="@color/nav_item_color" />
+
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"
-            android:title="Configuración" />
+            android:title="Configuración"
+            android:iconTint="@color/nav_item_color" />
+
         <item
             android:id="@+id/nav_faq"
             android:icon="@drawable/ic_faq"
-            android:title="FAQ / Chatbot" />
+            android:title="FAQ / Chatbot"
+            android:iconTint="@color/nav_item_color" />
     </group>
-    <item android:title="Opciones">
+
+    <item android:title="Cuenta">
         <menu>
-            <item
-                android:id="@+id/action_logout"
-                android:icon="@drawable/ic_logout"
-                android:title="Cerrar Sesión" />
+            <group android:checkableBehavior="none">
+                <item
+                    android:id="@+id/action_logout"
+                    android:icon="@drawable/ic_logout"
+                    android:title="Cerrar Sesión"
+                    android:iconTint="@color/nav_item_color" />
+            </group>
         </menu>
     </item>
 </menu>

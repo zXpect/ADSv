@@ -7,6 +7,7 @@
     <string name="email">Correo</string>
     <string name="contraseña">Contraseña</string>
     <string name="boton_register">REGISTRARSE</string>
+    <string name="boton_continue">CONTINUAR</string>
     <string name="boton_usuario">USUARIO</string>
     <string name="boton_trabajador">TRABAJADOR</string>
     <string name="documentid">Numero de Documento</string>
@@ -134,6 +135,9 @@
     <string name="add_to_favorites">Agregar a Favoritos</string>
     <string name="filter_tools">Filtrar Herramientas</string>
     <string name="discount_percentage">Porcentaje de Descuento</string>
+    <string name="my_location">Mi ubicacion</string>
+    <string name="legend_toggle">Leyenda</string>
+    <string name="distance_filter">Distancia</string>
 
     <!-- Sort options for spinner -->
     <string-array name="sort_options">

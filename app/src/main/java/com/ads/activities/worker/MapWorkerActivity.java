@@ -10,6 +10,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -44,6 +46,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -93,13 +96,48 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
         initUI();
         initMap();
         generateToken();
+        setupStatusBar();
+    }
 
-
-        // Asegúrate de que la barra de estado sea completamente transparente
+    private void setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            // Detectar si está en modo oscuro
+            boolean isDarkMode = isDarkModeEnabled();
+
+            if (isDarkMode) {
+                // En modo oscuro: status bar semi-transparente oscuro
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.status_bar_dark));
+
+                // Iconos blancos en status bar
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    window.getDecorView().setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    );
+                }
+            } else {
+                // En modo claro: status bar transparente
+                window.setStatusBarColor(Color.TRANSPARENT);
+
+                // Iconos oscuros en status bar
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    window.getDecorView().setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                    | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    );
+                }
+            }
         }
+    }
+
+    private boolean isDarkModeEnabled() {
+        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }
 
     private void initProviders() {
@@ -133,6 +171,20 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        // Aplicar estilo oscuro al mapa si está en modo oscuro
+        if (isDarkModeEnabled()) {
+            try {
+                boolean success = mMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark)
+                );
+                if (!success) {
+                    Log.e(TAG, "Style parsing failed.");
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Can't find style. Error: ", e);
+            }
+        }
 
         mLocationRequest = LocationRequest.create()
                 .setInterval(1000)
@@ -225,11 +277,13 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                mMap.setMyLocationEnabled(true);
             } else {
                 checkLocationPermissions();
             }
         } else {
             mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+            mMap.setMyLocationEnabled(true);
         }
     }
 
@@ -258,22 +312,20 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void connect() {
         startLocation();
-        mButtonConnect.setText("Desconectarse");
+        mButtonConnect.setText("Conectarse");
         isConnect = true;
     }
-
 
     private void disconnect() {
         if (mFusedLocation != null) {
             mFusedLocation.removeLocationUpdates(mLocationCallback);
             mGeofireProvider.removeLocation(mAuthProvider.getId());
-            mButtonConnect.setText("Conectarse");
+            mButtonConnect.setText("Desonectarse");
             isConnect = false;
         } else {
             Toast.makeText(this, "No se puede desconectar", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private void updateLocation() {
         if (mAuthProvider.exitSession() && mCurrentLatLng != null) {
@@ -288,6 +340,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                    mMap.setMyLocationEnabled(true);
                 }
             } else {
                 Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_LONG).show();
@@ -317,7 +370,8 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
         startActivity(intent);
         finish();
     }
-    void generateToken(){
+
+    void generateToken() {
         mTokenProvider.create(mAuthProvider.getId());
     }
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -57,6 +58,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
@@ -100,7 +102,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private String mOrigin;
     private LatLng mOriginLatLng;
     private Spinner mFilterSpinner;
-    private String mCurrentFilter = "todos"; // Default filter value
+    private String mCurrentFilter = "todos";
     private LinearLayout mLegendContainer;
     private static final Map<String, Integer> WORKER_ICONS = new HashMap<>();
 
@@ -113,6 +115,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         WORKER_ICONS.put("Jardinería", R.drawable.icon_gardener);
         WORKER_ICONS.put("Albañilería", R.drawable.icon_mason);
     }
+
     private FloatingActionButton mFabLegend;
     private MaterialCardView mLegendCard;
     private RecyclerView mLegendRecycler;
@@ -123,8 +126,6 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_client);
 
-
-
         initToolbar();
         initProviders();
         initMap();
@@ -132,21 +133,49 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         initFilterSpinner();
         initLegend();
         generateToken();
+        setupStatusBar();
+    }
 
-
-// Hacer la barra de estado transparente
+    private void setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-            window.getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            );
+
+            // Detectar si está en modo oscuro
+            boolean isDarkMode = isDarkModeEnabled();
+
+            if (isDarkMode) {
+                // En modo oscuro: status bar semi-transparente oscuro
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.status_bar_dark));
+
+                // Iconos blancos en status bar
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    window.getDecorView().setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    );
+                }
+            } else {
+                // En modo claro: status bar transparente
+                window.setStatusBarColor(Color.TRANSPARENT);
+
+                // Iconos oscuros en status bar
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    window.getDecorView().setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                    | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    );
+                }
+            }
         }
     }
 
+    private boolean isDarkModeEnabled() {
+        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
+    }
 
     private void initLegend() {
         mFabLegend = findViewById(R.id.fab_legend);
@@ -205,7 +234,6 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         isLegendVisible = false;
     }
 
-    // Clase para los items de la leyenda
     private static class LegendItem {
         String text;
         int iconRes;
@@ -216,7 +244,6 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    // Adaptador para la leyenda
     private static class LegendAdapter extends RecyclerView.Adapter<LegendAdapter.ViewHolder> {
         private final List<LegendItem> items;
 
@@ -256,16 +283,16 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-
     private void initToolbar() {
-        setSupportActionBar(findViewById(R.id.toolbar_color));
+        setSupportActionBar(findViewById(R.id.toolbar));
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.map_client_title);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true); // Habilita el botón de regreso
+            getSupportActionBar().setHomeButtonEnabled(true);
         }
-    }
 
+
+    }
 
     private void initProviders() {
         mAuthProvider = new AuthProvider();
@@ -291,9 +318,47 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void setupAutoComplete() {
-        mAutoComplete = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.places);
         if (mAutoComplete != null) {
             mAutoComplete.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG, Place.Field.NAME));
+
+            // Adaptar el autocomplete al modo oscuro
+            View autocompleteView = mAutoComplete.getView();
+            if (autocompleteView != null) {
+                // Aplicar color de fondo adaptativo
+                autocompleteView.setBackgroundColor(
+                        ContextCompat.getColor(this, R.color.background_card)
+                );
+
+                // Buscar el EditText dentro del fragment y aplicar colores
+                TextView searchText = autocompleteView.findViewById(
+                        com.google.android.libraries.places.R.id.places_autocomplete_search_input
+                );
+                if (searchText != null) {
+                    searchText.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+                    searchText.setHintTextColor(ContextCompat.getColor(this, R.color.text_hint));
+                }
+
+                // Aplicar color al botón de limpiar
+                ImageView clearButton = autocompleteView.findViewById(
+                        com.google.android.libraries.places.R.id.places_autocomplete_clear_button
+                );
+                if (clearButton != null) {
+                    clearButton.setColorFilter(
+                            ContextCompat.getColor(this, R.color.text_secondary)
+                    );
+                }
+
+                // Aplicar color al icono de búsqueda
+                ImageView searchButton = autocompleteView.findViewById(
+                        com.google.android.libraries.places.R.id.places_autocomplete_search_button
+                );
+                if (searchButton != null) {
+                    searchButton.setColorFilter(
+                            ContextCompat.getColor(this, R.color.colorPrimary)
+                    );
+                }
+            }
+
             mAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
@@ -310,14 +375,25 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-
-
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        // Aplicar estilo oscuro al mapa si está en modo oscuro
+        if (isDarkModeEnabled()) {
+            try {
+                boolean success = mMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark)
+                );
+                if (!success) {
+                    Log.e(TAG, "Style parsing failed.");
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Can't find style. Error: ", e);
+            }
+        }
 
         mLocationRequest = LocationRequest.create()
                 .setInterval(1000)
@@ -400,14 +476,11 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
             if (dataSnapshot.exists()) {
                 Worker worker = dataSnapshot.getValue(Worker.class);
                 if (worker != null && !mWorkersMarkers.containsKey(workerId)) {
-                    // Get worker type with null safety
                     String workerType = worker.getWork();
 
-                    // Apply filter with null safety
                     if (mCurrentFilter.equals("Todos los servicios") ||
                             (workerType != null && workerType.equalsIgnoreCase(mCurrentFilter))) {
 
-                        // Create marker with safe icon retrieval
                         Marker marker = mMap.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(worker.getName() != null ? worker.getName() : "Unknown Worker")
@@ -421,6 +494,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
             Log.e(TAG, "Failed to get worker data for ID: " + workerId, exception);
         });
     }
+
     private void initFilterSpinner() {
         mFilterSpinner = findViewById(R.id.spinner_filter);
 
@@ -430,20 +504,46 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
-                R.layout.spinner_item, // Custom layout for items
+                R.layout.spinner_item,
                 filterOptions
         ) {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
-                view.setBackgroundColor(position == mFilterSpinner.getSelectedItemPosition() ?
-                        getResources().getColor(R.color.colorPrimaryLight) :
-                        Color.WHITE);
+
+                // Adaptar colores del dropdown según el tema
+                int backgroundColor = position == mFilterSpinner.getSelectedItemPosition() ?
+                        ContextCompat.getColor(getContext(), R.color.colorPrimaryLight) :
+                        ContextCompat.getColor(getContext(), R.color.background_card);
+
+                view.setBackgroundColor(backgroundColor);
+
+                // Adaptar color del texto
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(
+                            ContextCompat.getColor(getContext(), R.color.text_primary)
+                    );
+                }
+
+                return view;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+
+                // Adaptar color del texto seleccionado
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(
+                            ContextCompat.getColor(getContext(), R.color.text_primary)
+                    );
+                }
+
                 return view;
             }
         };
 
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item); // Custom layout for dropdown
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         mFilterSpinner.setAdapter(adapter);
 
         mFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -488,9 +588,8 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private BitmapDescriptor getIconForWorkerType(String workerType) {
         int iconResource;
 
-        // Add null check to prevent NullPointerException
         if (workerType == null || workerType.trim().isEmpty()) {
-            iconResource = R.drawable.icon_worker; // Default icon for null/empty work type
+            iconResource = R.drawable.icon_worker;
         } else {
             switch (workerType.toLowerCase().trim()) {
                 case "carpintería":
@@ -588,12 +687,11 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish(); // Cierra la actividad y regresa a la anterior
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     private void logout() {
         mAuthProvider.logOut();
@@ -609,9 +707,8 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
             mFusedLocation.removeLocationUpdates(mLocationCallback);
         }
     }
-    void generateToken(){
+
+    void generateToken() {
         mTokenProvider.create(mAuthProvider.getId());
     }
-
-
 }

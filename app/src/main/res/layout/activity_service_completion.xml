@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:text="Finalizar"
         android:textSize="18sp"
-        android:textColor="@color/white"
+        android:textColor="@color/whitevariable"
         android:padding="16dp"
         app:cornerRadius="12dp"
         android:layout_margin="16dp"

@@ -6,170 +6,93 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+    android:background="@color/background_light"
     tools:context="com.ads.activities.worker.HomeWorkerActivity">
 
     <!-- Main Content -->
-    <ScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:background="?attr/colorSurface"
-        android:scrollbars="none">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- App Bar con efecto elevado -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            app:elevation="0dp">
 
-            <!-- Toolbar -->
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:layout_marginStart="-16dp"
-                android:layout_marginEnd="-16dp"
-                android:layout_marginTop="-16dp"
                 android:background="@color/colorPrimary"
                 android:theme="@style/ToolBarTheme"
                 app:title=" "
-                app:titleTextColor="@color/white"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:titleTextColor="@color/whitevariable"
+                app:layout_scrollFlags="scroll|enterAlways" />
 
-            <!-- Información del Trabajador Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardWorkerInfo"
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Contenido principal con scroll -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="8dp"
-                app:cardBackgroundColor="?attr/colorPrimary"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar">
+                android:orientation="vertical"
+                android:paddingBottom="24dp">
 
-                <LinearLayout
+                <!-- Header con gradiente y perfil -->
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="24dp"
-                    android:gravity="center_vertical">
+                    android:background="@color/colorPrimary"
+                    android:paddingBottom="40dp">
 
-                    <!-- Profile Image with Modern Design -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_marginEnd="20dp"
-                        app:cardCornerRadius="40dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="?attr/colorSurface">
-
-                        <ImageView
-                            android:id="@+id/imageWorkerProfile"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/ic_person"
-                            android:contentDescription="Foto de perfil"
-                            app:tint="?attr/colorPrimary" />
-
-                    </androidx.cardview.widget.CardView>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="¡Bienvenido!"
-                            android:textSize="14sp"
-                            android:textColor="?attr/colorOnPrimary"
-                            android:alpha="0.8"
-                            android:layout_marginBottom="4dp" />
-
-                        <TextView
-                            android:id="@+id/textWorkerName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cargando..."
-                            android:textSize="22sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnPrimary"
-                            android:layout_marginBottom="4dp" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_work"
-                                android:layout_marginEnd="6dp"
-                                app:tint="?attr/colorOnPrimary"
-                                android:alpha="0.8" />
-
-                            <TextView
-                                android:id="@+id/textWorkerType"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Sin especialidad"
-                                android:textSize="16sp"
-                                android:textColor="?attr/colorOnPrimary"
-                                android:alpha="0.9" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Estado de Conexión Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardConnectionStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                app:cardBackgroundColor="?attr/colorSurface"
-                app:layout_constraintTop_toBottomOf="@+id/cardWorkerInfo">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="24dp">
-
-                    <!-- Header with Status -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:padding="24dp"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="20dp">
+                        app:layout_constraintTop_toTopOf="parent">
 
+                        <!-- Avatar con borde -->
                         <androidx.cardview.widget.CardView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
                             android:layout_marginEnd="16dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="2dp">
+                            app:cardCornerRadius="35dp"
+                            app:cardElevation="8dp"
+                            app:cardBackgroundColor="@color/whitevariable">
 
-                            <View
-                                android:id="@+id/connectionIndicator"
+                            <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="@drawable/circle_red" />
+                                android:layout_margin="3dp"
+                                app:cardCornerRadius="32dp"
+                                app:cardElevation="0dp">
+
+                                <ImageView
+                                    android:id="@+id/imageWorkerProfile"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/ic_person"
+                                    android:contentDescription="Foto de perfil" />
+
+                            </androidx.cardview.widget.CardView>
 
                         </androidx.cardview.widget.CardView>
 
+                        <!-- Información del usuario -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -179,322 +102,196 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Estado de Conexión"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:textColor="?attr/colorOnSurface" />
+                                android:text="Hola!"
+                                android:textSize="14sp"
+                                android:textColor="@color/whitevariable"
+                                android:alpha="0.9"
+                                android:layout_marginBottom="2dp" />
 
                             <TextView
-                                android:id="@+id/textConnectionStatus"
+                                android:id="@+id/textWorkerName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Desconectado"
-                                android:textSize="16sp"
-                                android:textColor="?attr/colorOnSurfaceVariant"
-                                android:layout_marginTop="4dp" />
+                                android:text="Cargando..."
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/whitevariable"
+                                android:maxLines="1"
+                                android:ellipsize="end" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="4dp"
+                                android:background="@drawable/badge_background"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="4dp">
+
+                                <ImageView
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:src="@drawable/ic_work"
+                                    android:layout_marginEnd="6dp"
+                                    app:tint="@color/whitevariable" />
+
+                                <TextView
+                                    android:id="@+id/textWorkerType"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Sin especialidad"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/whitevariable"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
                     </LinearLayout>
 
-                    <!-- Description -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gestiona tu disponibilidad para recibir solicitudes de trabajo"
-                        android:textSize="14sp"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:lineSpacingExtra="2dp"
-                        android:layout_marginBottom="20dp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <!-- Action Buttons -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/buttonConnect"
-                            android:layout_width="0dp"
-                            android:layout_height="56dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="12dp"
-                            android:text="Conectar"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            app:cornerRadius="28dp"
-                            app:backgroundTint="?attr/colorPrimary"
-                            app:icon="@drawable/ic_connect"
-                            app:iconGravity="textStart"
-                            app:iconPadding="8dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/buttonDisconnect"
-                            android:layout_width="0dp"
-                            android:layout_height="56dp"
-                            android:layout_weight="1"
-                            android:layout_marginStart="12dp"
-                            android:text="Desconectar"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:enabled="false"
-                            app:cornerRadius="28dp"
-                            app:backgroundTint="?attr/colorError"
-                            app:icon="@drawable/ic_disconnect"
-                            app:iconGravity="textStart"
-                            app:iconPadding="8dp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Indicadores de Desempeño Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardPerformance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                app:cardBackgroundColor="?attr/colorSurface"
-                app:layout_constraintTop_toBottomOf="@+id/cardConnectionStatus">
-
+                <!-- Cards Container -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="24dp">
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginTop="-20dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Indicadores de Desempeño"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorOnSurface"
-                        android:layout_marginBottom="20dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <!-- Calificación -->
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="8dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="?attr/colorSurfaceVariant">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="16dp">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_star"
-                                    android:layout_marginBottom="8dp"
-                                    app:tint="?attr/colorPrimary" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Calificación"
-                                    android:textSize="12sp"
-                                    android:textColor="?attr/colorOnSurfaceVariant"
-                                    android:layout_marginBottom="4dp" />
-
-                                <TextView
-                                    android:id="@+id/textRating"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="⭐ 5.0"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold"
-                                    android:textColor="?attr/colorOnSurface" />
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <!-- Servicios Completados -->
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="?attr/colorSurfaceVariant">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="16dp">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_check_circle"
-                                    android:layout_marginBottom="8dp"
-                                    app:tint="?attr/colorPrimary" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Servicios"
-                                    android:textSize="12sp"
-                                    android:textColor="?attr/colorOnSurfaceVariant"
-                                    android:layout_marginBottom="4dp" />
-
-                                <TextView
-                                    android:id="@+id/textCompletedServices"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="0"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold"
-                                    android:textColor="?attr/colorOnSurface" />
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <!-- Ganancias -->
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="8dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="?attr/colorSurfaceVariant">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="16dp">
-
-                                <ImageView
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_money"
-                                    android:layout_marginBottom="8dp"
-                                    app:tint="?attr/colorPrimary" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Ganancias"
-                                    android:textSize="12sp"
-                                    android:textColor="?attr/colorOnSurfaceVariant"
-                                    android:layout_marginBottom="4dp" />
-
-                                <TextView
-                                    android:id="@+id/textMonthlyEarnings"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="$0"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold"
-                                    android:textColor="?attr/colorPrimary" />
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Gestión de Servicios Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardServicesManagement"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                app:cardBackgroundColor="?attr/colorSurface"
-                app:layout_constraintTop_toBottomOf="@+id/cardPerformance">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="24dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gestión de Servicios"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorOnSurface"
-                        android:layout_marginBottom="20dp" />
-
-                    <!-- Servicios Activos -->
+                    <!-- Card de Estado de Conexión (destacada) -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardConnectionStatus"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp"
-                        app:cardBackgroundColor="?attr/colorSurfaceVariant">
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="12dp"
+                        app:cardBackgroundColor="@color/whitevariable">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="16dp"
-                            android:gravity="center_vertical">
+                            android:orientation="vertical"
+                            android:padding="20dp">
 
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_work_active"
-                                android:layout_marginEnd="16dp"
-                                app:tint="?attr/colorPrimary" />
-
+                            <!-- Header con indicador -->
                             <LinearLayout
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="16dp">
 
-                                <TextView
+                                <!-- Indicador de estado animado -->
+                                <FrameLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Servicios Activos"
-                                    android:textSize="14sp"
+                                    android:layout_marginEnd="12dp">
+
+                                    <View
+                                        android:id="@+id/connectionIndicatorGlow"
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:background="@drawable/circle_glow_red"
+                                        android:alpha="0.3" />
+
+                                    <View
+                                        android:id="@+id/connectionIndicator"
+                                        android:layout_width="16dp"
+                                        android:layout_height="16dp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/circle_red" />
+
+                                </FrameLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Estado"
+                                        android:textSize="13sp"
+                                        android:textColor="@color/text_secondary"
+                                        android:alpha="0.7" />
+
+                                    <TextView
+                                        android:id="@+id/textConnectionStatus"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Desconectado"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/text_primary" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <!-- Mensaje informativo -->
+                            <TextView
+                                android:id="@+id/textConnectionMessage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Conéctate para recibir solicitudes de trabajo cercanas"
+                                android:textSize="14sp"
+                                android:textColor="@color/text_secondary"
+                                android:lineSpacingExtra="2dp"
+                                android:layout_marginBottom="16dp" />
+
+                            <!-- Botones de acción mejorados -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/buttonConnect"
+                                    android:layout_width="0dp"
+                                    android:layout_height="54dp"
+                                    android:layout_weight="1"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="Conectar"
+                                    android:textSize="15sp"
                                     android:textStyle="bold"
-                                    android:textColor="?attr/colorOnSurface"
-                                    android:layout_marginBottom="4dp" />
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/whitevariable"
+                                    app:cornerRadius="27dp"
+                                    app:backgroundTint="@color/colorPrimary"
+                                    app:icon="@drawable/ic_connect"
+                                    app:iconTint="@color/whitevariable"
+                                    app:iconGravity="textStart"
+                                    app:iconPadding="8dp"
+                                    app:iconSize="20dp"
+                                    app:elevation="4dp" />
 
-                                <TextView
-                                    android:id="@+id/textActiveServices"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="No hay servicios activos"
-                                    android:textSize="14sp"
-                                    android:textColor="?attr/colorOnSurfaceVariant" />
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/buttonDisconnect"
+                                    android:layout_width="0dp"
+                                    android:layout_height="54dp"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="8dp"
+                                    android:text="Desconectar"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold"
+                                    android:textAllCaps="false"
+                                    android:enabled="false"
+                                    android:textColor="@color/whitevariable"
+                                    app:cornerRadius="27dp"
+                                    app:backgroundTint="@color/error_color"
+                                    app:icon="@drawable/ic_disconnect"
+                                    app:iconTint="@color/whitevariable"
+                                    app:iconGravity="textStart"
+                                    app:iconPadding="8dp"
+                                    app:iconSize="20dp"
+                                    app:elevation="4dp" />
 
                             </LinearLayout>
 
@@ -502,133 +299,442 @@
 
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Solicitudes Pendientes -->
+                    <!-- Grid de Estadísticas - MINIMALISTA CON UN SOLO COLOR -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPerformance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/whitevariable">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="20dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tu Desempeño"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginBottom="16dp" />
+
+                            <!-- Grid 2x2 de estadísticas MINIMALISTA -->
+                            <GridLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:columnCount="2"
+                                android:rowCount="2"
+                                android:alignmentMode="alignMargins"
+                                android:columnOrderPreserved="false">
+
+                                <!-- Calificación -->
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_columnWeight="1"
+                                    android:layout_margin="6dp"
+                                    app:cardCornerRadius="16dp"
+                                    app:cardElevation="0dp"
+                                    app:cardBackgroundColor="@color/stat_card_bg_1">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:gravity="center"
+                                        android:padding="20dp">
+
+                                        <TextView
+                                            android:id="@+id/textRating"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="5.0"
+                                            android:textSize="32sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/stat_value_color"
+                                            android:layout_marginBottom="4dp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Calificación"
+                                            android:textSize="12sp"
+                                            android:textColor="@color/stat_icon_color" />
+
+                                    </LinearLayout>
+
+                                </androidx.cardview.widget.CardView>
+
+                                <!-- Servicios Completados -->
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_columnWeight="1"
+                                    android:layout_margin="6dp"
+                                    app:cardCornerRadius="16dp"
+                                    app:cardElevation="0dp"
+                                    app:cardBackgroundColor="@color/stat_card_bg_2">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:gravity="center"
+                                        android:padding="20dp">
+
+                                        <TextView
+                                            android:id="@+id/textCompletedServices"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="0"
+                                            android:textSize="32sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/stat_value_color"
+                                            android:layout_marginBottom="4dp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Completados"
+                                            android:textSize="12sp"
+                                            android:textColor="@color/stat_icon_color" />
+
+                                    </LinearLayout>
+
+                                </androidx.cardview.widget.CardView>
+
+                                <!-- Ganancias -->
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_columnWeight="1"
+                                    android:layout_margin="6dp"
+                                    app:cardCornerRadius="16dp"
+                                    app:cardElevation="0dp"
+                                    app:cardBackgroundColor="@color/stat_card_bg_3">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:gravity="center"
+                                        android:padding="20dp">
+
+                                        <TextView
+                                            android:id="@+id/textMonthlyEarnings"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="$0"
+                                            android:textSize="28sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/stat_value_color"
+                                            android:layout_marginBottom="4dp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Ganancias"
+                                            android:textSize="12sp"
+                                            android:textColor="@color/stat_icon_color" />
+
+                                    </LinearLayout>
+
+                                </androidx.cardview.widget.CardView>
+
+                                <!-- Servicios Activos -->
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_columnWeight="1"
+                                    android:layout_margin="6dp"
+                                    app:cardCornerRadius="16dp"
+                                    app:cardElevation="0dp"
+                                    app:cardBackgroundColor="@color/stat_card_bg_4">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:gravity="center"
+                                        android:padding="20dp">
+
+                                        <TextView
+                                            android:id="@+id/textActiveServicesCount"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="0"
+                                            android:textSize="32sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/stat_value_color"
+                                            android:layout_marginBottom="4dp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="En Curso"
+                                            android:textSize="12sp"
+                                            android:textColor="@color/stat_icon_color" />
+
+                                    </LinearLayout>
+
+                                </androidx.cardview.widget.CardView>
+
+                            </GridLayout>
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Card de Servicios Activos -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp"
-                        app:cardBackgroundColor="?attr/colorSurfaceVariant">
+                        android:layout_marginBottom="16dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/whitevariable">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="20dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="12dp">
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@drawable/ic_work_active"
+                                    android:layout_marginEnd="12dp"
+                                    app:tint="@color/stat_value_color" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Servicios Activos"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/textActiveServices"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No hay servicios activos"
+                                android:textSize="14sp"
+                                android:textColor="@color/text_secondary"
+                                android:paddingStart="36dp" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Card de Solicitudes Pendientes (interactiva) -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPendingRequests"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/whitevariable">
 
                         <LinearLayout
                             android:id="@+id/layoutPendingRequests"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="16dp"
-                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:padding="20dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?android:attr/selectableItemBackground">
 
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_notifications"
-                                android:layout_marginEnd="16dp"
-                                app:tint="?attr/colorPrimary" />
-
                             <LinearLayout
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Solicitudes Pendientes"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="?attr/colorOnSurface"
-                                    android:layout_marginBottom="4dp" />
+                                <!-- Badge con contador -->
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/badgeNotification"
+                                    android:layout_width="44dp"
+                                    android:layout_height="44dp"
+                                    android:layout_marginEnd="12dp"
+                                    app:cardCornerRadius="22dp"
+                                    app:cardElevation="0dp"
+                                    app:cardBackgroundColor="@color/notification_badge_bg">
 
-                                <TextView
-                                    android:id="@+id/textPendingRequests"
-                                    android:layout_width="wrap_content"
+                                    <ImageView
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_notifications"
+                                        app:tint="@color/colorPrimary" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text="No hay solicitudes pendientes"
-                                    android:textSize="14sp"
-                                    android:textColor="?attr/colorOnSurfaceVariant" />
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Solicitudes"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/text_primary"
+                                        android:layout_marginBottom="2dp" />
+
+                                    <TextView
+                                        android:id="@+id/textPendingRequests"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="No hay solicitudes pendientes"
+                                        android:textSize="13sp"
+                                        android:textColor="@color/text_secondary" />
+
+                                </LinearLayout>
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@drawable/ic_arrow_forward"
+                                    app:tint="@color/colorPrimary" />
 
                             </LinearLayout>
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_arrow_forward"
-                                app:tint="?attr/colorPrimary" />
 
                         </LinearLayout>
 
                     </androidx.cardview.widget.CardView>
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Botones de Navegación -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardNavigation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                app:cardBackgroundColor="?attr/colorSurface"
-                app:layout_constraintTop_toBottomOf="@+id/cardServicesManagement"
-                app:layout_constraintBottom_toBottomOf="parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="24dp">
-
+                    <!-- Accesos Rápidos -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Navegación Rápida"
-                        android:textSize="20sp"
+                        android:text="Accesos Rápidos"
+                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="?attr/colorOnSurface"
-                        android:layout_marginBottom="20dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/vermapaworker"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="12dp"
-                        android:text="@string/vermapaworker"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:cornerRadius="28dp"
-                        app:backgroundTint="?attr/colorPrimary"
-                        app:icon="@drawable/ic_map"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp" />
+                        android:paddingStart="4dp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonFixDepot"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="@string/fix_depot_title"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:cornerRadius="28dp"
-                        app:backgroundTint="?attr/colorPrimary"
-                        app:icon="@drawable/ic_tools"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp" />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <!-- Botón Ver Mapa -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardMapButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="2dp"
+                            app:cardBackgroundColor="@color/quick_access_bg_1">
+
+                            <LinearLayout
+                                android:id="@+id/vermapaworker"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="20dp"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/ic_map"
+                                    android:layout_marginBottom="12dp"
+                                    app:tint="@color/stat_value_color" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ver Mapa"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Botón Fix Depot -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardFixDepotButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="2dp"
+                            app:cardBackgroundColor="@color/quick_access_bg_2">
+
+                            <LinearLayout
+                                android:id="@+id/buttonFixDepot"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="20dp"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/ic_tools"
+                                    android:layout_marginBottom="12dp"
+                                    app:tint="@color/stat_value_color" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Fix Depot"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
-    </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
@@ -637,6 +743,10 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:background="@color/whitevariable"
+        app:itemTextColor="@color/text_primary"
+        app:itemIconTint="@color/text_secondary"
+        app:itemBackground="@color/nav_item_background"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu" />
 

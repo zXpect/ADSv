@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
     android:padding="24dp"
+    android:background="@color/whitevariable"
     tools:context="com.ads.activities.LoginActivity">
 
     <include
         android:id="@+id/include"
-        layout="@layout/action_bar_toolbar" />
+        layout="@layout/action_bar_toolbar"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="24dp" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -107,7 +109,7 @@
         android:elevation="4dp"
         android:stateListAnimator="@animator/button_state_list_anim_filled"
         android:text="@string/boton_login"
-        android:textColor="@color/white"
+        android:textColor="@color/whitevariable"
         android:textSize="16sp"
         app:cornerRadius="28dp"
         app:layout_constraintEnd_toEndOf="parent"

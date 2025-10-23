@@ -1,39 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark theme colors -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">#FFFF7500</color>
-    <color name="colorPrimaryDark">#C15A02</color>
-    <color name="colorPrimaryLight">#FD8B29</color>
-    <color name="colorAccent">#FA9B4B</color>
-    <color name="background_color">#121212</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B3FFFFFF</color>
-    <color name="text_hint">#80FFFFFF</color>
-    <color name="star_color">#FFC107</color>
-    <color name="button_color">#FFFF7500</color>
-    
-    <!-- Request Detail Activity Colors for Dark Theme -->
-    <color name="primary_color">#FFFF7500</color>
-    <color name="primary_text">#FFFFFF</color>
-    <color name="secondary_text">#B3FFFFFF</color>
-    <color name="success_color">#4CAF50</color>
-    <color name="error_color">#F44336</color>
 
-    <color name="rating_color">#FFA726</color>
-    <color name="status_available">#4CAF50</color>
-    <color name="status_busy">#FF5722</color>
-    <color name="card_background">#1E1E1E</color>
-    <color name="divider_color">#2C2C2C</color>
 
-    <color name="green">#4CAF50</color>
-    <color name="red">#F44336</color>
-    <color name="orange">#FF9800</color>
-    <color name="blue">#2196F3</color>
-    <color name="gray_light">#2C2C2C</color>
-    <color name="gray_medium">#3C3C3C</color>
-    <color name="gray_dark">#9E9E9E</color>
-    <color name="background_card">#1E1E1E</color>
-    <color name="border_gray">#636363</color>
+    <color name="status_bar_dark">#CC1A1A1A</color>
+    <color name="nav_item_selected_bg">#33FFFFFF</color>
+
+
+    <!-- Fondos adaptados a oscuro - GRISES MÁS CLAROS Y CONTRASTANTES -->
+    <color name="background_light">#1A1A1A</color>
+
+    <color name="background_color">#1A1A1A</color>
+    <color name="whitevariable">#353433</color>
+    <color name="white">#101010</color>
+    <color name="black">#FFFFFF</color>
+    <color name="background_card">#262626</color>
+    <color name="card_background">#262626</color>
+    <color name="surface_dark">#2D2D2D</color>
+
+    <!-- Textos adaptados - MÁS BRILLANTES -->
+    <color name="text_primary">#FAFAFA</color>
+    <color name="text_secondary">#C7C7C7</color>
+    <color name="text_hint">#8A8A8A</color>
+    <color name="primary_text">#FAFAFA</color>
+    <color name="secondary_text">#C7C7C7</color>
+
+    <!-- Dividers / bordes oscuros - MÁS VISIBLES -->
+    <color name="divider_color">#404040</color>
+    <color name="border_gray">#404040</color>
+
+    <!-- ============================================ -->
+    <!-- ESTADÍSTICAS - TEMA OSCURO CON CONTRASTE -->
+    <!-- ============================================ -->
+    <!-- Fondo de tarjetas en oscuro (gris medio) -->
+    <color name="stat_card_bg_1">#2D2D2D</color>
+    <color name="stat_card_bg_2">#2D2D2D</color>
+    <color name="stat_card_bg_3">#2D2D2D</color>
+    <color name="stat_card_bg_4">#2D2D2D</color>
+
+    <!-- El naranja se mantiene ESTÁTICO y resalta perfecto -->
+    <!-- <color name="stat_value_color">#FF7500</color> -->
+
+    <!-- Texto descriptivo claro -->
+    <color name="stat_icon_color">#C7C7C7</color>
+
+    <!-- ============================================ -->
+    <!-- BADGES Y NOTIFICACIONES -->
+    <!-- ============================================ -->
+    <color name="notification_badge_bg">#353535</color>
+
+    <!-- ============================================ -->
+    <!-- ACCESOS RÁPIDOS -->
+    <!-- ============================================ -->
+    <color name="quick_access_bg_1">#2D2D2D</color>
+    <color name="quick_access_bg_2">#2D2D2D</color>
+
+    <!-- Legacy -->
+    <color name="stat_card_bg">#2D2D2D</color>
+    <color name="quick_access_bg_1_dark">#2D2D2D</color>
+    <color name="quick_access_bg_2_dark">#2D2D2D</color>
 </resources>

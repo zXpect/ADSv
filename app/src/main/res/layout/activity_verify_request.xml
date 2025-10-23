@@ -138,6 +138,7 @@
         android:layout_height="wrap_content"
         android:text="Confirmar Solicitud"
         android:textSize="18sp"
+        android:textColor="@color/white"
         android:padding="12dp"
         app:cornerRadius="8dp"
         android:layout_margin="16dp"

@@ -63,7 +63,7 @@
                 android:background="@drawable/urgency_badge_high"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
-                android:textColor="@color/white"
+                android:textColor="@color/whitevariable"
                 android:textAllCaps="true" />
 
         </LinearLayout>

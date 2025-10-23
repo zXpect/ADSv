@@ -7,20 +7,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/background_color"
     tools:context="com.ads.activities.client.MapClientActivity">
 
     <!-- Contenido principal -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:background="@color/background_color">
 
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="48dp"/>
+            android:layout_marginTop="?attr/actionBarSize"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -28,87 +30,172 @@
             android:fitsSystemWindows="true"
             android:clipToPadding="false">
 
+            <!-- Toolbar mejorada -->
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@color/white"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:fitsSystemWindows="true">
+                android:fitsSystemWindows="true"
+                android:elevation="0dp"
+                app:elevation="0dp">
 
                 <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar_color"
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="?attr/actionBarSize"
                     android:background="@color/colorPrimary"
-                    app:titleTextColor="@color/white"
-                    android:elevation="0dp"/>
+                    android:theme="@style/ToolBarTheme"
+                    app:titleTextColor="@color/whitevariable"
+                    app:navigationIcon="@drawable/ic_arrow_back"
+                    android:elevation="4dp"/>
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/search_container"
-                android:layout_width="match_parent"
+            <!-- Card de filtros rediseñada -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/filter_card"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:layout_constraintTop_toBottomOf="@id/appBarLayout">
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/background_card"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="@color/background_card">
 
+                    <!-- Filtro por servicio -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="16dp">
+                        android:gravity="center_vertical"
+                        android:padding="16dp">
 
-                        <fragment
-                            android:id="@+id/places"
-                            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-                            android:layout_width="match_parent"
+                        <!-- Icono de filtro con fondo circular -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardBackgroundColor="@color/colorPrimaryLight"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_filter"
+                                app:tint="@color/static_white"
+                                android:contentDescription="@string/filter_icon" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Contenedor del Spinner de servicio -->
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp" />
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Filtrar por servicio"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_secondary"
+                                android:fontFamily="sans-serif-medium"/>
+
+                            <Spinner
+                                android:id="@+id/spinner_filter"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:background="@android:color/transparent"
+                                android:spinnerMode="dropdown"
+                                android:paddingStart="0dp"
+                                android:paddingEnd="0dp"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
+                    <!-- Divisor -->
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#E0E0E0" />
+                        android:layout_marginHorizontal="16dp"
+                        android:background="@color/divider_color" />
 
+                    <!-- Filtro por distancia -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="16dp">
+                        android:gravity="center_vertical"
+                        android:padding="16dp">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_filter"
-                            app:tint="@color/colorPrimary"
-                            android:contentDescription="@string/filter_icon" />
+                        <!-- Icono de distancia con fondo circular -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardBackgroundColor="@color/colorPrimaryLight"
+                            app:cardElevation="0dp">
 
-                        <Spinner
-                            android:id="@+id/spinner_filter"
-                            android:layout_width="match_parent"
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_distance"
+                                app:tint="@color/static_white"
+                                android:contentDescription="@string/distance_filter" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Contenedor del Spinner de distancia -->
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:background="@null"
-                            android:spinnerMode="dropdown" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Radio de búsqueda"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_secondary"
+                                android:fontFamily="sans-serif-medium"/>
+
+                            <Spinner
+                                android:id="@+id/radius_spinner"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:background="@android:color/transparent"
+                                android:spinnerMode="dropdown"
+                                android:paddingStart="0dp"
+                                android:paddingEnd="0dp"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
+
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Botón flotante para mostrar/ocultar la leyenda -->
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -118,31 +205,77 @@
                 android:layout_margin="16dp"
                 android:src="@drawable/ic_legend"
                 app:backgroundTint="@color/colorPrimary"
+                app:tint="@color/whitevariable"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:fabSize="mini"
-                app:tint="@color/white" />
+                app:fabSize="normal"
+                app:elevation="6dp"
+                app:borderWidth="0dp"
+                android:contentDescription="@string/legend_toggle"/>
 
-            <!-- Leyenda desplegable -->
+            <!-- Leyenda desplegable mejorada -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/legend_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:visibility="gone"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/background_card"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
                 app:layout_constraintBottom_toTopOf="@id/fab_legend"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/legend_recycler"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="8dp" />
+                    android:orientation="vertical"
+                    android:background="@color/background_card">
+
+                    <!-- Header de la leyenda -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Leyenda de servicios"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:fontFamily="sans-serif-medium"
+                        android:padding="16dp"
+                        android:paddingBottom="8dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/divider_color"
+                        android:layout_marginHorizontal="16dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/legend_recycler"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:paddingTop="8dp"
+                        android:background="@color/background_card" />
+
+                </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- Botón de ubicación actual (opcional) -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_my_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_my_location"
+                app:backgroundTint="@color/whitevariable"
+                app:tint="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:fabSize="normal"
+                app:elevation="6dp"
+                app:borderWidth="0dp"
+                android:contentDescription="@string/my_location"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -157,6 +290,8 @@
         android:fitsSystemWindows="true"
         app:menu="@menu/drawer_menu"
         app:headerLayout="@layout/nav_header"
-        android:background="@color/white" />
+        android:background="@color/whitevariable"
+        app:itemTextColor="@color/text_primary"
+        app:itemIconTint="@color/text_secondary" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

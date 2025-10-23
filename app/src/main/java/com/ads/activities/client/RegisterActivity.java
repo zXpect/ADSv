@@ -1,9 +1,14 @@
 package com.ads.activities.client;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -15,15 +20,19 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -35,9 +44,10 @@ import com.ads.models.Client;
 import com.ads.providers.AuthProvider;
 import com.ads.providers.ClientProvider;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.io.IOException;
 import java.util.regex.Pattern;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -60,12 +70,68 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText mTextInputPassword;
     private CheckBox mCheckBoxTerms;
     private TextView mTextViewTerms;
+    private CircleImageView mCircleImageProfile;
+    private ImageView mImageViewAddPhoto;
 
     // TextInputLayouts para mostrar errores
     private TextInputLayout mTextInputLayoutNames;
     private TextInputLayout mTextInputLayoutLastNames;
     private TextInputLayout mTextInputLayoutEmail;
     private TextInputLayout mTextInputLayoutPassword;
+
+    // Variables para Google Sign-In
+    private boolean isFromGoogleSignIn = false;
+    private String googleUserId;
+    private String googleEmail;
+
+    // Variable para la imagen seleccionada
+    private Uri mImageUri;
+    private boolean mImageSelected = false;
+
+    // Launcher para seleccionar imagen de galería
+    private final ActivityResultLauncher<Intent> galleryLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri imageUri = result.getData().getData();
+                    if (imageUri != null) {
+                        handleSelectedImage(imageUri);
+                    }
+                }
+            });
+
+    // Launcher para tomar foto con cámara
+    private final ActivityResultLauncher<Intent> cameraLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Bundle extras = result.getData().getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    if (imageBitmap != null) {
+                        mCircleImageProfile.setImageBitmap(imageBitmap);
+                        mImageUri = getImageUriFromBitmap(imageBitmap);
+                        mImageSelected = true;
+                    }
+                }
+            });
+
+    // Launcher para permisos de cámara
+    private final ActivityResultLauncher<String> cameraPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    openCamera();
+                } else {
+                    showToast("Permiso de cámara denegado");
+                }
+            });
+
+    // Launcher para permisos de galería (Android 13+)
+    private final ActivityResultLauncher<String> galleryPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    openGallery();
+                } else {
+                    showToast("Permiso de galería denegado");
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +140,56 @@ public class RegisterActivity extends AppCompatActivity {
 
         initializeComponents();
         setupStatusBar();
+        handleGoogleSignInData();
         setupClickListeners();
         setupTermsAndConditionsLink();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isFromGoogleSignIn) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Cancelar registro")
+                    .setMessage("Si cancelas ahora, no se tendrá en cuenta el progreso de registro. ¿Estás seguro?")
+                    .setPositiveButton("Sí, cancelar", (dialog, which) -> deleteUserAndSignOut())
+                    .setNegativeButton("Continuar registro", null)
+                    .setCancelable(false)
+                    .show();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void deleteUserAndSignOut() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        com.google.firebase.auth.FirebaseUser user = auth.getCurrentUser();
+
+        if (user != null) {
+            user.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Usuario eliminado correctamente");
+                } else {
+                    Log.e(TAG, "Error al eliminar usuario", task.getException());
+                }
+
+                auth.signOut();
+
+                com.google.android.gms.auth.api.signin.GoogleSignInOptions gso =
+                        new com.google.android.gms.auth.api.signin.GoogleSignInOptions.Builder(
+                                com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestIdToken(getString(R.string.default_web_client_id))
+                                .requestEmail()
+                                .build();
+
+                com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(this, gso).signOut()
+                        .addOnCompleteListener(this, task1 -> {
+                            showToast("Registro cancelado");
+                            finish();
+                        });
+            });
+        } else {
+            finish();
+        }
     }
 
     private void initializeComponents() {
@@ -93,12 +207,40 @@ public class RegisterActivity extends AppCompatActivity {
         mTextInputPassword = findViewById(R.id.Password);
         mCheckBoxTerms = findViewById(R.id.checkBox2);
         mTextViewTerms = findViewById(R.id.textViewTerms);
+        mCircleImageProfile = findViewById(R.id.circleImageProfile);
+        mImageViewAddPhoto = findViewById(R.id.imageViewAddPhoto);
 
         // Initialize TextInputLayouts
         mTextInputLayoutNames = findViewById(R.id.textInputLayoutNames);
         mTextInputLayoutLastNames = findViewById(R.id.textInputLayoutLastNames);
         mTextInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
         mTextInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
+    }
+
+    private void handleGoogleSignInData() {
+        Intent intent = getIntent();
+        isFromGoogleSignIn = intent.getBooleanExtra("fromGoogleSignIn", false);
+
+        if (isFromGoogleSignIn) {
+            googleUserId = intent.getStringExtra("userId");
+            googleEmail = intent.getStringExtra("email");
+            String name = intent.getStringExtra("name");
+            String lastName = intent.getStringExtra("lastName");
+
+            if (name != null) {
+                mTextInputNames.setText(name);
+            }
+            if (lastName != null) {
+                mTextInputLastNames.setText(lastName);
+            }
+            if (googleEmail != null) {
+                mTextInputEmail.setText(googleEmail);
+                mTextInputEmail.setEnabled(false);
+            }
+
+            mTextInputLayoutPassword.setVisibility(View.GONE);
+            mButtonRegister.setText("Completar Registro");
+        }
     }
 
     private void setupStatusBar() {
@@ -110,15 +252,102 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         mButtonRegister.setOnClickListener(v -> {
-            // Deshabilitar el botón para prevenir múltiples clicks
             mButtonRegister.setEnabled(false);
             try {
                 clickRegister();
             } finally {
-                // Reactivar el botón después de 1 segundo
                 mButtonRegister.postDelayed(() -> mButtonRegister.setEnabled(true), 1000);
             }
         });
+
+        // Listener para seleccionar foto de perfil
+        mCircleImageProfile.setOnClickListener(v -> showImagePickerDialog());
+        mImageViewAddPhoto.setOnClickListener(v -> showImagePickerDialog());
+    }
+
+    private void showImagePickerDialog() {
+        String[] options = {"Tomar foto", "Seleccionar de galería", "Cancelar"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Seleccionar foto de perfil");
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    checkCameraPermission();
+                    break;
+                case 1:
+                    checkGalleryPermission();
+                    break;
+                case 2:
+                    dialog.dismiss();
+                    break;
+            }
+        });
+        builder.show();
+    }
+
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            openCamera();
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+    }
+
+    private void checkGalleryPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+                    == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                galleryPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
+        }
+    }
+
+    private void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            cameraLauncher.launch(takePictureIntent);
+        } else {
+            showToast("No se encontró aplicación de cámara");
+        }
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        galleryLauncher.launch(intent);
+    }
+
+    private void handleSelectedImage(Uri imageUri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+            mCircleImageProfile.setImageBitmap(bitmap);
+            mImageUri = imageUri;
+            mImageSelected = true;
+        } catch (IOException e) {
+            Log.e(TAG, "Error al cargar imagen", e);
+            showToast("Error al cargar la imagen");
+        }
+    }
+
+    private Uri getImageUriFromBitmap(Bitmap bitmap) {
+        String path = MediaStore.Images.Media.insertImage(
+                getContentResolver(),
+                bitmap,
+                "profile_" + System.currentTimeMillis(),
+                null
+        );
+        return Uri.parse(path);
     }
 
     private void setupTermsAndConditionsLink() {
@@ -141,53 +370,48 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void clickRegister() {
-        // Limpiar errores previos
         clearErrors();
 
-        // Obtener y validar datos
         String name = sanitizeInput(mTextInputNames.getText().toString());
         String lastName = sanitizeInput(mTextInputLastNames.getText().toString());
         String email = sanitizeInput(mTextInputEmail.getText().toString().toLowerCase());
-        String password = mTextInputPassword.getText().toString();
+        String password = isFromGoogleSignIn ? "" : mTextInputPassword.getText().toString();
 
-        // Validar campos
         if (!validateFields(name, lastName, email, password)) {
             return;
         }
 
-        // Verificar términos y condiciones
         if (!mCheckBoxTerms.isChecked()) {
             showToast("Debe aceptar los términos y condiciones");
             return;
         }
 
-        // Proceder con el registro
-        register(name, lastName, email, password);
+        if (isFromGoogleSignIn) {
+            createClientFromGoogle(name, lastName, email);
+        } else {
+            register(name, lastName, email, password);
+        }
     }
 
     private boolean validateFields(String name, String lastName, String email, String password) {
         boolean isValid = true;
 
-        // Validar nombre
         if (!validateName(name)) {
             mTextInputLayoutNames.setError("Nombre inválido (solo letras, máx. 50 caracteres)");
             isValid = false;
         }
 
-        // Validar apellido
         if (!validateName(lastName)) {
             mTextInputLayoutLastNames.setError("Apellido inválido (solo letras, máx. 50 caracteres)");
             isValid = false;
         }
 
-        // Validar email
         if (!validateEmail(email)) {
             mTextInputLayoutEmail.setError("Email inválido");
             isValid = false;
         }
 
-        // Validar contraseña
-        if (!validatePassword(password)) {
+        if (!isFromGoogleSignIn && !validatePassword(password)) {
             mTextInputLayoutPassword.setError("La contraseña debe tener entre 8 y 50 caracteres, incluir mayúsculas, minúsculas y números");
             isValid = false;
         }
@@ -210,9 +434,9 @@ public class RegisterActivity extends AppCompatActivity {
         return !TextUtils.isEmpty(password) &&
                 password.length() >= MIN_PASSWORD_LENGTH &&
                 password.length() <= MAX_PASSWORD_LENGTH &&
-                password.matches(".*[A-Z].*") && // Al menos una mayúscula
-                password.matches(".*[a-z].*") && // Al menos una minúscula
-                password.matches(".*\\d.*");     // Al menos un número
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[a-z].*") &&
+                password.matches(".*\\d.*");
     }
 
     private String sanitizeInput(String input) {
@@ -223,7 +447,39 @@ public class RegisterActivity extends AppCompatActivity {
         mTextInputLayoutNames.setError(null);
         mTextInputLayoutLastNames.setError(null);
         mTextInputLayoutEmail.setError(null);
-        mTextInputLayoutPassword.setError(null);
+        if (!isFromGoogleSignIn) {
+            mTextInputLayoutPassword.setError(null);
+        }
+    }
+
+    private void createClientFromGoogle(String name, String lastName, String email) {
+        Client client = new Client(googleUserId, name, lastName, email);
+
+        if (mImageSelected && mImageUri != null) {
+            // Crear cliente con imagen
+            mClientProvider.createWithImage(client, mImageUri)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            showToast("Registro completado con éxito");
+                            navigateToHome();
+                        } else {
+                            Log.e(TAG, "Error creating client from Google", task.getException());
+                            showToast("Error al completar el registro. Por favor, intente nuevamente");
+                        }
+                    });
+        } else {
+            // Crear cliente sin imagen
+            mClientProvider.create(client)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            showToast("Registro completado con éxito");
+                            navigateToHome();
+                        } else {
+                            Log.e(TAG, "Error creating client from Google", task.getException());
+                            showToast("Error al completar el registro. Por favor, intente nuevamente");
+                        }
+                    });
+        }
     }
 
     private void register(final String name, final String lastName, final String email, String password) {
@@ -240,18 +496,33 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createClient(Client client) {
-        mClientProvider.create(client)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        showToast("El registro se realizó con éxito");
-                        navigateToHome();
-                    } else {
-                        Log.e(TAG, "Error creating client", task.getException());
-                        showToast("Error al crear el cliente. Por favor, intente nuevamente");
-                        // Eliminar el usuario de autenticación si falla la creación del cliente
-                        FirebaseAuth.getInstance().getCurrentUser().delete();
-                    }
-                });
+        if (mImageSelected && mImageUri != null) {
+            // Crear cliente con imagen
+            mClientProvider.createWithImage(client, mImageUri)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            showToast("El registro se realizó con éxito");
+                            navigateToHome();
+                        } else {
+                            Log.e(TAG, "Error creating client", task.getException());
+                            showToast("Error al crear el cliente. Por favor, intente nuevamente");
+                            FirebaseAuth.getInstance().getCurrentUser().delete();
+                        }
+                    });
+        } else {
+            // Crear cliente sin imagen
+            mClientProvider.create(client)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            showToast("El registro se realizó con éxito");
+                            navigateToHome();
+                        } else {
+                            Log.e(TAG, "Error creating client", task.getException());
+                            showToast("Error al crear el cliente. Por favor, intente nuevamente");
+                            FirebaseAuth.getInstance().getCurrentUser().delete();
+                        }
+                    });
+        }
     }
 
     private void handleRegistrationError(Exception exception) {

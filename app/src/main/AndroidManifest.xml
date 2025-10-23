@@ -6,10 +6,18 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- Permiso para notificaciones (Android 13+) -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Permiso para notificaciones (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Permisos para la cámara y galería -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:name="com.ads.MyApplication"
@@ -22,6 +30,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ADSv"
         tools:targetApi="33">
+        <activity
+            android:name="com.ads.activities.client.ProfileClientActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.ads.activities.client.ProfileUserActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.ads.activities.worker.ProfileWorkerActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.ads.activities.worker.WorkerDocumentsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.ads.activities.worker.DocumentStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.ads.activities.worker.SecondRegisterWorkerActivity"
+            android:exported="false" />
         <activity
             android:name="com.ads.activities.client.WebViewActivity"
             android:exported="false" />
@@ -50,7 +76,7 @@
             android:name="com.ads.activities.worker.HomeWorkerActivity"
             android:exported="false" />
         <activity
-            android:name="com.ads.activities.worker.RegisterWorkerActivity"
+            android:name="com.ads.activities.worker.FirtsRegisterWorkerActivity"
             android:exported="false"
             android:parentActivityName="com.ads.activities.LoginActivity" />
         <activity
@@ -70,7 +96,6 @@
             android:name="com.ads.activities.client.RegisterActivity"
             android:exported="false"
             android:parentActivityName="com.ads.activities.LoginActivity" />
-
         <activity
             android:name="com.ads.activities.TermsConditionsActivity"
             android:exported="false"
@@ -79,18 +104,17 @@
             android:name="com.ads.activities.LoginActivity"
             android:exported="false"
             android:parentActivityName="com.ads.activities.MainActivity" />
-
         <activity
             android:name="com.ads.activities.worker.PendingRequestsActivity"
             android:label="Solicitudes Pendientes"
             android:parentActivityName="com.ads.activities.worker.HomeWorkerActivity"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name="com.ads.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

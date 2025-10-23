@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardDocument"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="15dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/card_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header: Icono, Tipo y Estado -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/ivDocumentIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_document"
+                app:tint="@color/primary_color"
+                android:layout_gravity="center_vertical"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:id="@+id/tvDocumentType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tipo de Documento"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_text"
+                    android:maxLines="2"
+                    android:ellipsize="end"/>
+
+                <TextView
+                    android:id="@+id/tvFileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="nombre_archivo.pdf"
+                    android:textSize="12sp"
+                    android:textColor="@color/secondary_text"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_marginTop="2dp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/ivStatusIcon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_check_circle"
+                android:layout_marginStart="8dp"/>
+
+        </LinearLayout>
+
+        <!-- Estado y Fecha -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="52dp">
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Estado"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/accent_color"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:background="@drawable/bg_status_badge"/>
+
+            <TextView
+                android:id="@+id/tvUploadDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Subido: 01/01/2024"
+                android:textSize="12sp"
+                android:textColor="@color/secondary_text"
+                android:layout_marginStart="12dp"
+                android:gravity="end"/>
+
+        </LinearLayout>
+
+        <!-- Fecha de revisión (solo para aprobados/rechazados) -->
+        <TextView
+            android:id="@+id/tvReviewDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Revisado: 02/01/2024"
+            android:textSize="11sp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="52dp"
+            android:gravity="end"
+            android:visibility="gone"/>
+
+        <!-- Razón de rechazo -->
+        <LinearLayout
+            android:id="@+id/layoutRejectionReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:background="@drawable/bg_rejection_reason"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="52dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_error"
+                    app:tint="#D32F2F"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Motivo del rechazo:"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#D32F2F"
+                    android:layout_marginStart="6dp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRejectionReason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="El documento está ilegible o no cumple con los requisitos"
+                android:textSize="12sp"
+                android:textColor="#C62828"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="2dp"/>
+
+        </LinearLayout>
+
+        <!-- Botones de acción -->
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btnViewDocument"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Ver"
+                android:textAllCaps="false"
+                android:textSize="13sp"
+                android:minWidth="80dp"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+            <Button
+                android:id="@+id/btnUpdateDocument"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Actualizar"
+                android:textAllCaps="false"
+                android:textSize="13sp"
+                android:minWidth="100dp"
+                android:visibility="gone"
+                android:backgroundTint="@color/primary_color"
+                style="@style/Widget.MaterialComponents.Button"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
