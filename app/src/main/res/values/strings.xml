@@ -147,5 +147,77 @@
         <item>Rating (highest first)</item>
     </string-array>
 
+    <!-- Estados de solicitud -->
+    <string name="status_pending">Pendiente</string>
+    <string name="status_accepted">Aceptado</string>
+    <string name="status_on_the_way">En camino</string>
+    <string name="status_in_progress">En progreso</string>
+    <string name="status_completed">Completado</string>
+    <string name="status_rejected">Rechazado</string>
+    <string name="status_cancelled">Cancelado</string>
+
+    <!-- Tabs de filtros -->
+    <string name="tab_all">Todas</string>
+    <string name="tab_active">Activas</string>
+    <string name="tab_completed">Completadas</string>
+    <string name="tab_cancelled">Canceladas</string>
+
+    <!-- MyRequestsActivity -->
+    <string name="my_requests_title">Mis Solicitudes</string>
+    <string name="no_requests_title">No tienes solicitudes</string>
+    <string name="no_requests_message">Solicita un servicio y aparecerá aquí</string>
+    <string name="loading_requests">Cargando solicitudes...</string>
+    <string name="error_loading_requests">Error al cargar solicitudes</string>
+
+    <!-- Request Details -->
+    <string name="request_details_title">Detalles de Solicitud</string>
+    <string name="worker_assigned">Trabajador asignado</string>
+    <string name="no_worker_assigned">Sin trabajador asignado</string>
+    <string name="waiting_response">Esperando respuesta...</string>
+    <string name="worker_on_the_way">El trabajador va en camino</string>
+    <string name="service_in_progress">Servicio en progreso</string>
+    <string name="service_completed">Servicio completado</string>
+    <string name="request_rejected">Solicitud rechazada</string>
+    <string name="request_cancelled">Solicitud cancelada</string>
+
+    <!-- Acciones -->
+    <string name="action_cancel_request">Cancelar solicitud</string>
+    <string name="action_call_worker">Llamar trabajador</string>
+    <string name="action_rate_service">Calificar servicio</string>
+    <string name="action_view_details">Ver detalles</string>
+    <string name="action_view_on_map">Ver en mapa</string>
+
+    <!-- Rating -->
+    <string name="rate_service_title">Califica el servicio</string>
+    <string name="rate_experience">¿Cómo fue tu experiencia?</string>
+    <string name="rating_comment_hint">Escribe tus comentarios aquí (opcional)</string>
+    <string name="rating_submitted">¡Gracias por tu calificación!</string>
+    <string name="rating_error">Error al enviar calificación</string>
+
+    <!-- Confirmaciones -->
+    <string name="cancel_request_title">¿Cancelar solicitud?</string>
+    <string name="cancel_request_message">¿Estás seguro de que deseas cancelar esta solicitud?</string>
+    <string name="cancel_reason_hint">Motivo de cancelación (opcional)</string>
+    <string name="request_cancelled_success">Solicitud cancelada</string>
+
+    <!-- Timeline -->
+    <string name="timeline_created">Solicitud creada</string>
+    <string name="timeline_accepted">Aceptada por trabajador</string>
+    <string name="timeline_on_the_way">Trabajador en camino</string>
+    <string name="timeline_started">Servicio iniciado</string>
+    <string name="timeline_completed">Servicio completado</string>
+
+    <!-- Mensajes -->
+    <string name="request_created_success">Solicitud creada exitosamente</string>
+    <string name="request_updated_success">Solicitud actualizada</string>
+    <string name="worker_notified">Trabajador notificado</string>
+
+    <!-- Botones -->
+    <string name="btn_submit_rating">Enviar calificación</string>
+    <string name="btn_cancel">Cancelar</string>
+    <string name="btn_confirm">Confirmar</string>
+    <string name="btn_close">Cerrar</string>
+    <string name="btn_retry">Reintentar</string>
+
 
 </resources>

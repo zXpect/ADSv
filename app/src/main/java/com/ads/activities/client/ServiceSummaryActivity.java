@@ -8,7 +8,7 @@ import android.widget.RatingBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
-import com.project.ads.R;
+import com.ads.R;
 
 public class ServiceSummaryActivity extends AppCompatActivity {
 

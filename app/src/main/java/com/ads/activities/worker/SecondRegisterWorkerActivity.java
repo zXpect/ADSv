@@ -26,7 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.project.ads.R;
+import com.ads.R;
 import com.ads.models.Worker;
 import com.ads.models.WorkerDocument;
 import com.ads.providers.AuthProvider;

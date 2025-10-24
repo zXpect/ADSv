@@ -11,7 +11,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ads.activities.worker.DocumentItem;
-import com.project.ads.R;
+import com.ads.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

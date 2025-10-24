@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ads.models.Tool;
-import com.project.ads.R;
+import com.ads.R;
 
 import java.util.List;
 

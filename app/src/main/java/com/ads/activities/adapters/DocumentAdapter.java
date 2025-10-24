@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.project.ads.R;
+import com.ads.R;
 import com.ads.models.WorkerDocument;
 
 import java.util.ArrayList;

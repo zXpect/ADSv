@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ads.models.ServiceRequest;
-import com.project.ads.R;
+import com.ads.R;
 
 import java.util.List;
 

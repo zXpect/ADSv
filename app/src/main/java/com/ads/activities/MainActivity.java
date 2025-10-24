@@ -16,7 +16,7 @@ import com.ads.activities.client.HomeUserActivity;
 import com.ads.activities.worker.HomeWorkerActivity;
 import com.ads.activities.worker.RequestDetailActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.project.ads.R;
+import com.ads.R;
 
 public class MainActivity extends AppCompatActivity {
 

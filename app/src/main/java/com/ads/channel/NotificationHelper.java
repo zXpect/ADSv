@@ -13,7 +13,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.project.ads.R;
+import com.ads.R;
 
 public class NotificationHelper extends ContextWrapper {
 

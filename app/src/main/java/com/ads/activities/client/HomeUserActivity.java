@@ -58,7 +58,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseError;
-import com.project.ads.R;
+import com.ads.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -431,13 +431,32 @@ public class HomeUserActivity extends AppCompatActivity {
                 viewMapClient();
             });
 
+            // ACTUALIZACIÓN: Ahora abre MyRequestsActivity
             mButtonMyRequests.setOnClickListener(v -> {
                 animateClick(v);
-                showInfoToast("Función en desarrollo");
+                openMyRequests();
             });
 
         } catch (Exception e) {
             logError("setupClickListeners", e);
+        }
+    }
+
+    private void openMyRequests() {
+        try {
+            crashlytics.log("Abriendo Mis Solicitudes");
+
+            Bundle params = new Bundle();
+            params.putString("source", "home_button");
+            mFirebaseAnalytics.logEvent("my_requests_opened", params);
+
+            Intent intent = new Intent(this, MyRequestsActivity.class);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
+        } catch (Exception e) {
+            crashlytics.recordException(e);
+            showErrorToast("No se pudo abrir Mis Solicitudes");
         }
     }
 

@@ -1,5 +1,6 @@
 package com.ads.activities;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
@@ -7,9 +8,10 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
-import com.ads.includes.MyToolbar;
-import com.project.ads.R;
+import com.ads.R;
 
 public class TermsConditionsActivity extends AppCompatActivity {
 
@@ -22,47 +24,89 @@ public class TermsConditionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terms_conditions);
 
-        // Configurar el toolbar
-        MyToolbar.show(this, "Términos y Condiciones", true);
+        // Configurar el Toolbar con colores adaptativos
+        setupToolbar();
 
         // Inicializar vistas
         webView = findViewById(R.id.webViewTerms);
         progressBar = findViewById(R.id.progressBarTerms);
 
-        // Obtener la URL de los términos y condiciones del intent
+        // Obtener la URL de los términos y condiciones desde el intent
         termsUrl = getIntent().getStringExtra("terms_url");
-        if (termsUrl == null || termsUrl.isEmpty()) {
-            // URL por defecto si no se proporciona una
+        if (termsUrl == null || termsUrl.trim().isEmpty()) {
             termsUrl = "https://terminosycondicionesads.netlify.app";
         }
 
         setupWebView();
     }
 
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle("Términos y Condiciones");
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+
+            // Aplicar colores adaptativos al título
+            int titleColor = ContextCompat.getColor(this, R.color.text_primary);
+            toolbar.setTitleTextColor(titleColor);
+
+            // Aplicar color adaptativo al icono de navegación
+            if (toolbar.getNavigationIcon() != null) {
+                int iconColor = ContextCompat.getColor(this, R.color.text_primary);
+                toolbar.getNavigationIcon().setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+    }
+
     private void setupWebView() {
-        // Configurar el WebView
+        // Configurar fondo adaptativo para el WebView
+        int bgColor = ContextCompat.getColor(this, R.color.background_color);
+        webView.setBackgroundColor(bgColor);
+
         webView.getSettings().setJavaScriptEnabled(true);
+
+        // Soporte para modo oscuro en WebView (Android 10+)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            int nightMode = getResources().getConfiguration().uiMode
+                    & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+            if (nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
+                webView.getSettings().setForceDark(android.webkit.WebSettings.FORCE_DARK_ON);
+            }
+        }
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                // Ocultar la barra de progreso cuando la página termine de cargar
                 progressBar.setVisibility(View.GONE);
                 webView.setVisibility(View.VISIBLE);
             }
         });
 
-        // Mostrar la barra de progreso mientras carga
+        // Aplicar color adaptativo al ProgressBar
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            int accentColor = ContextCompat.getColor(this, R.color.colorAccent);
+            progressBar.getIndeterminateDrawable().setColorFilter(accentColor, PorterDuff.Mode.SRC_IN);
+        }
+
         progressBar.setVisibility(View.VISIBLE);
         webView.setVisibility(View.INVISIBLE);
-
-        // Cargar la URL
         webView.loadUrl(termsUrl);
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) {
+        if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
             super.onBackPressed();

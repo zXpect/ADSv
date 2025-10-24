@@ -19,7 +19,7 @@ import com.ads.models.Client;
 import com.ads.providers.AuthProvider;
 import com.ads.providers.ClientProvider;
 import com.google.firebase.database.DataSnapshot;
-import com.project.ads.R;
+import com.ads.R;
 import com.bumptech.glide.Glide;
 
 public class ProfileClientActivity extends AppCompatActivity {

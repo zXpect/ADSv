@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 import android.view.View;
 import android.graphics.Bitmap;
 
-import com.project.ads.R;
+import com.ads.R;
 
 public class WebViewActivity extends AppCompatActivity {
 

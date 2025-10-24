@@ -4,17 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ads.activities.TermsConditionsActivity">
+    tools:context=".activities.TermsConditionsActivity">
 
+    <!-- Toolbar -->
     <include
-        layout="@layout/action_bar_toolbar" />
+        android:id="@+id/appBarLayout"
+        layout="@layout/toolbar_terms" />
 
+    <!-- WebView -->
     <WebView
         android:id="@+id/webViewTerms"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"/>
+        android:layout_below="@id/appBarLayout" />
 
+    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progressBarTerms"
         android:layout_width="wrap_content"

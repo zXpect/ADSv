@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.project.ads.R;
+import com.ads.R;
 
 public class MapFixDepotActivity extends AppCompatActivity {
 

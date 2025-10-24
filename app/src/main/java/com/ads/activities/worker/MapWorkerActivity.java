@@ -51,7 +51,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
-import com.project.ads.R;
+import com.ads.R;
 
 public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCallback {
 

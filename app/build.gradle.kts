@@ -1,11 +1,11 @@
 plugins {
     id("com.android.application")
-    id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.project.ads"
+    namespace = "com.ads"
     compileSdk = 34
 
     defaultConfig {

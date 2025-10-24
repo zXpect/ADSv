@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import java.io.ByteArrayOutputStream;
-import com.project.ads.R;
+import com.ads.R;
 
 public class DatabaseHelper {
 

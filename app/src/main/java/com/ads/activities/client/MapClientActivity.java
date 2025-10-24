@@ -69,7 +69,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseError;
-import com.project.ads.R;
+import com.ads.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -184,7 +184,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
         // Configurar RecyclerView
         mLegendRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mLegendRecycler.setHasFixedSize(true);
+        mLegendRecycler.setHasFixedSize(false);
 
         // Crear y establecer el adaptador
         LegendAdapter adapter = new LegendAdapter(getLegendItems());

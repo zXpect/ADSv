@@ -36,7 +36,7 @@ import com.ads.activities.TermsConditionsActivity;
 import com.ads.includes.MyToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.project.ads.R;
+import com.ads.R;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
