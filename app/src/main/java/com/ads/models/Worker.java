@@ -15,12 +15,15 @@ public class Worker {
     private String description;
     private double latitude;
     private double longitude;
+
     private float rating;
     private int totalRatings;
     private double pricePerHour;
     private String experience;
     private long timestamp;
     private boolean isOnline;
+
+    private float distance;
 
     // Constructores
     public Worker() {
@@ -50,6 +53,8 @@ public class Worker {
     public String getId() {
         return id;
     }
+
+
 
     public void setId(String id) {
         this.id = id;
@@ -194,6 +199,14 @@ public class Worker {
 
     // Métodos de utilidad
 
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
     /**
      * Obtiene el nombre completo del trabajador
      * @return Nombre completo (nombre + apellido)
@@ -285,7 +298,7 @@ public class Worker {
         if (hasRating()) {
             return String.format("%.1f", rating);
         }
-        return "Sin calificar";
+        return "0";
     }
 
     /**

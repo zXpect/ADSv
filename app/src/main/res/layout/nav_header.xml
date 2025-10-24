@@ -1,29 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="176dp"
-    android:background="@color/colorAccent"
+    android:layout_height="200dp"
+    android:background="@drawable/nav_header_gradient"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:padding="24dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:elevation="4dp">
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/logo"
-        android:contentDescription="Logo de la app"/>
+    <androidx.cardview.widget.CardView
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="36dp"
+        app:cardElevation="8dp"
+        android:backgroundTint="@android:color/white">
+
+        <ImageView
+            android:id="@+id/nav_header_profile_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo"
+            android:scaleType="centerCrop"
+            android:contentDescription="Foto de perfil"/>
+
+    </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/nav_header_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:paddingTop="4dp"
         android:text="Nombre de Usuario"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:letterSpacing="0.01"
+        android:textColor="@android:color/white" />
 
     <TextView
+        android:id="@+id/nav_header_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="usuario@email.com" />
+        android:layout_marginTop="4dp"
+        android:text="usuario@email.com"
+        android:textSize="14sp"
+        android:alpha="0.85"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

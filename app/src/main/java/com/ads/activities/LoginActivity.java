@@ -1,9 +1,9 @@
 package com.ads.activities;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,17 +14,20 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import com.ads.activities.client.HomeUserActivity;
 import com.ads.activities.client.RegisterActivity;
 import com.ads.activities.worker.HomeWorkerActivity;
-import com.ads.activities.worker.RegisterWorkerActivity;
+import com.ads.activities.worker.FirtsRegisterWorkerActivity;
 import com.ads.includes.MyToolbar;
+import com.ads.providers.ClientProvider;
 import com.ads.providers.TokenProvider;
 import com.ads.helpers.NotificationPermissionHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -40,11 +43,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.project.ads.R;
+import com.ads.R;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -66,13 +70,13 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDataBase;
     private GoogleSignInClient mGoogleSignInClient;
+    private ClientProvider mClientProvider;
     private int loginAttempts = 0;
     private long lastLoginAttemptTime = 0;
     private ImageButton mGoogleSignInImageButton;
 
     private static final String USER_TYPE_KEY = "typeUser";
 
-    // Launcher para solicitar permisos de notificación
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
     @Override
@@ -80,15 +84,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
 
-        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-            if (isGranted) {
-                // Permiso concedido, continuar a la siguiente actividad
-                proceedToNextActivity(getDestinationActivity());
-            } else {
-                // Permiso denegado, continuar a la siguiente actividad
-                proceedToNextActivity(getDestinationActivity());
-            }
-        });
+        requestPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    Log.d(TAG, "Permiso de notificaciones: " + (isGranted ? "concedido" : "denegado"));
+                    navigateToNextActivity();
+                }
+        );
 
         initializeViews();
         setupToolbar();
@@ -97,7 +99,6 @@ public class LoginActivity extends AppCompatActivity {
         setupStatusBar();
         setupGoogleSignIn();
 
-        // Obtener y guardar el token FCM
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
@@ -114,7 +115,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-
         mPref = getApplicationContext().getSharedPreferences(USER_TYPE_KEY, MODE_PRIVATE);
 
         tilEmail = findViewById(R.id.til_email);
@@ -135,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
     private void setupFirebase() {
         mAuth = FirebaseAuth.getInstance();
         mDataBase = FirebaseDatabase.getInstance().getReference();
+        mClientProvider = new ClientProvider();
     }
 
     private void setupToolbar() {
@@ -165,8 +166,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signInWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        });
     }
 
     @Override
@@ -179,24 +182,148 @@ public class LoginActivity extends AppCompatActivity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
-                Toast.makeText(this, "Google sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.w(TAG, "Google sign in failed", e);
+                Toast.makeText(this, "Error al iniciar sesión con Google", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
+        progressDialog.setMessage("Autenticando con Google...");
         progressDialog.show();
+
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
-                    progressDialog.dismiss();
                     if (task.isSuccessful()) {
-                        handleSuccessfulLogin();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            checkIfUserExistsInDatabase(user);
+                        }
                     } else {
-                        Toast.makeText(LoginActivity.this, "Authentication failed.",
+                        progressDialog.dismiss();
+                        Toast.makeText(LoginActivity.this, "Error de autenticación: " + task.getException().getMessage(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    /**
+     * Verifica si el usuario ya existe en la base de datos según su tipo
+     * y valida que no esté registrado como el otro tipo de usuario
+     */
+    private void checkIfUserExistsInDatabase(FirebaseUser user) {
+        String userId = user.getUid();
+        String typeUser = mPref.getString("user", "");
+
+        // Determinar las rutas según el tipo de usuario actual
+        DatabaseReference currentUserRef;
+        DatabaseReference oppositeUserRef;
+        String oppositeUserType;
+
+        if (typeUser.equals("cliente")) {
+            currentUserRef = mDataBase.child("User").child("Clientes").child(userId);
+            oppositeUserRef = mDataBase.child("User").child("Trabajadores").child(userId);
+            oppositeUserType = "trabajador";
+        } else {
+            currentUserRef = mDataBase.child("User").child("Trabajadores").child(userId);
+            oppositeUserRef = mDataBase.child("User").child("Clientes").child(userId);
+            oppositeUserType = "cliente";
+        }
+
+        // Primero verificar si existe como el tipo opuesto
+        oppositeUserRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                if (task.getResult().exists()) {
+                    // El usuario ya existe como el otro tipo
+                    progressDialog.dismiss();
+                    mAuth.signOut();
+                    mGoogleSignInClient.signOut();
+
+                    showUserExistsAsOtherTypeDialog(oppositeUserType);
+                    return;
+                }
+
+                // Si no existe como el otro tipo, verificar si existe como el tipo actual
+                checkCurrentUserType(currentUserRef, user, typeUser);
+            } else {
+                progressDialog.dismiss();
+                Toast.makeText(this, "Error al verificar usuario en la base de datos",
+                        Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+            }
+        });
+    }
+
+    /**
+     * Verifica si el usuario existe como el tipo actual
+     */
+    private void checkCurrentUserType(DatabaseReference currentUserRef, FirebaseUser user, String typeUser) {
+        currentUserRef.get().addOnCompleteListener(task -> {
+            progressDialog.dismiss();
+
+            if (task.isSuccessful() && task.getResult() != null) {
+                if (task.getResult().exists()) {
+                    // El usuario ya existe en la base de datos como el tipo correcto
+                    Log.d(TAG, "Usuario encontrado en la base de datos como " + typeUser);
+                    handleSuccessfulLogin();
+                } else {
+                    // El usuario no existe, redirigir al registro para completar datos
+                    Log.d(TAG, "Usuario nuevo, redirigiendo a registro de " + typeUser);
+                    redirectToCompleteRegistration(user);
+                }
+            } else {
+                Toast.makeText(this, "Error al verificar usuario en la base de datos",
+                        Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+            }
+        });
+    }
+
+    /**
+     * Muestra un diálogo informando que la cuenta ya existe como otro tipo de usuario
+     */
+    private void showUserExistsAsOtherTypeDialog(String existingUserType) {
+        new AlertDialog.Builder(this)
+                .setTitle("Cuenta existente")
+                .setMessage("Esta cuenta de Google ya está registrada como " + existingUserType +
+                        ". No puedes usar la misma cuenta para diferentes tipos de usuario.\n\n" +
+                        "Por favor, usa otra cuenta de Google o inicia sesión como " + existingUserType + ".")
+                .setPositiveButton("Entendido", null)
+                .setCancelable(false)
+                .show();
+    }
+
+    /**
+     * Redirige al usuario a completar su registro después de iniciar sesión con Google
+     */
+    private void redirectToCompleteRegistration(FirebaseUser user) {
+        String typeUser = mPref.getString("user", "");
+
+        Intent intent;
+        if (typeUser.equals("cliente")) {
+            intent = new Intent(this, RegisterActivity.class);
+        } else {
+            intent = new Intent(this, FirtsRegisterWorkerActivity.class);
+        }
+
+        // Pasar información del usuario de Google
+        intent.putExtra("fromGoogleSignIn", true);
+        intent.putExtra("userId", user.getUid());
+        intent.putExtra("email", user.getEmail());
+
+        // Si tiene nombre disponible en Google
+        if (user.getDisplayName() != null && !user.getDisplayName().isEmpty()) {
+            String[] nameParts = user.getDisplayName().split(" ", 2);
+            intent.putExtra("name", nameParts[0]);
+            if (nameParts.length > 1) {
+                intent.putExtra("lastName", nameParts[1]);
+            }
+        }
+
+        Toast.makeText(this, "Por favor, completa tu registro", Toast.LENGTH_SHORT).show();
+        startActivity(intent);
+        finish();
     }
 
     private void resetPassword() {
@@ -291,21 +418,22 @@ public class LoginActivity extends AppCompatActivity {
         loginAttempts = 0;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            NotificationPermissionHelper.requestNotificationPermissionIfNeeded(this, requestPermissionLauncher);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                navigateToNextActivity();
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
         } else {
-            proceedToNextActivity(getDestinationActivity());
+            navigateToNextActivity();
         }
     }
 
-    private Class<?> getDestinationActivity() {
+    private void navigateToNextActivity() {
         String user = mPref.getString("user", "");
-        return user.equals("cliente") ? HomeUserActivity.class : HomeWorkerActivity.class;
-    }
+        Class<?> destinationActivity = user.equals("cliente") ?
+                HomeUserActivity.class : HomeWorkerActivity.class;
 
-    /**
-     * Navega a la siguiente actividad
-     */
-    private void proceedToNextActivity(Class<?> destinationActivity) {
         Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, destinationActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -335,7 +463,7 @@ public class LoginActivity extends AppCompatActivity {
     private void register() {
         String typeUser = mPref.getString("user", "");
         Class<?> registrationActivity = typeUser.equals("cliente") ?
-                RegisterActivity.class : RegisterWorkerActivity.class;
+                RegisterActivity.class : FirtsRegisterWorkerActivity.class;
 
         Intent intent = new Intent(this, registrationActivity);
         startActivity(intent);

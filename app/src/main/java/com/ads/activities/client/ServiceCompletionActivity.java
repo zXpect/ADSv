@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.project.ads.R;
+import com.ads.R;
 
 public class ServiceCompletionActivity extends AppCompatActivity {
 

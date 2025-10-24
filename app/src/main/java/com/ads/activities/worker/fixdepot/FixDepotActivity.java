@@ -20,7 +20,7 @@ import androidx.core.content.ContextCompat;
 
 import com.ads.activities.MainActivity;
 import com.ads.providers.AuthProvider;
-import com.project.ads.R;
+import com.ads.R;
 
 public class FixDepotActivity extends AppCompatActivity {
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="subtitle" type="id"/>
+    <item name="section_personal" type="id"/>
+    <item name="divider1" type="id"/>
+    <item name="section_credentials" type="id"/>
+    <item name="divider2" type="id"/>
+    <item name="section_professional" type="id"/>
+    <item name="divider3" type="id"/>
+    <item name="terms_card" type="id"/>
+</resources>

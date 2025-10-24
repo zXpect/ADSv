@@ -1,40 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Básicos -->
+    <color name="status_bar_dark">#CC1A1A1A</color>
     <color name="black">#FF000000</color>
+    <color name="whitevariable">#FFFFFFFF</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">#FFFF7500</color>
+    <color name="textOnlywhite">#FFFFFFFF</color>
+    <color name="nav_item_selected_bg">#1A000000</color>
+
+
+    <!-- Primary / Accent (Paleta naranja profesional) -->
+    <color name="colorPrimary">#FF7500</color>
     <color name="colorPrimaryDark">#C15A02</color>
     <color name="colorPrimaryLight">#FD8B29</color>
     <color name="colorAccent">#FA9B4B</color>
+
+    <!-- Alternativa azul (para elementos secundarios) -->
+    <color name="blue">#2196F3</color>
+
+    <!-- Otras referencias de acento -->
+    <color name="accent_color">#FF9800</color>
+
+    <!-- Fondos y superficies -->
     <color name="background_color">#F5F5F5</color>
+    <color name="background_light">#FAFAFA</color>
+    <color name="background_dark">#141414</color>
+    <color name="surface_dark">#1F1F1F</color>
+    <color name="background_card">#FFFFFF</color>
+    <color name="card_background">#FAFAFA</color>
+
+    <!-- Textos -->
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="text_hint">#BDBDBD</color>
-    <color name="star_color">#FFC107</color>
-    <color name="button_color">#FFFF7500</color>
-    
-    <!-- Request Detail Activity Colors -->
-    <color name="primary_color">#FFFF7500</color>
+    <color name="text_primary_dark">#F5F5F5</color>
+    <color name="text_secondary_dark">#B3B3B3</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
+
+    <!-- Colores de estado -->
     <color name="success_color">#4CAF50</color>
+    <color name="success_light">#E8F5E9</color>
     <color name="error_color">#F44336</color>
-
-
-    <color name="rating_color">#FFA726</color>
+    <color name="warning_color">#F59E0B</color>
     <color name="status_available">#4CAF50</color>
     <color name="status_busy">#FF5722</color>
-    <color name="card_background">#FAFAFA</color>
-    <color name="divider_color">#E0E0E0</color>
-
     <color name="green">#4CAF50</color>
     <color name="red">#F44336</color>
     <color name="orange">#FF9800</color>
-    <color name="blue">#2196F3</color>
+
+    <!-- Botones / UI -->
+    <color name="button_color">#FF7500</color>
+    <color name="rating_color">#FFA726</color>
+    <color name="star_color">#FFC107</color>
+    <color name="primary_color">#FF7500</color>
+
+    <!-- Dividers / bordes -->
+    <color name="divider_color">#E0E0E0</color>
     <color name="gray_light">#F5F5F5</color>
     <color name="gray_medium">#E0E0E0</color>
     <color name="gray_dark">#9E9E9E</color>
-    <color name="background_card">#FFFFFF</color>
-    <color name="border_gray">#636363</color>
+    <color name="border_gray">#E0E0E0</color>
+
+    <!-- ============================================ -->
+    <!-- ESTADÍSTICAS - MINIMALISTA NARANJA -->
+    <!-- ============================================ -->
+    <!-- Fondo de las tarjetas (mismo color para todas) -->
+    <color name="stat_card_bg_1">#FFF8F3</color>
+    <color name="stat_card_bg_2">#FFF8F3</color>
+    <color name="stat_card_bg_3">#FFF8F3</color>
+    <color name="stat_card_bg_4">#FFF8F3</color>
+
+    <!-- Color de los números - NARANJA PROFESIONAL ESTÁTICO -->
+    <color name="stat_value_color">#FF7500</color>
+
+    <!-- Color del texto descriptivo -->
+    <color name="stat_icon_color">#757575</color>
+
+    <!-- ============================================ -->
+    <!-- INDICADORES / BADGES -->
+    <!-- ============================================ -->
+    <color name="circle_red">#F44336</color>
+    <color name="circle_green">#4CAF50</color>
+    <color name="notification_badge_bg">#FFF3E6</color>
+    <color name="notification_badge_bg_dark">#2B2B2B</color>
+
+    <!-- ============================================ -->
+    <!-- ACCESOS RÁPIDOS -->
+    <!-- ============================================ -->
+    <color name="quick_access_bg_1">#FFF8F3</color>
+    <color name="quick_access_bg_1_dark">#1F1F1F</color>
+    <color name="quick_access_bg_2">#FFF8F3</color>
+    <color name="quick_access_bg_2_dark">#1F1F1F</color>
+
+    <!-- Estadísticas (legacy - mantener por compatibilidad) -->
+    <color name="stat_card_bg">#FFF8F3</color>
+    <color name="stat_card_bg_dark">#1F1F1F</color>
+
+    <!-- Warning colors -->
+    <color name="warning_light">#FFF3E0</color>
+
+    <!-- Error colors -->
+    <color name="error_light">#FFEBEE</color>
 
 </resources>

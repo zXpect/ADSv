@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class AuthProvider {
-    FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
     private Context context;
     private static final String PREFS_NAME = "WorkerPrefs";
     private static final String KEY_FCM_TOKEN = "fcm_token";

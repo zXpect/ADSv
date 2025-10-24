@@ -35,7 +35,7 @@
         android:layout_margin="30dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/conectarse"
-        android:textColor="@color/white"
+        android:textColor="@color/whitevariable"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
