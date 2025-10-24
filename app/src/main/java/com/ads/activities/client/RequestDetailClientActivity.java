@@ -130,6 +130,10 @@ public class RequestDetailClientActivity  extends AppCompatActivity {
         mTimelineIcon3 = findViewById(R.id.timeline_icon3);
         mTimelineIcon4 = findViewById(R.id.timeline_icon4);
         mTimelineIcon5 = findViewById(R.id.timeline_icon5);
+
+        mTimelineStep2 = findViewById(R.id.tv_timeline_step2);
+        mTimelineIcon2 = findViewById(R.id.timeline_icon2);
+        mTimelineLine1 = findViewById(R.id.timeline_line1);
     }
 
     private void setupToolbar() {

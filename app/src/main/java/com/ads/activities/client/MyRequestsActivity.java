@@ -434,7 +434,7 @@ public class MyRequestsActivity extends AppCompatActivity {
                 // Click en la card
                 cardView.setOnClickListener(v -> {
                     Intent intent = new Intent(MyRequestsActivity.this,
-                            RequestDetailActivity.class);
+                            RequestDetailClientActivity.class);
                     intent.putExtra("request_id", request.getRequest_id());
                     startActivity(intent);
                 });

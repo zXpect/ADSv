@@ -31,6 +31,12 @@
         android:theme="@style/Theme.ADSv"
         tools:targetApi="33">
         <activity
+            android:name=".activities.worker.ServiceDetailWorkerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.worker.ActiveServicesActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.client.RatingActivity"
             android:exported="false" />
         <activity
