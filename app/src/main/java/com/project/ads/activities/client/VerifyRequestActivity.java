@@ -183,10 +183,10 @@ public class VerifyRequestActivity extends AppCompatActivity {
         showProgressDialog("Preparando solicitud...");
 
         // PASO 1: Obtener información del cliente
-        getUserInfo(clientId).addOnSuccessListener(clientInfo -> {
+        getUserInfo(mDatabaseReference.child("User").child("Clientes").child(clientId)).addOnSuccessListener(clientInfo -> {
 
             // PASO 2: Obtener información del trabajador
-            getUserInfo(mWorkerId).addOnSuccessListener(workerInfo -> {
+            getUserInfo(mDatabaseReference.child("User").child("Trabajadores").child(mWorkerId)).addOnSuccessListener(workerInfo -> {
 
                 // PASO 3: Crear la solicitud con todos los datos
                 Map<String, Object> requestData = new HashMap<>();
@@ -218,7 +218,7 @@ public class VerifyRequestActivity extends AppCompatActivity {
                 requestData.put("rating", 0.0);
                 requestData.put("rating_comment", "");
 
-                Log.d(TAG, "Solicitud completa preparada: " + requestData.toString());
+                Log.d(TAG, "Solicitud preparada para el trabajador: " + mWorkerId);
 
                 // PASO 4: Crear la solicitud en Firebase
                 mProgressDialog.setMessage("Enviando solicitud...");
@@ -252,12 +252,13 @@ public class VerifyRequestActivity extends AppCompatActivity {
 
     /**
      * Obtiene la información de un usuario desde Firebase
+     * (User/Clientes/<uid> o User/Trabajadores/<uid>)
      */
-    private Task<Map<String, Object>> getUserInfo(String userId) {
+    private Task<Map<String, Object>> getUserInfo(DatabaseReference userRef) {
         TaskCompletionSource<Map<String, Object>> taskSource = new TaskCompletionSource<>();
+        String userId = userRef.getKey();
 
-        mDatabaseReference.child("users").child(userId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
@@ -268,7 +269,7 @@ public class VerifyRequestActivity extends AppCompatActivity {
                                 userInfo.put(child.getKey(), child.getValue());
                             }
 
-                            Log.d(TAG, "Info de usuario obtenida: " + userId + " -> " + userInfo.toString());
+                            Log.d(TAG, "Info de usuario obtenida: " + userId + " (" + userInfo.size() + " campos)");
                             taskSource.setResult(userInfo);
                         } else {
                             Log.w(TAG, "Usuario no encontrado: " + userId);
