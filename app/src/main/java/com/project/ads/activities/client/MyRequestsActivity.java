@@ -28,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class MyRequestsActivity extends AppCompatActivity {
     // Firebase
     private DatabaseReference mDatabaseReference;
     private ValueEventListener mRequestsListener;
+    private Query mRequestsQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,9 +120,14 @@ public class MyRequestsActivity extends AppCompatActivity {
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         // Remover listener anterior si existe
-        if (mRequestsListener != null) {
-            mDatabaseReference.child("requests").removeEventListener(mRequestsListener);
+        if (mRequestsListener != null && mRequestsQuery != null) {
+            mRequestsQuery.removeEventListener(mRequestsListener);
         }
+
+        // Las reglas de Firebase solo permiten leer requests filtrado por el propio uid
+        mRequestsQuery = mDatabaseReference.child("requests")
+                .orderByChild("client_id")
+                .equalTo(mClientId);
 
         mRequestsListener = new ValueEventListener() {
             @Override
@@ -164,7 +171,7 @@ public class MyRequestsActivity extends AppCompatActivity {
             }
         };
 
-        mDatabaseReference.child("requests").addValueEventListener(mRequestsListener);
+        mRequestsQuery.addValueEventListener(mRequestsListener);
     }
 
     private boolean isMyRequest(ServiceRequest request) {
@@ -284,8 +291,8 @@ public class MyRequestsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mRequestsListener != null && mDatabaseReference != null) {
-            mDatabaseReference.child("requests").removeEventListener(mRequestsListener);
+        if (mRequestsListener != null && mRequestsQuery != null) {
+            mRequestsQuery.removeEventListener(mRequestsListener);
         }
     }
 }

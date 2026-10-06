@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 
@@ -50,6 +51,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
     // Firebase
     private DatabaseReference databaseReference;
     private ValueEventListener requestsListener;
+    private Query requestsQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +116,16 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         // Remove previous listener if exists
-        if (requestsListener != null) {
-            databaseReference.child("requests").removeEventListener(requestsListener);
+        if (requestsListener != null && requestsQuery != null) {
+            requestsQuery.removeEventListener(requestsListener);
         }
 
-        // MÉTODO ALTERNATIVO: Cargar todas las solicitudes y filtrar localmente
+        // Las reglas de Firebase solo permiten leer requests filtrado por el propio uid;
+        // el filtro por estado (pending) se sigue haciendo localmente
+        requestsQuery = databaseReference.child("requests")
+                .orderByChild("worker_id")
+                .equalTo(workerId);
+
         requestsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -183,9 +190,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
             }
         };
 
-        // CAMBIO: Cargar todas las solicitudes en lugar de filtrar en la consulta
-        databaseReference.child("requests")
-                .addValueEventListener(requestsListener);
+        requestsQuery.addValueEventListener(requestsListener);
     }
 
     private boolean isRequestRelevant(ServiceRequest request) {
@@ -299,8 +304,8 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
         super.onDestroy();
 
         // Clean up listener
-        if (requestsListener != null && databaseReference != null) {
-            databaseReference.child("requests").removeEventListener(requestsListener);
+        if (requestsListener != null && requestsQuery != null) {
+            requestsQuery.removeEventListener(requestsListener);
         }
     }
 }
