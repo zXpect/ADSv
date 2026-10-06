@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat;
 import com.project.ads.activities.MainActivity;
 import com.project.ads.activities.worker.RequestDetailActivity;
 import com.project.ads.channel.NotificationHelper;
+import com.project.ads.providers.TokenProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -29,7 +30,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-        Log.d(TAG, "New token received: " + s);
+        // FCM rota el token (reinstalación, borrado de datos...). Si no se guarda,
+        // el backend sigue enviando al token viejo y las notificaciones se pierden.
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            new TokenProvider().saveToken(s);
+        }
+        Log.d(TAG, "Nuevo token FCM recibido");
     }
 
     @Override

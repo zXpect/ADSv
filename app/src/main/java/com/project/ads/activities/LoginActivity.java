@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                         new TokenProvider().saveToken(token);
                     }
-                    Log.d("FCM", "Token: " + token);
+                    Log.d("FCM", "Token FCM obtenido");
                 });
     }
 

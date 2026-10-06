@@ -44,6 +44,7 @@ import com.project.ads.models.Worker;
 import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.ClientProvider;
 import com.project.ads.providers.GeofireProvider;
+import com.project.ads.providers.TokenProvider;
 import com.project.ads.providers.WorkerProvider;
 import com.bumptech.glide.Glide;
 import com.firebase.geofire.GeoLocation;
@@ -157,6 +158,9 @@ public class HomeUserActivity extends AppCompatActivity {
                 String userId = mAuthProvider.getId();
                 crashlytics.setUserId(userId);
                 crashlytics.setCustomKey("user_type", "client");
+
+                // Sincroniza el token FCM para que el backend pueda notificar al cliente
+                new TokenProvider().create(userId);
 
                 Bundle params = new Bundle();
                 params.putString("user_id", userId);
