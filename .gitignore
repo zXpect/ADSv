@@ -26,3 +26,8 @@ app/release/
 app/google-services.json
 # Dependencias de Node (herramientas de Firebase u otras)
 node_modules/
+
+# Credenciales de cuentas de servicio: nunca en la app (van solo en el backend)
+*serviceAccount*.json
+*firebase-adminsdk*.json
+adsv-d87e1-*.json
