@@ -24,3 +24,5 @@ app/src/main/assets/serviceAccountKey.json
 app/release/
 
 app/google-services.json
+# Dependencias de Node (herramientas de Firebase u otras)
+node_modules/
