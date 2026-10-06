@@ -241,6 +241,10 @@
     <string name="forgot_password_email_not_exists">No existe una cuenta registrada con este correo electrónico</string>
     <string name="forgot_password_verify_error">Error al verificar el correo. Intente nuevamente</string>
     <string name="forgot_password_send_error">Error al enviar el correo. Intente nuevamente</string>
+    <string name="forgot_password_confirm_message">Se enviará un enlace para restablecer la contraseña a:\n\n%1$s\n\n¿Deseas continuar?</string>
+    <string name="forgot_password_confirm_yes">Sí, enviar</string>
+    <string name="forgot_password_cancel">Cancelar</string>
+    <string name="forgot_password_neutral_message">Si existe una cuenta registrada con:\n\n%1$s\n\nrecibirás un correo con las instrucciones para restablecer tu contraseña.\n\nSi no lo ves en unos minutos, revisa tu carpeta de spam y verifica que escribiste bien el correo.</string>
     <string name="forgot_password_not_registered_as">Esta cuenta no está registrada como %1$s. Complete su registro primero.</string>
 
     <!-- Tipo de usuario incorrecto -->

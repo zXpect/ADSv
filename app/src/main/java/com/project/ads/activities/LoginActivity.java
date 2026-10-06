@@ -323,8 +323,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * ⭐ MÉTODO MEJORADO DE RECUPERACIÓN DE CONTRASEÑA
-     * Verifica en la base de datos antes de enviar
+     * Recuperación de contraseña.
+     *
+     * Envía el correo directamente con Firebase Auth, sin consultar antes la base
+     * de datos: esa consulta exigía leer User/Clientes y User/Trabajadores sin
+     * sesión (bloqueado por las reglas de Firebase) y permitía averiguar qué
+     * correos están registrados. La cuenta de Auth es la misma para ambos roles,
+     * así que no hace falta saber el tipo de usuario.
      */
     private void resetPassword() {
         String email = mTextInputEmail.getText().toString().trim();
@@ -332,7 +337,7 @@ public class LoginActivity extends AppCompatActivity {
         tilEmail.setError(null);
 
         if (TextUtils.isEmpty(email)) {
-            tilEmail.setError("Ingrese su correo electrónico para restablecer la contraseña");
+            tilEmail.setError(getString(R.string.forgot_password_enter_email));
             mTextInputEmail.requestFocus();
             return;
         }
@@ -343,201 +348,54 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Verificar primero en la base de datos
-        verifyEmailInDatabase(email);
+        showConfirmationToSendEmail(email);
     }
 
-    /**
-     * ⭐ Verifica si el email existe en la base de datos del tipo de usuario actual
-     */
-    private void verifyEmailInDatabase(String email) {
-        progressDialog.setMessage("Verificando correo electrónico...");
-        progressDialog.show();
-
-        String typeUser = mPref.getString("user", "");
-
-        // Determinar los nodos a verificar
-        DatabaseReference currentUserNode;
-        DatabaseReference oppositeUserNode;
-        String oppositeUserType;
-
-        if (typeUser.equals("cliente")) {
-            currentUserNode = mDataBase.child("User").child("Clientes");
-            oppositeUserNode = mDataBase.child("User").child("Trabajadores");
-            oppositeUserType = "trabajador";
-        } else {
-            currentUserNode = mDataBase.child("User").child("Trabajadores");
-            oppositeUserNode = mDataBase.child("User").child("Clientes");
-            oppositeUserType = "cliente";
-        }
-
-        // Buscar en el nodo del tipo de usuario actual
-        currentUserNode.orderByChild("email").equalTo(email).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        if (task.getResult().exists() && task.getResult().getChildrenCount() > 0) {
-                            // ✅ Usuario encontrado en el nodo correcto
-                            progressDialog.dismiss();
-                            Log.d(TAG, "Email encontrado en nodo de " + typeUser);
-                            showConfirmationToSendEmail(email, typeUser);
-                        } else {
-                            // No está en el nodo actual, buscar en el opuesto
-                            Log.d(TAG, "Email NO encontrado en nodo de " + typeUser + ", buscando en " + oppositeUserType);
-                            checkOppositeNodeForEmail(email, oppositeUserNode, typeUser, oppositeUserType);
-                        }
-                    } else {
-                        progressDialog.dismiss();
-                        Log.e(TAG, "Error al buscar email en BD: ", task.getException());
-                        showResetPasswordError("Error al verificar el correo. Por favor, intenta nuevamente.");
-                    }
-                });
-    }
-
-    /**
-     * ⭐ Verifica si el email está en el nodo opuesto
-     */
-    private void checkOppositeNodeForEmail(String email, DatabaseReference oppositeNode,
-                                           String currentUserType, String oppositeUserType) {
-        oppositeNode.orderByChild("email").equalTo(email).get()
-                .addOnCompleteListener(task -> {
-                    progressDialog.dismiss();
-
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        if (task.getResult().exists() && task.getResult().getChildrenCount() > 0) {
-                            // ✅ Usuario encontrado en el nodo opuesto
-                            Log.d(TAG, "Email encontrado en nodo de " + oppositeUserType);
-                            showEmailInWrongTypeDialog(email, currentUserType, oppositeUserType);
-                        } else {
-                            // ❌ No existe en ningún nodo
-                            Log.d(TAG, "Email NO encontrado en ningún nodo");
-                            showEmailNotFoundDialog(email, currentUserType);
-                        }
-                    } else {
-                        Log.e(TAG, "Error al verificar nodo opuesto: ", task.getException());
-                        showResetPasswordError("Error al verificar el correo. Por favor, intenta nuevamente.");
-                    }
-                });
-    }
-
-    /**
-     * ⭐ Muestra confirmación para enviar el email (usuario en nodo correcto)
-     */
-    private void showConfirmationToSendEmail(String email, String userType) {
+    private void showConfirmationToSendEmail(String email) {
         new AlertDialog.Builder(this)
-                .setTitle("Recuperar contraseña")
-                .setMessage("Se enviará un correo de recuperación a:\n\n" + email +
-                        "\n\n¿Deseas continuar?")
-                .setPositiveButton("Sí, enviar", (dialog, which) -> {
-                    sendPasswordResetEmailDirect(email);
-                })
-                .setNegativeButton("Cancelar", null)
+                .setTitle(R.string.forgot_password_title)
+                .setMessage(getString(R.string.forgot_password_confirm_message, email))
+                .setPositiveButton(R.string.forgot_password_confirm_yes,
+                        (dialog, which) -> sendPasswordResetEmailDirect(email))
+                .setNegativeButton(R.string.forgot_password_cancel, null)
                 .show();
     }
 
-    /**
-     * ⭐ Email encontrado pero en el tipo de usuario incorrecto
-     */
-    private void showEmailInWrongTypeDialog(String email, String currentType, String correctType) {
-        new AlertDialog.Builder(this)
-                .setTitle("Tipo de usuario incorrecto")
-                .setMessage(
-                        "Este correo está registrado como " + correctType +
-                                ", no como " + currentType + ".\n\n" +
-                                "¿Deseas cambiar a " + correctType + " para recuperar tu contraseña?"
-                )
-                .setPositiveButton("Sí, cambiar", (dialog, which) -> {
-                    // Cambiar el tipo de usuario
-                    SharedPreferences.Editor editor = mPref.edit();
-                    editor.putString("user", correctType);
-                    editor.apply();
-
-                    // Recargar la actividad
-                    Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                })
-                .setNegativeButton("Cancelar", null)
-                .setCancelable(false)
-                .show();
-    }
-
-    /**
-     * ⭐ Email no encontrado en ningún nodo
-     */
-    private void showEmailNotFoundDialog(String email, String currentType) {
-        new AlertDialog.Builder(this)
-                .setTitle("Correo no registrado")
-                .setMessage(
-                        "No existe una cuenta registrada con el correo:\n\n" + email +
-                                "\n\nVerifica que:\n" +
-                                "• Hayas escrito correctamente el correo\n" +
-                                "• Tengas una cuenta creada\n\n" +
-                                "¿Deseas crear una cuenta como " + currentType + "?"
-                )
-                .setPositiveButton("Sí, registrarme", (dialog, which) -> register())
-                .setNegativeButton("Cancelar", null)
-                .show();
-    }
-
-    /**
-     * ⭐ Envía el email de recuperación (solo después de verificar)
-     */
     private void sendPasswordResetEmailDirect(String email) {
-        progressDialog.setMessage("Enviando correo de recuperación...");
+        progressDialog.setMessage(getString(R.string.forgot_password_sending));
         progressDialog.show();
 
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
                     progressDialog.dismiss();
 
-                    if (task.isSuccessful()) {
-                        // Email enviado exitosamente
+                    // Un correo no registrado se trata igual que un envío exitoso,
+                    // para no revelar qué cuentas existen
+                    if (task.isSuccessful() || task.getException() instanceof FirebaseAuthInvalidUserException) {
                         showResetPasswordSuccess(email);
                     } else {
-                        // Error al enviar
-                        handleResetPasswordError(task.getException(), email);
+                        handleResetPasswordError(task.getException());
                     }
                 });
     }
 
-    /**
-     * ⭐ Muestra un error simple en recuperación de contraseña
-     */
-    private void showResetPasswordError(String message) {
-        new AlertDialog.Builder(this)
-                .setTitle("Error")
-                .setMessage(message)
-                .setPositiveButton("Entendido", null)
-                .show();
-    }
-
-    /**
-     * ⭐ MANEJO MEJORADO DE ERRORES EN RECUPERACIÓN
-     */
-    private void handleResetPasswordError(Exception exception, String email) {
+    private void handleResetPasswordError(Exception exception) {
         String errorMessage;
-        String errorTitle = "Error al enviar correo";
 
-        if (exception instanceof FirebaseAuthInvalidUserException) {
-            // Usuario no existe
-            errorTitle = "Correo no encontrado";
-            errorMessage = "No existe una cuenta registrada con el correo:\n\n" + email +
-                    "\n\nVerifica que hayas escrito correctamente tu correo electrónico.";
-        } else if (exception != null && exception.getMessage() != null) {
+        if (exception != null && exception.getMessage() != null) {
             if (exception.getMessage().contains("badly formatted")) {
                 errorMessage = "El formato del correo electrónico no es válido.";
             } else if (exception.getMessage().contains("network")) {
                 errorMessage = "Error de conexión. Verifica tu conexión a internet e intenta nuevamente.";
             } else {
-                errorMessage = "Ocurrió un error al enviar el correo de recuperación. Por favor, intenta nuevamente.";
+                errorMessage = getString(R.string.forgot_password_send_error);
             }
         } else {
-            errorMessage = "Ocurrió un error inesperado. Por favor, intenta nuevamente.";
+            errorMessage = getString(R.string.forgot_password_send_error);
         }
 
         new AlertDialog.Builder(this)
-                .setTitle(errorTitle)
+                .setTitle(R.string.forgot_password_error_title)
                 .setMessage(errorMessage)
                 .setPositiveButton("Entendido", null)
                 .show();
@@ -547,15 +405,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showResetPasswordSuccess(String email) {
         new AlertDialog.Builder(this)
-                .setTitle("✓ Correo enviado")
-                .setMessage(
-                        "Se ha enviado un correo de recuperación a:\n\n" + email + "\n\n" +
-                                "Por favor, revisa tu bandeja de entrada y sigue las instrucciones para restablecer tu contraseña.\n\n" +
-                                "Si no recibes el correo en unos minutos:\n" +
-                                "• Revisa tu carpeta de spam\n" +
-                                "• Verifica que escribiste correctamente el correo\n" +
-                                "• Intenta nuevamente en unos minutos"
-                )
+                .setTitle(R.string.forgot_password_success_title)
+                .setMessage(getString(R.string.forgot_password_neutral_message, email))
                 .setPositiveButton("Entendido", null)
                 .show();
     }
