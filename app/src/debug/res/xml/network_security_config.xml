@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Solo para builds debug: permite HTTP hacia el backend de desarrollo
+    (emulador: http://10.0.2.2:8000, o la IP del PC en la red local para un
+    teléfono físico). Release usa src/main/res/xml/network_security_config.xml,
+    que solo permite HTTPS.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

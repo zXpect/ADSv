@@ -1,3 +1,11 @@
+// URL del backend Django (API de pagos, cotización, calificación y notificaciones).
+// Se puede sobrescribir en gradle.properties o con -P, p. ej. para un teléfono
+// físico en la misma red: ADS_API_BASE_URL_DEBUG=http://192.168.1.50:8000/
+val adsApiBaseUrlDebug = (project.findProperty("ADS_API_BASE_URL_DEBUG") as String?)
+    ?: "http://10.0.2.2:8000/"  // emulador -> localhost del PC
+val adsApiBaseUrlRelease = (project.findProperty("ADS_API_BASE_URL_RELEASE") as String?)
+    ?: "https://configurar-url-del-backend.invalid/"
+
 plugins {
     id("com.android.application")
     id("com.google.firebase.crashlytics")
@@ -22,6 +30,7 @@ android {
 
     buildTypes {
         release {
+            buildConfigField("String", "ADS_API_BASE_URL", "\"$adsApiBaseUrlRelease\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -30,6 +39,7 @@ android {
         }
 
         debug {
+            buildConfigField("String", "ADS_API_BASE_URL", "\"$adsApiBaseUrlDebug\"")
             isMinifyEnabled = false
             isDebuggable = true
         }
@@ -45,6 +55,13 @@ android {
     buildFeatures {
         dataBinding = true
         viewBinding = true
+        buildConfig = true
+    }
+
+    androidResources {
+        // Nunca empaquetar una credencial de servicio en el APK, aunque exista en
+        // assets/ en la copia local de algún desarrollador
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~:!serviceAccountKey.json"
     }
 
     packaging {
@@ -152,10 +169,8 @@ dependencies {
     // JSON Processing
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // Google Auth Library
-    implementation("com.google.auth:google-auth-library-oauth2-http:1.17.0") {
-        exclude(group = "org.jetbrains.kotlin")
-    }
+    // Custom Tabs para abrir el checkout de pagos en el navegador
+    implementation("androidx.browser:browser:1.5.0")
 
     // Forzar versión específica de Kotlin stdlib
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.10")

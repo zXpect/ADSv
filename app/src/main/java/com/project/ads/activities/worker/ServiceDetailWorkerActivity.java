@@ -21,11 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.R;
+import com.project.ads.helpers.QuoteDialogHelper;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.providers.NotificationProvider;
-import com.project.ads.providers.TokenProvider;
-import com.project.ads.models.FCMBody;
-import com.project.ads.models.FCMResponse;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,10 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ServiceDetailWorkerActivity extends AppCompatActivity {
 
@@ -78,13 +72,19 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     private View mLineWayToProgress;
     private View mLineProgressToCompleted;
 
+    // Quote and Payment Card
+    private CardView mCardQuote;
+    private TextView mTvQuoteAmount;
+    private TextView mTvQuoteStatus;
+    private TextView mTvPaymentStatus;
+    private Button mBtnSendQuote;
+
     // Firebase
     private DatabaseReference mDatabaseReference;
     private ValueEventListener mRequestListener;
 
     // Providers
     private NotificationProvider mNotificationProvider;
-    private TokenProvider mTokenProvider;
 
     // Data
     private String mRequestId;
@@ -111,8 +111,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     }
 
     private void initProviders() {
-        mNotificationProvider = new NotificationProvider(this);
-        mTokenProvider = new TokenProvider();
+        mNotificationProvider = new NotificationProvider();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -152,8 +151,16 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mLineWayToProgress = findViewById(R.id.line_way_to_progress);
         mLineProgressToCompleted = findViewById(R.id.line_progress_to_completed);
 
+        // Quote and Payment Card
+        mCardQuote = findViewById(R.id.card_quote);
+        mTvQuoteAmount = findViewById(R.id.tv_quote_amount);
+        mTvQuoteStatus = findViewById(R.id.tv_quote_status);
+        mTvPaymentStatus = findViewById(R.id.tv_payment_status);
+        mBtnSendQuote = findViewById(R.id.btn_quote_primary);
+
         // Setup click listeners
         mBtnBack.setOnClickListener(v -> finish());
+        mBtnSendQuote.setOnClickListener(v -> showQuoteDialog());
         mBtnStartTrip.setOnClickListener(v -> confirmStatusChange("on_the_way"));
         mBtnStartWork.setOnClickListener(v -> confirmStatusChange("in_progress"));
         mBtnFinishWork.setOnClickListener(v -> confirmStatusChange("completed"));
@@ -230,8 +237,9 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         // Update status flow
         updateStatusFlow(request.getStatus());
 
-        // Update action buttons visibility
-        updateActionButtons(request.getStatus());
+        // Update quote/payment card and action buttons
+        updateQuoteCard(request);
+        updateActionButtons(request);
 
         // Update call button state
         mBtnCallClient.setEnabled(request.getClient_phone() != null && !request.getClient_phone().isEmpty());
@@ -300,17 +308,24 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         lineView.setBackgroundColor(getResources().getColor(R.color.gray_light));
     }
 
-    private void updateActionButtons(String status) {
+    private void updateActionButtons(ServiceRequest request) {
         // Hide all buttons first
         mBtnStartTrip.setVisibility(View.GONE);
         mBtnStartWork.setVisibility(View.GONE);
         mBtnFinishWork.setVisibility(View.GONE);
 
+        String status = request.getStatus();
         if (status == null) return;
 
+        boolean hasAction = true;
         switch (status.toLowerCase()) {
             case "accepted":
-                mBtnStartTrip.setVisibility(View.VISIBLE);
+                // Sin precio acordado no se puede iniciar (también lo exigen las reglas de Firebase)
+                if (request.isQuoteAccepted()) {
+                    mBtnStartTrip.setVisibility(View.VISIBLE);
+                } else {
+                    hasAction = false;
+                }
                 break;
             case "on_the_way":
                 mBtnStartWork.setVisibility(View.VISIBLE);
@@ -318,11 +333,69 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
             case "in_progress":
                 mBtnFinishWork.setVisibility(View.VISIBLE);
                 break;
-            case "completed":
-                // No buttons needed
-                mCardActions.setVisibility(View.GONE);
+            default:
+                hasAction = false;
                 break;
         }
+        mCardActions.setVisibility(hasAction ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateQuoteCard(ServiceRequest request) {
+        String status = request.getStatus();
+        boolean relevant = "accepted".equals(status) || "on_the_way".equals(status)
+                || "in_progress".equals(status) || "completed".equals(status);
+        mCardQuote.setVisibility(relevant ? View.VISIBLE : View.GONE);
+        if (!relevant) return;
+
+        mBtnSendQuote.setVisibility(View.GONE);
+        mTvPaymentStatus.setVisibility(View.GONE);
+
+        if (request.hasQuote()) {
+            mTvQuoteAmount.setVisibility(View.VISIBLE);
+            mTvQuoteAmount.setText(request.getFormattedQuotedPrice());
+        } else {
+            mTvQuoteAmount.setVisibility(View.GONE);
+        }
+
+        if (request.isQuoteAccepted()) {
+            mTvQuoteStatus.setText(R.string.quote_status_agreed);
+        } else if (request.isQuotePendingAnswer()) {
+            mTvQuoteStatus.setText(R.string.quote_status_waiting_client);
+        } else if (request.isQuoteRejected()) {
+            String reason = request.getQuote_rejection_reason();
+            mTvQuoteStatus.setText(reason != null && !reason.isEmpty()
+                    ? getString(R.string.quote_status_rejected_reason, reason)
+                    : getString(R.string.quote_status_rejected_worker));
+            showSendQuoteButton(R.string.quote_send_new);
+        } else {
+            mTvQuoteStatus.setText(R.string.quote_status_missing_worker);
+            showSendQuoteButton(R.string.quote_send);
+        }
+
+        if ("completed".equals(status)) {
+            mTvPaymentStatus.setVisibility(View.VISIBLE);
+            if (request.isPaid()) {
+                mTvPaymentStatus.setText(R.string.payment_status_paid);
+                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.success_color));
+            } else {
+                mTvPaymentStatus.setText(R.string.payment_status_waiting_client);
+                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.warning_color));
+            }
+        }
+    }
+
+    private void showSendQuoteButton(int textRes) {
+        // Solo mientras la solicitud está aceptada y sin precio acordado
+        if (mServiceRequest != null && mServiceRequest.isAccepted()) {
+            mBtnSendQuote.setText(textRes);
+            mBtnSendQuote.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showQuoteDialog() {
+        if (mServiceRequest == null) return;
+        // El listener de Firebase actualiza la pantalla cuando el backend guarda la cotización
+        new QuoteDialogHelper(this).show(mRequestId, mServiceRequest.getService_type(), null);
     }
 
     private void confirmStatusChange(String newStatus) {
@@ -340,7 +413,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
                 break;
             case "completed":
                 title = "Finalizar Trabajo";
-                message = "¿Has completado el servicio? El cliente podrá calificarte.";
+                message = "¿Has completado el servicio? El cliente podrá pagar y calificarte.";
                 break;
         }
 
@@ -393,74 +466,8 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     }
 
     private void sendStatusNotificationToClient(String status) {
-        if (mServiceRequest == null || mServiceRequest.getClient_id() == null) return;
-
-        String clientId = mServiceRequest.getClient_id();
-
-        mTokenProvider.getToken(clientId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() && dataSnapshot.child("token").exists()) {
-                    String clientToken = dataSnapshot.child("token").getValue(String.class);
-
-                    if (clientToken != null && !clientToken.isEmpty()) {
-                        String notificationTitle = getNotificationTitle(status);
-                        String notificationBody = getNotificationBody(status);
-
-                        Map<String, String> data = new HashMap<>();
-                        data.put("title", notificationTitle);
-                        data.put("body", notificationBody);
-                        data.put("requestId", mRequestId);
-                        data.put("status", status);
-
-                        FCMBody fcmBody = new FCMBody(clientToken, "high", data);
-
-                        mNotificationProvider.sendNotification(fcmBody).enqueue(new Callback<FCMResponse>() {
-                            @Override
-                            public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
-                                Log.d(TAG, "Notificación enviada al cliente");
-                            }
-
-                            @Override
-                            public void onFailure(Call<FCMResponse> call, Throwable t) {
-                                Log.e(TAG, "Error enviando notificación", t);
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "Error obteniendo token del cliente", databaseError.toException());
-            }
-        });
-    }
-
-    private String getNotificationTitle(String status) {
-        switch (status) {
-            case "on_the_way":
-                return "¡El trabajador va en camino!";
-            case "in_progress":
-                return "Trabajo iniciado";
-            case "completed":
-                return "¡Servicio completado!";
-            default:
-                return "Actualización de servicio";
-        }
-    }
-
-    private String getNotificationBody(String status) {
-        switch (status) {
-            case "on_the_way":
-                return "El trabajador está en camino hacia tu ubicación";
-            case "in_progress":
-                return "El trabajador ha comenzado a trabajar en tu solicitud";
-            case "completed":
-                return "Tu servicio ha sido completado. ¡Por favor califica al trabajador!";
-            default:
-                return "Tu servicio ha sido actualizado";
-        }
+        // El backend arma el mensaje según el estado actual de la solicitud
+        mNotificationProvider.notify(mRequestId, NotificationProvider.TYPE_STATUS_CHANGE);
     }
 
     private String getSuccessMessage(String status) {
@@ -470,7 +477,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
             case "in_progress":
                 return "Has iniciado el trabajo";
             case "completed":
-                return "¡Servicio completado! El cliente puede calificarte";
+                return "¡Servicio completado! El cliente ya puede pagar";
             default:
                 return "Estado actualizado";
         }

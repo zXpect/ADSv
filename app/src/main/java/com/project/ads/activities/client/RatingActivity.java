@@ -15,6 +15,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.project.ads.models.api.RatingData;
+import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.RequestProvider;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -140,7 +142,8 @@ public class RatingActivity extends AppCompatActivity {
             mServiceType.setText("Servicio: " + mServiceTypeStr);
         }
 
-        // Configurar rating bar
+        // Configurar rating bar: estrellas enteras de 1 a 5 (lo que acepta el backend)
+        mRatingBar.setStepSize(1f);
         mRatingBar.setRating(0);
         mRatingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
             // Habilitar botón solo si hay rating
@@ -171,26 +174,31 @@ public class RatingActivity extends AppCompatActivity {
 
         logInfo("Enviando calificación: " + rating + " estrellas");
 
-        mRequestProvider.rateRequest(mRequestId, rating, comment)
-                .addOnSuccessListener(aVoid -> {
-                    mProgressBar.setVisibility(View.GONE);
+        // El backend exige el servicio pagado y recalcula el promedio del trabajador
+        mRequestProvider.rateService(mRequestId, Math.round(rating), comment, new ApiCallback<RatingData>() {
+            @Override
+            public void onSuccess(RatingData data) {
+                mProgressBar.setVisibility(View.GONE);
 
-                    logEvent("service_rated", rating);
+                logEvent("service_rated", rating);
 
-                    Toast.makeText(this,
-                            "¡Gracias por tu calificación!",
-                            Toast.LENGTH_LONG).show();
+                Toast.makeText(RatingActivity.this,
+                        "¡Gracias por tu calificación!",
+                        Toast.LENGTH_LONG).show();
 
-                    // Cerrar actividad y volver atrás
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    mProgressBar.setVisibility(View.GONE);
-                    mSubmitButton.setEnabled(true);
+                // Cerrar actividad y volver atrás
+                finish();
+            }
 
-                    logError("submitRating", e);
-                    showError("Error al enviar calificación. Intenta de nuevo.");
-                });
+            @Override
+            public void onError(String message, int httpStatus) {
+                mProgressBar.setVisibility(View.GONE);
+                mSubmitButton.setEnabled(true);
+
+                logInfo("Error al calificar (HTTP " + httpStatus + ")");
+                showError(message);
+            }
+        });
     }
 
     private void showError(String message) {

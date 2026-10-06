@@ -21,9 +21,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
+import com.project.ads.helpers.QuoteDialogHelper;
 import com.project.ads.models.ServiceRequest;
+import com.project.ads.providers.RequestProvider;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class RequestDetailActivity extends AppCompatActivity {
@@ -51,6 +52,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     
     // Firebase
     private DatabaseReference databaseReference;
+    private RequestProvider requestProvider;
     
     // Data
     private String requestId;
@@ -64,6 +66,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         
         // Initialize Firebase
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        requestProvider = new RequestProvider(this);
         
         // Get request ID from intent
         requestId = getIntent().getStringExtra("request_id");
@@ -103,6 +106,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         
         // Set up click listeners
         btnBack.setOnClickListener(v -> finish());
+        // Aceptar = enviar cotización: el backend marca la solicitud como aceptada
+        btnAccept.setText(R.string.quote_accept_with_price);
         btnAccept.setOnClickListener(v -> acceptRequest());
         btnReject.setOnClickListener(v -> rejectRequest());
         
@@ -152,7 +157,6 @@ public class RequestDetailActivity extends AppCompatActivity {
                                 Map<String, Object> requestData = (Map<String, Object>) dataSnapshot.getValue();
 
                                 if (requestData != null) {
-                                    Log.d(TAG, "Request data retrieved: " + requestData.toString());
                                     serviceRequest = ServiceRequest.fromMap(requestData);
 
                                     if (serviceRequest != null) {
@@ -202,8 +206,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         tvAddress.setText(request.getAddress() != null ? request.getAddress() : "N/A");
         tvUrgencyLevel.setText(request.getUrgency_level() != null ? request.getUrgency_level() : "Normal");
         
-        if (request.getEstimated_cost() > 0) {
-            tvEstimatedCost.setText(String.format("$%.2f", request.getEstimated_cost()));
+        if (request.hasQuote()) {
+            tvEstimatedCost.setText(request.getFormattedQuotedPrice());
         } else {
             tvEstimatedCost.setText("Por determinar");
         }
@@ -224,37 +228,39 @@ public class RequestDetailActivity extends AppCompatActivity {
         }
     }
     
+    /**
+     * Aceptar una solicitud exige cotizarla: el backend guarda el precio, pasa
+     * la solicitud a 'accepted' y notifica al cliente.
+     */
     private void acceptRequest() {
         if (serviceRequest == null) return;
-        
-        updateRequestStatus("accepted", "Solicitud aceptada exitosamente");
+
+        new QuoteDialogHelper(this).show(requestId, serviceRequest.getService_type(), quote -> {
+            serviceRequest.setStatus(quote.getStatus());
+            tvStatus.setText(serviceRequest.getStatusDisplayText());
+            updateButtonsVisibility(quote.getStatus());
+            if (quote.getQuotedPrice() != null) {
+                tvEstimatedCost.setText(ServiceRequest.formatCop(quote.getQuotedPrice()));
+            }
+        });
     }
     
     private void rejectRequest() {
         if (serviceRequest == null) return;
-        
-        updateRequestStatus("rejected", "Solicitud rechazada");
-    }
-    
-    private void updateRequestStatus(String newStatus, String successMessage) {
+
         progressBar.setVisibility(View.VISIBLE);
         btnAccept.setEnabled(false);
         btnReject.setEnabled(false);
-        
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("status", newStatus);
-        updates.put("last_updated", System.currentTimeMillis());
-        
-        databaseReference.child("requests").child(requestId)
-                .updateChildren(updates)
+
+        requestProvider.rejectRequest(requestId)
                 .addOnSuccessListener(aVoid -> {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, successMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Solicitud rechazada", Toast.LENGTH_SHORT).show();
                     
                     // Update local object and UI
-                    serviceRequest.setStatus(newStatus);
+                    serviceRequest.setStatus("rejected");
                     tvStatus.setText(serviceRequest.getStatusDisplayText());
-                    updateButtonsVisibility(newStatus);
+                    updateButtonsVisibility("rejected");
                     
                     btnAccept.setEnabled(true);
                     btnReject.setEnabled(true);

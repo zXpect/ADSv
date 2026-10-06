@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +22,9 @@ import android.widget.Toast;
 
 import com.project.ads.R;
 import com.project.ads.models.ServiceRequest;
+import com.project.ads.models.api.QuoteData;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.providers.QuoteProvider;
 import com.project.ads.providers.RequestProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +44,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     private TextView mTvError;
     private ImageButton mBtnBack;
     private RequestProvider mRequestProvider;
+    private QuoteProvider mQuoteProvider;
 
     // Service Info
     private TextView mTvRequestId;
@@ -74,6 +79,15 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     private Button mBtnCallWorker;
     private Button mBtnCancelRequest;
     private Button mBtnRateService;
+    private Button mBtnPayService;
+
+    // Quote and Payment Card
+    private CardView mCardQuote;
+    private TextView mTvQuoteAmount;
+    private TextView mTvQuoteStatus;
+    private TextView mTvPaymentStatus;
+    private Button mBtnAcceptQuote;
+    private Button mBtnRejectQuote;
 
     // Firebase
     private DatabaseReference mDatabaseReference;
@@ -100,6 +114,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         initViews();
         setupStatusBar();
         mRequestProvider = new RequestProvider(this);
+        mQuoteProvider = new QuoteProvider();
         loadRequestData();
 
     }
@@ -146,12 +161,26 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         mBtnCallWorker = findViewById(R.id.btn_call_worker);
         mBtnCancelRequest = findViewById(R.id.btn_cancel_request);
         mBtnRateService = findViewById(R.id.btn_rate_service);
+        mBtnPayService = findViewById(R.id.btn_pay_service);
+
+        // Quote and Payment Card
+        mCardQuote = findViewById(R.id.card_quote);
+        mTvQuoteAmount = findViewById(R.id.tv_quote_amount);
+        mTvQuoteStatus = findViewById(R.id.tv_quote_status);
+        mTvPaymentStatus = findViewById(R.id.tv_payment_status);
+        mBtnAcceptQuote = findViewById(R.id.btn_quote_primary);
+        mBtnRejectQuote = findViewById(R.id.btn_quote_secondary);
+        mBtnAcceptQuote.setText(R.string.quote_accept);
+        mBtnRejectQuote.setText(R.string.quote_reject);
 
         // Setup click listeners
         mBtnBack.setOnClickListener(v -> finish());
         mBtnCallWorker.setOnClickListener(v -> callWorker());
         mBtnCancelRequest.setOnClickListener(v -> cancelRequest());
         mBtnRateService.setOnClickListener(v -> openRatingActivity());
+        mBtnPayService.setOnClickListener(v -> openPayment());
+        mBtnAcceptQuote.setOnClickListener(v -> confirmAcceptQuote());
+        mBtnRejectQuote.setOnClickListener(v -> showRejectQuoteDialog());
     }
 
     private void setupStatusBar() {
@@ -225,8 +254,9 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         // Update status flow
         updateStatusFlow(request.getStatus());
 
-        // Update action buttons visibility
-        updateActionButtons(request.getStatus(), request.getRating() > 0); // ← CAMBIO AQUÍ
+        // Update quote/payment card and action buttons
+        updateQuoteCard(request);
+        updateActionButtons(request);
 
         // Update call button state
         mBtnCallWorker.setEnabled(request.getWorker_phone() != null && !request.getWorker_phone().isEmpty());
@@ -311,17 +341,24 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         lineView.setBackgroundColor(getResources().getColor(R.color.gray_light));
     }
 
-    private void updateActionButtons(String status, boolean isRated) {
+    private void updateActionButtons(ServiceRequest request) {
         // Hide all buttons first
+        mCardActions.setVisibility(View.VISIBLE);
         mBtnCallWorker.setVisibility(View.VISIBLE);
         mBtnCancelRequest.setVisibility(View.GONE);
         mBtnRateService.setVisibility(View.GONE);
+        mBtnPayService.setVisibility(View.GONE);
 
+        String status = request.getStatus();
         if (status == null) return;
+
+        // Se puede cancelar mientras no haya precio acordado (igual que las reglas de Firebase)
+        if (request.canBeCancelled()) {
+            mBtnCancelRequest.setVisibility(View.VISIBLE);
+        }
 
         switch (status.toLowerCase()) {
             case "pending":
-                mBtnCancelRequest.setVisibility(View.VISIBLE);
                 mBtnCallWorker.setVisibility(View.GONE);
                 break;
             case "accepted":
@@ -331,15 +368,12 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 break;
             case "completed":
                 mBtnCallWorker.setVisibility(View.GONE);
-                // Siempre mostrar el botón de calificar en "completed"
-                mBtnRateService.setVisibility(View.VISIBLE);
-                mBtnRateService.setEnabled(true);
-
-                // Si ya está calificado, cambiar el texto del botón
-                if (isRated) {
-                    mBtnRateService.setText("Ver Calificación");
-                } else {
-                    mBtnRateService.setText("Calificar Servicio");
+                if (request.isPaid()) {
+                    // La calificación se habilita después del pago
+                    mBtnRateService.setVisibility(View.VISIBLE);
+                    mBtnRateService.setText(request.isRated() ? "Ver Calificación" : "Calificar Servicio");
+                } else if (request.isQuoteAccepted()) {
+                    mBtnPayService.setVisibility(View.VISIBLE);
                 }
                 break;
             case "cancelled":
@@ -347,6 +381,117 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 mCardActions.setVisibility(View.GONE);
                 break;
         }
+    }
+
+    private void updateQuoteCard(ServiceRequest request) {
+        String status = request.getStatus();
+        boolean relevant = "accepted".equals(status) || "on_the_way".equals(status)
+                || "in_progress".equals(status) || "completed".equals(status);
+        mCardQuote.setVisibility(relevant ? View.VISIBLE : View.GONE);
+        if (!relevant) return;
+
+        mBtnAcceptQuote.setVisibility(View.GONE);
+        mBtnRejectQuote.setVisibility(View.GONE);
+        mTvPaymentStatus.setVisibility(View.GONE);
+
+        if (request.hasQuote()) {
+            mTvQuoteAmount.setVisibility(View.VISIBLE);
+            mTvQuoteAmount.setText(request.getFormattedQuotedPrice());
+        } else {
+            mTvQuoteAmount.setVisibility(View.GONE);
+        }
+
+        if (request.isQuoteAccepted()) {
+            mTvQuoteStatus.setText(R.string.quote_status_agreed);
+        } else if (request.isQuotePendingAnswer()) {
+            mTvQuoteStatus.setText(R.string.quote_status_answer_client);
+            mBtnAcceptQuote.setVisibility(View.VISIBLE);
+            mBtnRejectQuote.setVisibility(View.VISIBLE);
+        } else if (request.isQuoteRejected()) {
+            mTvQuoteStatus.setText(R.string.quote_status_rejected_client);
+        } else {
+            mTvQuoteStatus.setText(R.string.quote_status_missing_client);
+        }
+
+        if ("completed".equals(status)) {
+            mTvPaymentStatus.setVisibility(View.VISIBLE);
+            if (request.isPaid()) {
+                mTvPaymentStatus.setText(R.string.payment_status_paid);
+                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.success_color));
+            } else if (request.isPaymentPending()) {
+                mTvPaymentStatus.setText(R.string.payment_status_in_process);
+                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.warning_color));
+            } else {
+                mTvPaymentStatus.setText(R.string.payment_status_pending_client);
+                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.warning_color));
+            }
+        }
+    }
+
+    private void confirmAcceptQuote() {
+        if (mServiceRequest == null) return;
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.quote_accept_title)
+                .setMessage(getString(R.string.quote_accept_message, mServiceRequest.getFormattedQuotedPrice()))
+                .setPositiveButton(R.string.quote_accept, (dialog, which) -> {
+                    setQuoteButtonsEnabled(false);
+                    mQuoteProvider.acceptQuote(mRequestId, quoteCallback(R.string.quote_accepted_toast));
+                })
+                .setNegativeButton(R.string.quote_dialog_cancel, null)
+                .show();
+    }
+
+    private void showRejectQuoteDialog() {
+        EditText reasonInput = new EditText(this);
+        reasonInput.setHint(R.string.quote_reject_reason_hint);
+        reasonInput.setMaxLines(3);
+        reasonInput.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(200)});
+        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+
+        android.widget.FrameLayout container = new android.widget.FrameLayout(this);
+        container.setPadding(padding, padding / 2, padding, 0);
+        container.addView(reasonInput);
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.quote_reject_title)
+                .setMessage(R.string.quote_reject_message)
+                .setView(container)
+                .setPositiveButton(R.string.quote_reject, (dialog, which) -> {
+                    setQuoteButtonsEnabled(false);
+                    mQuoteProvider.rejectQuote(mRequestId, reasonInput.getText().toString().trim(),
+                            quoteCallback(R.string.quote_rejected_toast));
+                })
+                .setNegativeButton(R.string.quote_dialog_cancel, null)
+                .show();
+    }
+
+    private ApiCallback<QuoteData> quoteCallback(int successMessage) {
+        return new ApiCallback<QuoteData>() {
+            @Override
+            public void onSuccess(QuoteData data) {
+                // El listener de Firebase actualiza la tarjeta con el nuevo estado
+                setQuoteButtonsEnabled(true);
+                Toast.makeText(ServiceRequestDetailActivity.this, successMessage, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                setQuoteButtonsEnabled(true);
+                Toast.makeText(ServiceRequestDetailActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+    private void setQuoteButtonsEnabled(boolean enabled) {
+        mBtnAcceptQuote.setEnabled(enabled);
+        mBtnRejectQuote.setEnabled(enabled);
+    }
+
+    private void openPayment() {
+        if (mServiceRequest == null) return;
+        Intent intent = new Intent(this, PaymentActivity.class);
+        intent.putExtra(PaymentActivity.EXTRA_REQUEST_ID, mRequestId);
+        startActivity(intent);
     }
     private void callWorker() {
         if (mServiceRequest != null && mServiceRequest.getWorker_phone() != null) {
@@ -363,12 +508,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 .setPositiveButton("Sí, cancelar", (dialog, which) -> {
                     mProgressBar.setVisibility(View.VISIBLE);
 
-                    Map<String, Object> updates = new java.util.HashMap<>();
-                    updates.put("status", "cancelled");
-                    updates.put("cancelled_at", System.currentTimeMillis());
-
-                    mDatabaseReference.child("requests").child(mRequestId)
-                            .updateChildren(updates)
+                    mRequestProvider.cancelRequest(mRequestId)
                             .addOnSuccessListener(aVoid -> {
                                 mProgressBar.setVisibility(View.GONE);
                                 Toast.makeText(this, "Solicitud cancelada", Toast.LENGTH_SHORT).show();
@@ -385,6 +525,10 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
 
     private void openRatingActivity() {
         if (mServiceRequest == null) return;
+        if (!mServiceRequest.isPaid()) {
+            Toast.makeText(this, R.string.rating_requires_payment, Toast.LENGTH_SHORT).show();
+            return;
+        }
         checkIfAlreadyRated();
     }
 

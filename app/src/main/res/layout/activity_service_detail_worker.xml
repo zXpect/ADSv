@@ -642,6 +642,9 @@
 
             </LinearLayout>
 
+            <!-- Quote and Payment Card -->
+            <include layout="@layout/layout_quote_card" />
+
             <!-- Action Buttons Card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_actions"

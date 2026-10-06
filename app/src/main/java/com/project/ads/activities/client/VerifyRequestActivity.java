@@ -16,11 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.project.ads.models.FCMBody;
-import com.project.ads.models.FCMResponse;
 import com.project.ads.providers.RequestProvider;
-import com.project.ads.providers.NotificationProvider;
-import com.project.ads.providers.TokenProvider;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,8 +44,6 @@ public class VerifyRequestActivity extends AppCompatActivity {
 
     // Providers
     private RequestProvider mRequestProvider;
-    private NotificationProvider mNotificationProvider;
-    private TokenProvider mTokenProvider;
     private DatabaseReference mDatabaseReference;
 
     // Datos para la solicitud
@@ -85,8 +79,6 @@ public class VerifyRequestActivity extends AppCompatActivity {
 
     private void initProviders() {
         mRequestProvider = new RequestProvider(this);
-        mNotificationProvider = new NotificationProvider(this);
-        mTokenProvider = new TokenProvider();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -228,8 +220,11 @@ public class VerifyRequestActivity extends AppCompatActivity {
                             String requestId = databaseReference.getKey();
                             Log.d(TAG, "Solicitud creada con ID: " + requestId);
 
-                            // PASO 5: Enviar notificación al trabajador
-                            sendNotificationToWorker(mWorkerId, requestData, requestId);
+                            // La notificación al trabajador la envía el backend
+                            // (RequestProvider.createRequest -> POST /api/notifications/)
+                            hideProgressDialog();
+                            showToast("Solicitud enviada con éxito");
+                            navigateToRequestDetail(requestId);
                         })
                         .addOnFailureListener(e -> {
                             hideProgressDialog();
@@ -297,81 +292,6 @@ public class VerifyRequestActivity extends AppCompatActivity {
             return value.toString();
         }
         return defaultValue;
-    }
-
-    private void sendNotificationToWorker(String workerId, Map<String, Object> requestData, String requestId) {
-        Log.d(TAG, "Enviando notificación al trabajador: " + workerId);
-
-        DatabaseReference tokenRef = mTokenProvider.getToken(workerId);
-
-        tokenRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() && dataSnapshot.child("token").exists()) {
-                    String workerToken = dataSnapshot.child("token").getValue(String.class);
-
-                    if (workerToken != null && !workerToken.isEmpty()) {
-                        Log.d(TAG, "Token del trabajador: " + workerToken);
-
-                        String title = "Nueva Solicitud de Servicio";
-                        String body = "Tipo: " + requestData.get("service_type") +
-                                "\nDirección: " + requestData.get("address");
-
-                        Map<String, String> notificationData = new HashMap<>();
-                        notificationData.put("title", title);
-                        notificationData.put("body", body);
-                        notificationData.put("clientId", (String) requestData.get("client_id"));
-                        notificationData.put("requestId", requestId);
-                        notificationData.put("timestamp", String.valueOf(System.currentTimeMillis()));
-
-                        FCMBody fcmBody = new FCMBody(workerToken, "high", notificationData);
-
-                        mNotificationProvider.sendNotification(fcmBody).enqueue(new retrofit2.Callback<FCMResponse>() {
-                            @Override
-                            public void onResponse(retrofit2.Call<FCMResponse> call, retrofit2.Response<FCMResponse> response) {
-                                hideProgressDialog();
-
-                                if (response.isSuccessful()) {
-                                    Log.d(TAG, "Notificación enviada con éxito");
-                                    showToast("Solicitud enviada con éxito");
-                                } else {
-                                    Log.e(TAG, "Error al enviar notificación: " + response.message());
-                                    showToast("Solicitud creada exitosamente");
-                                }
-
-                                navigateToRequestDetail(requestId);
-                            }
-
-                            @Override
-                            public void onFailure(retrofit2.Call<FCMResponse> call, Throwable t) {
-                                hideProgressDialog();
-                                Log.e(TAG, "Error en la llamada: " + t.getMessage());
-                                showToast("Solicitud enviada");
-                                navigateToRequestDetail(requestId);
-                            }
-                        });
-                    } else {
-                        hideProgressDialog();
-                        Log.e(TAG, "Token del trabajador es nulo o vacío");
-                        showToast("Solicitud creada exitosamente");
-                        navigateToRequestDetail(requestId);
-                    }
-                } else {
-                    hideProgressDialog();
-                    Log.e(TAG, "No se encontró el token del trabajador");
-                    showToast("Solicitud creada exitosamente");
-                    navigateToRequestDetail(requestId);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                hideProgressDialog();
-                Log.e(TAG, "Error al leer token: " + databaseError.getMessage());
-                showToast("Solicitud creada exitosamente");
-                navigateToRequestDetail(requestId);
-            }
-        });
     }
 
     /**

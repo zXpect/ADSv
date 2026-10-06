@@ -23,12 +23,33 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ADSv"
         tools:targetApi="33">
+        <!--
+            Pago: vuelve del checkout por adsapp://payment-result?request_id=...
+            Exportada solo para el deep link; el resultado del pago se lee de
+            Firebase (lo escribe el backend), no de los parámetros del enlace.
+        -->
+        <activity
+            android:name="com.project.ads.activities.client.PaymentActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-result"
+                    android:scheme="adsapp" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.project.ads.activities.client.ServiceRequestDetailActivity"
             android:exported="false" />

@@ -643,6 +643,9 @@
 
             </androidx.cardview.widget.CardView>
 
+            <!-- Quote and Payment Card -->
+            <include layout="@layout/layout_quote_card" />
+
             <!-- Action Buttons Card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_actions"
@@ -693,6 +696,23 @@
                         app:iconTint="@color/textOnlywhite"
                         app:cornerRadius="12dp"
                         app:backgroundTint="@color/error_color"
+                        android:visibility="gone" />
+
+                    <!-- Pay Service Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_pay_service"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="@string/payment_pay_button"
+                        android:textColor="@color/textOnlywhite"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:icon="@drawable/ic_money"
+                        app:iconGravity="textStart"
+                        app:iconPadding="12dp"
+                        app:iconTint="@color/textOnlywhite"
+                        app:cornerRadius="12dp"
+                        app:backgroundTint="@color/success_color"
                         android:visibility="gone" />
 
                     <!-- Rate Service Button -->

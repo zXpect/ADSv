@@ -30,6 +30,13 @@ public class ServiceRequest {
     private String rating_comment;
     private boolean is_rated;
 
+    // Cotización y pago: solo los escribe el backend (ver reglas de Firebase)
+    private long quoted_price;          // pesos COP enteros; 0 = sin cotización
+    private String quote_status;        // quoted | accepted | rejected
+    private String quote_rejection_reason;
+    private String payment_status;      // pending | approved | declined | error | voided
+    private String payment_reference;
+
     // Constructor vacío requerido por Firebase
     public ServiceRequest() {
     }
@@ -75,6 +82,11 @@ public class ServiceRequest {
         request.rating = getDoubleValue(map, "rating");
         request.rating_comment = getStringValue(map, "rating_comment");
         request.is_rated = getBooleanValue(map, "is_rated");
+        request.quoted_price = getLongValue(map, "quoted_price");
+        request.quote_status = getStringValue(map, "quote_status");
+        request.quote_rejection_reason = getStringValue(map, "quote_rejection_reason");
+        request.payment_status = getStringValue(map, "payment_status");
+        request.payment_reference = getStringValue(map, "payment_reference");
 
         return request;
     }
@@ -240,12 +252,53 @@ public class ServiceRequest {
         return isAccepted() || isOnTheWay() || isInProgress();
     }
 
+    /**
+     * El cliente puede cancelar mientras no haya un precio acordado
+     * (mismo criterio que las reglas de Firebase).
+     */
     public boolean canBeCancelled() {
-        return isPending();
+        return isPending() || (isAccepted() && !isQuoteAccepted());
     }
 
     public boolean canBeRated() {
-        return isCompleted() && rating == 0;
+        return isCompleted() && isPaid() && !is_rated;
+    }
+
+    // ---------- Cotización y pago ----------
+
+    public boolean hasQuote() {
+        return quoted_price > 0 && quote_status != null;
+    }
+
+    public boolean isQuotePendingAnswer() {
+        return "quoted".equals(quote_status);
+    }
+
+    public boolean isQuoteAccepted() {
+        return "accepted".equals(quote_status);
+    }
+
+    public boolean isQuoteRejected() {
+        return "rejected".equals(quote_status);
+    }
+
+    public boolean isPaid() {
+        return "approved".equals(payment_status);
+    }
+
+    public boolean isPaymentPending() {
+        return "pending".equals(payment_status);
+    }
+
+    /** Formato $85.000 (pesos colombianos, sin decimales). */
+    public static String formatCop(long amount) {
+        java.text.DecimalFormatSymbols symbols = new java.text.DecimalFormatSymbols(new Locale("es", "CO"));
+        symbols.setGroupingSeparator('.');
+        return "$" + new java.text.DecimalFormat("#,##0", symbols).format(amount);
+    }
+
+    public String getFormattedQuotedPrice() {
+        return formatCop(quoted_price);
     }
 
     // Getters y Setters
@@ -431,5 +484,25 @@ public class ServiceRequest {
 
     public void setIs_rated(boolean is_rated) {
         this.is_rated = is_rated;
+    }
+
+    public long getQuoted_price() {
+        return quoted_price;
+    }
+
+    public String getQuote_status() {
+        return quote_status;
+    }
+
+    public String getQuote_rejection_reason() {
+        return quote_rejection_reason;
+    }
+
+    public String getPayment_status() {
+        return payment_status;
+    }
+
+    public String getPayment_reference() {
+        return payment_reference;
     }
 }

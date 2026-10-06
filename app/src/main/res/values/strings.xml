@@ -288,5 +288,63 @@
     <string name="notification_permission_granted">Permiso de notificaciones concedido</string>
     <string name="notification_permission_denied">Permiso de notificaciones denegado</string>
 
+    <!-- Cotización -->
+    <string name="quote_card_title">Precio del servicio</string>
+    <string name="quote_accept_with_price">Cotizar y aceptar</string>
+    <string name="quote_dialog_title">Enviar cotización</string>
+    <string name="quote_dialog_hint">Indica el precio total del servicio en pesos colombianos. El cliente debe aceptarlo antes de que puedas iniciar el trabajo.</string>
+    <string name="quote_dialog_price_hint">Precio (COP)</string>
+    <string name="quote_dialog_limits">El precio debe estar entre %1$s y %2$s</string>
+    <string name="quote_dialog_send">Enviar</string>
+    <string name="quote_dialog_cancel">Cancelar</string>
+    <string name="quote_loading_limits">Consultando rango de precios…</string>
+    <string name="quote_error_invalid">Ingresa un precio válido</string>
+    <string name="quote_sent">Cotización enviada al cliente</string>
+    <string name="quote_send">Enviar cotización</string>
+    <string name="quote_send_new">Enviar nueva cotización</string>
+    <string name="quote_accept">Aceptar cotización</string>
+    <string name="quote_reject">Rechazar</string>
+    <string name="quote_accept_title">Aceptar cotización</string>
+    <string name="quote_accept_message">El precio del servicio será %1$s. Una vez aceptado no se puede cambiar. ¿Deseas continuar?</string>
+    <string name="quote_accepted_toast">Cotización aceptada</string>
+    <string name="quote_reject_title">Rechazar cotización</string>
+    <string name="quote_reject_message">El trabajador podrá enviarte una nueva cotización.</string>
+    <string name="quote_reject_reason_hint">Motivo (opcional)</string>
+    <string name="quote_rejected_toast">Cotización rechazada</string>
+    <string name="quote_status_agreed">Precio acordado</string>
+    <string name="quote_status_waiting_client">Esperando que el cliente acepte la cotización</string>
+    <string name="quote_status_answer_client">El trabajador cotizó tu servicio. Acepta el precio para que pueda iniciar.</string>
+    <string name="quote_status_missing_worker">Envía una cotización para que el cliente la acepte</string>
+    <string name="quote_status_missing_client">Esperando la cotización del trabajador</string>
+    <string name="quote_status_rejected_worker">El cliente rechazó la cotización. Puedes enviar una nueva.</string>
+    <string name="quote_status_rejected_reason">El cliente rechazó la cotización: \"%1$s\". Puedes enviar una nueva.</string>
+    <string name="quote_status_rejected_client">Rechazaste la cotización. Esperando una nueva del trabajador.</string>
+
+    <!-- Pagos -->
+    <string name="payment_title">Pago del servicio</string>
+    <string name="payment_pay_button">Pagar servicio</string>
+    <string name="payment_pay_now_button">Pagar ahora</string>
+    <string name="payment_retry_button">Reintentar pago</string>
+    <string name="payment_reopen_button">Volver a abrir el pago</string>
+    <string name="payment_rate_button">Calificar servicio</string>
+    <string name="payment_back">Volver</string>
+    <string name="payment_worker">Trabajador: %1$s</string>
+    <string name="payment_loading">Cargando…</string>
+    <string name="payment_creating">Preparando el pago…</string>
+    <string name="payment_ready">El servicio fue completado. Realiza el pago para poder calificar.</string>
+    <string name="payment_confirming">Confirmando tu pago con la pasarela…</string>
+    <string name="payment_approved">¡Pago aprobado! Gracias.</string>
+    <string name="payment_declined">El pago fue rechazado. Puedes intentarlo de nuevo.</string>
+    <string name="payment_error">No se pudo completar el pago. Puedes intentarlo de nuevo.</string>
+    <string name="payment_secure_note">El pago se realiza en la pasarela de pagos. ADS no ve ni guarda los datos de tu tarjeta.</string>
+    <string name="payment_error_no_request">No se encontró la solicitud</string>
+    <string name="payment_error_not_owner">Solo el cliente de la solicitud puede pagarla</string>
+    <string name="payment_error_not_payable">Esta solicitud todavía no se puede pagar</string>
+    <string name="payment_error_no_browser">No hay un navegador disponible para abrir el pago</string>
+    <string name="payment_status_paid">Pagado</string>
+    <string name="payment_status_in_process">Pago en proceso</string>
+    <string name="payment_status_pending_client">Pendiente de pago</string>
+    <string name="payment_status_waiting_client">Esperando el pago del cliente</string>
+    <string name="rating_requires_payment">Primero realiza el pago del servicio</string>
 
 </resources>

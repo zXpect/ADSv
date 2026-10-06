@@ -13,10 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.project.ads.models.FCMBody;
-import com.project.ads.models.FCMResponse;
 import com.project.ads.providers.RequestProvider;
-import com.project.ads.providers.NotificationProvider;
 import com.project.ads.providers.TokenProvider;
 import com.project.ads.providers.WorkerProvider;
 import com.google.android.material.button.MaterialButton;
@@ -33,7 +30,6 @@ import java.util.Map;
 public class ServiceRequestActivity extends AppCompatActivity {
 
     private RequestProvider mRequestProvider;
-    private NotificationProvider mNotificationProvider;
     private TokenProvider mTokenProvider;
     private WorkerProvider mWorkerProvider;
     private TextInputEditText addressInput;
@@ -70,7 +66,6 @@ public class ServiceRequestActivity extends AppCompatActivity {
 
     private void initProviders() {
         mRequestProvider = new RequestProvider(this);
-        mNotificationProvider = new NotificationProvider(this);
         mTokenProvider = new TokenProvider();
         mWorkerProvider = new WorkerProvider();
     }

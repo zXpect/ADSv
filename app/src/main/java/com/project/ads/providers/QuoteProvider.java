@@ -1,0 +1,39 @@
+package com.project.ads.providers;
+
+import com.project.ads.models.api.ApiBodies;
+import com.project.ads.models.api.QuoteData;
+import com.project.ads.models.api.QuoteLimits;
+import com.project.ads.retrofit.AdsApiClient;
+import com.project.ads.retrofit.ApiCallAdapter;
+
+/**
+ * Cotización de una solicitud. Las reglas de Firebase reservan estos campos al
+ * backend, que valida el rango de precio y quién puede cotizar o responder.
+ */
+public class QuoteProvider {
+
+    public static final String QUOTE_QUOTED = "quoted";
+    public static final String QUOTE_ACCEPTED = "accepted";
+    public static final String QUOTE_REJECTED = "rejected";
+
+    public void getQuoteLimits(String serviceType, ApiCallback<QuoteLimits> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().getQuoteLimits(serviceType), callback);
+    }
+
+    /** Trabajador: envía (o reenvía) la cotización en pesos COP enteros. */
+    public void submitQuote(String requestId, long quotedPrice, ApiCallback<QuoteData> callback) {
+        ApiCallAdapter.enqueue(
+                AdsApiClient.getApi().submitQuote(requestId, new ApiBodies.QuoteBody(quotedPrice)), callback);
+    }
+
+    /** Cliente: acepta la cotización; queda fija. */
+    public void acceptQuote(String requestId, ApiCallback<QuoteData> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().acceptQuote(requestId), callback);
+    }
+
+    /** Cliente: rechaza la cotización; el trabajador puede enviar otra. */
+    public void rejectQuote(String requestId, String reason, ApiCallback<QuoteData> callback) {
+        ApiCallAdapter.enqueue(
+                AdsApiClient.getApi().rejectQuote(requestId, new ApiBodies.RejectQuoteBody(reason)), callback);
+    }
+}
