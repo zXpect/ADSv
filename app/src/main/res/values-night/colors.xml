@@ -1,61 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- COLORES MODO OSCURO -->
+    <color name="status_bar_dark">#0A0E13</color>
+    <color name="black">#D1CDCD</color>
+    <color name="whitevariable">#0A0E13</color>
+    <color name="white">#ECEFF4</color>
+    <color name="textOnlywhite">#ECEFF4</color>
+    <color name="nav_item_selected_bg">#26FF8A5B</color>
 
+    <!-- Primary / Accent (naranja vibrante para modo oscuro) -->
+    <color name="colorPrimary">#D65E2E</color>
+    <color name="colorPrimaryDark">#CA5B2A</color>
+    <color name="colorPrimaryLight">#FFB088</color>
+    <color name="colorAccent">#FFA178</color>
 
-    <color name="status_bar_dark">#CC1A1A1A</color>
-    <color name="nav_item_selected_bg">#33FFFFFF</color>
+    <!-- Alternativa azul -->
+    <color name="blue">#6BABDE</color>
 
+    <!-- Otras referencias de acento -->
+    <color name="accent_color">#FB7B3A</color>
 
-    <!-- Fondos adaptados a oscuro - GRISES MÁS CLAROS Y CONTRASTANTES -->
-    <color name="background_light">#1A1A1A</color>
+    <!-- Fondos y superficies (gris azulado oscuro elegante) -->
+    <color name="background_color">#0A0E13</color>
+    <color name="background_light">#151A21</color>
+    <color name="background_dark">#0A0E13</color>
+    <color name="surface_dark">#151A21</color>
+    <color name="background_card">#1A2027</color>
+    <color name="card_background">#1A2027</color>
 
-    <color name="background_color">#1A1A1A</color>
-    <color name="whitevariable">#353433</color>
-    <color name="white">#101010</color>
-    <color name="black">#FFFFFF</color>
-    <color name="background_card">#262626</color>
-    <color name="card_background">#262626</color>
-    <color name="surface_dark">#2D2D2D</color>
+    <!-- Textos (alto contraste optimizado) -->
+    <color name="text_primary">#ECEFF4</color>
+    <color name="text_secondary">#A8B2C1</color>
+    <color name="text_hint">#6B7785</color>
+    <color name="text_primary_dark">#ECEFF4</color>
+    <color name="text_secondary_dark">#A8B2C1</color>
+    <color name="primary_text">#ECEFF4</color>
+    <color name="secondary_text">#A8B2C1</color>
 
-    <!-- Textos adaptados - MÁS BRILLANTES -->
-    <color name="text_primary">#FAFAFA</color>
-    <color name="text_secondary">#C7C7C7</color>
-    <color name="text_hint">#8A8A8A</color>
-    <color name="primary_text">#FAFAFA</color>
-    <color name="secondary_text">#C7C7C7</color>
+    <!-- Colores de estado (vibrantes para modo oscuro) -->
+    <color name="success_color">#52D86A</color>
+    <color name="success_light">#1A2E20</color>
+    <color name="error_color">#F56B5F</color>
+    <color name="desconect">#FA3B3B</color>
+    <color name="warning_color">#FFB340</color>
+    <color name="status_available">#52D86A</color>
+    <color name="status_busy">#F56B5F</color>
+    <color name="green">#52D86A</color>
+    <color name="red">#F56B5F</color>
+    <color name="orange">#FF8A5B</color>
 
-    <!-- Dividers / bordes oscuros - MÁS VISIBLES -->
-    <color name="divider_color">#404040</color>
-    <color name="border_gray">#404040</color>
+    <!-- Botones / UI -->
+    <color name="button_color">#FF8A5B</color>
+    <color name="rating_color">#FFB340</color>
+    <color name="star_color">#FFC93E</color>
+    <color name="primary_color">#FF8A5B</color>
 
-    <!-- ============================================ -->
-    <!-- ESTADÍSTICAS - TEMA OSCURO CON CONTRASTE -->
-    <!-- ============================================ -->
-    <!-- Fondo de tarjetas en oscuro (gris medio) -->
-    <color name="stat_card_bg_1">#2D2D2D</color>
-    <color name="stat_card_bg_2">#2D2D2D</color>
-    <color name="stat_card_bg_3">#2D2D2D</color>
-    <color name="stat_card_bg_4">#2D2D2D</color>
+    <!-- Dividers / bordes (sutiles pero visibles) -->
+    <color name="divider_color">#2A3139</color>
+    <color name="gray_light">#1A2027</color>
+    <color name="gray_medium">#2A3139</color>
+    <color name="gray_dark">#6B7785</color>
+    <color name="border_gray">#2A3139</color>
 
-    <!-- El naranja se mantiene ESTÁTICO y resalta perfecto -->
-    <!-- <color name="stat_value_color">#FF7500</color> -->
+    <!-- ESTADÍSTICAS - Tarjetas elevadas con contraste -->
+    <color name="stat_card_bg_1">#1F262E</color>
+    <color name="stat_card_bg_2">#1F262E</color>
+    <color name="stat_card_bg_3">#1F262E</color>
+    <color name="stat_card_bg_4">#1F262E</color>
 
-    <!-- Texto descriptivo claro -->
-    <color name="stat_icon_color">#C7C7C7</color>
+    <!-- Color de los números (naranja brillante) -->
+    <color name="stat_value_color">#FB7B3A</color>
 
-    <!-- ============================================ -->
-    <!-- BADGES Y NOTIFICACIONES -->
-    <!-- ============================================ -->
-    <color name="notification_badge_bg">#353535</color>
+    <!-- Color del texto descriptivo -->
+    <color name="stat_icon_color">#A8B2C1</color>
 
-    <!-- ============================================ -->
-    <!-- ACCESOS RÁPIDOS -->
-    <!-- ============================================ -->
-    <color name="quick_access_bg_1">#2D2D2D</color>
-    <color name="quick_access_bg_2">#2D2D2D</color>
+    <!-- INDICADORES / BADGES -->
+    <color name="circle_red">#F56B5F</color>
+    <color name="circle_green">#52D86A</color>
+    <color name="notification_badge_bg">#2D1F17</color>
+    <color name="notification_badge_bg_dark">#2D1F17</color>
 
-    <!-- Legacy -->
-    <color name="stat_card_bg">#2D2D2D</color>
-    <color name="quick_access_bg_1_dark">#2D2D2D</color>
-    <color name="quick_access_bg_2_dark">#2D2D2D</color>
+    <!-- ACCESOS RÁPIDOS (con sutil tono naranja) -->
+    <color name="quick_access_bg_1">#1F262E</color>
+    <color name="quick_access_bg_1_dark">#151A21</color>
+    <color name="quick_access_bg_2">#1F262E</color>
+    <color name="quick_access_bg_2_dark">#151A21</color>
+
+    <!-- Estadísticas (legacy) -->
+    <color name="stat_card_bg">#1F262E</color>
+    <color name="stat_card_bg_dark">#151A21</color>
+
+    <!-- Warning & Error colors (fondos con tinte) -->
+    <color name="warning_light">#2D2417</color>
+    <color name="error_light">#2D1A19</color>
+
+    <!-- Divider -->
+    <color name="divider">#2A3139</color>
+
+    <!-- Status Colors (vibrantes para modo oscuro) -->
+    <color name="pending">#FFB340</color>
+    <color name="accepted">#52D86A</color>
+    <color name="on_the_way">#6BABDE</color>
+    <color name="in_progress">#B77DE8</color>
+    <color name="completed">#52D86A</color>
+    <color name="cancelled">#F56B5F</color>
+    <color name="rejected">#F56B5F</color>
+
+    <!-- Utility Colors -->
+    <color name="success">#52D86A</color>
+    <color name="error">#F56B5F</color>
+    <color name="warning">#FFB340</color>
+    <color name="info">#6BABDE</color>
 </resources>

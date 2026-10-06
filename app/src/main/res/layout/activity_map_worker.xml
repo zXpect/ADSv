@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.ads.activities.worker.MapWorkerActivity"
+    tools:context="com.project.ads.activities.worker.MapWorkerActivity"
     android:clipToPadding="false">
 
     <fragment
@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- Usar el layout correcto que contiene @+id/toolbar -->
     <include
         android:id="@+id/include"
         layout="@layout/action_bar_toolbar_color"

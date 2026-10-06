@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@color/whitevariable"
-    tools:context="com.ads.activities.worker.SecondRegisterWorkerActivity">
+    tools:context="com.project.ads.activities.worker.SecondRegisterWorkerActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

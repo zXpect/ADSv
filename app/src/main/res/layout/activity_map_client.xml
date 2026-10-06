@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/background_color"
-    tools:context="com.ads.activities.client.MapClientActivity">
+    tools:context="com.project.ads.activities.client.MapClientActivity">
 
     <!-- Contenido principal -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -87,7 +87,7 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             app:cardCornerRadius="20dp"
-                            app:cardBackgroundColor="@color/colorPrimaryLight"
+                            app:cardBackgroundColor="@color/primary_color"
                             app:cardElevation="0dp">
 
                             <ImageView
@@ -121,7 +121,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:background="@android:color/transparent"
+                                android:background="@color/whitevariable"
                                 android:spinnerMode="dropdown"
                                 android:paddingStart="0dp"
                                 android:paddingEnd="0dp"/>
@@ -150,7 +150,7 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             app:cardCornerRadius="20dp"
-                            app:cardBackgroundColor="@color/colorPrimaryLight"
+                            app:cardBackgroundColor="@color/primary_color"
                             app:cardElevation="0dp">
 
                             <ImageView

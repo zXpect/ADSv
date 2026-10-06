@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_color">
 
     <!-- AppBar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorPrimary"
+        android:elevation="4dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="Calificar Servicio"
-            app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_arrow_back" />
+            app:titleTextColor="@color/textOnlywhite"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/textOnlywhite" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -32,37 +34,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="20dp">
 
             <!-- Card principal -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="8dp"
-                android:layout_marginBottom="24dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="@color/card_background"
+                android:layout_marginBottom="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="32dp"
+                    android:padding="28dp"
                     android:gravity="center">
 
                     <!-- Icono de estrella grande -->
                     <ImageView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
                         android:src="@drawable/ic_star_filled"
                         app:tint="@color/star_color"
-                        android:layout_marginBottom="24dp" />
+                        android:layout_marginBottom="20dp" />
 
                     <!-- Título -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="¿Cómo fue tu experiencia?"
-                        android:textSize="24sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
                         android:gravity="center"
@@ -74,7 +77,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Juan Pérez"
-                        android:textSize="18sp"
+                        android:textSize="17sp"
                         android:textColor="@color/colorPrimary"
                         android:textStyle="bold"
                         android:gravity="center"
@@ -88,7 +91,7 @@
                         android:textSize="14sp"
                         android:textColor="@color/text_secondary"
                         android:gravity="center"
-                        android:layout_marginBottom="32dp" />
+                        android:layout_marginBottom="28dp" />
 
                     <!-- RatingBar -->
                     <RatingBar
@@ -99,10 +102,12 @@
                         android:stepSize="0.5"
                         android:rating="0"
                         android:progressTint="@color/star_color"
-                        android:secondaryProgressTint="@color/gray_light"
-                        android:layout_marginBottom="32dp"
+                        android:secondaryProgressTint="@color/gray_medium"
+                        android:layout_marginBottom="28dp"
                         style="@style/Widget.AppCompat.RatingBar.Indicator"
-                        android:isIndicator="false" />
+                        android:isIndicator="false"
+                        android:scaleX="1.2"
+                        android:scaleY="1.2" />
 
                     <!-- Descripción de rating -->
                     <TextView
@@ -122,17 +127,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Comentarios (opcional)"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"
+                android:layout_marginStart="4dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                android:layout_marginBottom="24dp">
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/card_background"
+                android:layout_marginBottom="20dp">
 
                 <EditText
                     android:id="@+id/et_rating_comment"
@@ -151,30 +158,47 @@
 
             </androidx.cardview.widget.CardView>
 
+            <TextView
+                android:id="@+id/tv_already_rated_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:padding="16dp"
+                android:background="@drawable/bg_info_message"
+                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:gravity="center"
+                android:visibility="gone"
+                tools:text="Ya calificaste este servicio con 5 estrellas"
+                tools:visibility="visible"/>
+
             <!-- Botón enviar -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_submit_rating"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="56dp"
                 android:text="Enviar Calificación"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/white"
-                app:cornerRadius="16dp"
+                android:textColor="@color/textOnlywhite"
+                app:cornerRadius="12dp"
                 android:backgroundTint="@color/colorPrimary"
-                android:enabled="false" />
+                android:enabled="false"
+                app:elevation="2dp" />
 
             <!-- Info adicional -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Tu calificación ayuda a otros usuarios a elegir los mejores trabajadores"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textColor="@color/text_hint"
                 android:gravity="center"
                 android:layout_marginTop="16dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp" />
+                android:paddingHorizontal="20dp"
+                android:lineSpacingExtra="2dp" />
+
+
 
         </LinearLayout>
 

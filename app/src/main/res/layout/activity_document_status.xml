@@ -6,7 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ads.activities.worker.DocumentStatusActivity">
+    tools:context="com.project.ads.activities.worker.DocumentStatusActivity">
 
     <!-- Main Content -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ads.activities.worker.fixdepot.FixDepotActivity"
+    tools:context="com.project.ads.activities.worker.fixdepot.FixDepotActivity"
     android:background="@color/whitevariable">
 
     <com.google.android.material.appbar.AppBarLayout

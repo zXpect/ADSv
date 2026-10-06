@@ -1,4 +1,4 @@
-package com.ads.ads;
+package com.project.ads.ads;
 
 import android.content.Context;
 

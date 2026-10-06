@@ -120,7 +120,7 @@
     <string name="cancel">Cancelar</string>
     <string name="map_worker_title">Mapa Trabajador</string>
     <string name="filter_icon">Filtrar</string>
-    <string name="default_web_client_id">107911803130746486598</string>
+    <string name="default_web_client_id">125108376031-7l3e1tdjbvhae0h951kavkj4onskb6nc.apps.googleusercontent.com</string>
     <string name="app_logo">logo app</string>
     <string name="facebook_login">inicia sesion con Facebook</string>
     <string name="google_login">inicia sesión con Google</string>
@@ -218,6 +218,71 @@
     <string name="btn_confirm">Confirmar</string>
     <string name="btn_close">Cerrar</string>
     <string name="btn_retry">Reintentar</string>
+
+
+    <!-- Login Activity - Mensajes de error mejorados -->
+    <string name="error_email_required">El correo electrónico es requerido</string>
+    <string name="error_email_invalid">Ingrese un correo electrónico válido</string>
+    <string name="error_password_required">La contraseña es requerida</string>
+    <string name="error_password_min_length">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="error_email_not_registered">No existe una cuenta con este correo</string>
+    <string name="error_password_incorrect">Contraseña incorrecta. Verifica tus datos e intenta de nuevo</string>
+    <string name="error_authentication">Error de autenticación</string>
+    <string name="error_verification">Error al verificar usuario</string>
+
+    <!-- Recuperación de contraseña -->
+    <string name="forgot_password_title">Recuperar contraseña</string>
+    <string name="forgot_password_enter_email">Ingrese su correo electrónico para restablecer la contraseña</string>
+    <string name="forgot_password_verifying">Verificando correo electrónico...</string>
+    <string name="forgot_password_sending">Enviando correo de recuperación...</string>
+    <string name="forgot_password_success_title">Correo enviado</string>
+    <string name="forgot_password_success_message">Se ha enviado un correo de recuperación a:\n%1$s\n\nPor favor, revisa tu bandeja de entrada y sigue las instrucciones para restablecer tu contraseña.\n\nSi no recibes el correo en unos minutos, revisa tu carpeta de spam.</string>
+    <string name="forgot_password_error_title">Error</string>
+    <string name="forgot_password_email_not_exists">No existe una cuenta registrada con este correo electrónico</string>
+    <string name="forgot_password_verify_error">Error al verificar el correo. Intente nuevamente</string>
+    <string name="forgot_password_send_error">Error al enviar el correo. Intente nuevamente</string>
+    <string name="forgot_password_not_registered_as">Esta cuenta no está registrada como %1$s. Complete su registro primero.</string>
+
+    <!-- Tipo de usuario incorrecto -->
+    <string name="wrong_user_type_title">Tipo de usuario incorrecto</string>
+    <string name="wrong_user_type_login_message">Este correo está registrado como %1$s, no como %2$s.\n\n¿Deseas cambiar a iniciar sesión como %1$s?</string>
+    <string name="wrong_user_type_recovery_message">Este correo electrónico está registrado como %1$s, no como %2$s.\n\nPara recuperar tu contraseña, debes iniciar sesión como %1$s.</string>
+    <string name="wrong_user_type_change_button">Cambiar a %1$s</string>
+    <string name="wrong_user_type_google_message">Esta cuenta de Google ya está registrada como %1$s. No puedes usar la misma cuenta para diferentes tipos de usuario.\n\nPor favor, usa otra cuenta de Google o inicia sesión como %1$s.</string>
+
+    <!-- Cuenta existente -->
+    <string name="account_exists_title">Cuenta existente</string>
+
+    <!-- Bloqueo de cuenta -->
+    <string name="account_locked_title">Cuenta bloqueada temporalmente</string>
+    <string name="account_locked_message_minutes">Demasiados intentos fallidos. Por favor, espere %1$d minuto(s) y %2$d segundo(s).</string>
+    <string name="account_locked_message_seconds">Demasiados intentos fallidos. Por favor, espere %1$d segundo(s).</string>
+
+    <!-- Sugerencia de recuperación de contraseña -->
+    <string name="password_recovery_hint_title">¿Olvidaste tu contraseña?</string>
+    <string name="password_recovery_hint_message">Has tenido varios intentos fallidos. ¿Deseas recuperar tu contraseña?</string>
+    <string name="password_recovery_hint_yes">Sí, recuperar</string>
+    <string name="password_recovery_hint_no">No, intentar de nuevo</string>
+
+    <!-- Login con Google -->
+    <string name="google_sign_in_authenticating">Autenticando con Google...</string>
+    <string name="google_sign_in_error">Error al iniciar sesión con Google</string>
+    <string name="google_sign_in_complete_registration">Por favor, completa tu registro</string>
+
+    <!-- Mensajes de verificación -->
+    <string name="verifying_credentials">Verificando credenciales...</string>
+    <string name="verifying_user">Verificando usuario en la base de datos...</string>
+
+    <!-- Navegación -->
+    <string name="login_success">Inicio de sesión exitoso</string>
+
+    <!-- Botones generales -->
+    <string name="btn_understood">Entendido</string>
+    <string name="btn_yes_change">Sí, cambiar</string>
+
+    <!-- Permisos de notificaciones -->
+    <string name="notification_permission_granted">Permiso de notificaciones concedido</string>
+    <string name="notification_permission_denied">Permiso de notificaciones denegado</string>
 
 
 </resources>

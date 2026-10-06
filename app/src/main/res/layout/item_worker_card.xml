@@ -8,7 +8,8 @@
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp"
-    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/card_background"
+    android:foreground="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
 
@@ -16,9 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@color/card_background">
 
-        <!-- Worker Image -->
+        <!-- Imagen del trabajador -->
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +35,7 @@
                 android:scaleType="centerCrop"
                 android:background="@drawable/circle_background" />
 
-            <!-- Worker Type Icon -->
+            <!-- Icono del tipo de trabajador -->
             <ImageView
                 android:id="@+id/worker_type_icon"
                 android:layout_width="24dp"
@@ -46,14 +48,14 @@
 
         </FrameLayout>
 
-        <!-- Worker Info -->
+        <!-- Información del trabajador -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <!-- Name and Rating Row -->
+            <!-- Nombre + rating -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,10 +84,9 @@
                     android:background="@drawable/rating_background"
                     android:padding="4dp"
                     android:visibility="gone" />
-
             </LinearLayout>
 
-            <!-- Work Type -->
+            <!-- Tipo de trabajo -->
             <TextView
                 android:id="@+id/worker_work"
                 android:layout_width="wrap_content"
@@ -98,7 +99,7 @@
                 android:drawablePadding="4dp"
                 android:gravity="center_vertical" />
 
-            <!-- Distance and Status Row -->
+            <!-- Distancia + estado -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -113,7 +114,7 @@
                     android:layout_weight="1"
                     android:text="1.2 km"
                     android:textSize="12sp"
-                    android:textColor="@android:color/darker_gray"
+                    android:textColor="@color/text_secondary"
                     android:drawableLeft="@drawable/ic_location_small"
                     android:drawablePadding="4dp"
                     android:gravity="center_vertical" />
@@ -130,12 +131,10 @@
                     android:text="Disponible"
                     android:textSize="12sp"
                     android:textColor="@color/status_available" />
-
             </LinearLayout>
-
         </LinearLayout>
 
-        <!-- Action Button -->
+        <!-- Botón de acción -->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -143,6 +142,7 @@
             android:src="@drawable/ic_arrow_forward"
             android:contentDescription="Ver detalles"
             android:padding="8dp"
+            app:tint="@color/text_secondary"
             android:background="?android:attr/selectableItemBackgroundBorderless" />
 
     </LinearLayout>

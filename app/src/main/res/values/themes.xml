@@ -36,8 +36,8 @@
 
     <!-- Toolbar Theme -->
     <style name="ToolBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:textColorPrimary">@color/whitevariable</item>
-        <item name="android:textColorSecondary">@color/whitevariable</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
     </style>
 
     <!-- Login TextInputLayout Style -->

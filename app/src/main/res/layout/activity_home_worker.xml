@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light"
-    tools:context="com.ads.activities.worker.HomeWorkerActivity">
+    tools:context="com.project.ads.activities.worker.HomeWorkerActivity">
 
     <!-- Main Content -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -71,12 +71,12 @@
                             android:layout_marginEnd="16dp"
                             app:cardCornerRadius="35dp"
                             app:cardElevation="8dp"
-                            app:cardBackgroundColor="@color/whitevariable">
+                            app:cardBackgroundColor="@color/black">
 
                             <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_margin="3dp"
+                                android:layout_margin="2dp"
                                 app:cardCornerRadius="32dp"
                                 app:cardElevation="0dp">
 
@@ -104,7 +104,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Hola!"
                                 android:textSize="14sp"
-                                android:textColor="@color/whitevariable"
+                                android:textColor="@color/textOnlywhite"
                                 android:alpha="0.9"
                                 android:layout_marginBottom="2dp" />
 
@@ -115,7 +115,7 @@
                                 android:text="Cargando..."
                                 android:textSize="20sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/whitevariable"
+                                android:textColor="@color/textOnlywhite"
                                 android:maxLines="1"
                                 android:ellipsize="end" />
 
@@ -142,7 +142,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="Sin especialidad"
                                     android:textSize="13sp"
-                                    android:textColor="@color/whitevariable"
+                                    android:textColor="@color/textOnlywhite"
                                     android:textStyle="bold" />
 
                             </LinearLayout>
@@ -245,55 +245,24 @@
                                 android:lineSpacingExtra="2dp"
                                 android:layout_marginBottom="16dp" />
 
-                            <!-- Botones de acción mejorados -->
-                            <LinearLayout
+                            <!-- BOTÓN ÚNICO DE CONEXIÓN -->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/buttonToggleConnection"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center">
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/buttonConnect"
-                                    android:layout_width="0dp"
-                                    android:layout_height="54dp"
-                                    android:layout_weight="1"
-                                    android:layout_marginEnd="8dp"
-                                    android:text="Conectar"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold"
-                                    android:textAllCaps="false"
-                                    android:textColor="@color/whitevariable"
-                                    app:cornerRadius="27dp"
-                                    app:backgroundTint="@color/colorPrimary"
-                                    app:icon="@drawable/ic_connect"
-                                    app:iconTint="@color/whitevariable"
-                                    app:iconGravity="textStart"
-                                    app:iconPadding="8dp"
-                                    app:iconSize="20dp"
-                                    app:elevation="4dp" />
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/buttonDisconnect"
-                                    android:layout_width="0dp"
-                                    android:layout_height="54dp"
-                                    android:layout_weight="1"
-                                    android:layout_marginStart="8dp"
-                                    android:text="Desconectar"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold"
-                                    android:textAllCaps="false"
-                                    android:enabled="false"
-                                    android:textColor="@color/whitevariable"
-                                    app:cornerRadius="27dp"
-                                    app:backgroundTint="@color/error_color"
-                                    app:icon="@drawable/ic_disconnect"
-                                    app:iconTint="@color/whitevariable"
-                                    app:iconGravity="textStart"
-                                    app:iconPadding="8dp"
-                                    app:iconSize="20dp"
-                                    app:elevation="4dp" />
-
-                            </LinearLayout>
+                                android:layout_height="56dp"
+                                android:text="Conectar"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textAllCaps="false"
+                                android:textColor="@color/static_white"
+                                app:cornerRadius="28dp"
+                                app:backgroundTint="@color/success_color"
+                                app:icon="@drawable/ic_power"
+                                app:iconTint="@color/static_white"
+                                app:iconGravity="textStart"
+                                app:iconPadding="8dp"
+                                app:iconSize="22dp"
+                                app:elevation="6dp" />
 
                         </LinearLayout>
 
@@ -501,44 +470,71 @@
                         app:cardBackgroundColor="@color/whitevariable">
 
                         <LinearLayout
+                            android:id="@+id/layoutActiveServices"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="20dp">
+                            android:padding="20dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginBottom="12dp">
+                                android:gravity="center_vertical">
+
+                                <!-- Badge con ícono -->
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="44dp"
+                                    android:layout_height="44dp"
+                                    android:layout_marginEnd="12dp"
+                                    app:cardCornerRadius="22dp"
+                                    app:cardElevation="0dp"
+                                    app:cardBackgroundColor="@color/stat_card_bg_4">
+
+                                    <ImageView
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_work_active"
+                                        app:tint="@color/stat_value_color" />
+
+                                </androidx.cardview.widget.CardView>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Servicios Activos"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/text_primary"
+                                        android:layout_marginBottom="2dp" />
+
+                                    <TextView
+                                        android:id="@+id/textActiveServices"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="No hay servicios activos"
+                                        android:textSize="13sp"
+                                        android:textColor="@color/text_secondary" />
+
+                                </LinearLayout>
 
                                 <ImageView
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
-                                    android:src="@drawable/ic_work_active"
-                                    android:layout_marginEnd="12dp"
-                                    app:tint="@color/stat_value_color" />
-
-                                <TextView
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Servicios Activos"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
+                                    android:src="@drawable/ic_arrow_forward"
+                                    app:tint="@color/colorPrimary" />
 
                             </LinearLayout>
-
-                            <TextView
-                                android:id="@+id/textActiveServices"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="No hay servicios activos"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_secondary"
-                                android:paddingStart="36dp" />
 
                         </LinearLayout>
 

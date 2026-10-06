@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.ads"
+    namespace = "com.project.ads"
     compileSdk = 34
 
     defaultConfig {

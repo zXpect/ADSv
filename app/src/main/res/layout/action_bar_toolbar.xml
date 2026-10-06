@@ -17,7 +17,7 @@
         app:contentInsetStart="8dp"
         app:contentInsetEnd="8dp"
         app:titleTextAppearance="@style/ToolbarTitleStyle"
-        app:titleTextColor="@color/text_primary"
+        app:titleTextColor="@color/black"
         app:theme="@style/ToolBarTheme" />
 
     <!-- Divider opcional -->

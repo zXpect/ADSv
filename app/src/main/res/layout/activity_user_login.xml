@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context="com.ads.activities.LoginActivity">
+    tools:context="com.project.ads.activities.LoginActivity">
 
     <!-- ScrollView para adaptabilidad -->
     <ScrollView
