@@ -31,16 +31,17 @@ Estructura de paquetes (`com.project.ads`):
 com.project.ads/
 ├── activities/
 │   ├── client/        # pantallas del rol cliente (registro, mapa, solicitudes, calificación...)
-│   ├── worker/         # pantallas del rol trabajador (documentos, servicios activos, fixdepot...)
-│   └── adapters/       # adapters usados por activities sueltas (DocumentAdapter, ToolAdapter)
+│   ├── worker/         # pantallas del rol trabajador (documentos, servicios activos...)
+│   └── adapters/       # adapters usados por activities sueltas (DocumentAdapter)
 ├── adapters/           # adapters generales (PendingRequestsAdapter, DocumentsAdapter)
 ├── providers/          # acceso a datos: Firebase (AuthProvider, WorkerProvider, ClientProvider,
 │                       #   RequestProvider, GeofireProvider, TokenProvider, WorkerDocumentProvider)
-│                       #   y backend (QuoteProvider, PaymentProvider, NotificationProvider)
-├── models/             # POJOs (Worker, Client, User, ServiceRequest, Tool, WorkerDocument, Token...)
-│   └── api/            # respuestas y cuerpos de la API del backend (ApiResponse, PaymentData...)
+│                       #   y backend (CatalogProvider, QuoteProvider, PaymentProvider, NotificationProvider)
+├── models/             # POJOs (Worker, Client, User, ServiceRequest, RequestTaskItem, WorkerDocument, Token...)
+│   └── api/            # respuestas y cuerpos de la API del backend (ApiResponse, CatalogData, QuoteReference...)
 ├── helpers/            # utilidades (DatabaseHelper, LogoutHelper, ServiceRequestHelper,
-│                       #   NotificationPermissionHelper, QuoteDialogHelper)
+│                       #   NotificationPermissionHelper, QuoteDialogHelper, CancelDialogHelper,
+│                       #   CategoryHelper, ReasonHelper, ScheduleFields)
 ├── retrofit/           # cliente del backend (AdsApiClient, IAdsApi, FirebaseIdTokenInterceptor,
 │                       #   ApiCallAdapter) e IGoogleApi
 ├── services/           # MyFirebaseMessagingService (push notifications)
@@ -58,7 +59,7 @@ com.project.ads/
 ## Conexión con el backend
 
 - URL base de la API: `BuildConfig.ADS_API_BASE_URL`, definida en `app/build.gradle.kts` por tipo de build. Debug: `http://10.0.2.2:8000/` (emulador → backend local); se cambia con la propiedad Gradle `ADS_API_BASE_URL_DEBUG` (p. ej. la IP del PC para un teléfono físico). Release: `ADS_API_BASE_URL_RELEASE` (HTTPS obligatorio: `res/xml/network_security_config.xml` bloquea HTTP en release; la versión de `src/debug` lo permite).
-- Qué pasa por el backend: cotizar/aceptar/rechazar (`QuoteProvider`), pagar (`PaymentProvider` + `activities/client/PaymentActivity`, checkout en Custom Tab y regreso por `adsapp://payment-result`), calificar (`RequestProvider.rateService`) y notificaciones push (`NotificationProvider` → `POST /api/notifications/`). El estado del pago se lee de `requests/<id>/payment_status` en Firebase, que escribe el backend.
+- Qué pasa por el backend: catálogo de oficios y tareas y estimado (`CatalogProvider`, con respaldo local de oficios), crear la solicitud (`RequestProvider.createRequest` → `POST /api/requests/`, con `lat`/`lng`), cancelar con motivo y reprogramar (`RequestProvider.cancelRequest`/`reschedule`, `CancelDialogHelper`), cotizar con motivo y agenda/aceptar/rechazar (`QuoteProvider`, `QuoteDialogHelper`), pagar (`PaymentProvider` + `activities/client/PaymentActivity`, checkout en Custom Tab y regreso por `adsapp://payment-result`), calificar (`RequestProvider.rateService`) y notificaciones push (`NotificationProvider` → `POST /api/notifications/`). El estado del pago se lee de `requests/<id>/payment_status` en Firebase, que escribe el backend.
 - Manejo de autenticación (dónde se guarda el token, cómo se envía): la sesión la maneja `FirebaseAuth.getInstance()` y el SDK la persiste automáticamente entre reinicios de la app. Hacia el backend se envía el **ID token de Firebase** (`Authorization: Bearer`), que pide `FirebaseIdTokenInterceptor` en cada llamada. El **token FCM** se cachea en `SharedPreferences` (`AuthProvider`) y se sincroniza en Realtime Database vía `TokenProvider` / `WorkerProvider.updateWorkerFCMToken`; lo lee el backend para enviar las notificaciones.
 - Manejo de errores de red: no hay una capa central de manejo de errores; cada `Provider`/`Activity` maneja el resultado con los callbacks propios de Firebase (`addOnSuccessListener` / `addOnFailureListener` / `addOnCompleteListener`), logueando con `Log.e`/`Log.d` y mostrando `Toast` al usuario cuando aplica.
 
@@ -71,11 +72,12 @@ com.project.ads/
   proyecto: almacenamiento seguro de datos sensibles, validación de
   certificados en llamadas HTTPS, no loguear información sensible en
   producción
+- Oficios del trabajador: `User/Trabajadores/<uid>/categories` (slugs del catálogo, hasta 3). `work` se sigue escribiendo con el primer oficio como respaldo y `Worker.getCategorySlugs()` lo traduce mientras no corra `migrate_worker_categories` en el backend. Nada de listas fijas de oficios en `res/`.
 - Verificación documental de trabajadores (lado móvil): `WorkerDocumentsActivity` permite subir los documentos requeridos (hoja de vida, antecedentes judiciales, títulos, cartas de recomendación) a Firebase Storage a través de `providers/WorkerDocumentProvider`. El estado de verificación (`documents_submitted`, `approved`, `rejected`) se lee desde `verificationStatus` en Realtime Database — es el mismo dato que gestiona el panel admin del backend Django, por lo que un cambio de estado hecho desde el backend se refleja directamente en la app sin necesidad de una llamada API adicional.
 
 ## Convenciones de código
 
-- Nomenclatura de clases/paquetes: PascalCase para clases, con sufijo según su rol (`*Activity`, `*Provider`, `*Adapter`, `*Helper`); paquetes en minúscula agrupados por feature/rol (`activities.client`, `activities.worker`, `activities.worker.fixdepot`).
+- Nomenclatura de clases/paquetes: PascalCase para clases, con sufijo según su rol (`*Activity`, `*Provider`, `*Adapter`, `*Helper`); paquetes en minúscula agrupados por feature/rol (`activities.client`, `activities.worker`).
 - Convención de layouts XML (nombres de archivos, IDs): `activity_<pantalla>.xml` para layouts de Activity (ej. `activity_home_worker.xml`), `item_<fila>.xml` para filas de `RecyclerView` (ej. `item_worker_card.xml`), `dialog_<nombre>.xml` para diálogos y `spinner_<nombre>.xml` para spinners.
 - Manejo de strings/recursos (evitar strings hardcodeados): **no se sigue de forma estricta hoy** — hay bastantes strings de UI escritos directo en el código Java en vez de `strings.xml`. Al tocar una pantalla, mover a `strings.xml` los strings visibles que se editen, pero no es necesario migrar todo el archivo de una vez.
 - Formato de código / linter usado: ninguno configurado (no hay Checkstyle/ktlint/detekt); se sigue el formateo por defecto de Android Studio.
