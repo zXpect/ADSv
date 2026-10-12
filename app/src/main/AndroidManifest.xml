@@ -84,15 +84,6 @@
             android:name="com.project.ads.activities.client.WebViewActivity"
             android:exported="false" />
         <activity
-            android:name="com.project.ads.activities.worker.fixdepot.StoreFinderActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.project.ads.activities.worker.MapFixDepotActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.project.ads.activities.worker.fixdepot.FixDepotActivity"
-            android:exported="false" />
-        <activity
             android:name="com.project.ads.activities.client.ServiceSummaryActivity"
             android:exported="false" />
         <activity

@@ -681,47 +681,6 @@
 
                         </androidx.cardview.widget.CardView>
 
-                        <!-- Botón Fix Depot -->
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cardFixDepotButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="8dp"
-                            app:cardCornerRadius="16dp"
-                            app:cardElevation="2dp"
-                            app:cardBackgroundColor="@color/quick_access_bg_2">
-
-                            <LinearLayout
-                                android:id="@+id/buttonFixDepot"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="20dp"
-                                android:gravity="center"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:foreground="?android:attr/selectableItemBackground">
-
-                                <ImageView
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:src="@drawable/ic_tools"
-                                    android:layout_marginBottom="12dp"
-                                    app:tint="@color/stat_value_color" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Fix Depot"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/text_primary" />
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
                     </LinearLayout>
 
                 </LinearLayout>
