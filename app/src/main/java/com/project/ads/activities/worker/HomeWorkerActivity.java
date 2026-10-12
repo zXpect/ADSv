@@ -32,7 +32,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.project.ads.activities.worker.fixdepot.FixDepotActivity;
 import com.project.ads.helpers.LogoutHelper;
 import com.project.ads.models.Worker;
 import com.project.ads.providers.AuthProvider;
@@ -71,7 +70,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
     // Componentes UI
     MaterialButton mButtonToggleConnection; // BOTÓN ÚNICO
     LinearLayout mButtonViewMap2;
-    LinearLayout mButtonFixDepot;
     View mConnectionIndicator;
     View mConnectionIndicatorGlow;
     TextView mTextConnectionStatus;
@@ -152,7 +150,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
 
         mButtonViewMap2 = findViewById(R.id.vermapaworker);
-        mButtonFixDepot = findViewById(R.id.buttonFixDepot);
 
         // BOTÓN ÚNICO
         mButtonToggleConnection = findViewById(R.id.buttonToggleConnection);
@@ -241,11 +238,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
         mButtonViewMap2.setOnClickListener(v -> {
             animateClick(v);
             viewMap();
-        });
-
-        mButtonFixDepot.setOnClickListener(v -> {
-            animateClick(v);
-            goToFixDepot();
         });
 
         // LISTENER DEL BOTÓN ÚNICO
@@ -416,8 +408,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
         if (mCurrentWorker != null) {
             runOnUiThread(() -> {
                 mTextWorkerName.setText(mCurrentWorker.getFullName());
-                mTextWorkerType.setText(mCurrentWorker.getWork() != null ?
-                        mCurrentWorker.getWork() : "Sin especialidad");
+                String categories = mCurrentWorker.getCategoriesDisplay();
+                mTextWorkerType.setText(categories != null ? categories : getString(R.string.no_specialty));
 
                 loadWorkerProfileImage();
                 updateNavigationDrawerHeader();
@@ -1319,7 +1311,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
         try {
             Intent intent = new Intent(HomeWorkerActivity.this, PendingRequestsActivity.class);
             intent.putExtra("worker_id", mAuthProvider.getId());
-            intent.putExtra("worker_type", mCurrentWorker != null ? mCurrentWorker.getWork() : "");
+            intent.putExtra("worker_type", mCurrentWorker != null ? mCurrentWorker.getCategoriesDisplay() : "");
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } catch (Exception e) {
@@ -1345,12 +1337,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
     private void viewMap() {
         Intent intent = new Intent(HomeWorkerActivity.this, MapWorkerActivity.class);
-        startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
-
-    private void goToFixDepot() {
-        Intent intent = new Intent(HomeWorkerActivity.this, FixDepotActivity.class);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }

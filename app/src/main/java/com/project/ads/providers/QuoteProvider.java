@@ -8,7 +8,8 @@ import com.project.ads.retrofit.ApiCallAdapter;
 
 /**
  * Cotización de una solicitud. Las reglas de Firebase reservan estos campos al
- * backend, que valida el rango de precio y quién puede cotizar o responder.
+ * backend, que valida el precio, el motivo del ajuste, la agenda y quién puede
+ * cotizar o responder.
  */
 public class QuoteProvider {
 
@@ -20,10 +21,12 @@ public class QuoteProvider {
         ApiCallAdapter.enqueue(AdsApiClient.getApi().getQuoteLimits(serviceType), callback);
     }
 
-    /** Trabajador: envía (o reenvía) la cotización en pesos COP enteros. */
-    public void submitQuote(String requestId, long quotedPrice, ApiCallback<QuoteData> callback) {
-        ApiCallAdapter.enqueue(
-                AdsApiClient.getApi().submitQuote(requestId, new ApiBodies.QuoteBody(quotedPrice)), callback);
+    /**
+     * Trabajador: envía (o reenvía) la cotización en pesos COP enteros, con el
+     * motivo si el precio se ajusta y la agenda (fecha, hora y duración).
+     */
+    public void submitQuote(String requestId, ApiBodies.QuoteBody body, ApiCallback<QuoteData> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().submitQuote(requestId, body), callback);
     }
 
     /** Cliente: acepta la cotización; queda fija. */

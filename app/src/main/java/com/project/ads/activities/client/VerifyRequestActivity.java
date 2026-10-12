@@ -6,152 +6,62 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.project.ads.providers.RequestProvider;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.project.ads.R;
+import com.project.ads.models.RequestTaskItem;
+import com.project.ads.models.api.ApiBodies;
+import com.project.ads.models.api.RequestActionData;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.providers.RequestProvider;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+/**
+ * Resumen de la solicitud antes de enviarla. El envío es POST /api/requests/:
+ * el backend valida al trabajador y las tareas, congela el precio de
+ * referencia, crea requests/<id> y notifica al trabajador (B18).
+ */
 public class VerifyRequestActivity extends AppCompatActivity {
 
     private static final String TAG = "VerifyRequestActivity";
 
-    private ImageView mWorkerPhotoImageView;
-    private TextView mWorkerNameTextView;
-    private TextView mAddressTextView;
-    private TextView mServiceTypeTextView;
-    private TextView mAmountTextView;
     private Button mConfirmButton;
     private ProgressDialog mProgressDialog;
-
-    // Providers
     private RequestProvider mRequestProvider;
-    private DatabaseReference mDatabaseReference;
 
-    // Datos para la solicitud
     private String mWorkerId;
-    private String mWorkerName;
     private String mAddress;
     private String mDescription;
-    private String mServiceType;
+    private String mCategorySlug;
+    private double mLat;
+    private double mLng;
+    private final List<RequestTaskItem> mItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_request);
 
-        // Configurar la barra de estado transparente
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
         }
 
-        // Inicializar providers
-        initProviders();
-
-        // Inicializar vistas
-        initViews();
-
-        // Cargar datos recibidos desde la actividad anterior
-        loadReceivedData();
-
-        // Configurar el botón de confirmación
-        setupConfirmButton();
-    }
-
-    private void initProviders() {
         mRequestProvider = new RequestProvider(this);
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-    }
-
-    private void initViews() {
-        mWorkerPhotoImageView = findViewById(R.id.worker_photo);
-        mWorkerNameTextView = findViewById(R.id.worker_name);
-        mAddressTextView = findViewById(R.id.tv_address_content);
-        mServiceTypeTextView = findViewById(R.id.tv_service_type_content);
-        mAmountTextView = findViewById(R.id.tv_amount_content);
         mConfirmButton = findViewById(R.id.btn_confirm);
-    }
-
-    private void loadReceivedData() {
-        if (getIntent() != null) {
-            // Obtener los datos del Intent
-            int workerPhotoResId = getIntent().getIntExtra("worker_photo", R.drawable.workerlogo);
-            mWorkerName = getIntent().getStringExtra("worker_name");
-            mAddress = getIntent().getStringExtra("address");
-            mDescription = getIntent().getStringExtra("description");
-            mServiceType = getIntent().getStringExtra("service_type");
-            mWorkerId = getIntent().getStringExtra("worker_id");
-            String amount = getIntent().getStringExtra("amount");
-
-            Log.d(TAG, "Datos recibidos - Worker name: " + mWorkerName +
-                    ", Address: " + mAddress +
-                    ", Service type: " + mServiceType +
-                    ", Worker ID: " + mWorkerId);
-
-            // Configurar las vistas con los datos recibidos
-            mWorkerPhotoImageView.setImageResource(workerPhotoResId);
-
-            // Asegurar que existe un nombre para mostrar
-            if (mWorkerName != null && !mWorkerName.isEmpty()) {
-                mWorkerNameTextView.setText(mWorkerName);
-            } else {
-                mWorkerNameTextView.setText("Trabajador");
-            }
-
-            // Asegurar que tenemos una dirección para mostrar
-            if (mAddress != null && !mAddress.isEmpty()) {
-                mAddressTextView.setText(mAddress);
-            } else {
-                mAddressTextView.setText("No especificada");
-            }
-
-            // Asegurar que tenemos un tipo de servicio para mostrar
-            if (mServiceType != null && !mServiceType.isEmpty()) {
-                mServiceTypeTextView.setText(mServiceType);
-            } else {
-                mServiceTypeTextView.setText("No especificado");
-            }
-
-            // Asegurar que existe un monto para mostrar
-            if (amount != null && !amount.isEmpty()) {
-                mAmountTextView.setText(amount);
-            } else {
-                mAmountTextView.setText("A confirmar");
-            }
-        } else {
-            Log.e(TAG, "No se recibieron datos en el Intent");
-            setDefaultValues();
-        }
-    }
-
-    private void setDefaultValues() {
-        mWorkerPhotoImageView.setImageResource(R.drawable.workerlogo);
-        mWorkerNameTextView.setText("Trabajador");
-        mAddressTextView.setText("No especificada");
-        mServiceTypeTextView.setText("No especificado");
-        mAmountTextView.setText("A confirmar");
-    }
-
-    private void setupConfirmButton() {
+        loadReceivedData();
         mConfirmButton.setOnClickListener(v -> {
             if (validateData()) {
                 submitRequest();
@@ -162,153 +72,84 @@ public class VerifyRequestActivity extends AppCompatActivity {
         });
     }
 
+    private void loadReceivedData() {
+        Intent intent = getIntent();
+        mWorkerId = intent.getStringExtra("worker_id");
+        mAddress = intent.getStringExtra("address");
+        mDescription = intent.getStringExtra("description");
+        mCategorySlug = intent.getStringExtra("service_category");
+        mLat = intent.getDoubleExtra(ServiceRequestActivity.EXTRA_LAT, Double.NaN);
+        mLng = intent.getDoubleExtra(ServiceRequestActivity.EXTRA_LNG, Double.NaN);
+        String itemsJson = intent.getStringExtra("task_items");
+        if (itemsJson != null) {
+            RequestTaskItem[] items = new Gson().fromJson(itemsJson, RequestTaskItem[].class);
+            if (items != null) mItems.addAll(Arrays.asList(items));
+        }
+
+        String workerName = intent.getStringExtra("worker_name");
+        String serviceType = intent.getStringExtra("service_type");
+        String estimate = intent.getStringExtra("estimate");
+
+        ((ImageView) findViewById(R.id.worker_photo))
+                .setImageResource(intent.getIntExtra("worker_photo", R.drawable.workerlogo));
+        ((TextView) findViewById(R.id.worker_name))
+                .setText(!TextUtils.isEmpty(workerName) ? workerName : "Trabajador");
+        ((TextView) findViewById(R.id.tv_address_content))
+                .setText(!TextUtils.isEmpty(mAddress) ? mAddress : "No especificada");
+
+        // Oficio y tareas elegidas
+        StringBuilder service = new StringBuilder(!TextUtils.isEmpty(serviceType) ? serviceType : "No especificado");
+        for (RequestTaskItem item : mItems) {
+            service.append("\n• ").append(item.getDisplayText());
+        }
+        ((TextView) findViewById(R.id.tv_service_type_content)).setText(service.toString());
+
+        // Estimado de referencia (el precio final lo cotiza el trabajador)
+        ((TextView) findViewById(R.id.tv_amount_content)).setText(
+                !TextUtils.isEmpty(estimate) ? estimate : getString(R.string.request_estimate_unavailable));
+    }
+
     private boolean validateData() {
-        return mWorkerId != null && !mWorkerId.isEmpty() &&
-                mAddress != null && !mAddress.isEmpty() &&
-                mDescription != null && !mDescription.isEmpty() &&
-                mServiceType != null;
+        return !TextUtils.isEmpty(mWorkerId) && !TextUtils.isEmpty(mAddress)
+                && !TextUtils.isEmpty(mCategorySlug) && !mItems.isEmpty()
+                && !Double.isNaN(mLat) && !Double.isNaN(mLng);
     }
 
     private void submitRequest() {
-        String clientId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mConfirmButton.setEnabled(false);
+        showProgressDialog(getString(R.string.request_sending));
 
-        showProgressDialog("Preparando solicitud...");
+        List<ApiBodies.TaskItemBody> items = new ArrayList<>();
+        for (RequestTaskItem item : mItems) items.add(item.toBody());
+        ApiBodies.CreateRequestBody body = new ApiBodies.CreateRequestBody(
+                mWorkerId, mCategorySlug, mAddress, mDescription, mLat, mLng, items, null, null);
 
-        // PASO 1: Obtener información del cliente
-        getUserInfo(mDatabaseReference.child("User").child("Clientes").child(clientId)).addOnSuccessListener(clientInfo -> {
-
-            // PASO 2: Obtener información del trabajador
-            getUserInfo(mDatabaseReference.child("User").child("Trabajadores").child(mWorkerId)).addOnSuccessListener(workerInfo -> {
-
-                // PASO 3: Crear la solicitud con todos los datos
-                Map<String, Object> requestData = new HashMap<>();
-
-                // Datos del cliente
-                requestData.put("client_id", clientId);
-                requestData.put("client_name", getValueOrDefault(clientInfo, "name", "Cliente"));
-                requestData.put("client_phone", getValueOrDefault(clientInfo, "phone", ""));
-                requestData.put("client_email", getValueOrDefault(clientInfo, "email", ""));
-
-                // Datos del trabajador
-                requestData.put("worker_id", mWorkerId);
-                requestData.put("worker_name", getValueOrDefault(workerInfo, "name", mWorkerName != null ? mWorkerName : "Trabajador"));
-                requestData.put("worker_phone", getValueOrDefault(workerInfo, "phone", ""));
-
-                // Datos del servicio
-                requestData.put("address", mAddress);
-                requestData.put("description", mDescription);
-                requestData.put("service_type", mServiceType);
-                requestData.put("status", "pending");
-                requestData.put("timestamp", System.currentTimeMillis());
-                requestData.put("last_updated", System.currentTimeMillis());
-
-                // Valores iniciales para tracking
-                requestData.put("started_trip_at", 0);
-                requestData.put("started_work_at", 0);
-                requestData.put("completed_at", 0);
-                requestData.put("cancelled_at", 0);
-                requestData.put("rating", 0.0);
-                requestData.put("rating_comment", "");
-
-                Log.d(TAG, "Solicitud preparada para el trabajador: " + mWorkerId);
-
-                // PASO 4: Crear la solicitud en Firebase
-                mProgressDialog.setMessage("Enviando solicitud...");
-
-                mRequestProvider.createRequest(requestData)
-                        .addOnSuccessListener(databaseReference -> {
-                            String requestId = databaseReference.getKey();
-                            Log.d(TAG, "Solicitud creada con ID: " + requestId);
-
-                            // La notificación al trabajador la envía el backend
-                            // (RequestProvider.createRequest -> POST /api/notifications/)
-                            hideProgressDialog();
-                            showToast("Solicitud enviada con éxito");
-                            navigateToRequestDetail(requestId);
-                        })
-                        .addOnFailureListener(e -> {
-                            hideProgressDialog();
-                            Log.e(TAG, "Error creating request: ", e);
-                            showToast("Error al crear la solicitud");
-                        });
-
-            }).addOnFailureListener(e -> {
+        mRequestProvider.createRequest(body, new ApiCallback<RequestActionData>() {
+            @Override
+            public void onSuccess(RequestActionData data) {
                 hideProgressDialog();
-                Log.e(TAG, "Error obteniendo info del trabajador", e);
-                showToast("Error al obtener información del trabajador");
-            });
+                Log.d(TAG, "Solicitud creada con ID: " + data.getRequestId());
+                Toast.makeText(VerifyRequestActivity.this, R.string.request_sent, LENGTH_SHORT).show();
+                navigateToRequestDetail(data.getRequestId());
+            }
 
-        }).addOnFailureListener(e -> {
-            hideProgressDialog();
-            Log.e(TAG, "Error obteniendo info del cliente", e);
-            showToast("Error al obtener tu información");
+            @Override
+            public void onError(String message, int httpStatus) {
+                hideProgressDialog();
+                mConfirmButton.setEnabled(true);
+                // 409: el trabajador no está verificado o no ejerce el oficio; el mensaje viene del backend
+                Toast.makeText(VerifyRequestActivity.this, message, Toast.LENGTH_LONG).show();
+            }
         });
     }
 
-    /**
-     * Obtiene la información de un usuario desde Firebase
-     * (User/Clientes/<uid> o User/Trabajadores/<uid>)
-     */
-    private Task<Map<String, Object>> getUserInfo(DatabaseReference userRef) {
-        TaskCompletionSource<Map<String, Object>> taskSource = new TaskCompletionSource<>();
-        String userId = userRef.getKey();
-
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            Map<String, Object> userInfo = new HashMap<>();
-
-                            // Extraer datos del snapshot
-                            for (DataSnapshot child : snapshot.getChildren()) {
-                                userInfo.put(child.getKey(), child.getValue());
-                            }
-
-                            Log.d(TAG, "Info de usuario obtenida: " + userId + " (" + userInfo.size() + " campos)");
-                            taskSource.setResult(userInfo);
-                        } else {
-                            Log.w(TAG, "Usuario no encontrado: " + userId);
-                            // Devolver mapa vacío en lugar de error
-                            taskSource.setResult(new HashMap<>());
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e(TAG, "Error obteniendo usuario: " + error.getMessage());
-                        taskSource.setException(error.toException());
-                    }
-                });
-
-        return taskSource.getTask();
-    }
-
-    /**
-     * Obtiene un valor del mapa o retorna un valor por defecto
-     */
-    private String getValueOrDefault(Map<String, Object> map, String key, String defaultValue) {
-        Object value = map.get(key);
-        if (value != null) {
-            return value.toString();
-        }
-        return defaultValue;
-    }
-
-    /**
-     * Navega directamente a los detalles de la solicitud recién creada
-     */
+    /** Navega a los detalles de la solicitud recién creada. */
     private void navigateToRequestDetail(String requestId) {
         Intent intent = new Intent(this, ServiceRequestDetailActivity.class);
         intent.putExtra("request_id", requestId);
-
-        // Limpiar el back stack
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
         startActivity(intent);
         finish();
-
-        Toast.makeText(this, "Solicitud creada. Puedes ver el progreso aquí.",
-                Toast.LENGTH_LONG).show();
     }
 
     private void showProgressDialog(String message) {
@@ -325,9 +166,5 @@ public class VerifyRequestActivity extends AppCompatActivity {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(this, message, LENGTH_SHORT).show();
     }
 }

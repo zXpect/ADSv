@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.helpers.QuoteDialogHelper;
+import com.project.ads.helpers.RequestDetailsHelper;
+import com.project.ads.providers.CatalogProvider;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.providers.RequestProvider;
 
@@ -83,6 +85,17 @@ public class RequestDetailActivity extends AppCompatActivity {
         
         // Load request data
         loadRequestData();
+        // Nombres de las tareas para el detalle; al llegar se vuelve a pintar
+        new CatalogProvider().getCatalog(new com.project.ads.providers.ApiCallback<com.project.ads.models.api.CatalogData>() {
+            @Override
+            public void onSuccess(com.project.ads.models.api.CatalogData catalog) {
+                if (serviceRequest != null && !isFinishing()) populateUI(serviceRequest);
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+            }
+        });
     }
     
     private void initializeUI() {
@@ -202,7 +215,10 @@ public class RequestDetailActivity extends AppCompatActivity {
         tvClientPhone.setText(request.getClient_phone() != null ? request.getClient_phone() : "N/A");
         tvClientEmail.setText(request.getClient_email() != null ? request.getClient_email() : "N/A");
         
-        tvServiceType.setText(request.getService_type() != null ? request.getService_type() : "N/A");
+        // Oficio y tareas pedidas (con el estimado congelado, si lo hay)
+        String serviceType = request.getService_type() != null ? request.getService_type() : "N/A";
+        String details = RequestDetailsHelper.details(this, request, CatalogProvider.cachedCatalog());
+        tvServiceType.setText(details != null ? serviceType + "\n\n" + details : serviceType);
         tvAddress.setText(request.getAddress() != null ? request.getAddress() : "N/A");
         tvUrgencyLevel.setText(request.getUrgency_level() != null ? request.getUrgency_level() : "Normal");
         
@@ -235,7 +251,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     private void acceptRequest() {
         if (serviceRequest == null) return;
 
-        new QuoteDialogHelper(this).show(requestId, serviceRequest.getService_type(), quote -> {
+        new QuoteDialogHelper(this).show(serviceRequest, quote -> {
             serviceRequest.setStatus(quote.getStatus());
             tvStatus.setText(serviceRequest.getStatusDisplayText());
             updateButtonsVisibility(quote.getStatus());

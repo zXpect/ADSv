@@ -21,7 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.R;
+import com.project.ads.helpers.CancelDialogHelper;
+import com.project.ads.helpers.ReasonHelper;
+import com.project.ads.helpers.RequestDetailsHelper;
 import com.project.ads.models.ServiceRequest;
+import com.project.ads.models.api.CatalogData;
+import com.project.ads.providers.CatalogProvider;
 import com.project.ads.models.api.QuoteData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.QuoteProvider;
@@ -88,6 +93,8 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     private TextView mTvPaymentStatus;
     private Button mBtnAcceptQuote;
     private Button mBtnRejectQuote;
+    private TextView mTvQuoteDetails;
+    private CatalogData mCatalog;   // nombres de las tareas; puede no estar cargado
 
     // Firebase
     private DatabaseReference mDatabaseReference;
@@ -116,6 +123,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         mRequestProvider = new RequestProvider(this);
         mQuoteProvider = new QuoteProvider();
         loadRequestData();
+        loadCatalog();
 
     }
     
@@ -170,6 +178,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         mTvPaymentStatus = findViewById(R.id.tv_payment_status);
         mBtnAcceptQuote = findViewById(R.id.btn_quote_primary);
         mBtnRejectQuote = findViewById(R.id.btn_quote_secondary);
+        mTvQuoteDetails = findViewById(R.id.tv_quote_details);
         mBtnAcceptQuote.setText(R.string.quote_accept);
         mBtnRejectQuote.setText(R.string.quote_reject);
 
@@ -181,6 +190,21 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         mBtnPayService.setOnClickListener(v -> openPayment());
         mBtnAcceptQuote.setOnClickListener(v -> confirmAcceptQuote());
         mBtnRejectQuote.setOnClickListener(v -> showRejectQuoteDialog());
+    }
+
+    private void loadCatalog() {
+        new CatalogProvider().getCatalog(new ApiCallback<CatalogData>() {
+            @Override
+            public void onSuccess(CatalogData catalog) {
+                mCatalog = catalog;
+                if (mServiceRequest != null && !isFinishing()) updateQuoteCard(mServiceRequest);
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                // Sin catálogo las tareas se muestran por su identificador
+            }
+        });
     }
 
     private void setupStatusBar() {
@@ -352,7 +376,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         String status = request.getStatus();
         if (status == null) return;
 
-        // Se puede cancelar mientras no haya precio acordado (igual que las reglas de Firebase)
+        // Se puede cancelar, con motivo, hasta que el trabajador inicie el viaje (D8)
         if (request.canBeCancelled()) {
             mBtnCancelRequest.setVisibility(View.VISIBLE);
         }
@@ -385,14 +409,24 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
 
     private void updateQuoteCard(ServiceRequest request) {
         String status = request.getStatus();
-        boolean relevant = "accepted".equals(status) || "on_the_way".equals(status)
+        String details = RequestDetailsHelper.details(this, request, mCatalog);
+        boolean withQuote = "accepted".equals(status) || "on_the_way".equals(status)
                 || "in_progress".equals(status) || "completed".equals(status);
+        // En pending y cancelled la tarjeta muestra solo las tareas, la referencia y la cancelación
+        boolean relevant = withQuote || (details != null && ("pending".equals(status) || "cancelled".equals(status)));
         mCardQuote.setVisibility(relevant ? View.VISIBLE : View.GONE);
         if (!relevant) return;
 
+        mTvQuoteDetails.setVisibility(details != null ? View.VISIBLE : View.GONE);
+        mTvQuoteDetails.setText(details);
         mBtnAcceptQuote.setVisibility(View.GONE);
         mBtnRejectQuote.setVisibility(View.GONE);
         mTvPaymentStatus.setVisibility(View.GONE);
+        if (!withQuote) {
+            mTvQuoteAmount.setVisibility(View.GONE);
+            mTvQuoteStatus.setText("pending".equals(status) ? getString(R.string.quote_status_missing_client) : "");
+            return;
+        }
 
         if (request.hasQuote()) {
             mTvQuoteAmount.setVisibility(View.VISIBLE);
@@ -502,25 +536,9 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     }
 
     private void cancelRequest() {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Cancelar Solicitud")
-                .setMessage("¿Estás seguro de que deseas cancelar esta solicitud?")
-                .setPositiveButton("Sí, cancelar", (dialog, which) -> {
-                    mProgressBar.setVisibility(View.VISIBLE);
-
-                    mRequestProvider.cancelRequest(mRequestId)
-                            .addOnSuccessListener(aVoid -> {
-                                mProgressBar.setVisibility(View.GONE);
-                                Toast.makeText(this, "Solicitud cancelada", Toast.LENGTH_SHORT).show();
-                                finish();
-                            })
-                            .addOnFailureListener(e -> {
-                                mProgressBar.setVisibility(View.GONE);
-                                Toast.makeText(this, "Error al cancelar", Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .setNegativeButton("No", null)
-                .show();
+        if (mServiceRequest == null) return;
+        // El listener de Firebase refleja la cancelación; el backend avisa al trabajador
+        new CancelDialogHelper(this).show(mRequestId, ReasonHelper.ROLE_CLIENT, data -> finish());
     }
 
     private void openRatingActivity() {

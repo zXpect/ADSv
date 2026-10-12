@@ -1,5 +1,10 @@
 package com.project.ads.activities.client;
 
+import com.project.ads.helpers.CategoryHelper;
+import com.project.ads.models.api.CatalogData;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.providers.CatalogProvider;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -103,7 +108,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private String mOrigin;
     private LatLng mOriginLatLng;
     private Spinner mFilterSpinner;
-    private String mCurrentFilter = "todos";
+    private String mCurrentFilter = CategoryHelper.ALL;   // slug del oficio o CategoryHelper.ALL
     private LinearLayout mLegendContainer;
     private static final Map<String, Integer> WORKER_ICONS = new HashMap<>();
 
@@ -452,15 +457,12 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
             if (dataSnapshot.exists()) {
                 Worker worker = dataSnapshot.getValue(Worker.class);
                 if (worker != null && !mWorkersMarkers.containsKey(workerId)) {
-                    String workerType = worker.getWork();
-
-                    if (mCurrentFilter.equals("Todos los servicios") ||
-                            (workerType != null && workerType.equalsIgnoreCase(mCurrentFilter))) {
+                    if (CategoryHelper.matches(worker, mCurrentFilter)) {
 
                         Marker marker = mMap.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(worker.getName() != null ? worker.getName() : "Unknown Worker")
-                                .icon(getIconForWorkerType(workerType)));
+                                .icon(resizeMapIcon(CategoryHelper.iconFor(worker), 60, 60)));
                         marker.setTag(workerId);
                         mWorkersMarkers.put(workerId, marker);
                     }
@@ -474,11 +476,23 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private void initFilterSpinner() {
         mFilterSpinner = findViewById(R.id.spinner_filter);
 
-        List<String> filterOptions = new ArrayList<>();
-        filterOptions.add("Todos los servicios");
-        filterOptions.addAll(Arrays.asList(getResources().getStringArray(R.array.service_types)));
+        // Oficios del catálogo del backend; si no responde, la lista local
+        new CatalogProvider().getCategoriesWithFallback(new ApiCallback<CatalogData>() {
+            @Override
+            public void onSuccess(CatalogData catalog) {
+                if (isFinishing()) return;
+                bindFilterSpinner(CategoryHelper.filterOptions(catalog, getString(R.string.all_services)));
+            }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+            @Override
+            public void onError(String message, int httpStatus) {
+                // getCategoriesWithFallback no falla
+            }
+        });
+    }
+
+    private void bindFilterSpinner(List<CatalogData.Category> filterOptions) {
+        ArrayAdapter<CatalogData.Category> adapter = new ArrayAdapter<CatalogData.Category>(
                 this,
                 R.layout.spinner_item,
                 filterOptions
@@ -525,7 +539,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         mFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = parent.getItemAtPosition(position).toString();
+                String selected = ((CatalogData.Category) parent.getItemAtPosition(position)).getSlug();
                 if (!selected.equals(mCurrentFilter)) {
                     mCurrentFilter = selected;
                     clearWorkersFromMap();
@@ -535,7 +549,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mCurrentFilter = "Todos los servicios";
+                mCurrentFilter = CategoryHelper.ALL;
             }
         });
     }
@@ -559,42 +573,6 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         if (marker != null) {
             marker.setPosition(newLocation);
         }
-    }
-
-    private BitmapDescriptor getIconForWorkerType(String workerType) {
-        int iconResource;
-
-        if (workerType == null || workerType.trim().isEmpty()) {
-            iconResource = R.drawable.icon_worker;
-        } else {
-            switch (workerType.toLowerCase().trim()) {
-                case "carpintería":
-                    iconResource = R.drawable.icon_carpenter;
-                    break;
-                case "ferretería":
-                    iconResource = R.drawable.icon_ferreteria;
-                    break;
-                case "pintor":
-                    iconResource = R.drawable.icon_painter;
-                    break;
-                case "electricista":
-                    iconResource = R.drawable.icon_electrician;
-                    break;
-                case "plomería":
-                    iconResource = R.drawable.icon_plumber;
-                    break;
-                case "jardinería":
-                    iconResource = R.drawable.icon_gardener;
-                    break;
-                case "albañilería":
-                    iconResource = R.drawable.icon_mason;
-                    break;
-                default:
-                    iconResource = R.drawable.icon_worker;
-                    break;
-            }
-        }
-        return resizeMapIcon(iconResource, 60, 60);
     }
 
     private BitmapDescriptor resizeMapIcon(int iconResource, int width, int height) {
@@ -648,6 +626,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
                 .setPositiveButton(R.string.request_service, (dialog, which) -> {
                     Intent intent = new Intent(MapClientActivity.this, ServiceRequestActivity.class);
                     intent.putExtra("workerId", workerId);
+                    HomeUserActivity.putClientLocation(intent, mCurrentLatLng);
                     startActivity(intent);
                 })
                 .setNegativeButton(R.string.cancel, null)

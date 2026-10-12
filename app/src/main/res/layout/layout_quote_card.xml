@@ -40,6 +40,17 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
+        <!-- Tareas, referencia congelada, motivo del ajuste y agenda (Sprint 4) -->
+        <TextView
+            android:id="@+id/tv_quote_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="2dp"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/tv_quote_status"
             android:layout_width="match_parent"
@@ -80,6 +91,28 @@
             android:visibility="gone"
             app:cornerRadius="12dp"
             app:strokeColor="@color/error_color" />
+
+        <!-- Trabajador: reprogramar y cancelar antes de «Iniciar viaje» (D8, D9) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_quote_reschedule"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/reschedule_action"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:cornerRadius="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_quote_cancel"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/cancel_action"
+            android:textColor="@color/error_color"
+            android:visibility="gone" />
 
     </LinearLayout>
 

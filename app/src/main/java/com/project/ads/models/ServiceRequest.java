@@ -37,6 +37,21 @@ public class ServiceRequest {
     private String payment_status;      // pending | approved | declined | error | voided
     private String payment_reference;
 
+    // Sprint 4: catálogo, motivo del ajuste, agenda y cancelación (solo los escribe el backend)
+    private String service_category;    // slug del oficio
+    private java.util.List<Map<String, Object>> task_items;
+    private com.project.ads.models.api.QuoteReference quote_reference;   // congelado al crear
+    private boolean quote_is_adjusted;
+    private String quote_adjustment_reason_code;
+    private String quote_adjustment_reason_text;
+    private long scheduled_at;          // ms; 0 = sin agenda
+    private int estimated_duration_min;
+    private long rescheduled_at;
+    private int reschedule_count;
+    private String cancelled_by;        // client | worker
+    private String cancellation_reason_code;
+    private String cancellation_reason_text;
+
     // Constructor vacío requerido por Firebase
     public ServiceRequest() {
     }
@@ -88,7 +103,34 @@ public class ServiceRequest {
         request.payment_status = getStringValue(map, "payment_status");
         request.payment_reference = getStringValue(map, "payment_reference");
 
+        request.service_category = getStringValue(map, "service_category");
+        request.task_items = getMapList(map.get("task_items"));
+        request.quote_reference = com.project.ads.models.api.QuoteReference.fromMap(map.get("quote_reference"));
+        request.quote_is_adjusted = getBooleanValue(map, "quote_is_adjusted");
+        request.quote_adjustment_reason_code = getStringValue(map, "quote_adjustment_reason_code");
+        request.quote_adjustment_reason_text = getStringValue(map, "quote_adjustment_reason_text");
+        request.scheduled_at = getLongValue(map, "scheduled_at");
+        request.estimated_duration_min = (int) getLongValue(map, "estimated_duration_min");
+        request.rescheduled_at = getLongValue(map, "rescheduled_at");
+        request.reschedule_count = (int) getLongValue(map, "reschedule_count");
+        request.cancelled_by = getStringValue(map, "cancelled_by");
+        request.cancellation_reason_code = getStringValue(map, "cancellation_reason_code");
+        request.cancellation_reason_text = getStringValue(map, "cancellation_reason_text");
+
         return request;
+    }
+
+    /** Firebase devuelve las listas como List o, si tienen huecos, como Map {índice: valor}. */
+    @SuppressWarnings("unchecked")
+    private static java.util.List<Map<String, Object>> getMapList(Object value) {
+        java.util.List<Map<String, Object>> list = new java.util.ArrayList<>();
+        java.util.Collection<Object> raw = value instanceof java.util.List ? (java.util.List<Object>) value
+                : value instanceof Map ? ((Map<String, Object>) value).values() : null;
+        if (raw == null) return list;
+        for (Object item : raw) {
+            if (item instanceof Map) list.add((Map<String, Object>) item);
+        }
+        return list;
     }
 
     private static boolean getBooleanValue(Map<String, Object> map, String key) {
@@ -253,11 +295,111 @@ public class ServiceRequest {
     }
 
     /**
-     * El cliente puede cancelar mientras no haya un precio acordado
-     * (mismo criterio que las reglas de Firebase).
+     * Cliente y trabajador cancelan, con motivo, hasta antes de «Iniciar viaje»
+     * (D8; mismo criterio que POST /api/requests/<id>/cancel/).
      */
     public boolean canBeCancelled() {
-        return isPending() || (isAccepted() && !isQuoteAccepted());
+        return isPending() || isAccepted();
+    }
+
+    /** El trabajador reprograma una solicitud aceptada que no ha iniciado (D9). */
+    public boolean canBeRescheduled() {
+        return isAccepted();
+    }
+
+    // ---------- Catálogo, agenda y cancelación (Sprint 4) ----------
+
+    public String getService_category() {
+        return service_category;
+    }
+
+    public com.project.ads.models.api.QuoteReference getQuoteReference() {
+        return quote_reference;
+    }
+
+    public boolean isQuoteAdjusted() {
+        return quote_is_adjusted;
+    }
+
+    public String getQuoteAdjustmentReasonCode() {
+        return quote_adjustment_reason_code;
+    }
+
+    public String getQuoteAdjustmentReasonText() {
+        return quote_adjustment_reason_text;
+    }
+
+    public long getScheduledAt() {
+        return scheduled_at;
+    }
+
+    public int getEstimatedDurationMin() {
+        return estimated_duration_min;
+    }
+
+    public boolean hasSchedule() {
+        return scheduled_at > 0;
+    }
+
+    public int getRescheduleCount() {
+        return reschedule_count;
+    }
+
+    public String getCancelledBy() {
+        return cancelled_by;
+    }
+
+    public String getCancellationReasonCode() {
+        return cancellation_reason_code;
+    }
+
+    public String getCancellationReasonText() {
+        return cancellation_reason_text;
+    }
+
+    /**
+     * Tareas pedidas, una por línea ("• Destapar desagüe o sanitario · 1 visita").
+     * Los nombres salen del catálogo; si no está cargado o la tarea ya no existe, se muestra el slug.
+     */
+    public String getTaskItemsDisplay(com.project.ads.models.api.CatalogData catalog) {
+        if (task_items == null || task_items.isEmpty()) return null;
+        com.project.ads.models.api.CatalogData.Category category =
+                catalog != null && service_category != null ? catalog.findCategory(service_category) : null;
+        StringBuilder text = new StringBuilder();
+        for (Map<String, Object> item : task_items) {
+            if (text.length() > 0) text.append('\n');
+            Object quantityValue = item.get("quantity");
+            double quantity = quantityValue instanceof Number ? ((Number) quantityValue).doubleValue() : 0;
+            String quantityText = RequestTaskItem.formatQuantity(quantity);
+            Object custom = item.get("custom_description");
+            if (custom != null) {
+                text.append("• Otro: ").append(custom).append(" · ").append(quantityText);
+                continue;
+            }
+            String slug = String.valueOf(item.get("task"));
+            com.project.ads.models.api.CatalogData.Task task = category != null ? category.findTask(slug) : null;
+            text.append("• ").append(task != null ? task.getName() : slug).append(" · ").append(quantityText);
+            if (task != null) {
+                text.append(' ').append(com.project.ads.models.api.CatalogData.unitLabel(task.getUnit()));
+            }
+        }
+        return text.toString();
+    }
+
+    /** "mié 15/10 a las 14:30 · 1 h 30 min" */
+    public String getScheduleDisplay() {
+        if (!hasSchedule()) return null;
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE dd/MM 'a las' HH:mm", new Locale("es", "CO"));
+        String text = sdf.format(new Date(scheduled_at));
+        if (estimated_duration_min > 0) text += " · " + formatDuration(estimated_duration_min);
+        return text;
+    }
+
+    public static String formatDuration(int minutes) {
+        int hours = minutes / 60;
+        int rest = minutes % 60;
+        if (hours == 0) return rest + " min";
+        return rest == 0 ? hours + " h" : hours + " h " + rest + " min";
     }
 
     public boolean canBeRated() {

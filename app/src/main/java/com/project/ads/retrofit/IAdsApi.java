@@ -2,11 +2,14 @@ package com.project.ads.retrofit;
 
 import com.project.ads.models.api.ApiBodies;
 import com.project.ads.models.api.ApiResponse;
+import com.project.ads.models.api.CatalogData;
 import com.project.ads.models.api.NotificationResult;
 import com.project.ads.models.api.PaymentData;
 import com.project.ads.models.api.QuoteData;
 import com.project.ads.models.api.QuoteLimits;
+import com.project.ads.models.api.QuoteReference;
 import com.project.ads.models.api.RatingData;
+import com.project.ads.models.api.RequestActionData;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -20,6 +23,25 @@ import retrofit2.http.Query;
  * sección "Pagos, cotización y API de la app móvil").
  */
 public interface IAdsApi {
+
+    // ---------- Catálogo y solicitudes ----------
+
+    @GET("api/catalog/")
+    Call<ApiResponse<CatalogData>> getCatalog();
+
+    @POST("api/requests/estimate/")
+    Call<ApiResponse<QuoteReference>> estimate(@Body ApiBodies.EstimateBody body);
+
+    @POST("api/requests/")
+    Call<ApiResponse<RequestActionData>> createRequest(@Body ApiBodies.CreateRequestBody body);
+
+    @POST("api/requests/{requestId}/schedule/")
+    Call<ApiResponse<RequestActionData>> reschedule(@Path("requestId") String requestId,
+                                                    @Body ApiBodies.ScheduleBody body);
+
+    @POST("api/requests/{requestId}/cancel/")
+    Call<ApiResponse<RequestActionData>> cancelRequest(@Path("requestId") String requestId,
+                                                       @Body ApiBodies.CancelBody body);
 
     // ---------- Cotización ----------
 

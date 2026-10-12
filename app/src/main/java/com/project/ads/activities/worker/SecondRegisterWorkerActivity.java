@@ -75,6 +75,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
 
     // Datos del usuario
     private String name, lastName, email, password, work, phone, workerId; // ⭐ AGREGADO phone
+    private java.util.ArrayList<String> categories;   // slugs de los oficios (D16)
 
     // Variables para Google Sign-In
     private boolean isFromGoogleSignIn = false;
@@ -129,6 +130,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         email = intent.getStringExtra("email");
         password = intent.getStringExtra("password");
         work = intent.getStringExtra("work");
+        categories = intent.getStringArrayListExtra("categories");
 
         // Datos de Google Sign-In
         isFromGoogleSignIn = intent.getBooleanExtra("fromGoogleSignIn", false);
@@ -414,13 +416,19 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                 .show();
     }
 
+    private Worker newWorker() {
+        Worker worker = new Worker(workerId, name, lastName, email, work, phone, null);
+        worker.setCategories(categories);
+        return worker;
+    }
+
     private void startRegistrationProcess() {
         if (isUploading) return;
 
         // Si viene de Google Sign-In, NO crear cuenta nueva
         if (isFromGoogleSignIn) {
             workerId = googleUserId;
-            Worker worker = new Worker(workerId, name, lastName, email, work, phone, null); // ⭐ AGREGADO phone
+            Worker worker = newWorker();
             createWorkerInDatabase(worker);
         } else {
             // Registro normal con email y contraseña
@@ -433,7 +441,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         workerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        Worker worker = new Worker(workerId, name, lastName, email, work, phone, null); // ⭐ AGREGADO phone
+                        Worker worker = newWorker();
                         createWorkerInDatabase(worker);
                     } else {
                         mProgressDialog.dismiss();
@@ -657,7 +665,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
 
         if (isFromGoogleSignIn) {
             workerId = googleUserId;
-            Worker worker = new Worker(workerId, name, lastName, email, work, phone, null); // ⭐ AGREGADO phone
+            Worker worker = newWorker();
 
             mProgressDialog.setMessage("Guardando información...");
             mProgressDialog.setCanceledOnTouchOutside(false);
@@ -679,7 +687,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
             mAuthProvider.register(email, password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     workerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    Worker worker = new Worker(workerId, name, lastName, email, work, phone, null); // ⭐ AGREGADO phone
+                    Worker worker = newWorker();
 
                     // ===== CAMBIAR PARA MANEJAR IMAGEN =====
                     if (hasProfileImage && profileImageUri != null) {

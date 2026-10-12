@@ -181,8 +181,8 @@ public class ProfileWorkerActivity extends AppCompatActivity {
         runOnUiThread(() -> {
             // Información básica
             tvWorkerName.setText(currentWorker.getFullName());
-            tvWorkerType.setText(currentWorker.getWork() != null ?
-                    currentWorker.getWork() : "Sin especialidad");
+            String categories = currentWorker.getCategoriesDisplay();
+            tvWorkerType.setText(categories != null ? categories : getString(R.string.no_specialty));
             tvWorkerEmail.setText(currentWorker.getEmail());
             tvWorkerPhone.setText(currentWorker.getPhone() != null ?
                     currentWorker.getPhone() : "No registrado");

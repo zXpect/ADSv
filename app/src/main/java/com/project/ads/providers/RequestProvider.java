@@ -11,6 +11,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.models.api.ApiBodies;
 import com.project.ads.models.api.RatingData;
+import com.project.ads.models.api.RequestActionData;
 import com.project.ads.retrofit.AdsApiClient;
 import com.project.ads.retrofit.ApiCallAdapter;
 
@@ -39,25 +40,13 @@ public class RequestProvider {
     // ========== MÉTODOS DE CREACIÓN ==========
 
     /**
-     * Crea la solicitud y pide al backend que notifique al trabajador.
+     * Crea la solicitud en el backend (POST /api/requests/), que valida al
+     * trabajador y las tareas, congela el precio de referencia, escribe
+     * requests/<id> y notifica al trabajador. Las reglas de Firebase ya no
+     * dejan que la app cree solicitudes.
      */
-    public Task<DatabaseReference> createRequest(Map<String, Object> data) {
-        DatabaseReference newRef = mDatabaseReference.push();
-        String id = newRef.getKey();
-        data.put("id", id);
-        data.put("request_id", id);
-        data.put("is_rated", false);
-
-        return newRef.setValue(data).continueWith(task -> {
-            if (task.isSuccessful()) {
-                Log.d(TAG, "Solicitud creada con éxito: " + id);
-                mNotificationProvider.notify(id, NotificationProvider.TYPE_NEW_REQUEST);
-                return newRef;
-            } else {
-                Log.e(TAG, "Error al crear solicitud", task.getException());
-                throw task.getException();
-            }
-        });
+    public void createRequest(ApiBodies.CreateRequestBody body, ApiCallback<RequestActionData> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().createRequest(body), callback);
     }
 
     // ========== MÉTODOS DE CONSULTA ==========
@@ -108,16 +97,23 @@ public class RequestProvider {
     }
 
     /**
-     * Cancela una solicitud (cliente). Las reglas de Firebase solo lo permiten
-     * mientras no haya una cotización aceptada.
+     * Cancela la solicitud (cliente o trabajador) con un motivo, hasta antes de
+     * «Iniciar viaje» (D8). Lo hace el backend, que guarda quién canceló y
+     * avisa a la otra parte; después de on_the_way responde 409 (PQR).
+     *
+     * @param reasonText obligatorio solo con el motivo «otro»
      */
-    public Task<Void> cancelRequest(String requestId) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("status", "cancelled");
-        updates.put("cancelled_at", System.currentTimeMillis());
-        updates.put("last_updated", System.currentTimeMillis());
+    public void cancelRequest(String requestId, String reasonCode, String reasonText,
+                              ApiCallback<RequestActionData> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().cancelRequest(
+                requestId, new ApiBodies.CancelBody(reasonCode, reasonText)), callback);
+    }
 
-        return mDatabaseReference.child(requestId).updateChildren(updates);
+    /** Trabajador: reprograma una solicitud aceptada; el backend avisa al cliente (D9). */
+    public void reschedule(String requestId, long scheduledAt, int durationMin,
+                           ApiCallback<RequestActionData> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().reschedule(
+                requestId, new ApiBodies.ScheduleBody(scheduledAt, durationMin)), callback);
     }
 
     // ========== CALIFICACIÓN ==========

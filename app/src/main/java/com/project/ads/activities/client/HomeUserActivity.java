@@ -1,5 +1,10 @@
 package com.project.ads.activities.client;
 
+import com.project.ads.helpers.CategoryHelper;
+import com.project.ads.models.api.CatalogData;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.providers.CatalogProvider;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -116,7 +121,8 @@ public class HomeUserActivity extends AppCompatActivity {
     private List<Worker> mAllWorkersList = new ArrayList<>();
     private List<Worker> mFilteredWorkersList = new ArrayList<>();
     private Map<String, Worker> mWorkersMap = new HashMap<>();
-    private String mCurrentFilter = "Todos los servicios";
+    private static final String ALL_SERVICES_LABEL = "Todos los servicios";
+    private String mCurrentFilter = CategoryHelper.ALL;   // slug del oficio o CategoryHelper.ALL
     private String mSearchQuery = "";
     private int mCurrentSearchRadius = 10;
     private boolean mIsFirstTime = true;
@@ -285,12 +291,24 @@ public class HomeUserActivity extends AppCompatActivity {
 
 
     private void setupFilterSpinner() {
-        try {
-            List<String> filterOptions = new ArrayList<>();
-            filterOptions.add("Todos los servicios");
-            filterOptions.addAll(Arrays.asList(getResources().getStringArray(R.array.service_types)));
+        // Oficios del catálogo del backend; si no responde, la lista local
+        new CatalogProvider().getCategoriesWithFallback(new ApiCallback<CatalogData>() {
+            @Override
+            public void onSuccess(CatalogData catalog) {
+                if (isFinishing()) return;
+                bindFilterSpinner(CategoryHelper.filterOptions(catalog, ALL_SERVICES_LABEL));
+            }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+            @Override
+            public void onError(String message, int httpStatus) {
+                // getCategoriesWithFallback no falla
+            }
+        });
+    }
+
+    private void bindFilterSpinner(List<CatalogData.Category> filterOptions) {
+        try {
+            ArrayAdapter<CatalogData.Category> adapter = new ArrayAdapter<>(
                     this,
                     android.R.layout.simple_spinner_item,
                     filterOptions
@@ -308,23 +326,23 @@ public class HomeUserActivity extends AppCompatActivity {
                         return;
                     }
 
-                    String selected = parent.getItemAtPosition(position).toString();
-                    if (!selected.equals(mCurrentFilter)) {
-                        mCurrentFilter = selected;
-                        crashlytics.log("Filtro cambiado a: " + selected);
+                    CatalogData.Category selected = (CatalogData.Category) parent.getItemAtPosition(position);
+                    if (!selected.getSlug().equals(mCurrentFilter)) {
+                        mCurrentFilter = selected.getSlug();
+                        crashlytics.log("Filtro cambiado a: " + mCurrentFilter);
 
                         // Reset pagination y aplicar filtro
                         mDisplayedWorkersCount = 0;
                         mIsLoadingMore = false;
 
                         filterAndSearchWorkers();
-                        showInfoToast("Filtro: " + selected);
+                        showInfoToast("Filtro: " + selected.getName());
                     }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
-                    mCurrentFilter = "Todos los servicios";
+                    mCurrentFilter = CategoryHelper.ALL;
                 }
             });
         } catch (Exception e) {
@@ -694,7 +712,7 @@ public class HomeUserActivity extends AppCompatActivity {
                         worker.setDistance(results[0] / 1000);
                     }
 
-                    crashlytics.log("Worker cargado: " + worker.getName() + " - " + worker.getWork());
+                    crashlytics.log("Worker cargado: " + worker.getName() + " - " + worker.getCategorySlugs());
                     mWorkersMap.put(workerId, worker);
 
                     // CORRECCIÓN: Actualizar la lista inmediatamente después de agregar
@@ -753,23 +771,16 @@ public class HomeUserActivity extends AppCompatActivity {
             List<Worker> filteredList = new ArrayList<>();
 
             for (Worker worker : mAllWorkersList) {
-                boolean matchesFilter = false;
-
-                if (mCurrentFilter.equals("Todos los servicios")) {
-                    matchesFilter = true;
-                } else if (worker.getWork() != null) {
-                    String workerWork = worker.getWork().trim();
-                    String currentFilter = mCurrentFilter.trim();
-                    matchesFilter = workerWork.equalsIgnoreCase(currentFilter);
-                }
+                boolean matchesFilter = CategoryHelper.matches(worker, mCurrentFilter);
 
                 boolean matchesSearch = mSearchQuery.isEmpty();
                 if (!matchesSearch) {
                     if (worker.getName() != null) {
                         matchesSearch = worker.getName().toLowerCase().contains(mSearchQuery);
                     }
-                    if (!matchesSearch && worker.getWork() != null) {
-                        matchesSearch = worker.getWork().toLowerCase().contains(mSearchQuery);
+                    String categories = worker.getCategoriesDisplay();
+                    if (!matchesSearch && categories != null) {
+                        matchesSearch = categories.toLowerCase().contains(mSearchQuery);
                     }
                 }
 
@@ -1090,7 +1101,8 @@ public class HomeUserActivity extends AppCompatActivity {
                         .start();
 
                 workerName.setText(worker.getName() != null ? worker.getName() : "Trabajador");
-                workerWork.setText(worker.getWork() != null ? worker.getWork() : "Servicio general");
+                String categories = worker.getCategoriesDisplay();
+                workerWork.setText(categories != null ? categories : "Servicio general");
                 workerDistance.setText(String.format("%.1f km", worker.getDistance()));
 
                 if (worker.getRating() > 0) {
@@ -1111,7 +1123,7 @@ public class HomeUserActivity extends AppCompatActivity {
                     workerImage.setImageResource(R.drawable.logo);
                 }
 
-                setWorkerTypeIcon(worker.getWork(), workerTypeIcon);
+                workerTypeIcon.setImageResource(CategoryHelper.iconFor(worker));
 
                 cardView.setOnClickListener(v -> {
                     try {
@@ -1189,46 +1201,9 @@ public class HomeUserActivity extends AppCompatActivity {
         }
     }
 
-    private void setWorkerTypeIcon(String workType, ImageView iconView) {
-        int iconResource;
-
-        if (workType == null || workType.trim().isEmpty()) {
-            iconResource = R.drawable.icon_worker;
-        } else {
-            switch (workType.toLowerCase().trim()) {
-                case "carpintería":
-                    iconResource = R.drawable.icon_carpenter;
-                    break;
-                case "ferretería":
-                    iconResource = R.drawable.icon_ferreteria;
-                    break;
-                case "pintor":
-                    iconResource = R.drawable.icon_painter;
-                    break;
-                case "electricista":
-                    iconResource = R.drawable.icon_electrician;
-                    break;
-                case "plomería":
-                    iconResource = R.drawable.icon_plumber;
-                    break;
-                case "jardinería":
-                    iconResource = R.drawable.icon_gardener;
-                    break;
-                case "albañilería":
-                    iconResource = R.drawable.icon_mason;
-                    break;
-                default:
-                    iconResource = R.drawable.icon_worker;
-                    break;
-            }
-        }
-
-        iconView.setImageResource(iconResource);
-    }
-
     private void showWorkerDetailsDialog(Worker worker) {
         try {
-            String message = "Servicio: " + worker.getWork() + "\n" +
+            String message = "Servicio: " + worker.getCategoriesDisplay() + "\n" +
                     "Distancia: " + String.format("%.1f km", worker.getDistance()) + "\n" +
                     "¿Deseas solicitar este servicio?";
 
@@ -1238,6 +1213,7 @@ public class HomeUserActivity extends AppCompatActivity {
                     .setPositiveButton("Solicitar", (dialog, which) -> {
                         Intent intent = new Intent(HomeUserActivity.this, ServiceRequestActivity.class);
                         intent.putExtra("workerId", worker.getId());
+                        putClientLocation(intent, mCurrentLatLng);
                         startActivity(intent);
                     })
                     .setNeutralButton("Ver en mapa", (dialog, which) -> {
@@ -1249,6 +1225,14 @@ public class HomeUserActivity extends AppCompatActivity {
                     .show();
         } catch (Exception e) {
             logError("showWorkerDetailsDialog", e);
+        }
+    }
+
+    /** Coordenada del cliente para la solicitud (B14); el backend la guarda en requests/<id>. */
+    static void putClientLocation(Intent intent, LatLng location) {
+        if (location != null) {
+            intent.putExtra(ServiceRequestActivity.EXTRA_LAT, location.latitude);
+            intent.putExtra(ServiceRequestActivity.EXTRA_LNG, location.longitude);
         }
     }
 

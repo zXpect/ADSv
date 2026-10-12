@@ -39,25 +39,14 @@
     <string name="vermapaworker">Ver Mapa</string>
     <string name="conectarse">Conectarse</string>
     <string name="worker_photo_desc">Descripcion</string>
-    <string name="find_stores">Buscar Tiendas</string>
 
 
-    <string-array name="service_types">
-        <item>Carpintería</item>
-        <item>Ferretería</item>
-        <item>Pintor</item>
-        <item>Electricista</item>
-        <item>Plomería</item>
-        <item>Jardinería</item>
-        <item>Albañilería</item>
-    </string-array>
 
 
     <string name="logo_description">Logo de la aplicación</string>
     <string name="footer_text">© 2024 ADS. Todos los derechos reservados.</string>
 
 
-    <string name="fix_depot_title">Fix Depot</string>
     <string name="tools_banner_description">Tools and materials banner</string>
     <string name="featured_tools">Featured Tools</string>
     <string name="all_tools">All Tools</string>
@@ -292,7 +281,7 @@
     <string name="quote_card_title">Precio del servicio</string>
     <string name="quote_accept_with_price">Cotizar y aceptar</string>
     <string name="quote_dialog_title">Enviar cotización</string>
-    <string name="quote_dialog_hint">Indica el precio total del servicio en pesos colombianos. El cliente debe aceptarlo antes de que puedas iniciar el trabajo.</string>
+    <string name="quote_dialog_hint">Indica el precio total de mano de obra en pesos colombianos y cuándo llegas. El cliente debe aceptarlo antes de que puedas iniciar el viaje.</string>
     <string name="quote_dialog_price_hint">Precio (COP)</string>
     <string name="quote_dialog_limits">El precio debe estar entre %1$s y %2$s</string>
     <string name="quote_dialog_send">Enviar</string>
@@ -347,4 +336,87 @@
     <string name="payment_status_waiting_client">Esperando el pago del cliente</string>
     <string name="rating_requires_payment">Primero realiza el pago del servicio</string>
 
+
+    <!-- Catálogo de oficios (Sprint 4: B3, D16) -->
+    <string name="accept">Aceptar</string>
+    <string name="all_services">Todos los servicios</string>
+    <string name="worker_categories_title">Tus oficios (hasta %1$d)</string>
+    <string name="worker_categories_max">Puedes elegir hasta %1$d oficios</string>
+    <string name="worker_categories_required">Selecciona al menos un oficio</string>
+    <string name="no_specialty">Sin especialidad</string>
+    <!-- Crear solicitud con tareas del catálogo (Sprint 4: B1, B14, B18) -->
+    <string name="loading">Cargando…</string>
+    <string name="retry">Reintentar</string>
+    <string name="request_tasks_title">Tareas</string>
+    <string name="request_tasks_empty">Agrega lo que necesitas: elige tareas del catálogo o describe otra.</string>
+    <string name="request_add_task">Agregar tarea</string>
+    <string name="request_add">Agregar</string>
+    <string name="request_remove_task">Quitar tarea</string>
+    <string name="request_other_task">Otro (describir)</string>
+    <string name="request_other_task_note">El trabajador cotizará esta tarea directamente.</string>
+    <string name="request_custom_task_hint">Describe la tarea</string>
+    <string name="request_custom_task_required">Describe la tarea</string>
+    <string name="request_quantity_hint">Cantidad</string>
+    <string name="request_quantity_unit_hint">Cantidad (%1$s)</string>
+    <string name="request_quantity_error_integer">Ingresa un número entero entre 1 y %1$d</string>
+    <string name="request_quantity_error_decimal">Ingresa una cantidad mayor que 0 y hasta %1$d</string>
+    <string name="request_task_range">Referencia en Ubaté: %1$s – %2$s por %3$s</string>
+    <string name="request_task_without_range">Sin precio de referencia: el trabajador la cotiza directamente.</string>
+    <string name="request_max_items">Puedes agregar hasta %1$d tareas</string>
+    <string name="request_tasks_required">Agrega al menos una tarea</string>
+    <string name="request_description_hint">Detalles adicionales (opcional)</string>
+    <string name="request_estimate_loading">Calculando estimado…</string>
+    <string name="request_estimate_range">Estimado: %1$s – %2$s</string>
+    <string name="request_estimate_partial">Algunas tareas no tienen precio de referencia; el trabajador las cotizará.</string>
+    <string name="request_estimate_unpriced">Sin precio de referencia: el trabajador cotizará el servicio.</string>
+    <string name="request_estimate_unavailable">El trabajador te enviará la cotización.</string>
+    <string name="request_estimate_error">No se pudo calcular el estimado: %1$s</string>
+    <string name="request_estimate_notice">Valor de referencia de mano de obra. El precio final lo propone el trabajador y puede variar por materiales, tiempo, dificultad y condiciones del lugar.</string>
+    <string name="request_worker_without_category">Este trabajador aún no tiene un oficio del catálogo</string>
+    <string name="request_choose_category">Elige el oficio</string>
+    <string name="request_category_change">%1$s (tocar para cambiar)</string>
+    <string name="request_category_change_confirm">Al cambiar de oficio se quitan las tareas agregadas. ¿Continuar?</string>
+    <string name="request_catalog_error_title">No se pudo cargar el catálogo</string>
+    <string name="request_location_required">No se pudo obtener tu ubicación. Activa la ubicación e intenta de nuevo.</string>
+    <string name="request_sending">Enviando solicitud…</string>
+    <string name="request_sent">Solicitud enviada con éxito</string>
+    <!-- Cotización con motivo y agenda, reprogramación y cancelación (Sprint 4: B1, B2, B4) -->
+    <string name="quote_dialog_min_fee">Mínimo %1$s (tarifa mínima por visita)</string>
+    <string name="quote_error_too_high">El precio supera el máximo permitido</string>
+    <string name="quote_reference_range">Referencia para el cliente: %1$s – %2$s</string>
+    <string name="quote_reference_partial">Algunas tareas no tienen rango: el precio necesita motivo.</string>
+    <string name="quote_reference_unpriced">Sin precio de referencia: indica el motivo de tu precio.</string>
+    <string name="quote_reference_missing">Solicitud sin precio de referencia: indica el motivo de tu precio.</string>
+    <string name="quote_reason_label">El precio está fuera del rango de referencia. Motivo:</string>
+    <string name="quote_reason_label_unpriced">Motivo del precio:</string>
+    <string name="quote_reason_choose">Elige un motivo</string>
+    <string name="quote_reason_text_hint">Describe el motivo</string>
+    <string name="quote_reason_required">Elige el motivo del precio</string>
+    <string name="reason_text_required">Describe el motivo</string>
+    <string name="quote_detail_reason">Motivo del precio: %1$s</string>
+    <string name="quote_detail_reference">Referencia: %1$s – %2$s</string>
+    <string name="schedule_arrival_label">Fecha y hora de llegada</string>
+    <string name="schedule_pick_date">Fecha</string>
+    <string name="schedule_pick_time">Hora</string>
+    <string name="schedule_duration_label">Duración estimada</string>
+    <string name="schedule_error_missing">Elige la fecha y la hora de llegada</string>
+    <string name="schedule_error_past">La hora de llegada debe ser futura</string>
+    <string name="schedule_error_too_far">La llegada debe ser dentro de los próximos %1$d días</string>
+    <string name="schedule_detail">Llegada: %1$s</string>
+    <string name="schedule_detail_rescheduled">Llegada: %1$s (reprogramada)</string>
+    <string name="reschedule_title">Reprogramar servicio</string>
+    <string name="reschedule_message">El cliente recibirá un aviso con la nueva hora. Si no le sirve, puede cancelar.</string>
+    <string name="reschedule_send">Reprogramar</string>
+    <string name="reschedule_done">Servicio reprogramado; avisamos al cliente</string>
+    <string name="reschedule_action">Reprogramar</string>
+    <string name="cancel_title">Cancelar solicitud</string>
+    <string name="cancel_message">Puedes cancelar sin costo hasta que el trabajador inicie el viaje. ¿Por qué cancelas?</string>
+    <string name="cancel_confirm">Cancelar solicitud</string>
+    <string name="cancel_back">Volver</string>
+    <string name="cancel_reason_required">Elige un motivo</string>
+    <string name="cancel_reason_text_hint">Describe el motivo</string>
+    <string name="cancel_done">Solicitud cancelada</string>
+    <string name="cancel_action">Cancelar solicitud</string>
+    <string name="cancelled_by_client">Cancelada por el cliente: %1$s</string>
+    <string name="cancelled_by_worker">Cancelada por el trabajador: %1$s</string>
 </resources>

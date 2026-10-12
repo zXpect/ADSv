@@ -63,10 +63,6 @@ public class WorkerProvider {
     public Task<DataSnapshot> getFullyAvailableWorkers() {
         return mDataBase.get();
     }
-    public Task<DataSnapshot> getWorkersByCategory(String workCategory) {
-        Query categoryQuery = mDataBase.orderByChild("work").equalTo(workCategory);
-        return categoryQuery.get();
-    }
     public Task<DataSnapshot> getWorkersByRating() {
         Query ratingQuery = mDataBase.orderByChild("rating").limitToLast(50);
         return ratingQuery.get();

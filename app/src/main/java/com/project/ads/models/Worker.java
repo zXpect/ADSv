@@ -5,7 +5,8 @@ public class Worker {
     private String name;
     private String lastName;
     private String email;
-    private String work;
+    private String work;                 // texto viejo del oficio; respaldo hasta migrar a categories
+    private java.util.List<String> categories;  // slugs del catálogo, hasta 3 (D16)
     private String fcmToken;
     private boolean isAvailable;
 
@@ -175,6 +176,44 @@ public class Worker {
 
     public void setWork(String work) {
         this.work = work;
+    }
+
+    public java.util.List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(java.util.List<String> categories) {
+        this.categories = categories;
+    }
+
+    /**
+     * Oficios del trabajador: `categories` si ya existe; si no, el que se deduce
+     * del campo viejo `work` (igual que el backend al validar una solicitud).
+     */
+    @com.google.firebase.database.Exclude
+    public java.util.List<String> getCategorySlugs() {
+        java.util.List<String> slugs = new java.util.ArrayList<>();
+        if (categories != null) {
+            for (String slug : categories) {
+                if (slug != null && !slugs.contains(slug)) slugs.add(slug);
+            }
+        }
+        if (slugs.isEmpty()) {
+            String legacy = com.project.ads.providers.CatalogProvider.legacyWorkToSlug(work);
+            if (legacy != null) slugs.add(legacy);
+        }
+        return slugs;
+    }
+
+    public boolean offersCategory(String slug) {
+        return slug != null && getCategorySlugs().contains(slug);
+    }
+
+    /** Oficios para mostrar ("Plomería, Pintura"); si no hay ninguno reconocido, el texto de `work`. */
+    @com.google.firebase.database.Exclude
+    public String getCategoriesDisplay() {
+        String names = com.project.ads.providers.CatalogProvider.joinNames(getCategorySlugs());
+        return names != null ? names : work;
     }
 
     public String getFcmToken() {
@@ -486,6 +525,7 @@ public class Worker {
         map.put("lastName", lastName);
         map.put("email", email);
         map.put("work", work);
+        map.put("categories", categories);
         map.put("fcmToken", fcmToken);
         map.put("isAvailable", isAvailable);
         map.put("image", image);

@@ -38,7 +38,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.project.ads.R;
 
+import com.project.ads.models.api.CatalogData;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.providers.CatalogProvider;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -58,6 +64,10 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
     private TextInputEditText mTextInputNames, mTextInputLastNames, mTextInputEmail, mTextInputPassword, mTextInputPhone;
     private TextInputLayout mTextInputLayoutNames, mTextInputLayoutLastNames, mTextInputLayoutEmail, mTextInputLayoutPassword, mTextInputLayoutPhone;
     private AutoCompleteTextView mSpinnerWork;
+    // Oficios máximos por trabajador (D16; worker_max_categories en el backend)
+    private static final int MAX_CATEGORIES = 3;
+    private final ArrayList<String> mSelectedCategories = new ArrayList<>();
+    private List<CatalogData.Category> mCategoryOptions;
     private CheckBox mCheckBoxTerms;
     private TextView mTextViewTerms;
     private CircleImageView mCircleImageProfile;
@@ -363,9 +373,56 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
     }
 
     private void setupServiceTypeDropdown() {
-        String[] items = getResources().getStringArray(R.array.service_types);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, items);
-        mSpinnerWork.setAdapter(adapter);
+        // Selección de hasta MAX_CATEGORIES oficios del catálogo (D16) en un diálogo
+        mSpinnerWork.setFocusable(false);
+        mSpinnerWork.setOnClickListener(v -> showCategoriesDialog());
+        new CatalogProvider().getCategoriesWithFallback(new ApiCallback<CatalogData>() {
+            @Override
+            public void onSuccess(CatalogData catalog) {
+                mCategoryOptions = catalog.getCategories();
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                // getCategoriesWithFallback no falla
+            }
+        });
+    }
+
+    private void showCategoriesDialog() {
+        List<CatalogData.Category> options = mCategoryOptions != null
+                ? mCategoryOptions : CatalogProvider.localCatalog().getCategories();
+        String[] names = new String[options.size()];
+        boolean[] checked = new boolean[options.size()];
+        for (int i = 0; i < options.size(); i++) {
+            names[i] = options.get(i).getName();
+            checked[i] = mSelectedCategories.contains(options.get(i).getSlug());
+        }
+
+        List<String> selection = new ArrayList<>(mSelectedCategories);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.worker_categories_title, MAX_CATEGORIES))
+                .setMultiChoiceItems(names, checked, null)
+                .setPositiveButton(R.string.accept, (d, which) -> {
+                    mSelectedCategories.clear();
+                    mSelectedCategories.addAll(selection);
+                    mSpinnerWork.setText(CatalogProvider.joinNames(mSelectedCategories));
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .create();
+        dialog.setOnShowListener(d -> dialog.getListView().setOnItemClickListener((parent, view, position, id) -> {
+            String slug = options.get(position).getSlug();
+            boolean isChecked = dialog.getListView().isItemChecked(position);
+            if (isChecked && selection.size() >= MAX_CATEGORIES) {
+                dialog.getListView().setItemChecked(position, false);
+                showToast(getString(R.string.worker_categories_max, MAX_CATEGORIES));
+            } else if (isChecked) {
+                selection.add(slug);
+            } else {
+                selection.remove(slug);
+            }
+        }));
+        dialog.show();
     }
 
     private void setupStatusBar() {
@@ -383,7 +440,8 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
         String phone = mTextInputPhone.getText().toString().trim(); // ⭐ NUEVO
         String email = mTextInputEmail.getText().toString().trim().toLowerCase();
         String password = isFromGoogleSignIn ? "" : mTextInputPassword.getText().toString();
-        String work = mSpinnerWork.getText().toString().trim();
+        // `work` se sigue escribiendo con el primer oficio como respaldo para versiones viejas de la app
+        String work = mSelectedCategories.isEmpty() ? "" : CatalogProvider.categoryName(mSelectedCategories.get(0));
 
         boolean isValid = true;
 
@@ -414,7 +472,7 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(work)) {
-            showToast("Seleccione un tipo de servicio");
+            showToast(getString(R.string.worker_categories_required));
             isValid = false;
         }
 
@@ -435,6 +493,7 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
         intent.putExtra("email", email);
         intent.putExtra("password", password);
         intent.putExtra("work", work);
+        intent.putStringArrayListExtra("categories", mSelectedCategories);
 
         // Pasar información de la imagen
         if (mImageSelected && mImageUri != null) {

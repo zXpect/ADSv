@@ -21,7 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.R;
+import com.project.ads.helpers.CancelDialogHelper;
 import com.project.ads.helpers.QuoteDialogHelper;
+import com.project.ads.helpers.ReasonHelper;
+import com.project.ads.helpers.RequestDetailsHelper;
+import com.project.ads.models.api.CatalogData;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.providers.CatalogProvider;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.providers.NotificationProvider;
 import com.google.firebase.database.DataSnapshot;
@@ -78,6 +84,10 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     private TextView mTvQuoteStatus;
     private TextView mTvPaymentStatus;
     private Button mBtnSendQuote;
+    private TextView mTvQuoteDetails;
+    private Button mBtnReschedule;
+    private Button mBtnCancelService;
+    private CatalogData mCatalog;   // nombres de las tareas; puede no estar cargado
 
     // Firebase
     private DatabaseReference mDatabaseReference;
@@ -108,6 +118,22 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         initViews();
         setupStatusBar();
         loadRequestData();
+        loadCatalog();
+    }
+
+    private void loadCatalog() {
+        new CatalogProvider().getCatalog(new ApiCallback<CatalogData>() {
+            @Override
+            public void onSuccess(CatalogData catalog) {
+                mCatalog = catalog;
+                if (mServiceRequest != null && !isFinishing()) updateQuoteCard(mServiceRequest);
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                // Sin catálogo las tareas se muestran por su identificador
+            }
+        });
     }
 
     private void initProviders() {
@@ -157,6 +183,11 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mTvQuoteStatus = findViewById(R.id.tv_quote_status);
         mTvPaymentStatus = findViewById(R.id.tv_payment_status);
         mBtnSendQuote = findViewById(R.id.btn_quote_primary);
+        mTvQuoteDetails = findViewById(R.id.tv_quote_details);
+        mBtnReschedule = findViewById(R.id.btn_quote_reschedule);
+        mBtnCancelService = findViewById(R.id.btn_quote_cancel);
+        mBtnReschedule.setOnClickListener(v -> showRescheduleDialog());
+        mBtnCancelService.setOnClickListener(v -> showCancelDialog());
 
         // Setup click listeners
         mBtnBack.setOnClickListener(v -> finish());
@@ -350,6 +381,13 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnSendQuote.setVisibility(View.GONE);
         mTvPaymentStatus.setVisibility(View.GONE);
 
+        String details = RequestDetailsHelper.details(this, request, mCatalog);
+        mTvQuoteDetails.setVisibility(details != null ? View.VISIBLE : View.GONE);
+        mTvQuoteDetails.setText(details);
+        // Antes de «Iniciar viaje» el trabajador puede reprogramar o cancelar con motivo (D8, D9)
+        mBtnReschedule.setVisibility(request.canBeRescheduled() ? View.VISIBLE : View.GONE);
+        mBtnCancelService.setVisibility(request.canBeCancelled() ? View.VISIBLE : View.GONE);
+
         if (request.hasQuote()) {
             mTvQuoteAmount.setVisibility(View.VISIBLE);
             mTvQuoteAmount.setText(request.getFormattedQuotedPrice());
@@ -395,7 +433,18 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     private void showQuoteDialog() {
         if (mServiceRequest == null) return;
         // El listener de Firebase actualiza la pantalla cuando el backend guarda la cotización
-        new QuoteDialogHelper(this).show(mRequestId, mServiceRequest.getService_type(), null);
+        new QuoteDialogHelper(this).show(mServiceRequest, null);
+    }
+
+    private void showRescheduleDialog() {
+        if (mServiceRequest == null) return;
+        // El listener de Firebase muestra la nueva agenda; el backend avisa al cliente
+        new QuoteDialogHelper(this).showReschedule(mServiceRequest, null);
+    }
+
+    private void showCancelDialog() {
+        if (mServiceRequest == null) return;
+        new CancelDialogHelper(this).show(mRequestId, ReasonHelper.ROLE_WORKER, data -> finish());
     }
 
     private void confirmStatusChange(String newStatus) {
