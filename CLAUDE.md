@@ -90,3 +90,181 @@ Según el cronograma del proyecto (Sprints 5 y 6) y una revisión del código ac
 - Disparador de notificación de finalización de servicio ligado a calificación y PQR (Sprint 6) — existen `ServiceCompletionActivity` y `RatingActivity`, pero falta conectar la reclamación (PQR) a ese flujo.
 
 Ya implementado: registro/login (Firebase Auth), búsqueda geolocalizada de trabajadores (Geofire + Maps), gestión de solicitudes de servicio, subida y verificación de documentos, calificación de trabajadores, notificaciones push (FCM).
+
+---
+
+## Rediseño visual y UX (mockups aprobados)
+
+### Estado y objetivo
+
+Los mockups de TODA la app móvil (cliente y trabajador) y del panel web de administración ya están rediseñados y aprobados. **La tarea ahora es adaptar el código existente a esos mockups y crear lo que falte**, sin romper la lógica, Firebase ni el backend Django que ya funcionan.
+
+- Los mockups están en `docs/mockups/` (archivos `.dc.html`, uno por pantalla; se leen como HTML con medidas, colores y textos exactos). Índice más abajo.
+- Los tokens del sistema de diseño están en `docs/mockups/ds/ads/tokens.json`. Los logos en `docs/branding/`.
+- Los mockups usan datos de ejemplo inventados (nombres, precios, fechas). **No copiar esos datos al código**; vienen del backend. Lo único real es la tarifa mínima de visita de $25.500 COP.
+
+### Reglas de trabajo
+
+1. Antes de tocar una pantalla, **leer su mockup** y el layout/Activity/Fragment actual. Listar qué cambia y qué se conserva.
+2. **No cambiar lógica de negocio, modelos, llamadas a la API ni navegación funcional** sin avisar. El cambio visual y de UX va en layouts, estilos y recursos.
+3. Una pantalla o módulo por vez, con un commit por cada uno.
+4. Después de cada pantalla: compilar (`./gradlew assembleDebug`), correr `./gradlew lint` y, si hay emulador, tomar captura con `adb exec-out screencap -p > captura.png` y compararla con el mockup.
+5. Si algo del mockup choca con lo que ya existe en el código (campo que el backend no tiene, flujo distinto), **preguntar o anotarlo en la sección "Decisiones pendientes"**; no inventar.
+6. No instalar ni actualizar dependencias, AGP, Gradle o el SDK sin preguntar. Android Studio del equipo: **Jirafa (Giraffe)**; **no aceptar el "Android Gradle Plugin Upgrade Assistant"**.
+7. Respetar la arquitectura "Activity + Provider" y los nombres de layouts de este archivo (`activity_*`, `item_*`, `dialog_*`). El rediseño no mueve lógica entre capas.
+8. Al tocar una pantalla, **mover sus strings visibles a `strings.xml`** (regla ya acordada en "Convenciones de código"). Verificar en `app/build.gradle.kts` la versión de Material Components antes de usar estilos Material 3.
+
+### Flujo del producto y reglas del MVP (según los mockups)
+
+**Cliente:** busca por oficio → elige tarea → ve técnicos (lista o mapa) → elige técnico → crea solicitud con tareas (la dirección se captura solo al enviar) → el técnico cotiza → el cliente acepta (paga con Wompi o en efectivo) o rechaza (sin contraoferta) → el técnico inicia viaje → inicia trabajo → finaliza → pago → el cliente califica con estrellas.
+
+**Estados del servicio:** pendiente → cotizada → aceptada → en camino → en progreso → completada, o cancelada.
+
+- Tarifa mínima por visita **$25.500 COP**: es un piso del precio, no un cobro aparte.
+- Factor regional **-15 %** (lo administra el admin).
+- Aviso de precio: "El valor final puede variar según materiales, tiempo, dificultad y condiciones del lugar".
+- Algunas tareas (cerrajería, jardinería, carpintería) no tienen rango: "el técnico la cotizará".
+- Cancelar: el cliente solo antes de "en camino"; el trabajador solo antes de "Iniciar viaje". Motivo obligatorio, elegido de una lista.
+- Una sola re-cotización por servicio.
+- PQR: plazo de respuesta de 15 días hábiles.
+- Registro de cliente: dos casillas separadas (términos y condiciones; tratamiento de datos personales) más "Soy mayor de edad".
+- Registro de trabajador: hasta 3 oficios, tareas, descripción y documentos (identidad, antecedentes, certificaciones). Verificación: pendiente / aprobada / rechazada (con motivo y posibilidad de volver a subir).
+- Trabajador: botón conectar/desconectar (disponible); desconectado no aparece en el mapa ni recibe solicitudes nuevas.
+
+**NO implementar ni dibujar:** propinas, horas extra, reembolsos, comisión, contraoferta, penalizaciones, calificación del trabajador al cliente, tienda de materiales, calendario completo, chat interno, cliente iOS/web, cobertura fuera de Ubaté.
+
+### Sistema de diseño → recursos Android
+
+Fuente: `docs/mockups/ds/ads/tokens.json`. Crear/usar estos recursos y **no poner colores ni medidas fijas en los layouts**.
+
+| Token | Claro | Oscuro | Uso |
+|---|---|---|---|
+| `brand` | `#E8751A` | `#F28A2E` | Botones principales, acentos, techo del logo |
+| `brand_text` | `#B45309` | `#F28A2E` | Texto/enlaces naranja sobre fondo claro (contraste AA) |
+| `navy` | `#1B1830` | `#1B1830` | Texto sobre botón naranja, barras, fichas del ícono |
+| `charcoal` | `#3A3F47` | `#F6F3EE` | Texto principal, llave del logo |
+| `surface` | `#F6F3EE` | `#1B1830` | Fondo de pantallas |
+| `surface_alt` | `#E7E3DB` | `#26223F` | Tarjetas y zonas secundarias |
+| `muted` | `#5B606B` | `#B9B6C4` | Texto secundario |
+| `line` | `#CFCAC0` | `#3A3658` | Bordes y divisores |
+| (control) | `#858A93` | — | Borde de campos y botones secundarios |
+| (chip) | `#FBE7D3` | — | Fondo de chips naranja claro |
+| (chip texto) | `#8F3F06` | — | Texto de chips naranja |
+
+- Colores en `values/colors.xml` y `values-night/colors.xml`; tema en `themes.xml` (`Theme.Material3.*` con los colores ADS). Modo oscuro opcional por ahora, pero dejar los recursos listos.
+- **Tipografía: Sora** (400, 600, 800) en `res/font/` y como `fontFamily` del tema. Estilos: wordmark 40/44 (800), title 24/30 (600), body 16/24 (400), label 12/16 (600).
+- **Espaciado:** 4, 8, 16 (margen lateral y relleno de tarjetas), 24 (entre secciones) dp. **Radios:** 12 (campos, chips), 16 (botones, tarjetas), 22 (hojas inferiores, ícono).
+- Pantallas de 390 x 844 dp como referencia; deben adaptarse a otros anchos sin desplazamiento horizontal.
+
+### Reglas de componentes
+
+- **Botón principal:** fondo `brand`, **texto `navy`** (no blanco), altura 52-56 dp, radio 16. Secundario: borde `#858A93` 1,5 dp, fondo transparente. Oscuro: fondo `navy`, texto `surface`.
+- **Zonas táctiles:** mínimo **44 dp** (botones, íconos, filas).
+- **Campos:** `label` real arriba (no solo placeholder), borde `#858A93`, radio 12-14, foco con anillo naranja.
+- **Estado nunca solo por color:** acompañar con texto o ícono (chips "Pendiente", "Aprobado", etc.).
+- **Navegación inferior:** 76 dp. Cliente: Inicio / Historial / PQR / Mi cuenta. Trabajador: Inicio / Solicitudes / Mis trabajos / Mi cuenta. El mapa se abre desde una tarjeta al inicio de cada usuario y tiene flecha de volver.
+- **Barra de acción fija** (botón principal abajo): fondo blanco, borde superior fino.
+- **Íconos:** trazo (stroke) de 2 dp, estilo uniforme; usar vector drawables. Sin emojis.
+- **Accesibilidad:** `contentDescription` en íconos y botones solo-ícono; contraste AA; no depender del color.
+
+### Logo (decisión definitiva)
+
+- **Opción A** del lienzo "Logo ADS v7": techo naranja + llave inglesa gris/charcoal, sin tuerca como pieza aparte; la boca de la llave tiene forma de tuerca; cabeza corta y simétrica con el ángulo del techo. Referencia: https://claude.ai/artifact/Rk3ZW8ZfMP2twMcg39EXPQ
+- **Opción D** (la misma marca dentro de una insignia de esquinas redondeadas, fondo navy): candidata para el **ícono de la app** (adaptive icon).
+- Archivos: `docs/branding/ads-logo-claro.svg` (para fondos claros) y `ads-logo-oscuro.svg` (para fondos oscuros). Convertir a vector drawable para la app.
+- Usar el logo exactamente así; no redibujarlo ni cambiar sus colores.
+
+### Mapa, pagos y PQR en el rediseño
+
+- **Mapa:** la app ya usa Google Maps + Geofire + Places (ver "Qué falta" y `GeofireProvider`). Los mockups de mapa (cliente: "Cerca de ti" con filtros, pines y tarjeta inferior; trabajador: mapa con interruptor Conectado/Desconectado) dibujan un mapa genérico. Implementarlos sobre el mapa real, conservando la lógica actual de ubicación y de disponibilidad del trabajador. No cambiar el proveedor.
+- **Pagos:** hoy el backend usa pasarela simulada (`PAGOS_MODO=mock`); Wompi real aún no está conectado. Rediseñar las pantallas de pago (método, pagando, aprobado, rechazado, pendiente, efectivo registrado) sin tocar el flujo del Custom Tab ni `adsapp://payment-result`. El estado se sigue leyendo de `requests/<id>/payment_status`.
+- **PQR:** no existe en el código (ver "Qué falta para el MVP"). Las pantallas PQR (lista y crear, cliente y trabajador) son **nuevas**: requieren provider y modelo nuevos y coordinar con el backend (Maikoll) antes de construir.
+- Reprogramar y cancelar con motivo ya existen en el código (`CancelDialogHelper`, `RequestProvider.reschedule`); los mockups de cancelación y re-cotización deben apoyarse en eso, no duplicarlo.
+
+### Índice de mockups (`docs/mockups/`)
+
+Todas las pantallas están enlazadas entre sí con `<a href>`; seguir los enlaces da el flujo real.
+
+| Pantalla | Archivo |
+|---|---|
+| 01 · Inicio de sesión | `Main.dc.html` |
+| 02 · Bienvenida | `Bienvenida.dc.html` |
+| 03 · Elegir rol | `Rol.dc.html` |
+| 04 · Registro cliente | `RegistroCliente.dc.html` |
+| 05 · Registro trabajador | `RegistroTrabajador.dc.html` |
+| 06 · Inicio cliente | `InicioCliente.dc.html` |
+| 07 · Problemas del oficio | `Tareas.dc.html` |
+| 08 · Técnicos disponibles | `Trabajadores.dc.html` |
+| 09 · Perfil del técnico | `Perfil.dc.html` |
+| 10 · Solicitud: tareas | `Solicitud.dc.html` |
+| 11 · Solicitud: dirección y precio | `SolicitudResumen.dc.html` |
+| 12 · Solicitud enviada | `SolicitudEnviada.dc.html` |
+| 13 · Inicio trabajador | `InicioTrabajador.dc.html` |
+| 14 · Bandeja de solicitudes | `Bandeja.dc.html` |
+| 15 · Detalle de solicitud | `SolicitudDetalle.dc.html` |
+| 16 · Cotizar | `Cotizar.dc.html` |
+| 17 · Revisar cotización | `RevisarCotizacion.dc.html` |
+| 18 · Método de pago | `Pago.dc.html` |
+| 19 · Confirmar rechazo | `RechazarCotizacion.dc.html` |
+| 20 · Seguimiento (cliente) | `Seguimiento.dc.html` |
+| 21 · Cancelar servicio (cliente) | `CancelarServicio.dc.html` |
+| 22 · Re-cotización (cliente) | `ReCotizacionCliente.dc.html` |
+| 23 · Servicio en curso (trabajador) | `ServicioCurso.dc.html` |
+| 24 · Re-cotizar (trabajador) | `ReCotizar.dc.html` |
+| 25 · Pagar con Wompi | `PagarWompi.dc.html` |
+| 26 · Pago aprobado | `PagoAprobado.dc.html` |
+| 27 · Pago rechazado | `PagoRechazado.dc.html` |
+| 28 · Pago pendiente | `PagoPendiente.dc.html` |
+| 29 · Efectivo registrado (cliente) | `PagoEfectivo.dc.html` |
+| 30 · Calificar servicio | `Calificar.dc.html` |
+| 31 · Recibí el pago (trabajador) | `RegistrarEfectivo.dc.html` |
+| 32 · Registro trabajador: oficios | `OficiosTrabajador.dc.html` |
+| 33 · Registro trabajador: documentos | `DocumentosTrabajador.dc.html` |
+| 34 · Verificación pendiente | `VerificacionPendiente.dc.html` |
+| 35 · Verificación rechazada | `VerificacionRechazada.dc.html` |
+| 36 · Verificación aprobada | `VerificacionAprobada.dc.html` |
+| 37 · Mi cuenta | `MiCuenta.dc.html` |
+| 38 · Mis datos | `MisDatos.dc.html` |
+| 39 · Eliminar cuenta | `EliminarCuenta.dc.html` |
+| 40 · Notificaciones | `Notificaciones.dc.html` |
+| 41 · Historial de solicitudes | `Historial.dc.html` |
+| 42 · PQR | `PQRLista.dc.html` |
+| 43 · Crear PQR | `PQRNueva.dc.html` |
+| 44 · Técnicos en el mapa | `TrabajadoresMapa.dc.html` |
+| 45 · Seguimiento: en camino (cliente) | `SeguimientoEnCamino.dc.html` |
+| 46 · Seguimiento: en progreso (cliente) | `SeguimientoEnProgreso.dc.html` |
+| 47 · Solicitud con tarea sin rango | `SolicitudSinRango.dc.html` |
+| 48 · Servicio en camino (trabajador) | `ServicioEnCamino.dc.html` |
+| 49 · Servicio en progreso (trabajador) | `ServicioEnProgreso.dc.html` |
+| 50 · Cancelar servicio (trabajador) | `CancelarTrabajador.dc.html` |
+| 51 · Mi cuenta (trabajador) | `MiCuentaTrab.dc.html` |
+| 52 · Mis trabajos | `MisTrabajos.dc.html` |
+| 53 · Notificaciones (trabajador) | `NotificacionesTrab.dc.html` |
+| 54 · PQR (trabajador) | `PQRListaTrab.dc.html` |
+| 55 · Seguimiento: completada (cliente) | `SeguimientoCompletada.dc.html` |
+| 56 · Mapa (cliente) | `MapaCliente.dc.html` |
+| 57 · Mapa conectado (trabajador) | `MapaTrabajador.dc.html` |
+| 58 · Mapa desconectado (trabajador) | `MapaTrabajadorOff.dc.html` |
+| A1 · Ingreso admin | `AdminLogin.dc.html` |
+| A2 · Verificación de trabajadores | `AdminVerificacion.dc.html` |
+| A3 · Revisar trabajador | `AdminVerificacionDetalle.dc.html` |
+| A4 · Catálogo y tarifas | `AdminCatalogo.dc.html` |
+| A5 · Usuarios y cuentas | `AdminUsuarios.dc.html` |
+| A6 · Transacciones | `AdminTransacciones.dc.html` |
+| A7 · PQR | `AdminPQR.dc.html` |
+| A8 · Detalle de PQR | `AdminPQRDetalle.dc.html` |
+
+La numeración 01-58 es la app móvil; A1-A8 es el panel web de administración (1280 px, adaptable).
+
+### Panel web de administración (A1-A8)
+
+El panel admin vive en el backend Django (`../ADS_AdminBack/backend`), no en esta app. Los mockups A1-A8 sirven de referencia visual para ese panel; **no tocarlos desde este proyecto** salvo que se indique.
+
+### Decisiones pendientes del rediseño
+
+- [ ] Inventario: qué pantallas ya existen y cuánto se alejan del mockup.
+- [ ] Versión instalada de Material Components y si permite Material 3.
+- [ ] Unidades reales de cada tarea (los mockups usan "Visita" y "Unidad" de ejemplo).
+- [ ] Textos finales de las listas de motivos de cancelación.
+- [ ] Modo oscuro: ¿se implementa en esta fase?
+- [ ] Qué hacer con el `targetSdk 33` frente a `compileSdk 34` (no cambiar sin avisar).
