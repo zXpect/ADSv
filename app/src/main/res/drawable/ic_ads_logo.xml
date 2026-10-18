@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Logo ADS. Usa la versión clara u oscura según el tema del teléfono.
+     Convertido de docs/branding/ads-logo-*.svg (opción A). No redibujar ni recolorear.
+     El hueco de tuerca del mango se dibuja en sentido contrario (nonZero) para
+     que se vea también en Android 6, que no soporta fillType evenOdd. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Techo -->
+    <path
+        android:pathData="M12,58 L60,18 L108,58"
+        android:strokeColor="@color/ads_brand"
+        android:strokeWidth="11"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- Chimenea -->
+    <path
+        android:fillColor="@color/ads_brand"
+        android:pathData="M84,20 H92 A2,2 0,0 1,94 22 V42 A2,2 0,0 1,92 44 H84 A2,2 0,0 1,82 42 V22 A2,2 0,0 1,84 20 Z" />
+    <!-- Cabeza de la llave -->
+    <path
+        android:fillColor="@color/ads_charcoal"
+        android:pathData="M51.5,42 L51.5,55 L68.5,55 L68.5,42 L78,50 L78,58 L60,73.1 L42,58 L42,50 Z"
+        android:strokeColor="@color/ads_charcoal"
+        android:strokeWidth="4"
+        android:strokeLineJoin="round" />
+    <!-- Mango con hueco de tuerca -->
+    <path
+        android:fillColor="@color/ads_charcoal"
+        android:pathData="M52.5,66 H67.5 V104.5 A7.5,7.5 0,0 1,52.5 104.5 Z M60,95.4 L56.02,97.7 L56.02,102.3 L60,104.6 L63.98,102.3 L63.98,97.7 Z" />
+</vector>
