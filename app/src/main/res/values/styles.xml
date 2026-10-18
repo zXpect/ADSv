@@ -101,6 +101,11 @@
         <item name="android:textColor">@color/ads_text</item>
     </style>
 
+    <!-- Texto de chip de filtro: 13, 600 -->
+    <style name="TextAppearance.ADS.Chip" parent="TextAppearance.ADS.BodySmall.Strong">
+        <item name="android:textSize">13sp</item>
+    </style>
+
     <!-- Texto de botón: 16, 800 -->
     <style name="TextAppearance.ADS.Button" parent="TextAppearance.Material3.LabelLarge">
         <item name="android:fontFamily">@font/sora_extrabold</item>
@@ -243,16 +248,18 @@
         <item name="android:textColor">@color/ads_charcoal</item>
     </style>
 
-    <!-- Chip de filtro (oficios en el mapa). Pendiente de comparar con el mockup 56. -->
+    <!-- Chip de filtro (oficios en el mapa, mockup 56) -->
     <style name="Widget.ADS.Chip.Filter" parent="Widget.Material3.Chip.Filter">
         <item name="chipBackgroundColor">@color/ads_filter_chip_bg</item>
         <item name="android:textColor">@color/ads_filter_chip_text</item>
         <item name="chipStrokeColor">@color/ads_line</item>
         <item name="chipStrokeWidth">@dimen/stroke_control</item>
-        <item name="chipCornerRadius">@dimen/radius_sm</item>
-        <item name="chipMinHeight">@dimen/touch_min</item>
+        <item name="chipCornerRadius">18dp</item>
+        <!-- 36 dp como el mockup 56; ensureMinTouchTargetSize amplía la zona táctil a 48 dp -->
+        <item name="chipMinHeight">36dp</item>
+        <item name="ensureMinTouchTargetSize">true</item>
         <item name="checkedIconVisible">false</item>
-        <item name="android:textAppearance">@style/TextAppearance.ADS.BodySmall.Strong</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Chip</item>
     </style>
 
     <!-- ===================================================================

@@ -545,6 +545,8 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private void startLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
+            // El botón de Google se duplica con fab_my_location del diseño
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
         } else {
             requestLocationPermission();
