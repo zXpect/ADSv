@@ -1,33 +1,298 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Estilo para el título del Toolbar -->
-    <style name="ToolbarTitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:letterSpacing">-0.01</item>
+    <!-- ===================================================================
+         TIPOGRAFÍA ADS (Sora). Tamaños de tokens.json y de los mockups.
+         =================================================================== -->
+    <style name="TextAppearance.ADS" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:fontFamily">@font/sora</item>
+        <item name="fontFamily">@font/sora</item>
+        <item name="android:textColor">@color/ads_charcoal</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
-    <!-- Estilo para el subtítulo del Toolbar (opcional) -->
-    <style name="ToolbarSubtitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:fontFamily">sans-serif</item>
+    <!-- "ADS" del logo: 40/44, 800, tracking amplio -->
+    <style name="TextAppearance.ADS.Wordmark">
+        <item name="android:fontFamily">@font/sora_extrabold</item>
+        <item name="fontFamily">@font/sora_extrabold</item>
+        <item name="android:textSize">40sp</item>
+        <item name="lineHeight">44sp</item>
+        <item name="android:letterSpacing">0.2</item>
+        <item name="android:textColor">@color/ads_text</item>
     </style>
 
-    <!-- Estilo para el texto de los tabs -->
-    <style name="TabTextStyle" parent="TextAppearance.Design.Tab">
+    <!-- Título grande de pantalla (p. ej. "Mis solicitudes"): 26/32, 800 -->
+    <style name="TextAppearance.ADS.Headline">
+        <item name="android:fontFamily">@font/sora_extrabold</item>
+        <item name="fontFamily">@font/sora_extrabold</item>
+        <item name="android:textSize">26sp</item>
+        <item name="lineHeight">32sp</item>
+        <item name="android:textColor">@color/ads_text</item>
+    </style>
+
+    <!-- title de tokens.json: 24/30, 600 -->
+    <style name="TextAppearance.ADS.Title">
+        <item name="android:fontFamily">@font/sora_semibold</item>
+        <item name="fontFamily">@font/sora_semibold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="lineHeight">30sp</item>
+        <item name="android:textColor">@color/ads_text</item>
+    </style>
+
+    <!-- Título de tarjeta: 15/20, 600 -->
+    <style name="TextAppearance.ADS.Subtitle">
+        <item name="android:fontFamily">@font/sora_semibold</item>
+        <item name="fontFamily">@font/sora_semibold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="lineHeight">20sp</item>
+        <item name="android:textColor">@color/ads_text</item>
+    </style>
+
+    <!-- body de tokens.json: 16/24, 400 -->
+    <style name="TextAppearance.ADS.Body">
+        <item name="android:textSize">16sp</item>
+        <item name="lineHeight">24sp</item>
+    </style>
+
+    <!-- Texto secundario: 14/20 -->
+    <style name="TextAppearance.ADS.BodySmall">
         <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="lineHeight">20sp</item>
+        <item name="android:textColor">@color/ads_muted</item>
+    </style>
+
+    <style name="TextAppearance.ADS.BodySmall.Strong">
+        <item name="android:fontFamily">@font/sora_semibold</item>
+        <item name="fontFamily">@font/sora_semibold</item>
+        <item name="android:textColor">@color/ads_text</item>
+    </style>
+
+    <!-- Metadatos de tarjeta: 13/19 -->
+    <style name="TextAppearance.ADS.Caption">
+        <item name="android:textSize">13sp</item>
+        <item name="lineHeight">19sp</item>
+        <item name="android:textColor">@color/ads_muted</item>
+    </style>
+
+    <!-- label de tokens.json: 12/16, 600 -->
+    <style name="TextAppearance.ADS.Label">
+        <item name="android:fontFamily">@font/sora_semibold</item>
+        <item name="fontFamily">@font/sora_semibold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="lineHeight">16sp</item>
+        <item name="android:textColor">@color/ads_muted</item>
+    </style>
+
+    <!-- Precios: 15, 800 -->
+    <style name="TextAppearance.ADS.Price">
+        <item name="android:fontFamily">@font/sora_extrabold</item>
+        <item name="fontFamily">@font/sora_extrabold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/ads_text</item>
+    </style>
+
+    <!-- Texto de botón: 16, 800 -->
+    <style name="TextAppearance.ADS.Button" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:fontFamily">@font/sora_extrabold</item>
+        <item name="fontFamily">@font/sora_extrabold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="TextAppearance.ADS.Button.Secondary">
+        <item name="android:fontFamily">@font/sora_semibold</item>
+        <item name="fontFamily">@font/sora_semibold</item>
+    </style>
 
-    <!-- Estilo para los badges de estado -->
+    <!-- ===================================================================
+         BOTONES. Principal: fondo naranja, texto navy (nunca blanco),
+         54 dp, radio 16. Secundario: borde de control 1,5 dp.
+         =================================================================== -->
+    <style name="Widget.ADS.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/ads_button_bg</item>
+        <item name="android:textColor">@color/ads_button_text</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Button</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="android:paddingStart">@dimen/space_6</item>
+        <item name="android:paddingEnd">@dimen/space_6</item>
+    </style>
+
+    <style name="Widget.ADS.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@color/ads_text</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Button.Secondary</item>
+        <item name="strokeColor">@color/ads_control</item>
+        <item name="strokeWidth">@dimen/stroke_control</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+    </style>
+
+    <!-- Enlace o acción de texto naranja (≥ 44 dp de alto) -->
+    <style name="Widget.ADS.Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/ads_brand_text</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Button.Secondary</item>
+        <item name="android:minHeight">@dimen/touch_min</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <!-- Botón sobre fondo navy (Bienvenida): borde claro, texto claro -->
+    <style name="Widget.ADS.Button.OnNavy" parent="Widget.ADS.Button.Secondary">
+        <item name="android:textColor">@color/ads_on_navy</item>
+        <item name="strokeColor">@color/ads_on_navy_muted</item>
+    </style>
+
+    <!-- ===================================================================
+         CAMPOS. Etiqueta real arriba (TextView con TextAppearance.ADS.Label),
+         borde de control 1,5 dp, radio 14, foco naranja.
+         =================================================================== -->
+    <style name="Widget.ADS.TextField" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/ads_field_stroke</item>
+        <item name="boxStrokeWidth">@dimen/stroke_control</item>
+        <item name="boxStrokeWidthFocused">@dimen/stroke_focus</item>
+        <item name="boxBackgroundColor">@color/ads_card</item>
+        <item name="boxCornerRadiusTopStart">@dimen/radius_field</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_field</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_field</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_field</item>
+        <item name="hintTextColor">@color/ads_brand_text</item>
+        <item name="android:textColorHint">@color/ads_muted</item>
+        <item name="placeholderTextColor">@color/ads_muted</item>
+        <item name="endIconTint">@color/ads_muted</item>
+        <item name="startIconTint">@color/ads_muted</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.ADS.TextField</item>
+    </style>
+
+    <style name="ThemeOverlay.ADS.TextField" parent="">
+        <item name="editTextStyle">@style/Widget.ADS.EditText</item>
+    </style>
+
+    <style name="Widget.ADS.EditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Body</item>
+        <item name="android:textColor">@color/ads_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:minHeight">@dimen/field_height</item>
+    </style>
+
+    <!-- ===================================================================
+         TARJETAS. Blanca con borde fino, radio 20, sin sombra.
+         =================================================================== -->
+    <style name="Widget.ADS.Card" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">@color/ads_card</item>
+        <item name="strokeColor">@color/ads_line</item>
+        <item name="strokeWidth">@dimen/stroke_control</item>
+        <item name="cardCornerRadius">@dimen/radius_card</item>
+        <item name="cardElevation">0dp</item>
+        <item name="contentPadding">@dimen/space_4</item>
+    </style>
+
+    <!-- Tarjeta destacada (servicio activo): borde naranja 2 dp -->
+    <style name="Widget.ADS.Card.Highlight">
+        <item name="strokeColor">@color/ads_brand_text</item>
+        <item name="strokeWidth">@dimen/stroke_focus</item>
+    </style>
+
+    <!-- Aviso o zona secundaria (p. ej. aviso de precio) -->
+    <style name="Widget.ADS.Card.Notice">
+        <item name="cardBackgroundColor">@color/ads_surface_alt</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="cardCornerRadius">@dimen/radius_md</item>
+    </style>
+
+    <!-- ===================================================================
+         CHIPS DE ESTADO (etiquetas no táctiles, TextView). El estado
+         siempre lleva texto; el color solo acompaña.
+         =================================================================== -->
+    <style name="Widget.ADS.StatusChip" parent="">
+        <item name="android:background">@drawable/bg_ads_status_chip</item>
+        <item name="android:backgroundTint">@color/ads_chip_bg</item>
+        <item name="android:textColor">@color/ads_chip_text</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Label</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <!-- Completada, Verificado: navy (se invierte en oscuro) -->
+    <style name="Widget.ADS.StatusChip.Strong">
+        <item name="android:backgroundTint">@color/ads_text</item>
+        <item name="android:textColor">@color/ads_surface</item>
+    </style>
+
+    <!-- Cancelada, Sin calificar: gris -->
+    <style name="Widget.ADS.StatusChip.Neutral">
+        <item name="android:backgroundTint">@color/ads_surface_alt</item>
+        <item name="android:textColor">@color/ads_charcoal</item>
+    </style>
+
+    <!-- Chip de filtro (oficios en el mapa). Pendiente de comparar con el mockup 56. -->
+    <style name="Widget.ADS.Chip.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="chipBackgroundColor">@color/ads_filter_chip_bg</item>
+        <item name="android:textColor">@color/ads_filter_chip_text</item>
+        <item name="chipStrokeColor">@color/ads_line</item>
+        <item name="chipStrokeWidth">@dimen/stroke_control</item>
+        <item name="chipCornerRadius">@dimen/radius_sm</item>
+        <item name="chipMinHeight">@dimen/touch_min</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.BodySmall.Strong</item>
+    </style>
+
+    <!-- ===================================================================
+         BARRA INFERIOR: 76 dp, fondo de barra, indicador activo 56x30
+         naranja claro, ícono y texto naranja oscuro al estar activo.
+         =================================================================== -->
+    <style name="Widget.ADS.BottomNav" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">@color/ads_bar</item>
+        <item name="android:minHeight">@dimen/bottom_nav_height</item>
+        <item name="elevation">0dp</item>
+        <item name="itemIconSize">@dimen/icon_md</item>
+        <item name="itemIconTint">@color/ads_nav_item</item>
+        <item name="itemTextColor">@color/ads_nav_item</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.ADS.Label</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.ADS.Label</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.ADS.BottomNav.ActiveIndicator</item>
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+
+    <style name="Widget.ADS.BottomNav.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/ads_chip_bg</item>
+        <item name="android:width">56dp</item>
+        <item name="android:height">30dp</item>
+    </style>
+
+    <!-- ===================================================================
+         HEREDADOS (pantallas aún no rediseñadas)
+         =================================================================== -->
+    <style name="ToolbarTitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">@font/sora_semibold</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="ToolbarSubtitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:fontFamily">@font/sora</item>
+    </style>
+
+    <style name="TabTextStyle" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/sora_semibold</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
     <style name="StatusBadgeStyle">
         <item name="android:textSize">12sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/sora_semibold</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:paddingStart">12dp</item>
         <item name="android:paddingEnd">12dp</item>

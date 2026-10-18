@@ -419,4 +419,13 @@
     <string name="cancel_action">Cancelar solicitud</string>
     <string name="cancelled_by_client">Cancelada por el cliente: %1$s</string>
     <string name="cancelled_by_worker">Cancelada por el trabajador: %1$s</string>
+
+    <!-- Rediseño: barra inferior (mockups) -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_client_requests">Solicitudes</string>
+    <string name="nav_pqr">PQR</string>
+    <string name="nav_account">Mi cuenta</string>
+    <string name="nav_worker_requests">Solicitudes</string>
+    <string name="nav_worker_jobs">Mis trabajos</string>
+    <string name="ads_logo_desc">Logo de ADS</string>
 </resources>

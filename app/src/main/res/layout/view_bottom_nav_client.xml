@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Barra inferior del client: 76 dp, fondo de barra y borde superior fino.
+<!-- Barra inferior del cliente: 76 dp, fondo de barra y borde superior fino.
      Uso: <include layout="@layout/view_bottom_nav_client" /> al final de la pantalla
      y marcar el ítem activo con setSelectedItemId(R.id.nav_client_...). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
