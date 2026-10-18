@@ -1,7 +1,7 @@
 package com.project.ads.activities.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.ads.R;
@@ -87,7 +88,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
         }
 
         // Configurar fecha de subida usando el método del modelo
-        holder.tvUploadDate.setText("Subido: " + document.getFormattedUploadDate());
+        holder.tvUploadDate.setText(context.getString(R.string.mydocs_uploaded, document.getFormattedUploadDate()));
 
         // Configurar estado y apariencia según el status usando métodos del modelo
         if (document.isApproved()) {
@@ -123,17 +124,13 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
     }
 
     private void setupApprovedStatus(DocumentViewHolder holder, WorkerDocument document) {
-        holder.tvStatus.setText("✓ Aprobado");
-        holder.tvStatus.setTextColor(Color.parseColor("#4CAF50"));
-        holder.tvStatus.setBackgroundResource(R.drawable.bg_status_approved);
-
-        holder.ivStatusIcon.setImageResource(R.drawable.ic_check_circle);
-        holder.ivStatusIcon.setColorFilter(Color.parseColor("#4CAF50"));
+        setChip(holder, R.string.mydocs_chip_approved, R.color.ads_text, R.color.ads_surface);
+        holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.ads_line));
 
         // Mostrar fecha de revisión si está disponible
         if (document.isReviewed()) {
             holder.tvReviewDate.setVisibility(View.VISIBLE);
-            holder.tvReviewDate.setText("Revisado: " + document.getFormattedReviewDate());
+            holder.tvReviewDate.setText(context.getString(R.string.mydocs_reviewed, document.getFormattedReviewDate()));
         } else {
             holder.tvReviewDate.setVisibility(View.GONE);
         }
@@ -143,17 +140,13 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
     }
 
     private void setupRejectedStatus(DocumentViewHolder holder, WorkerDocument document) {
-        holder.tvStatus.setText("✗ Rechazado");
-        holder.tvStatus.setTextColor(Color.parseColor("#F44336"));
-        holder.tvStatus.setBackgroundResource(R.drawable.bg_status_rejected);
-
-        holder.ivStatusIcon.setImageResource(R.drawable.ic_error);
-        holder.ivStatusIcon.setColorFilter(Color.parseColor("#F44336"));
+        setChip(holder, R.string.mydocs_chip_rejected, R.color.ads_chip_bg, R.color.ads_chip_text);
+        holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.ads_brand_text));
 
         // Mostrar fecha de revisión
         if (document.isReviewed()) {
             holder.tvReviewDate.setVisibility(View.VISIBLE);
-            holder.tvReviewDate.setText("Revisado: " + document.getFormattedReviewDate());
+            holder.tvReviewDate.setText(context.getString(R.string.mydocs_reviewed, document.getFormattedReviewDate()));
         } else {
             holder.tvReviewDate.setVisibility(View.GONE);
         }
@@ -164,7 +157,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
             holder.tvRejectionReason.setText(document.getRejectionReason());
         } else {
             holder.layoutRejectionReason.setVisibility(View.VISIBLE);
-            holder.tvRejectionReason.setText("El documento no cumple con los requisitos establecidos.");
+            holder.tvRejectionReason.setText(R.string.mydocs_reason_missing);
         }
 
         // Mostrar botón de actualizar
@@ -172,27 +165,26 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
     }
 
     private void setupPendingStatus(DocumentViewHolder holder, WorkerDocument document) {
-        holder.tvStatus.setText("⏳ En revisión");
-        holder.tvStatus.setTextColor(Color.parseColor("#FF9800"));
-        holder.tvStatus.setBackgroundResource(R.drawable.bg_status_badge);
-
-        holder.ivStatusIcon.setImageResource(R.drawable.ic_pending);
-        holder.ivStatusIcon.setColorFilter(Color.parseColor("#FF9800"));
+        setChip(holder, R.string.mydocs_chip_pending, R.color.ads_surface_alt, R.color.ads_charcoal);
+        holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.ads_line));
 
         holder.tvReviewDate.setVisibility(View.GONE);
         holder.layoutRejectionReason.setVisibility(View.GONE);
         holder.btnUpdateDocument.setVisibility(View.GONE);
     }
 
+    /** Chip de estado con texto (nunca solo color). */
+    private void setChip(DocumentViewHolder holder, int textRes, int bgColor, int textColor) {
+        holder.tvStatus.setText(textRes);
+        ViewCompat.setBackgroundTintList(holder.tvStatus,
+                ColorStateList.valueOf(ContextCompat.getColor(context, bgColor)));
+        holder.tvStatus.setTextColor(ContextCompat.getColor(context, textColor));
+    }
+
     private void setupDocumentIcon(DocumentViewHolder holder, WorkerDocument document) {
         // Usar métodos del modelo para determinar el icono
-        if (document.isPDF()) {
-            holder.ivDocumentIcon.setImageResource(R.drawable.ic_pdf);
-        } else if (document.isImage()) {
-            holder.ivDocumentIcon.setImageResource(R.drawable.ic_image);
-        } else {
-            holder.ivDocumentIcon.setImageResource(R.drawable.ic_document);
-        }
+        holder.ivDocumentIcon.setImageResource(document.isAntecedentes()
+                ? R.drawable.ic_shield_check : R.drawable.ic_document);
     }
 
     private String getDocumentDisplayName(WorkerDocument document) {
@@ -203,21 +195,21 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
 
         // Usar el método del modelo para obtener el tipo formateado
         if (document.isHojaVida()) {
-            return "Hoja de Vida (CV)";
+            return context.getString(R.string.docs_cv);
         } else if (document.isAntecedentes()) {
-            return "Antecedentes Judiciales";
+            return context.getString(R.string.docs_background);
         } else if (document.isTitulo()) {
             int orden = document.getOrden();
             if (orden > 0) {
-                return "Título/Certificado " + orden;
+                return context.getString(R.string.mydocs_degree_n, orden);
             }
-            return "Título o Certificado";
+            return context.getString(R.string.mydocs_type_degree);
         } else if (document.isCartaRecomendacion()) {
             int orden = document.getOrden();
             if (orden > 0) {
-                return "Carta de Recomendación " + orden;
+                return context.getString(R.string.mydocs_letter_n, orden);
             }
-            return "Carta de Recomendación";
+            return context.getString(R.string.mydocs_type_letter);
         }
 
         return document.getFormattedDocumentType();
@@ -229,7 +221,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
     }
 
     static class DocumentViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
+        com.google.android.material.card.MaterialCardView cardView;
         ImageView ivDocumentIcon;
         ImageView ivStatusIcon;
         TextView tvDocumentType;

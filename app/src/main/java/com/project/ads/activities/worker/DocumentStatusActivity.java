@@ -5,7 +5,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +24,6 @@ import com.project.ads.activities.adapters.DocumentAdapter;
 import com.project.ads.models.WorkerDocument;
 import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.WorkerDocumentProvider;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -40,7 +38,6 @@ public class DocumentStatusActivity extends AppCompatActivity {
     private static final String TAG = "DocumentStatusActivity";
 
     // UI Components
-    private Toolbar toolbar;
     private RecyclerView recyclerDocuments;
     private ProgressBar progressBar;
     private TextView tvVerificationStatus;
@@ -48,7 +45,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
     private ImageView ivStatusIcon;
     private CardView cardVerificationStatus;
     private LinearLayout layoutEmptyState;
-    private FloatingActionButton fabAddDocument;
+    private View fabAddDocument;
     private ProgressBar uploadProgressBar;
     private TextView tvUploadProgress;
     private CardView cardUploadProgress;
@@ -86,7 +83,6 @@ public class DocumentStatusActivity extends AppCompatActivity {
         initProviders();
         getIntentData();
         initViews();
-        setupToolbar();
         setupRecyclerView();
         setupClickListeners();
         initializeFilePicker();
@@ -109,7 +105,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        toolbar = findViewById(R.id.toolbar);
+        findViewById(R.id.btn_back).setOnClickListener(v -> onBackPressed());
         recyclerDocuments = findViewById(R.id.recyclerDocuments);
         progressBar = findViewById(R.id.progressBar);
         tvVerificationStatus = findViewById(R.id.tvVerificationStatus);
@@ -122,15 +118,6 @@ public class DocumentStatusActivity extends AppCompatActivity {
         tvUploadProgress = findViewById(R.id.tvUploadProgress);
         cardUploadProgress = findViewById(R.id.cardUploadProgress);
         tvDocumentsTitle = findViewById(R.id.tvDocumentsTitle);
-    }
-
-    private void setupToolbar() {
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Mis Documentos");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
     }
 
     private void setupRecyclerView() {
@@ -256,27 +243,17 @@ public class DocumentStatusActivity extends AppCompatActivity {
         cardVerificationStatus.setVisibility(View.VISIBLE);
 
         if (rejected > 0) {
-            ivStatusIcon.setImageResource(R.drawable.ic_error);
-            ivStatusIcon.setColorFilter(getColor(R.color.error_color));
-            tvVerificationStatus.setText("Documentos Rechazados");
-            tvVerificationStatus.setTextColor(getColor(R.color.error_color));
-            tvVerificationMessage.setText(
-                    String.format("Tienes %d documento(s) rechazado(s). Por favor, actualízalos desde la lista.", rejected)
-            );
+            ivStatusIcon.setImageResource(R.drawable.ic_ads_verify_rejected);
+            tvVerificationStatus.setText(R.string.mydocs_status_rejected);
+            tvVerificationMessage.setText(getString(R.string.mydocs_status_rejected_message, rejected));
         } else if (pending > 0) {
-            ivStatusIcon.setImageResource(R.drawable.ic_pending);
-            ivStatusIcon.setColorFilter(getColor(R.color.warning_color));
-            tvVerificationStatus.setText("Verificación en Proceso");
-            tvVerificationStatus.setTextColor(getColor(R.color.warning_color));
-            tvVerificationMessage.setText(
-                    String.format("Tienes %d documento(s) en revisión. Te notificaremos cuando sean verificados.", pending)
-            );
+            ivStatusIcon.setImageResource(R.drawable.ic_ads_verify_pending);
+            tvVerificationStatus.setText(R.string.mydocs_status_pending);
+            tvVerificationMessage.setText(getString(R.string.mydocs_status_pending_message, pending));
         } else if (approved == documentsList.size()) {
-            ivStatusIcon.setImageResource(R.drawable.ic_check_circle);
-            ivStatusIcon.setColorFilter(getColor(R.color.success_color));
-            tvVerificationStatus.setText("Documentos Verificados");
-            tvVerificationStatus.setTextColor(getColor(R.color.success_color));
-            tvVerificationMessage.setText("¡Todos tus documentos han sido aprobados! Ya puedes conectarte.");
+            ivStatusIcon.setImageResource(R.drawable.ic_ads_verify_approved);
+            tvVerificationStatus.setText(R.string.mydocs_status_approved);
+            tvVerificationMessage.setText(R.string.mydocs_status_approved_message);
         }
     }
 
@@ -564,14 +541,11 @@ public class DocumentStatusActivity extends AppCompatActivity {
     private void updateUploadProgress(int uploaded) {
         int percentage = (int) ((uploaded / (float) totalDocuments) * 100);
         uploadProgressBar.setProgress(percentage);
-        tvUploadProgress.setText(uploaded + " de " + totalDocuments + " documento(s) subido(s)");
+        tvUploadProgress.setText(getString(R.string.mydocs_upload_progress, uploaded, totalDocuments));
     }
 
     private void setUIUploading(boolean uploading) {
-        if (fabAddDocument != null) {
-            fabAddDocument.setEnabled(!uploading);
-            fabAddDocument.setVisibility(uploading ? View.GONE : View.VISIBLE);
-        }
+        if (fabAddDocument != null) fabAddDocument.setEnabled(!uploading);
 
         cardUploadProgress.setVisibility(uploading ? View.VISIBLE : View.GONE);
 

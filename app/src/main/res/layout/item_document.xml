@@ -1,208 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Fila de un documento en Mis documentos (estilo del mockup 33).
+     Conserva los IDs que usa DocumentAdapter. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardDocument"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="15dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/card_background"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:layout_marginTop="12dp"
+    app:cardCornerRadius="20dp"
+    app:contentPadding="@dimen/space_4">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <!-- Header: Icono, Tipo y Estado -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/ivDocumentIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_document"
-                app:tint="@color/primary_color"
-                android:layout_gravity="center_vertical"/>
+            <FrameLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_ads_doc_tile">
+
+                <ImageView
+                    android:id="@+id/ivDocumentIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_document"
+                    app:tint="@color/ads_text" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvDocumentType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tipo de Documento"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary_text"
-                    android:maxLines="2"
-                    android:ellipsize="end"/>
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+                    tools:text="Hoja de vida" />
 
                 <TextView
                     android:id="@+id/tvFileName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="nombre_archivo.pdf"
-                    android:textSize="12sp"
-                    android:textColor="@color/secondary_text"
-                    android:maxLines="1"
-                    android:ellipsize="end"
                     android:layout_marginTop="2dp"
-                    android:visibility="gone"/>
-
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.ADS.Caption"
+                    tools:text="hoja_vida.pdf" />
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/ivStatusIcon"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_check_circle"
-                android:layout_marginStart="8dp"/>
-
-        </LinearLayout>
-
-        <!-- Estado y Fecha -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="52dp">
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:importantForAccessibility="no"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvStatus"
+                style="@style/Widget.ADS.StatusChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Estado"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/accent_color"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:background="@drawable/bg_status_badge"/>
+                android:layout_marginStart="@dimen/space_2"
+                tools:text="En revisión" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="58dp"
+            android:layout_marginTop="@dimen/space_2"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvUploadDate"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Subido: 01/01/2024"
-                android:textSize="12sp"
-                android:textColor="@color/secondary_text"
-                android:layout_marginStart="12dp"
-                android:gravity="end"/>
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                tools:text="Subido: 12/10/2026" />
 
+            <TextView
+                android:id="@+id/tvReviewDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_3"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                android:visibility="gone"
+                tools:text="Revisado: 13/10/2026" />
         </LinearLayout>
 
-        <!-- Fecha de revisión (solo para aprobados/rechazados) -->
-        <TextView
-            android:id="@+id/tvReviewDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Revisado: 02/01/2024"
-            android:textSize="11sp"
-            android:textColor="@color/secondary_text"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="52dp"
-            android:gravity="end"
-            android:visibility="gone"/>
-
-        <!-- Razón de rechazo -->
+        <!-- Motivo del rechazo -->
         <LinearLayout
             android:id="@+id/layoutRejectionReason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:background="@drawable/bg_rejection_reason"
-            android:padding="12dp"
             android:layout_marginTop="12dp"
-            android:layout_marginStart="52dp">
+            android:background="@drawable/bg_ads_notice"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_error"
-                    app:tint="#D32F2F"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Motivo del rechazo:"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#D32F2F"
-                    android:layout_marginStart="6dp"/>
-
-            </LinearLayout>
+                android:text="@string/verify_reason_label"
+                android:textAppearance="@style/TextAppearance.ADS.Label"
+                android:textColor="@color/ads_chip_text" />
 
             <TextView
                 android:id="@+id/tvRejectionReason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="El documento está ilegible o no cumple con los requisitos"
-                android:textSize="12sp"
-                android:textColor="#C62828"
-                android:layout_marginTop="6dp"
-                android:lineSpacingExtra="2dp"/>
-
+                android:layout_marginTop="2dp"
+                android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                android:textColor="@color/ads_text" />
         </LinearLayout>
 
-        <!-- Botones de acción -->
         <LinearLayout
             android:id="@+id/layoutActions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp"
-            android:gravity="end">
+            android:layout_marginTop="@dimen/space_1"
+            android:gravity="end"
+            android:orientation="horizontal">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnViewDocument"
+                style="@style/Widget.ADS.Button.Text"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:text="Ver"
-                android:textAllCaps="false"
-                android:textSize="13sp"
-                android:minWidth="80dp"
-                android:layout_marginEnd="8dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:layout_height="wrap_content"
+                android:text="@string/mydocs_view" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpdateDocument"
+                style="@style/Widget.ADS.Button.Strong"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:text="Actualizar"
-                android:textAllCaps="false"
+                android:layout_height="@dimen/touch_min"
+                android:layout_marginStart="@dimen/space_2"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:paddingStart="@dimen/space_4"
+                android:paddingEnd="@dimen/space_4"
+                android:text="@string/mydocs_update"
                 android:textSize="13sp"
-                android:minWidth="100dp"
                 android:visibility="gone"
-                android:backgroundTint="@color/primary_color"
-                style="@style/Widget.MaterialComponents.Button"/>
-
+                app:cornerRadius="14dp" />
         </LinearLayout>
-
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

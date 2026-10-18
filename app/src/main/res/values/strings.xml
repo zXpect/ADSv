@@ -872,4 +872,39 @@
     <string name="data_error_name">Solo letras, máximo 50 caracteres</string>
     <string name="data_error_last_name">Solo letras, máximo 50 caracteres</string>
     <string name="data_error_phone">Entre 7 y 10 dígitos</string>
+
+    <!-- Rediseño: Mis documentos del trabajador -->
+    <string name="mydocs_subtitle">Revisa el estado de tus documentos y actualiza los que rechacemos.</string>
+    <string name="mydocs_uploading">Subiendo documento…</string>
+    <string name="mydocs_upload_progress">%1$d de %2$d documentos subidos</string>
+    <string name="mydocs_empty_title">Aún no tienes documentos</string>
+    <string name="mydocs_empty_message">Súbelos para que revisemos tu perfil.</string>
+    <string name="mydocs_list_title">Tus documentos</string>
+    <string name="mydocs_rules">Los documentos van en PDF. Los revisamos en 24 a 48 horas. Si rechazamos uno, puedes actualizarlo desde la lista.</string>
+    <string name="mydocs_add">Agregar documento</string>
+    <string name="mydocs_view">Ver</string>
+    <string name="mydocs_update">Actualizar</string>
+    <string name="mydocs_uploaded">Subido: %1$s</string>
+    <string name="mydocs_reviewed">Revisado: %1$s</string>
+    <string name="mydocs_chip_approved">Aprobado</string>
+    <string name="mydocs_chip_rejected">Rechazado</string>
+    <string name="mydocs_chip_pending">En revisión</string>
+    <string name="mydocs_reason_missing">El documento no cumple con los requisitos.</string>
+    <string name="mydocs_status_rejected">Documentos rechazados</string>
+    <string name="mydocs_status_rejected_message">Tienes %1$d documento(s) rechazado(s). Actualízalos desde la lista.</string>
+    <string name="mydocs_status_pending">Verificación en proceso</string>
+    <string name="mydocs_status_pending_message">Tienes %1$d documento(s) en revisión. Te avisaremos cuando terminemos.</string>
+    <string name="mydocs_status_approved">Documentos verificados</string>
+    <string name="mydocs_status_approved_message">Todos tus documentos están aprobados. Ya puedes conectarte.</string>
+    <string name="mydocs_type_title">¿Qué documento subes?</string>
+    <string name="mydocs_type_subtitle">En PDF.</string>
+    <string name="mydocs_close">Cerrar</string>
+    <string name="mydocs_type_cv_desc">Tu experiencia laboral</string>
+    <string name="mydocs_type_background_desc">Certificado de antecedentes judiciales</string>
+    <string name="mydocs_type_letter">Carta de recomendación</string>
+    <string name="mydocs_type_letter_desc">Referencia laboral o personal</string>
+    <string name="mydocs_type_degree">Título o certificado</string>
+    <string name="mydocs_type_degree_desc">Diplomas o certificaciones</string>
+    <string name="mydocs_letter_n">Carta de recomendación %1$d</string>
+    <string name="mydocs_degree_n">Título o certificado %1$d</string>
 </resources>

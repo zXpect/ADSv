@@ -74,4 +74,5 @@
     <color name="warning">#FFB340</color>
     <color name="info">#6BABDE</color>
     <color name="ads_tile">#1B1830</color>          <!-- ficha de ícono gris dentro de una tarjeta -->
+    <color name="ads_divider">#3A3658</color>       <!-- divisor entre filas dentro de una tarjeta -->
 </resources>

@@ -1,335 +1,286 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Elegir el tipo de documento a subir (Mis documentos). Conserva los IDs que usa
+     DocumentStatusActivity.showDocumentTypeDialog. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="20dp"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="8dp"
-    app:cardBackgroundColor="@color/whitevariable">
+    app:cardBackgroundColor="@color/ads_surface"
+    app:cardCornerRadius="@dimen/radius_sheet"
+    app:contentPadding="@dimen/space_5"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:orientation="vertical">
 
-        <!-- Header con botón cerrar -->
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Selecciona el tipo de documento"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary_text"
-                android:layout_centerVertical="true" />
+                android:layout_weight="1"
+                android:accessibilityHeading="true"
+                android:text="@string/mydocs_type_title"
+                android:textAppearance="@style/TextAppearance.ADS.Title" />
 
             <ImageView
                 android:id="@+id/btnClose"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_close"
-                android:padding="6dp"
+                android:layout_width="@dimen/touch_min"
+                android:layout_height="@dimen/touch_min"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/secondary_text"
-                android:contentDescription="Cerrar" />
-
-        </RelativeLayout>
+                android:contentDescription="@string/mydocs_close"
+                android:padding="10dp"
+                android:src="@drawable/ic_close"
+                app:tint="@color/ads_text" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Elige qué documento deseas subir"
-            android:textSize="14sp"
-            android:textColor="@color/secondary_text"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="@dimen/space_1"
+            android:text="@string/mydocs_type_subtitle"
+            android:textAppearance="@style/TextAppearance.ADS.Caption" />
 
-        <!-- Opción 1: Hoja de Vida -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardHojaVida"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginTop="10dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/card_background">
+            app:cardCornerRadius="18dp"
+            app:contentPadding="14dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_icon_circle"
-                    android:backgroundTint="#E3F2FD"
-                    android:gravity="center">
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_ads_doc_tile">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
                         android:src="@drawable/ic_document"
-                        app:tint="@color/primary_color" />
-
-                </LinearLayout>
+                        app:tint="@color/ads_text" />
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Hoja de Vida (CV)"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_text" />
+                        android:text="@string/docs_cv"
+                        android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Tu currículum profesional"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="2dp" />
-
+                        android:text="@string/mydocs_type_cv_desc"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption" />
                 </LinearLayout>
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_arrow_right"
-                    app:tint="@color/secondary_text" />
-
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_ads_chevron"
+                    app:tint="@color/ads_muted" />
             </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-        </androidx.cardview.widget.CardView>
-
-        <!-- Opción 2: Antecedentes -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardAntecedentes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginTop="10dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/card_background">
+            app:cardCornerRadius="18dp"
+            app:contentPadding="14dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_icon_circle"
-                    android:backgroundTint="#F3E5F5"
-                    android:gravity="center">
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_ads_doc_tile">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
                         android:src="@drawable/ic_shield_check"
-                        app:tint="#9C27B0" />
-
-                </LinearLayout>
+                        app:tint="@color/ads_text" />
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Antecedentes Judiciales"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_text" />
+                        android:text="@string/docs_background"
+                        android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Certificado de antecedentes"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="2dp" />
-
+                        android:text="@string/mydocs_type_background_desc"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption" />
                 </LinearLayout>
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_arrow_right"
-                    app:tint="@color/secondary_text" />
-
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_ads_chevron"
+                    app:tint="@color/ads_muted" />
             </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-        </androidx.cardview.widget.CardView>
-
-        <!-- Opción 3: Carta de Recomendación -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardCarta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginTop="10dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/card_background">
+            app:cardCornerRadius="18dp"
+            app:contentPadding="14dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_icon_circle"
-                    android:backgroundTint="#FFF3E0"
-                    android:gravity="center">
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_ads_doc_tile">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_mail"
-                        app:tint="#FF9800" />
-
-                </LinearLayout>
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_document"
+                        app:tint="@color/ads_text" />
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Carta de Recomendación"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_text" />
+                        android:text="@string/mydocs_type_letter"
+                        android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Referencia laboral o personal"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="2dp" />
-
+                        android:text="@string/mydocs_type_letter_desc"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption" />
                 </LinearLayout>
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_arrow_right"
-                    app:tint="@color/secondary_text" />
-
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_ads_chevron"
+                    app:tint="@color/ads_muted" />
             </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-        </androidx.cardview.widget.CardView>
-
-        <!-- Opción 4: Título o Certificado -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginTop="10dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/card_background">
+            app:cardCornerRadius="18dp"
+            app:contentPadding="14dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_icon_circle"
-                    android:backgroundTint="#E8F5E9"
-                    android:gravity="center">
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_ads_doc_tile">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_award"
-                        app:tint="#4CAF50" />
-
-                </LinearLayout>
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_document"
+                        app:tint="@color/ads_text" />
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Título o Certificado"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_text" />
+                        android:text="@string/mydocs_type_degree"
+                        android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Diplomas o certificaciones"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="2dp" />
-
+                        android:text="@string/mydocs_type_degree_desc"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption" />
                 </LinearLayout>
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_arrow_right"
-                    app:tint="@color/secondary_text" />
-
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_ads_chevron"
+                    app:tint="@color/ads_muted" />
             </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

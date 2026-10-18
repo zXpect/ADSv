@@ -145,4 +145,5 @@
     <color name="info_light_bg">#E3F2FD</color>
     <color name="info_color">#36A8F4</color>
     <color name="ads_tile">#E7E3DB</color>          <!-- ficha de ícono gris dentro de una tarjeta -->
+    <color name="ads_divider">#E7E3DB</color>       <!-- divisor entre filas dentro de una tarjeta -->
 </resources>
