@@ -32,6 +32,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 
+/**
+ * Sin uso desde el rediseño (Fase 6, 17/10/2026): ninguna pantalla la abre.
+ * Se conserva sin borrar hasta que el equipo lo apruebe; lint la ignora (app/lint.xml).
+ */
+@Deprecated
 public class WorkerDocumentsActivity extends AppCompatActivity {
 
     private static final String TAG = "WorkerDocumentsActivity";
