@@ -24,6 +24,8 @@ import com.project.ads.providers.AuthProvider;
  * Estado de verificación del trabajador · mockups 34 (en revisión), 35 (rechazada)
  * y 36 (aprobada). Solo lee User/Trabajadores/<uid>/verificationStatus, el mismo dato
  * que cambia el panel admin; la pantalla se actualiza sola cuando el admin decide.
+ * El panel guarda el motivo de rechazo en cada documento (WorkerDocuments/<uid>),
+ * así que en «rechazada» se listan los motivos de los documentos rechazados.
  * Con EXTRA_FROM_REGISTRATION los botones llevan al inicio del trabajador.
  */
 public class VerificationStatusActivity extends AppCompatActivity {
@@ -32,6 +34,9 @@ public class VerificationStatusActivity extends AppCompatActivity {
 
     private DatabaseReference mStatusRef;
     private ValueEventListener mStatusListener;
+    private DatabaseReference mDocumentsRef;
+    private ValueEventListener mDocumentsListener;
+    private String mDocumentReasons;   // motivos de los documentos rechazados
     private boolean mFromRegistration;
 
     @Override
@@ -61,6 +66,43 @@ public class VerificationStatusActivity extends AppCompatActivity {
             }
         };
         mStatusRef.addValueEventListener(mStatusListener);
+
+        mDocumentsRef = FirebaseDatabase.getInstance().getReference().child("WorkerDocuments").child(uid);
+        mDocumentsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                StringBuilder reasons = new StringBuilder();
+                collectRejected(snapshot, reasons);
+                mDocumentReasons = reasons.length() > 0 ? reasons.toString() : null;
+                if (mDocumentReasons != null && findViewById(R.id.card_verify_reason).getVisibility() == View.VISIBLE) {
+                    ((TextView) findViewById(R.id.tv_verify_reason)).setText(mDocumentReasons);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Sin motivos por documento se muestra el texto genérico
+            }
+        };
+        mDocumentsRef.addValueEventListener(mDocumentsListener);
+    }
+
+    /** Recorre los documentos (con o sin subcategoría) y junta «Documento: motivo» de los rechazados. */
+    private void collectRejected(DataSnapshot node, StringBuilder out) {
+        if (node.hasChild("status") && node.hasChild("fileUrl")) {
+            String reason = node.child("rejectionReason").getValue(String.class);
+            if ("rejected".equals(node.child("status").getValue(String.class))
+                    && reason != null && !reason.trim().isEmpty()) {
+                String name = node.child("description").getValue(String.class);
+                if (name == null || name.trim().isEmpty()) name = node.child("documentType").getValue(String.class);
+                if (out.length() > 0) out.append("\n\n");
+                out.append(name != null && !name.trim().isEmpty() ? name.trim() + ": " + reason.trim() : reason.trim());
+            }
+            return;
+        }
+        for (DataSnapshot child : node.getChildren()) {
+            if (child.hasChildren()) collectRejected(child, out);
+        }
     }
 
     private void render(String status, String reason) {
@@ -95,8 +137,9 @@ public class VerificationStatusActivity extends AppCompatActivity {
                 title.setText(R.string.verify_rejected_title);
                 message.setText(R.string.verify_rejected_message);
                 reasonCard.setVisibility(View.VISIBLE);
-                ((TextView) findViewById(R.id.tv_verify_reason)).setText(
-                        reason != null && !reason.trim().isEmpty() ? reason : getString(R.string.verify_reason_missing));
+                String shown = reason != null && !reason.trim().isEmpty() ? reason
+                        : mDocumentReasons != null ? mDocumentReasons : getString(R.string.verify_reason_missing);
+                ((TextView) findViewById(R.id.tv_verify_reason)).setText(shown);
                 primary.setText(R.string.verify_reupload);
                 primary.setOnClickListener(v -> openDocuments());
                 secondary.setVisibility(View.VISIBLE);
@@ -163,5 +206,6 @@ public class VerificationStatusActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (mStatusRef != null && mStatusListener != null) mStatusRef.removeEventListener(mStatusListener);
+        if (mDocumentsRef != null && mDocumentsListener != null) mDocumentsRef.removeEventListener(mDocumentsListener);
     }
 }
