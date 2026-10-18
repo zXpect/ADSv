@@ -148,6 +148,12 @@
         <item name="cornerRadius">@dimen/radius_md</item>
     </style>
 
+    <!-- Botón principal navy para acciones definitivas (Cancelar servicio, mockup 21) -->
+    <style name="Widget.ADS.Button.Strong">
+        <item name="backgroundTint">@color/ads_text</item>
+        <item name="android:textColor">@color/ads_surface</item>
+    </style>
+
     <!-- Enlace o acción de texto naranja (≥ 44 dp de alto) -->
     <style name="Widget.ADS.Button.Text" parent="Widget.Material3.Button.TextButton">
         <item name="android:textColor">@color/ads_brand_text</item>

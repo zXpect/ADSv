@@ -645,4 +645,10 @@
     <string name="rating_label_4">Muy bueno</string>
     <string name="rating_label_5">Excelente</string>
     <string name="rating_submit">Enviar calificación</string>
+
+    <!-- Rediseño: cancelar servicio (mockups 21 y 50) -->
+    <string name="cancel_screen_title">Cancelar servicio</string>
+    <string name="cancel_screen_message_client">Cuéntanos el motivo. Es obligatorio y se le avisa al técnico.</string>
+    <string name="cancel_screen_message_worker">Elige el motivo. Es obligatorio y se le avisa al cliente.</string>
+    <string name="cancel_keep_service">Mantener servicio</string>
 </resources>

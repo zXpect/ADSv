@@ -63,6 +63,15 @@
         <item name="chipStyle">@style/Widget.ADS.Chip.Filter</item>
     </style>
 
+    <!-- Diálogo a pantalla completa con el tema ADS (cancelar servicio) -->
+    <style name="Theme.ADS.FullScreenDialog" parent="Theme.ADSv">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/ads_surface</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>
+    </style>
+
     <!-- Lo usa PendingRequestsActivity en el manifest; es el mismo tema ADS -->
     <style name="AppTheme" parent="Theme.ADSv" />
 
