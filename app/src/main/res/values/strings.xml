@@ -731,4 +731,24 @@
     <string name="map_worker_unverified_pending">Tus documentos están en revisión. Podrás conectarte cuando sean aprobados.</string>
     <string name="map_worker_unverified_rejected">Tus documentos fueron rechazados. Revisa el motivo y vuelve a subirlos.</string>
     <string name="map_worker_unverified_approved">Tus documentos fueron verificados. Ya puedes conectarte.</string>
+
+    <!-- Rediseño: servicio en curso del trabajador (mockups 23, 48 y 49) -->
+    <string name="service_worker_for">Servicio para</string>
+    <string name="service_worker_agreed_price">Precio acordado</string>
+    <string name="service_worker_no_address">Sin dirección</string>
+    <string name="service_worker_call">Llamar</string>
+    <string name="service_worker_directions">Cómo llegar</string>
+    <string name="service_worker_reschedule">Reprogramar</string>
+    <string name="service_worker_step_trip">Viaje</string>
+    <string name="service_worker_step_work">Trabajo</string>
+    <string name="service_worker_step_finish">Finalizar</string>
+    <string name="service_worker_start_trip">Iniciar viaje</string>
+    <string name="service_worker_start_work">Iniciar trabajo</string>
+    <string name="service_worker_finish">Finalizar</string>
+    <string name="service_worker_cancel">Cancelar</string>
+    <string name="service_worker_started">Iniciado %1$s</string>
+    <string name="service_worker_started_estimate">Iniciado %1$s · %2$s estimadas</string>
+    <string name="service_worker_note_accepted">Puedes cancelar o reprogramar antes de iniciar el viaje.</string>
+    <string name="service_worker_note_waiting">Podrás iniciar el viaje cuando el cliente acepte tu cotización.</string>
+    <string name="service_worker_note_no_cancel">Ya no puedes cancelar. Si hay un problema, crea una PQR.</string>
 </resources>

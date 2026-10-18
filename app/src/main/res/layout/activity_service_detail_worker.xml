@@ -1,773 +1,404 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Servicio del trabajador · mockups 23 (aceptada), 48 (en camino) y 49 (en progreso):
+     docs/mockups/ServicioCurso.dc.html, ServicioEnCamino.dc.html y ServicioEnProgreso.dc.html.
+     Se conservan los IDs que usa ServiceDetailWorkerActivity. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    android:fillViewport="true">
+    android:background="@color/ads_surface"
+    android:orientation="vertical"
+    tools:context="com.project.ads.activities.worker.ServiceDetailWorkerActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <!-- Main Content -->
-        <LinearLayout
-            android:id="@+id/layout_content"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="24dp">
+            android:layout_height="match_parent">
 
-            <!-- Header con degradado sutil -->
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:elevation="8dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="20dp"
-                android:paddingHorizontal="20dp">
+                android:orientation="vertical"
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingTop="@dimen/space_4"
+                android:paddingEnd="@dimen/screen_margin"
+                android:paddingBottom="@dimen/space_6">
 
-                <ImageButton
-                    android:id="@+id/btn_back"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_button_circle_white"
-                    android:src="@drawable/ic_arrow_back"
-                    android:contentDescription="Volver"
-                    android:padding="10dp"
-                    app:tint="@color/colorPrimary"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
+                <!-- Volver y estado -->
                 <LinearLayout
-                    android:id="@+id/header_info"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintTop_toTopOf="@id/btn_back"
-                    app:layout_constraintBottom_toBottomOf="@id/btn_back"
-                    app:layout_constraintStart_toEndOf="@id/btn_back"
-                    app:layout_constraintEnd_toStartOf="@id/iv_status_icon">
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/touch_min"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/tv_request_id"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Solicitud #12345"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/textOnlywhite"
-                        android:letterSpacing="0.01" />
+                    <ImageButton
+                        android:id="@+id/btn_back"
+                        android:layout_width="@dimen/touch_min"
+                        android:layout_height="@dimen/touch_min"
+                        android:background="@drawable/bg_ads_circle_button"
+                        android:contentDescription="@string/action_back"
+                        android:src="@drawable/ic_arrow_back"
+                        app:tint="@color/ads_text" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <TextView
                         android:id="@+id/tv_status"
+                        style="@style/Widget.ADS.StatusChip.Strong"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="En Progreso"
-                        android:textSize="14sp"
-                        android:textColor="@color/textOnlywhite"
-                        android:alpha="0.90" />
-
+                        tools:text="En camino" />
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/iv_status_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_work_active"
-                    android:padding="8dp"
-                    android:background="@drawable/circle_white_background"
-                    app:tint="@color/colorPrimary"
-                    app:layout_constraintTop_toTopOf="@id/btn_back"
-                    app:layout_constraintBottom_toBottomOf="@id/btn_back"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_timestamp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Hace 30 minutos"
-                    android:textSize="13sp"
-                    android:textColor="@color/textOnlywhite"
-                    android:alpha="0.75"
-                    android:drawableStart="@drawable/ic_time_small"
-                    android:drawablePadding="6dp"
-                    android:drawableTint="@color/textOnlywhite"
-                    app:layout_constraintTop_toBottomOf="@id/header_info"
-                    app:layout_constraintStart_toStartOf="@id/header_info" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Status Flow con mejor diseño -->
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:background="@color/card_background"
-                android:elevation="4dp">
-
                 <LinearLayout
-                    android:id="@+id/layout_status_flow"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/layout_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="24dp"
-                    android:paddingVertical="24dp">
+                    android:orientation="vertical">
 
-                    <!-- Accepted -->
-                    <LinearLayout
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/service_worker_for"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption" />
+
+                    <TextView
+                        android:id="@+id/tv_client_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:accessibilityHeading="true"
+                        android:textAppearance="@style/TextAppearance.ADS.Headline"
+                        tools:text="Cliente" />
+
+                    <!-- Bloque navy: precio, agenda y dirección -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_4"
+                        android:background="@drawable/bg_ads_status_card"
                         android:orientation="vertical"
-                        android:gravity="center"
-                        android:minWidth="85dp">
+                        android:paddingStart="@dimen/space_5"
+                        android:paddingTop="18dp"
+                        android:paddingEnd="@dimen/space_5"
+                        android:paddingBottom="18dp">
 
-                        <FrameLayout
-                            android:layout_width="32dp"
-                            android:layout_height="32dp">
+                        <LinearLayout
+                            android:id="@+id/layout_quote_price"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:baselineAligned="true"
+                            android:orientation="horizontal">
 
-                            <View
-                                android:id="@+id/status_accepted"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/bg_status_active" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/service_worker_agreed_price"
+                                android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                                android:textColor="@color/ads_on_navy_muted" />
 
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_check"
-                                app:tint="@color/textOnlywhite" />
-
-                        </FrameLayout>
+                            <TextView
+                                android:id="@+id/tv_quote_amount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/sora_extrabold"
+                                android:textColor="@color/ads_on_navy"
+                                android:textSize="26sp"
+                                tools:text="$95.000" />
+                        </LinearLayout>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:id="@+id/tv_timestamp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Aceptado"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/colorPrimary"
-                            android:gravity="center" />
+                            android:drawablePadding="@dimen/space_2"
+                            android:gravity="center_vertical"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                            android:textColor="@color/ads_on_navy"
+                            app:drawableStartCompat="@drawable/ic_clock"
+                            app:drawableTint="@color/ads_brand"
+                            tools:text="Hoy · 3:00 p. m. · 2 h" />
 
+                        <TextView
+                            android:id="@+id/tv_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:drawablePadding="@dimen/space_2"
+                            android:gravity="center_vertical"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                            android:textColor="@color/ads_on_navy"
+                            app:drawableStartCompat="@drawable/ic_location_small"
+                            app:drawableTint="@color/ads_brand"
+                            tools:text="Cra 5 # 4-20, Ubaté" />
                     </LinearLayout>
 
-                    <View
-                        android:id="@+id/line_accepted_to_way"
-                        android:layout_width="40dp"
-                        android:layout_height="3dp"
-                        android:layout_marginTop="-30dp"
-                        android:background="@color/colorPrimary" />
-
-                    <!-- On the Way -->
+                    <!-- Llamar y cómo llegar (funciones existentes) -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:minWidth="85dp">
+                        android:layout_marginTop="@dimen/space_2"
+                        android:orientation="horizontal">
 
-                        <FrameLayout
-                            android:layout_width="32dp"
-                            android:layout_height="32dp">
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_call_client"
+                            style="@style/Widget.ADS.Button.Text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/service_worker_call"
+                            app:icon="@drawable/ic_phone"
+                            app:iconGravity="textStart"
+                            app:iconSize="18dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_view_map"
+                            style="@style/Widget.ADS.Button.Text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/service_worker_directions"
+                            app:icon="@drawable/ic_map"
+                            app:iconGravity="textStart"
+                            app:iconSize="18dp" />
+                    </LinearLayout>
+
+                    <!-- Tareas, cotización y pago -->
+                    <LinearLayout
+                        android:id="@+id/card_quote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_quote_details_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/worker_detail_tasks"
+                            android:textAppearance="@style/TextAppearance.ADS.Label"
+                            android:textColor="@color/ads_muted" />
+
+                        <TextView
+                            android:id="@+id/tv_quote_details"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_1"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                            tools:text="Reparar cortocircuito (1 visita)" />
+
+                        <TextView
+                            android:id="@+id/tv_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_2"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                            android:textColor="@color/ads_muted"
+                            tools:text="La luz de la cocina se apaga sola." />
+
+                        <TextView
+                            android:id="@+id/tv_quote_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_3"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+                            tools:text="Precio acordado con el cliente." />
+
+                        <TextView
+                            android:id="@+id/tv_payment_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_1"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                            android:visibility="gone" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_quote_primary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_3"
+                            android:text="@string/quote_send"
+                            android:visibility="gone" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_quote_reschedule"
+                            style="@style/Widget.ADS.Button.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_1"
+                            android:text="@string/service_worker_reschedule"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <!-- Pasos: Viaje · Trabajo · Finalizar -->
+                    <LinearLayout
+                        android:id="@+id/layout_status_flow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
 
                             <View
                                 android:id="@+id/status_on_the_way"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/bg_status_inactive" />
+                                android:layout_height="4dp"
+                                android:background="@drawable/bg_ads_progress_off" />
 
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_directions"
-                                app:tint="@color/text_secondary" />
+                            <TextView
+                                android:id="@+id/tv_step_trip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="@string/service_worker_step_trip"
+                                android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                        </LinearLayout>
 
-                        </FrameLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="En Camino"
-                            android:textSize="12sp"
-                            android:textColor="@color/text_secondary"
-                            android:gravity="center" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/line_way_to_progress"
-                        android:layout_width="40dp"
-                        android:layout_height="3dp"
-                        android:layout_marginTop="-30dp"
-                        android:background="@color/divider_color" />
-
-                    <!-- In Progress -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:minWidth="85dp">
-
-                        <FrameLayout
-                            android:layout_width="32dp"
-                            android:layout_height="32dp">
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
 
                             <View
                                 android:id="@+id/status_in_progress"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/bg_status_inactive" />
+                                android:layout_height="4dp"
+                                android:background="@drawable/bg_ads_progress_off" />
 
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_work"
-                                app:tint="@color/text_secondary" />
+                            <TextView
+                                android:id="@+id/tv_step_work"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="@string/service_worker_step_work"
+                                android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                        </LinearLayout>
 
-                        </FrameLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Trabajando"
-                            android:textSize="12sp"
-                            android:textColor="@color/text_secondary"
-                            android:gravity="center" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/line_progress_to_completed"
-                        android:layout_width="40dp"
-                        android:layout_height="3dp"
-                        android:layout_marginTop="-30dp"
-                        android:background="@color/divider_color" />
-
-                    <!-- Completed -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:minWidth="85dp">
-
-                        <FrameLayout
-                            android:layout_width="32dp"
-                            android:layout_height="32dp">
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
 
                             <View
                                 android:id="@+id/status_completed"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/bg_status_inactive" />
+                                android:layout_height="4dp"
+                                android:background="@drawable/bg_ads_progress_off" />
 
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_check_circle"
-                                app:tint="@color/text_secondary" />
-
-                        </FrameLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Completado"
-                            android:textSize="12sp"
-                            android:textColor="@color/text_secondary"
-                            android:gravity="center" />
-
+                            <TextView
+                                android:id="@+id/tv_step_finish"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="@string/service_worker_step_finish"
+                                android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                        </LinearLayout>
                     </LinearLayout>
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
-
-            <!-- Service Information Card con mejor estructura -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Información del Servicio"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginBottom="20dp"
-                        android:drawableStart="@drawable/ic_document"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="@color/colorPrimary" />
-
-                    <!-- Service Type -->
-                    <LinearLayout
+                        android:id="@+id/tv_step_note"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="@drawable/bg_info_item"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
-
-                        <FrameLayout
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_icon_light">
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_work"
-                                app:tint="@color/colorPrimary" />
-
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="14dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tipo de Servicio"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"
-                                android:alpha="0.8" />
-
-                            <TextView
-                                android:id="@+id/tv_service_type"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Electricidad"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Client Name -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="@drawable/bg_info_item"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
-
-                        <FrameLayout
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_icon_light">
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_person"
-                                app:tint="@color/colorPrimary" />
-
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="14dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Cliente"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"
-                                android:alpha="0.8" />
-
-                            <TextView
-                                android:id="@+id/tv_client_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Juan Pérez"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Phone -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="@drawable/bg_info_item"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
-
-                        <FrameLayout
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_icon_light">
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_phone"
-                                app:tint="@color/colorPrimary" />
-
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="14dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Teléfono"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"
-                                android:alpha="0.8" />
-
-                            <TextView
-                                android:id="@+id/tv_client_phone"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="+57 300 123 4567"
-                                android:textSize="16sp"
-                                android:textColor="@color/colorPrimary"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Address -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="@drawable/bg_info_item"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
-
-                        <FrameLayout
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_icon_light">
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_location"
-                                app:tint="@color/colorPrimary" />
-
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="14dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Dirección"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"
-                                android:alpha="0.8" />
-
-                            <TextView
-                                android:id="@+id/tv_address"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Calle 123 #45-67, Neiva"
-                                android:textSize="16sp"
-                                android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Description -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="@drawable/bg_info_item"
-                        android:gravity="center_vertical">
-
-                        <FrameLayout
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_icon_light">
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_document"
-                                app:tint="@color/colorPrimary" />
-
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="14dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Descripción"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"
-                                android:alpha="0.8" />
-
-                            <TextView
-                                android:id="@+id/tv_description"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Reparación de instalación eléctrica"
-                                android:textSize="16sp"
-                                android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
+                        android:layout_marginTop="14dp"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption"
+                        tools:text="Ya no puedes cancelar. Si hay un problema, crea una PQR." />
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
-
-            <!-- Quick Actions con mejor diseño -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:weightSum="2">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_call_client"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="Llamar"
-                    android:textColor="@color/textOnlywhite"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:icon="@drawable/ic_phone"
-                    app:iconGravity="textStart"
-                    app:iconPadding="8dp"
-                    app:iconTint="@color/textOnlywhite"
-                    app:cornerRadius="12dp"
-                    app:backgroundTint="@color/colorPrimary"
-                    app:elevation="4dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_view_map"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="Ver Mapa"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:icon="@drawable/ic_location"
-                    app:iconGravity="textStart"
-                    app:iconPadding="8dp"
-                    app:iconTint="@color/colorPrimary"
-                    app:cornerRadius="12dp"
-                    app:strokeColor="@color/colorPrimary"
-                    app:strokeWidth="2dp"
-                    app:backgroundTint="@color/card_background"
-                    app:elevation="4dp" />
-
-            </LinearLayout>
-
-            <!-- Quote and Payment Card -->
-            <include layout="@layout/layout_quote_card" />
-
-            <!-- Action Buttons Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_actions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background">
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tv_error"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:layout_marginTop="48dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.ADS.Body"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
-                    <!-- Start Trip Button -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_start_trip"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="Iniciar Viaje"
-                        android:textColor="@color/textOnlywhite"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:icon="@drawable/ic_directions"
-                        app:iconGravity="textStart"
-                        app:iconPadding="12dp"
-                        app:iconTint="@color/textOnlywhite"
-                        app:cornerRadius="12dp"
-                        app:backgroundTint="@color/colorPrimary"
-                        android:visibility="gone" />
-
-                    <!-- Start Work Button -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_start_work"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="Iniciar Trabajo"
-                        android:textColor="@color/textOnlywhite"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:icon="@drawable/ic_work"
-                        app:iconGravity="textStart"
-                        app:iconPadding="12dp"
-                        app:iconTint="@color/textOnlywhite"
-                        app:cornerRadius="12dp"
-                        app:backgroundTint="@color/colorAccent"
-                        android:visibility="gone" />
-
-                    <!-- Finish Work Button -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_finish_work"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="Finalizar Trabajo"
-                        android:textColor="@color/textOnlywhite"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:icon="@drawable/ic_check_circle"
-                        app:iconGravity="textStart"
-                        app:iconPadding="12dp"
-                        app:iconTint="@color/textOnlywhite"
-                        app:cornerRadius="12dp"
-                        app:backgroundTint="@color/success_color"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-        <!-- Loading Indicator -->
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminateTint="@color/colorPrimary"
+            android:indeterminateTint="@color/ads_brand"
             android:visibility="gone" />
-
-        <!-- Error Message Container -->
-        <LinearLayout
-            android:id="@+id/error_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="32dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/ic_error"
-                android:alpha="0.5"
-                app:tint="@color/error_color" />
-
-            <TextView
-                android:id="@+id/tv_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Error al cargar los datos"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/error_color"
-                android:gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Por favor, intenta nuevamente"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:gravity="center" />
-
-        </LinearLayout>
-
     </FrameLayout>
 
-</ScrollView>
+    <!-- Barra de acción fija -->
+    <LinearLayout
+        android:id="@+id/card_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ads_bar"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/stroke_line"
+            android:background="@color/ads_line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="14dp"
+            android:paddingEnd="@dimen/screen_margin"
+            android:paddingBottom="@dimen/space_6">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_start_trip"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/service_worker_start_trip"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_start_work"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/service_worker_start_work"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_finish_work"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/service_worker_finish"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_quote_cancel"
+                style="@style/Widget.ADS.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/service_worker_cancel"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

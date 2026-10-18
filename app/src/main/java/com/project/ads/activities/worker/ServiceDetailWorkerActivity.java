@@ -3,18 +3,17 @@ package com.project.ads.activities.worker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,9 +35,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Servicio del trabajador · mockups 23 (aceptada), 48 (en camino) y 49 (en progreso).
+ * Los cambios de estado, la cotización, reprogramar y cancelar no cambian.
+ */
 public class ServiceDetailWorkerActivity extends AppCompatActivity {
 
     private static final String TAG = "ServiceDetailWorker";
@@ -50,36 +56,27 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     private ImageButton mBtnBack;
 
     // Service Info
-    private TextView mTvRequestId;
     private TextView mTvStatus;
-    private TextView mTvServiceType;
     private TextView mTvClientName;
-    private TextView mTvClientPhone;
     private TextView mTvAddress;
     private TextView mTvDescription;
     private TextView mTvTimestamp;
-    private ImageView mIvStatusIcon;
+    private TextView mTvStepNote;
 
     // Action Buttons
-    private CardView mCardActions;
+    private View mCardActions;
     private Button mBtnStartTrip;
     private Button mBtnStartWork;
     private Button mBtnFinishWork;
     private Button mBtnCallClient;
     private Button mBtnViewMap;
 
-    // Status Indicator
-    private LinearLayout mLayoutStatusFlow;
-    private View mStatusAccepted;
-    private View mStatusOnTheWay;
-    private View mStatusInProgress;
-    private View mStatusCompleted;
-    private View mLineAcceptedToWay;
-    private View mLineWayToProgress;
-    private View mLineProgressToCompleted;
+    // Pasos: Viaje · Trabajo · Finalizar
+    private View[] mStepBars;
+    private TextView[] mStepLabels;
 
     // Quote and Payment Card
-    private CardView mCardQuote;
+    private View mCardQuote;
     private TextView mTvQuoteAmount;
     private TextView mTvQuoteStatus;
     private TextView mTvPaymentStatus;
@@ -116,7 +113,6 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
 
         initProviders();
         initViews();
-        setupStatusBar();
         loadRequestData();
         loadCatalog();
     }
@@ -126,7 +122,10 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
             @Override
             public void onSuccess(CatalogData catalog) {
                 mCatalog = catalog;
-                if (mServiceRequest != null && !isFinishing()) updateQuoteCard(mServiceRequest);
+                if (mServiceRequest != null && !isFinishing()) {
+                    updateQuoteCard(mServiceRequest);
+                    updateActionButtons(mServiceRequest);
+                }
             }
 
             @Override
@@ -149,15 +148,12 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnBack = findViewById(R.id.btn_back);
 
         // Service Info
-        mTvRequestId = findViewById(R.id.tv_request_id);
         mTvStatus = findViewById(R.id.tv_status);
-        mTvServiceType = findViewById(R.id.tv_service_type);
         mTvClientName = findViewById(R.id.tv_client_name);
-        mTvClientPhone = findViewById(R.id.tv_client_phone);
         mTvAddress = findViewById(R.id.tv_address);
         mTvDescription = findViewById(R.id.tv_description);
         mTvTimestamp = findViewById(R.id.tv_timestamp);
-        mIvStatusIcon = findViewById(R.id.iv_status_icon);
+        mTvStepNote = findViewById(R.id.tv_step_note);
 
         // Action Buttons
         mCardActions = findViewById(R.id.card_actions);
@@ -167,15 +163,10 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnCallClient = findViewById(R.id.btn_call_client);
         mBtnViewMap = findViewById(R.id.btn_view_map);
 
-        // Status Flow
-        mLayoutStatusFlow = findViewById(R.id.layout_status_flow);
-        mStatusAccepted = findViewById(R.id.status_accepted);
-        mStatusOnTheWay = findViewById(R.id.status_on_the_way);
-        mStatusInProgress = findViewById(R.id.status_in_progress);
-        mStatusCompleted = findViewById(R.id.status_completed);
-        mLineAcceptedToWay = findViewById(R.id.line_accepted_to_way);
-        mLineWayToProgress = findViewById(R.id.line_way_to_progress);
-        mLineProgressToCompleted = findViewById(R.id.line_progress_to_completed);
+        mStepBars = new View[]{findViewById(R.id.status_on_the_way),
+                findViewById(R.id.status_in_progress), findViewById(R.id.status_completed)};
+        mStepLabels = new TextView[]{findViewById(R.id.tv_step_trip),
+                findViewById(R.id.tv_step_work), findViewById(R.id.tv_step_finish)};
 
         // Quote and Payment Card
         mCardQuote = findViewById(R.id.card_quote);
@@ -197,13 +188,6 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnFinishWork.setOnClickListener(v -> confirmStatusChange("completed"));
         mBtnCallClient.setOnClickListener(v -> callClient());
         mBtnViewMap.setOnClickListener(v -> openMaps());
-    }
-
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
     }
 
     private void loadRequestData() {
@@ -250,23 +234,34 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     }
 
     private void populateUI(ServiceRequest request) {
-        // Basic Info
-        mTvRequestId.setText("Solicitud #" + mRequestId.substring(0, Math.min(8, mRequestId.length())));
-        mTvStatus.setText(request.getStatusDisplayText());
-        mTvServiceType.setText(request.getService_type() != null ? request.getService_type() : "N/A");
-        mTvClientName.setText(request.getClient_name() != null ? request.getClient_name() : "Cliente");
-        mTvClientPhone.setText(request.getClient_phone() != null ? request.getClient_phone() : "N/A");
-        mTvAddress.setText(request.getAddress() != null ? request.getAddress() : "Sin dirección");
-        mTvDescription.setText(request.getDescription() != null ? request.getDescription() : "Sin descripción");
-        mTvTimestamp.setText(request.getTimeAgo());
+        String status = request.getStatus() != null ? request.getStatus().toLowerCase() : "";
+        mTvClientName.setText(request.getClient_name() != null
+                ? request.getClient_name() : getString(R.string.inbox_client_default));
+        mTvAddress.setText(request.getAddress() != null
+                ? request.getAddress() : getString(R.string.service_worker_no_address));
+        String description = request.getDescription();
+        mTvDescription.setVisibility(description != null && !description.trim().isEmpty() ? View.VISIBLE : View.GONE);
+        mTvDescription.setText(description);
+        mTvTimestamp.setText(timeLine(request, status));
 
-        // Update status color
-        mTvStatus.setTextColor(
-                android.graphics.Color.parseColor(request.getStatusColor())
-        );
+        // Chip: naranja mientras está aceptada; navy en camino, en progreso o completada
+        int label;
+        switch (status) {
+            case "accepted": label = R.string.request_status_accepted; break;
+            case "on_the_way": label = R.string.request_status_on_the_way; break;
+            case "in_progress": label = R.string.request_status_in_progress; break;
+            case "completed": label = R.string.request_status_completed; break;
+            case "cancelled": label = R.string.request_status_cancelled; break;
+            default: label = 0;
+        }
+        if (label != 0) mTvStatus.setText(label); else mTvStatus.setText(request.getStatusDisplayText());
+        boolean orange = "accepted".equals(status);
+        ViewCompat.setBackgroundTintList(mTvStatus, ColorStateList.valueOf(ContextCompat.getColor(this,
+                orange ? R.color.ads_chip_bg : R.color.ads_text)));
+        mTvStatus.setTextColor(ContextCompat.getColor(this, orange ? R.color.ads_chip_text : R.color.ads_surface));
 
-        // Update status flow
-        updateStatusFlow(request.getStatus());
+        updateStatusFlow(status);
+        updateStepNote(request, status);
 
         // Update quote/payment card and action buttons
         updateQuoteCard(request);
@@ -274,69 +269,54 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
 
         // Update call button state
         mBtnCallClient.setEnabled(request.getClient_phone() != null && !request.getClient_phone().isEmpty());
+        mBtnViewMap.setEnabled(request.getAddress() != null);
     }
 
+    /** "Iniciado 3:05 p. m. · 2 h estimadas" en progreso; si no, la agenda o hace cuánto llegó. */
+    private String timeLine(ServiceRequest request, String status) {
+        if ("in_progress".equals(status) && request.getStarted_work_at() > 0) {
+            String time = new SimpleDateFormat("h:mm a", new Locale("es", "CO")).format(new Date(request.getStarted_work_at()));
+            return request.getEstimatedDurationMin() > 0
+                    ? getString(R.string.service_worker_started_estimate, time,
+                    ServiceRequest.formatDuration(request.getEstimatedDurationMin()))
+                    : getString(R.string.service_worker_started, time);
+        }
+        if (request.hasSchedule()) return request.getScheduleDisplay();
+        return request.getTimeAgo();
+    }
+
+    /** Paso actual en naranja; hechos en naranja oscuro; pendientes en gris. */
     private void updateStatusFlow(String status) {
-        if (status == null) return;
-
-        // Reset all
-        resetStatusFlow();
-
-        switch (status.toLowerCase()) {
-            case "accepted":
-                activateStatus(mStatusAccepted);
-                break;
-            case "on_the_way":
-                activateStatus(mStatusAccepted);
-                activateLine(mLineAcceptedToWay);
-                activateStatus(mStatusOnTheWay);
-                break;
-            case "in_progress":
-                activateStatus(mStatusAccepted);
-                activateLine(mLineAcceptedToWay);
-                activateStatus(mStatusOnTheWay);
-                activateLine(mLineWayToProgress);
-                activateStatus(mStatusInProgress);
-                break;
-            case "completed":
-                activateStatus(mStatusAccepted);
-                activateLine(mLineAcceptedToWay);
-                activateStatus(mStatusOnTheWay);
-                activateLine(mLineWayToProgress);
-                activateStatus(mStatusInProgress);
-                activateLine(mLineProgressToCompleted);
-                activateStatus(mStatusCompleted);
-                break;
+        int current;
+        switch (status) {
+            case "accepted": current = 0; break;
+            case "on_the_way": current = 1; break;
+            case "in_progress": current = 2; break;
+            case "completed": current = 3; break;
+            default: current = -1;
+        }
+        findViewById(R.id.layout_status_flow).setVisibility(current >= 0 ? View.VISIBLE : View.GONE);
+        for (int i = 0; i < mStepBars.length; i++) {
+            boolean done = i < current;
+            boolean now = i == current;
+            mStepBars[i].setBackgroundResource(done || now ? R.drawable.bg_ads_progress_on : R.drawable.bg_ads_progress_off);
+            ViewCompat.setBackgroundTintList(mStepBars[i], done
+                    ? ColorStateList.valueOf(ContextCompat.getColor(this, R.color.ads_brand_text)) : null);
+            androidx.core.widget.TextViewCompat.setTextAppearance(mStepLabels[i], now
+                    ? R.style.TextAppearance_ADS_Label : R.style.TextAppearance_ADS_Caption);
+            mStepLabels[i].setTextColor(ContextCompat.getColor(this, now ? R.color.ads_text : R.color.ads_muted));
         }
     }
 
-    private void resetStatusFlow() {
-        // Reset status circles
-        deactivateStatus(mStatusAccepted);
-        deactivateStatus(mStatusOnTheWay);
-        deactivateStatus(mStatusInProgress);
-        deactivateStatus(mStatusCompleted);
-
-        // Reset lines
-        deactivateLine(mLineAcceptedToWay);
-        deactivateLine(mLineWayToProgress);
-        deactivateLine(mLineProgressToCompleted);
-    }
-
-    private void activateStatus(View statusView) {
-        statusView.setBackgroundResource(R.drawable.bg_status_active);
-    }
-
-    private void deactivateStatus(View statusView) {
-        statusView.setBackgroundResource(R.drawable.bg_status_inactive);
-    }
-
-    private void activateLine(View lineView) {
-        lineView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-    }
-
-    private void deactivateLine(View lineView) {
-        lineView.setBackgroundColor(getResources().getColor(R.color.gray_light));
+    private void updateStepNote(ServiceRequest request, String status) {
+        int note = 0;
+        if ("accepted".equals(status)) {
+            note = request.isQuoteAccepted() ? R.string.service_worker_note_accepted : R.string.service_worker_note_waiting;
+        } else if ("on_the_way".equals(status) || "in_progress".equals(status)) {
+            note = R.string.service_worker_note_no_cancel;
+        }
+        mTvStepNote.setVisibility(note != 0 ? View.VISIBLE : View.GONE);
+        if (note != 0) mTvStepNote.setText(note);
     }
 
     private void updateActionButtons(ServiceRequest request) {
@@ -346,29 +326,31 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnFinishWork.setVisibility(View.GONE);
 
         String status = request.getStatus();
-        if (status == null) return;
-
-        boolean hasAction = true;
-        switch (status.toLowerCase()) {
-            case "accepted":
-                // Sin precio acordado no se puede iniciar (también lo exigen las reglas de Firebase)
-                if (request.isQuoteAccepted()) {
-                    mBtnStartTrip.setVisibility(View.VISIBLE);
-                } else {
-                    hasAction = false;
-                }
-                break;
-            case "on_the_way":
-                mBtnStartWork.setVisibility(View.VISIBLE);
-                break;
-            case "in_progress":
-                mBtnFinishWork.setVisibility(View.VISIBLE);
-                break;
-            default:
-                hasAction = false;
-                break;
+        if (status != null) {
+            switch (status.toLowerCase()) {
+                case "accepted":
+                    // Sin precio acordado no se puede iniciar (también lo exigen las reglas de Firebase)
+                    if (request.isQuoteAccepted()) mBtnStartTrip.setVisibility(View.VISIBLE);
+                    break;
+                case "on_the_way":
+                    mBtnStartWork.setVisibility(View.VISIBLE);
+                    break;
+                case "in_progress":
+                    mBtnFinishWork.setVisibility(View.VISIBLE);
+                    break;
+            }
         }
+        // Cancelar vive en la barra de acción (visible antes de «Iniciar viaje»)
+        boolean hasAction = mBtnStartTrip.getVisibility() == View.VISIBLE
+                || mBtnStartWork.getVisibility() == View.VISIBLE
+                || mBtnFinishWork.getVisibility() == View.VISIBLE
+                || mBtnCancelService.getVisibility() == View.VISIBLE;
         mCardActions.setVisibility(hasAction ? View.VISIBLE : View.GONE);
+        // Sin botón principal, Cancelar no necesita separación arriba
+        ((android.view.ViewGroup.MarginLayoutParams) mBtnCancelService.getLayoutParams()).topMargin =
+                hasAction && mBtnCancelService.getVisibility() == View.VISIBLE
+                        && mBtnStartTrip.getVisibility() == View.GONE ? 0
+                        : Math.round(10 * getResources().getDisplayMetrics().density);
     }
 
     private void updateQuoteCard(ServiceRequest request) {
@@ -381,8 +363,9 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnSendQuote.setVisibility(View.GONE);
         mTvPaymentStatus.setVisibility(View.GONE);
 
-        String details = RequestDetailsHelper.details(this, request, mCatalog);
+        String details = RequestDetailsHelper.details(this, request, mCatalog, false);
         mTvQuoteDetails.setVisibility(details != null ? View.VISIBLE : View.GONE);
+        findViewById(R.id.tv_quote_details_label).setVisibility(details != null ? View.VISIBLE : View.GONE);
         mTvQuoteDetails.setText(details);
         // Antes de «Iniciar viaje» el trabajador puede reprogramar o cancelar con motivo (D8, D9)
         mBtnReschedule.setVisibility(request.canBeRescheduled() ? View.VISIBLE : View.GONE);
@@ -397,6 +380,8 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         // El bloque navy del precio solo se muestra cuando hay precio
         findViewById(R.id.layout_quote_price).setVisibility(request.hasQuote() ? View.VISIBLE : View.GONE);
 
+        // Con precio acordado el bloque navy ya lo dice
+        mTvQuoteStatus.setVisibility(request.isQuoteAccepted() ? View.GONE : View.VISIBLE);
         if (request.isQuoteAccepted()) {
             mTvQuoteStatus.setText(R.string.quote_status_agreed);
         } else if (request.isQuotePendingAnswer()) {
@@ -416,10 +401,10 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
             mTvPaymentStatus.setVisibility(View.VISIBLE);
             if (request.isPaid()) {
                 mTvPaymentStatus.setText(R.string.payment_status_paid);
-                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.success_color));
+                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
             } else {
                 mTvPaymentStatus.setText(R.string.payment_status_waiting_client);
-                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.warning_color));
+                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
             }
         }
     }
