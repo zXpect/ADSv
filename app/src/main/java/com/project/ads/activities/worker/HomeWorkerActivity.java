@@ -206,6 +206,12 @@ public class HomeWorkerActivity extends AppCompatActivity {
             mButtonToggleConnection.setChecked(isConnected);
         });
         findViewById(R.id.card_next_service).setOnClickListener(v -> openNextService());
+        // Sin verificar, la tarjeta «Tu estado» abre el estado de verificación (mockups 34-36)
+        findViewById(R.id.cardConnectionStatus).setOnClickListener(v -> {
+            if (isVerificationChecked && !isVerified) {
+                startActivity(new Intent(HomeWorkerActivity.this, VerificationStatusActivity.class));
+            }
+        });
     }
 
     // MÉTODO NUEVO: Toggle entre conectar/desconectar
