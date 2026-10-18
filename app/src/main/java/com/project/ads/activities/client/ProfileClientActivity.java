@@ -2,7 +2,6 @@ package com.project.ads.activities.client;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 
@@ -21,18 +20,26 @@ import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.ClientProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.project.ads.R;
+import com.project.ads.activities.MyDataActivity;
+import com.project.ads.activities.TermsConditionsActivity;
+import com.project.ads.helpers.ClientNavHelper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
+/**
+ * Mi cuenta del cliente · mockup 37 (docs/mockups/MiCuenta.dc.html).
+ * Pestaña de la barra inferior. Notificaciones y PQR esperan su backend.
+ */
 public class ProfileClientActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileClientActivity";
+    private static final String TERMS_URL = "https://terminosycondicionesads.netlify.app";
 
     // UI Components
-    private Toolbar toolbar;
     private ImageView ivProfileImage;
+    private TextView tvInitials;
     private TextView tvClientName;
     private TextView tvClientEmail;
 
@@ -61,8 +68,8 @@ public class ProfileClientActivity extends AppCompatActivity {
 
         initProviders();
         initViews();
-        setupToolbar();
         setupClickListeners();
+        ClientNavHelper.setup(this, R.id.nav_client_account);
         loadClientData();
     }
 
@@ -72,7 +79,7 @@ public class ProfileClientActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        toolbar = findViewById(R.id.toolbar);
+        tvInitials = findViewById(R.id.tv_profile_client_initials);
         ivProfileImage = findViewById(R.id.ivProfileImage);
         tvClientName = findViewById(R.id.tvClientName);
         tvClientEmail = findViewById(R.id.tvClientEmail);
@@ -87,15 +94,6 @@ public class ProfileClientActivity extends AppCompatActivity {
         layoutContent = findViewById(R.id.layoutContent);
     }
 
-    private void setupToolbar() {
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Mi Perfil");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-    }
-
     private void setupClickListeners() {
         btnEditProfile.setOnClickListener(v -> {
             animateClick(v);
@@ -105,6 +103,21 @@ public class ProfileClientActivity extends AppCompatActivity {
         btnChangePassword.setOnClickListener(v -> {
             animateClick(v);
             changePassword();
+        });
+
+        View.OnClickListener comingSoon = v -> Toast.makeText(this, R.string.account_coming_soon, Toast.LENGTH_SHORT).show();
+        findViewById(R.id.row_account_notifications).setOnClickListener(comingSoon);
+        findViewById(R.id.row_account_pqr).setOnClickListener(comingSoon);
+        findViewById(R.id.row_account_history).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MyRequestsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        });
+        findViewById(R.id.row_account_terms).setOnClickListener(v -> {
+            Intent intent = new Intent(this, TermsConditionsActivity.class);
+            intent.putExtra("terms_url", TERMS_URL);
+            startActivity(intent);
         });
 
         ivProfileImage.setOnClickListener(v -> {
@@ -162,6 +175,7 @@ public class ProfileClientActivity extends AppCompatActivity {
             // Información básica
             String fullName = currentClient.getName() + " " + currentClient.getLastName();
             tvClientName.setText(fullName);
+            tvInitials.setText(initialsOf(fullName));
             tvClientEmail.setText(currentClient.getEmail());
 
             // Estadísticas (valores por defecto por ahora)
@@ -194,14 +208,15 @@ public class ProfileClientActivity extends AppCompatActivity {
 
                 Log.d(TAG, "Cargando imagen del perfil: " + imageUrl);
 
+                ivProfileImage.setVisibility(View.VISIBLE);
                 Glide.with(this)
                         .load(imageUrl)
                         .apply(options)
                         .into(ivProfileImage);
             } else {
                 // Si la URL no es válida, usar imagen por defecto
-                Log.d(TAG, "URL de imagen no válida, usando imagen por defecto");
-                ivProfileImage.setImageResource(R.drawable.ic_person);
+                Log.d(TAG, "Cliente sin foto, se muestran las iniciales");
+                ivProfileImage.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error al cargar imagen del perfil", e);
@@ -210,10 +225,18 @@ public class ProfileClientActivity extends AppCompatActivity {
     }
 
     private void editProfile() {
-        Toast.makeText(this, "Función de editar perfil en desarrollo", Toast.LENGTH_SHORT).show();
-        // TODO: Implementar edición de perfil
-        // Intent intent = new Intent(this, EditProfileClientActivity.class);
-        // startActivity(intent);
+        startActivity(new Intent(this, MyDataActivity.class));
+    }
+
+    private static String initialsOf(String name) {
+        StringBuilder initials = new StringBuilder();
+        if (name == null) return "";
+        for (String part : name.trim().split("\\s+")) {
+            if (!part.isEmpty() && !"null".equals(part) && initials.length() < 2) {
+                initials.append(Character.toUpperCase(part.charAt(0)));
+            }
+        }
+        return initials.toString();
     }
 
     private void changePassword() {
@@ -241,12 +264,6 @@ public class ProfileClientActivity extends AppCompatActivity {
 
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
 
     @Override

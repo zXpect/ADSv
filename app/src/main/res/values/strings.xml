@@ -853,4 +853,23 @@
     <string name="verify_incomplete_message">Súbelos para que revisemos tu perfil. Hasta entonces no apareces en las búsquedas de los clientes.</string>
     <string name="verify_upload">Subir documentos</string>
     <string name="verify_later">Más tarde</string>
+
+    <!-- Rediseño: Mi cuenta del cliente y Mis datos (mockups 37 y 38) -->
+    <string name="account_history">Historial de solicitudes</string>
+    <string name="data_change_password">Cambiar contraseña</string>
+    <string name="data_password_confirm">Te enviaremos un enlace a %1$s para que elijas una contraseña nueva.</string>
+    <string name="data_password_send">Enviar enlace</string>
+    <string name="data_password_sent">Revisa tu correo para cambiar la contraseña.</string>
+    <string name="data_password_error">No pudimos enviar el correo. Intenta de nuevo.</string>
+    <string name="data_password_google">Entras con tu cuenta de Google, así que la contraseña se cambia en Google.</string>
+    <string name="data_delete_title">Eliminar mi cuenta</string>
+    <string name="data_delete_message">Perderás el acceso a ADS con esta cuenta.</string>
+    <string name="data_delete_action">Eliminar cuenta</string>
+    <string name="data_save">Guardar cambios</string>
+    <string name="data_saved">Datos actualizados</string>
+    <string name="data_save_error">No pudimos guardar los cambios. Intenta de nuevo.</string>
+    <string name="data_load_error">No pudimos cargar tus datos</string>
+    <string name="data_error_name">Solo letras, máximo 50 caracteres</string>
+    <string name="data_error_last_name">Solo letras, máximo 50 caracteres</string>
+    <string name="data_error_phone">Entre 7 y 10 dígitos</string>
 </resources>

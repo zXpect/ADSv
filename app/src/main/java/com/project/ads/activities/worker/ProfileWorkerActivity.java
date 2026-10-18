@@ -359,10 +359,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
     }
 
     private void editProfile() {
-        Toast.makeText(this, "Función de editar perfil en desarrollo", Toast.LENGTH_SHORT).show();
-        // TODO: Implementar edición de perfil
-        // Intent intent = new Intent(this, EditProfileWorkerActivity.class);
-        // startActivity(intent);
+        startActivity(new Intent(this, com.project.ads.activities.MyDataActivity.class));
     }
 
     private void openDocuments() {

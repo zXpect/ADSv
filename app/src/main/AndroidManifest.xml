@@ -151,6 +151,9 @@
             android:name="com.project.ads.activities.worker.WorkerSkillsActivity"
             android:exported="false" />
         <activity
+            android:name="com.project.ads.activities.MyDataActivity"
+            android:exported="false" />
+        <activity
             android:name="com.project.ads.activities.RoleActivity"
             android:exported="false" />
         <activity
