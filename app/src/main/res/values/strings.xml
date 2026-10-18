@@ -490,7 +490,7 @@
     <string name="home_map_title">Ver técnicos en el mapa</string>
     <string name="home_map_subtitle">Encuentra quién está cerca de ti</string>
     <string name="home_categories_title">Oficios</string>
-    <string name="home_categories_hint">Elige uno para ver los técnicos</string>
+    <string name="home_categories_hint">Elige uno para ver los problemas</string>
     <string name="home_active_service">Servicio activo · %1$s</string>
     <string name="home_active_pending">Esperando la cotización del técnico</string>
     <string name="home_active_quoted">Tienes una cotización por revisar</string>
@@ -514,4 +514,11 @@
         <item quantity="other">%1$s · %2$d calificaciones</item>
     </plurals>
     <string name="profile_logout">Cerrar sesión</string>
+
+    <!-- Rediseño: problemas del oficio (mockup 07) -->
+    <string name="tasks_question">¿Qué problema tienes?</string>
+    <string name="tasks_unit">Se cobra por %1$s</string>
+    <string name="tasks_other_title">Otro problema</string>
+    <string name="tasks_other_subtitle">Descríbelo y el técnico lo cotiza</string>
+    <string name="tasks_next_step">En el siguiente paso eliges al técnico que prefieras.</string>
 </resources>

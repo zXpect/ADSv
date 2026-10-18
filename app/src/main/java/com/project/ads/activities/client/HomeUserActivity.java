@@ -42,8 +42,8 @@ import java.util.Map;
 /**
  * Inicio del cliente · mockup 06 (docs/mockups/InicioCliente.dc.html).
  * Saludo, buscador, acceso al mapa, oficios del catálogo y servicio activo.
- * Tocar un oficio abre WorkersActivity (mockup 08), que hace la búsqueda de
- * técnicos cercanos que antes vivía en esta pantalla.
+ * Tocar un oficio abre TasksActivity (mockup 07) y de ahí WorkersActivity
+ * (mockup 08), que hace la búsqueda de técnicos cercanos que antes vivía aquí.
  */
 public class HomeUserActivity extends AppCompatActivity {
     private static final String TAG = "HomeUserActivity";
@@ -153,8 +153,9 @@ public class HomeUserActivity extends AppCompatActivity {
         });
     }
 
-    private void openWorkers(CatalogData.Category category) {
-        Intent intent = new Intent(this, WorkersActivity.class);
+    /** Oficio → Problemas del oficio (mockup 07) → Técnicos (mockup 08). */
+    private void openTasks(CatalogData.Category category) {
+        Intent intent = new Intent(this, TasksActivity.class);
         intent.putExtra(WorkersActivity.EXTRA_CATEGORY, category.getSlug());
         intent.putExtra(WorkersActivity.EXTRA_CATEGORY_NAME, category.getName());
         startActivity(intent);
@@ -276,7 +277,7 @@ public class HomeUserActivity extends AppCompatActivity {
             CatalogData.Category category = mCategories.get(position);
             holder.name.setText(category.getName());
             holder.icon.setImageResource(CategoryHelper.iconFor(category.getSlug()));
-            holder.itemView.setOnClickListener(v -> openWorkers(category));
+            holder.itemView.setOnClickListener(v -> openTasks(category));
         }
 
         @Override

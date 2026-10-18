@@ -65,6 +65,8 @@ public class WorkersActivity extends AppCompatActivity {
     public static final String EXTRA_CATEGORY = "category";
     /** Nombre visible del oficio. */
     public static final String EXTRA_CATEGORY_NAME = "category_name";
+    /** Problema elegido en TasksActivity (mockup 07); solo se muestra como título. */
+    public static final String EXTRA_TASK_NAME = "task_name";
     /** Texto buscado desde el inicio (nombre u oficio del técnico). */
     public static final String EXTRA_QUERY = "query";
 
@@ -123,10 +125,14 @@ public class WorkersActivity extends AppCompatActivity {
 
         findViewById(R.id.btn_workers_back).setOnClickListener(v -> finish());
 
-        // Encabezado: oficio elegido o lo que se buscó
+        // Encabezado: oficio y problema elegidos (mockup 08), o lo que se buscó
         String categoryName = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
+        String taskName = getIntent().getStringExtra(EXTRA_TASK_NAME);
         TextView title = findViewById(R.id.tv_workers_title);
-        if (!mSearchQuery.isEmpty()) {
+        if (taskName != null) {
+            ((TextView) findViewById(R.id.tv_workers_label)).setText(categoryName);
+            title.setText(taskName);
+        } else if (!mSearchQuery.isEmpty()) {
             title.setText(getString(R.string.workers_search_title, getIntent().getStringExtra(EXTRA_QUERY)));
         } else {
             title.setText(categoryName != null ? categoryName : getString(R.string.workers_all_title));
