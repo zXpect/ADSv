@@ -695,4 +695,21 @@
     <string name="worker_detail_price_note_fee">Tarifa mínima por visita: %1$s. Puedes confirmar el estimado o ajustarlo con un motivo.</string>
     <string name="worker_detail_price_quoted">Precio que cotizaste.</string>
     <string name="worker_detail_price_unpriced">Estas tareas no tienen un rango fijo: define el precio al cotizar.</string>
+
+    <!-- Rediseño: Mis trabajos y Mi cuenta del trabajador (mockups 51 y 52) -->
+    <string name="jobs_section_pending">Pendientes</string>
+    <string name="jobs_section_done">Realizados</string>
+    <string name="jobs_status_completed">Completado</string>
+    <string name="jobs_not_rated">Sin calificar</string>
+    <string name="jobs_empty">Aún no tienes trabajos aceptados.</string>
+    <string name="account_my_data">Mis datos</string>
+    <string name="account_my_documents">Mis documentos</string>
+    <string name="account_notifications">Notificaciones</string>
+    <string name="account_terms">Términos y datos personales</string>
+    <string name="account_coming_soon">Disponible pronto</string>
+    <string name="account_verified">Verificado</string>
+    <string name="account_verification_pending">Verificación pendiente</string>
+    <string name="account_verification_rejected">Verificación rechazada</string>
+    <string name="account_documents_missing">Documentos pendientes</string>
+    <string name="profile_photo_desc">Foto de perfil</string>
 </resources>

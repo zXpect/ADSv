@@ -3,8 +3,8 @@ package com.project.ads.activities.worker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 
 import android.content.Intent;
@@ -25,6 +25,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
+import com.project.ads.activities.TermsConditionsActivity;
+import com.project.ads.helpers.WorkerNavHelper;
 
 // ===== AGREGAR ESTOS IMPORTS =====
 import com.bumptech.glide.Glide;
@@ -32,13 +34,18 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 // ==================================
 
+/**
+ * Mi cuenta del trabajador · mockup 51 (docs/mockups/MiCuentaTrab.dc.html).
+ * Pestaña de la barra inferior; tarifa, banco y estadísticas no están en el mockup y quedan ocultas.
+ */
 public class ProfileWorkerActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileWorkerActivity";
+    private static final String TERMS_URL = "https://terminosycondicionesads.netlify.app";
 
     // UI Components
-    private Toolbar toolbar;
     private ImageView ivProfileImage;
+    private TextView tvInitials;
     private TextView tvWorkerName;
     private TextView tvWorkerType;
     private TextView tvWorkerEmail;
@@ -76,8 +83,8 @@ public class ProfileWorkerActivity extends AppCompatActivity {
 
         initProviders();
         initViews();
-        setupToolbar();
         setupClickListeners();
+        WorkerNavHelper.setup(this, R.id.nav_worker_account);
         loadWorkerData();
     }
 
@@ -87,7 +94,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        toolbar = findViewById(R.id.toolbar);
+        tvInitials = findViewById(R.id.tv_profile_worker_initials);
         ivProfileImage = findViewById(R.id.ivProfileImage);
         tvWorkerName = findViewById(R.id.tvWorkerName);
         tvWorkerType = findViewById(R.id.tvWorkerType);
@@ -108,15 +115,6 @@ public class ProfileWorkerActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         layoutContent = findViewById(R.id.layoutContent);
-    }
-
-    private void setupToolbar() {
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Mi Perfil");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
     }
 
     /**
@@ -166,6 +164,15 @@ public class ProfileWorkerActivity extends AppCompatActivity {
             changePassword();
         });
 
+        View.OnClickListener comingSoon = v -> Toast.makeText(this, R.string.account_coming_soon, Toast.LENGTH_SHORT).show();
+        findViewById(R.id.row_account_notifications).setOnClickListener(comingSoon);
+        findViewById(R.id.row_account_pqr).setOnClickListener(comingSoon);
+        findViewById(R.id.row_account_terms).setOnClickListener(v -> {
+            Intent intent = new Intent(this, TermsConditionsActivity.class);
+            intent.putExtra("terms_url", TERMS_URL);
+            startActivity(intent);
+        });
+
         // ===== AGREGAR CLICK EN LA IMAGEN PARA CAMBIARLA =====
         ivProfileImage.setOnClickListener(v -> {
             animateClick(v);
@@ -207,6 +214,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
         runOnUiThread(() -> {
             // Información básica
             tvWorkerName.setText(currentWorker.getFullName());
+            tvInitials.setText(initialsOf(currentWorker.getFullName()));
             String categories = currentWorker.getCategoriesDisplay();
             tvWorkerType.setText(categories != null ? categories : getString(R.string.no_specialty));
             tvWorkerEmail.setText(currentWorker.getEmail());
@@ -250,6 +258,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
 
                     Log.d(TAG, "Cargando imagen del perfil: " + imageUrl);
 
+                    ivProfileImage.setVisibility(View.VISIBLE);
                     Glide.with(this)
                             .load(imageUrl)
                             .apply(options)
@@ -257,12 +266,12 @@ public class ProfileWorkerActivity extends AppCompatActivity {
                 } else {
                     // Si la URL no es válida, usar imagen por defecto
                     Log.d(TAG, "URL de imagen no válida, usando imagen por defecto");
-                    ivProfileImage.setImageResource(R.drawable.ic_person);
+                    ivProfileImage.setVisibility(View.GONE);
                 }
             } else {
                 // No tiene imagen, usar por defecto
-                Log.d(TAG, "Worker sin imagen, usando imagen por defecto");
-                ivProfileImage.setImageResource(R.drawable.ic_person);
+                Log.d(TAG, "Worker sin imagen, se muestran las iniciales");
+                ivProfileImage.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error al cargar imagen del perfil", e);
@@ -313,38 +322,40 @@ public class ProfileWorkerActivity extends AppCompatActivity {
 
             cardVerificationBadge.setVisibility(View.VISIBLE);
 
+            int label;
+            boolean approved = false;
             switch (verificationStatus.toLowerCase()) {
                 case "approved":
-                    tvVerificationBadge.setText("✓ Verificado");
-                    tvVerificationBadge.setTextColor(getResources().getColor(R.color.success_color, getTheme()));
-                    cardVerificationBadge.setCardBackgroundColor(
-                            getResources().getColor(R.color.success_light, getTheme()));
+                    label = R.string.account_verified;
+                    approved = true;
                     break;
-
                 case "documents_submitted":
                 case "pending":
-                    tvVerificationBadge.setText("⏳ En Revisión");
-                    tvVerificationBadge.setTextColor(getResources().getColor(R.color.warning_color, getTheme()));
-                    cardVerificationBadge.setCardBackgroundColor(
-                            getResources().getColor(R.color.warning_light, getTheme()));
+                    label = R.string.account_verification_pending;
                     break;
-
                 case "rejected":
-                    tvVerificationBadge.setText("❌ Rechazado");
-                    tvVerificationBadge.setTextColor(getResources().getColor(R.color.error_color, getTheme()));
-                    cardVerificationBadge.setCardBackgroundColor(
-                            getResources().getColor(R.color.error_light, getTheme()));
+                    label = R.string.account_verification_rejected;
                     break;
-
                 case "incomplete":
                 default:
-                    tvVerificationBadge.setText("📋 Pendiente");
-                    tvVerificationBadge.setTextColor(getResources().getColor(R.color.text_secondary, getTheme()));
-                    cardVerificationBadge.setCardBackgroundColor(
-                            getResources().getColor(R.color.background_light, getTheme()));
+                    label = R.string.account_documents_missing;
                     break;
             }
+            tvVerificationBadge.setText(label);
+            tvVerificationBadge.setTextColor(ContextCompat.getColor(this,
+                    approved ? R.color.ads_chip_text : R.color.ads_text));
+            cardVerificationBadge.setCardBackgroundColor(ContextCompat.getColor(this,
+                    approved ? R.color.ads_chip_bg : R.color.ads_surface_alt));
         });
+    }
+
+    private static String initialsOf(String name) {
+        StringBuilder initials = new StringBuilder();
+        if (name == null) return "";
+        for (String part : name.trim().split("\\s+")) {
+            if (!part.isEmpty() && initials.length() < 2) initials.append(Character.toUpperCase(part.charAt(0)));
+        }
+        return initials.toString();
     }
 
     private void editProfile() {
@@ -396,12 +407,6 @@ public class ProfileWorkerActivity extends AppCompatActivity {
 
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
 
     @Override

@@ -2,326 +2,145 @@ package com.project.ads.activities.worker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
-import android.os.Build;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.project.ads.models.ServiceRequest;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
+import com.project.ads.helpers.WorkerNavHelper;
+import com.project.ads.models.ServiceRequest;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Mis trabajos del trabajador · mockup 52 (docs/mockups/MisTrabajos.dc.html).
+ * Pendientes (aceptados, en camino o en progreso) y Realizados (completados),
+ * con la misma tarjeta del historial del cliente. Lee requests filtrado por su uid.
+ */
 public class ActiveServicesActivity extends AppCompatActivity {
-    private static final String TAG = "ActiveServicesActivity";
 
-    // UI Components
+    private static final String TAG = "ActiveServicesActivity";
+    private static final Locale LOCALE = new Locale("es", "CO");
+
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
     private LinearLayout mEmptyState;
     private SwipeRefreshLayout mSwipeRefresh;
-    private ImageButton mBtnBack;
-    private TextView mTvTitle;
 
-    // Data
     private String mWorkerId;
-    private List<ServiceRequest> mActiveServices;
-    private ActiveServicesAdapter mAdapter;
+    private final List<ServiceRequest> mServices = new ArrayList<>();
+    private JobsAdapter mAdapter;
 
-    // Firebase
-    private DatabaseReference mDatabaseReference;
-    private ValueEventListener mServicesListener;
     private Query mServicesQuery;
+    private ValueEventListener mServicesListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_services);
 
-        // Obtener worker ID
         mWorkerId = getIntent().getStringExtra("worker_id");
-
         if (mWorkerId == null || mWorkerId.isEmpty()) {
             Toast.makeText(this, "Error: ID de trabajador no válido", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        initViews();
-        setupStatusBar();
-        setupRecyclerView();
-        loadActiveServices();
-    }
-
-    private void initViews() {
         mRecyclerView = findViewById(R.id.recycler_active_services);
         mProgressBar = findViewById(R.id.progress_bar);
         mEmptyState = findViewById(R.id.empty_state);
         mSwipeRefresh = findViewById(R.id.swipe_refresh);
-        mBtnBack = findViewById(R.id.btn_back);
-        mTvTitle = findViewById(R.id.tv_title);
+        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
+        mSwipeRefresh.setColorSchemeResources(R.color.ads_brand);
+        mSwipeRefresh.setOnRefreshListener(this::loadServices);
 
-        mBtnBack.setOnClickListener(v -> finish());
-
-        mSwipeRefresh.setColorSchemeResources(
-                R.color.colorPrimary,
-                R.color.colorAccent,
-                R.color.colorPrimaryDark
-        );
-        mSwipeRefresh.setOnRefreshListener(this::loadActiveServices);
-    }
-
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
-    }
-
-    private void setupRecyclerView() {
-        mActiveServices = new ArrayList<>();
-        mAdapter = new ActiveServicesAdapter();
+        mAdapter = new JobsAdapter();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setHasFixedSize(false);
+
+        WorkerNavHelper.setup(this, R.id.nav_worker_jobs);
+        loadServices();
     }
 
-    private void loadActiveServices() {
-        showLoading(true);
-        Log.d(TAG, "Cargando servicios activos para trabajador: " + mWorkerId);
-
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-
-        // Remover listener anterior si existe
+    private void loadServices() {
+        mProgressBar.setVisibility(View.VISIBLE);
         if (mServicesListener != null && mServicesQuery != null) {
             mServicesQuery.removeEventListener(mServicesListener);
         }
-
         // Las reglas de Firebase solo permiten leer requests filtrado por el propio uid
-        mServicesQuery = mDatabaseReference.child("requests")
-                .orderByChild("worker_id")
-                .equalTo(mWorkerId);
-
+        mServicesQuery = FirebaseDatabase.getInstance().getReference().child("requests")
+                .orderByChild("worker_id").equalTo(mWorkerId);
         mServicesListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<ServiceRequest> services = new ArrayList<>();
-
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        try {
-                            Map<String, Object> requestData = (Map<String, Object>) snapshot.getValue();
-                            if (requestData != null) {
-                                ServiceRequest request = ServiceRequest.fromMap(requestData);
-                                request.setRequest_id(snapshot.getKey());
-
-                                if (request != null && isActiveService(request)) {
-                                    services.add(request);
-                                }
-                            }
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error parseando solicitud: " + snapshot.getKey(), e);
-                        }
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    try {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> data = (Map<String, Object>) snapshot.getValue();
+                        if (data == null) continue;
+                        ServiceRequest request = ServiceRequest.fromMap(data);
+                        request.setRequest_id(snapshot.getKey());
+                        if (isPending(request) || "completed".equals(request.getStatus())) services.add(request);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parseando solicitud: " + snapshot.getKey(), e);
                     }
                 }
-
-                // Ordenar por timestamp (más reciente primero)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Collections.sort(services, (s1, s2) ->
-                            Long.compare(s2.getTimestamp(), s1.getTimestamp()));
-                }
-
-                updateUI(services);
+                // Pendientes primero; dentro de cada grupo, la más reciente primero
+                Collections.sort(services, (a, b) -> {
+                    int byGroup = Boolean.compare(isPending(b), isPending(a));
+                    return byGroup != 0 ? byGroup : Long.compare(b.getTimestamp(), a.getTimestamp());
+                });
+                mServices.clear();
+                mServices.addAll(services);
+                mAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.GONE);
+                mSwipeRefresh.setRefreshing(false);
+                mEmptyState.setVisibility(services.isEmpty() ? View.VISIBLE : View.GONE);
+                mRecyclerView.setVisibility(services.isEmpty() ? View.GONE : View.VISIBLE);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "Error de base de datos: " + databaseError.getMessage());
-                showLoading(false);
-                Toast.makeText(ActiveServicesActivity.this,
-                        "Error al cargar servicios", Toast.LENGTH_SHORT).show();
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error de base de datos: " + error.getMessage());
+                mProgressBar.setVisibility(View.GONE);
+                mSwipeRefresh.setRefreshing(false);
+                Toast.makeText(ActiveServicesActivity.this, "Error al cargar servicios", Toast.LENGTH_SHORT).show();
             }
         };
-
         mServicesQuery.addValueEventListener(mServicesListener);
     }
 
-    private boolean isActiveService(ServiceRequest request) {
-        if (request == null) return false;
-
-        // Verificar que sea del trabajador actual
-        if (!mWorkerId.equals(request.getWorker_id())) {
-            return false;
-        }
-
-        // Verificar que esté en estado activo
+    /** Servicio en curso: aceptado (con o sin cotización aceptada), en camino o en progreso. */
+    private static boolean isPending(ServiceRequest request) {
         String status = request.getStatus();
-        if (status == null) return false;
-
-        switch (status.toLowerCase()) {
-            case "accepted":
-            case "on_the_way":
-            case "in_progress":
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private void updateUI(List<ServiceRequest> services) {
-        runOnUiThread(() -> {
-            mActiveServices.clear();
-            mActiveServices.addAll(services);
-            mAdapter.notifyDataSetChanged();
-
-            showLoading(false);
-            mSwipeRefresh.setRefreshing(false);
-
-            // Actualizar título con cantidad
-            mTvTitle.setText("Servicios Activos (" + services.size() + ")");
-
-            if (services.isEmpty()) {
-                mRecyclerView.setVisibility(View.GONE);
-                mEmptyState.setVisibility(View.VISIBLE);
-            } else {
-                mRecyclerView.setVisibility(View.VISIBLE);
-                mEmptyState.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    private void showLoading(boolean show) {
-        mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
-
-    // ========== ADAPTER ==========
-
-    private class ActiveServicesAdapter extends RecyclerView.Adapter<ActiveServicesAdapter.ServiceViewHolder> {
-
-        @NonNull
-        @Override
-        public ServiceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_active_service_worker, parent, false);
-            return new ServiceViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ServiceViewHolder holder, int position) {
-            ServiceRequest service = mActiveServices.get(position);
-            holder.bind(service);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mActiveServices.size();
-        }
-
-        class ServiceViewHolder extends RecyclerView.ViewHolder {
-            TextView tvServiceType, tvClientName, tvAddress, tvStatus, tvTimestamp;
-            ImageView ivStatusIcon;
-            View cardView;
-
-            ServiceViewHolder(View itemView) {
-                super(itemView);
-                tvServiceType = itemView.findViewById(R.id.tv_service_type);
-                tvClientName = itemView.findViewById(R.id.tv_client_name);
-                tvAddress = itemView.findViewById(R.id.tv_address);
-                tvStatus = itemView.findViewById(R.id.tv_status);
-                tvTimestamp = itemView.findViewById(R.id.tv_timestamp);
-                ivStatusIcon = itemView.findViewById(R.id.iv_status_icon);
-                cardView = itemView.findViewById(R.id.service_card);
-            }
-
-            void bind(ServiceRequest service) {
-                // Tipo de servicio
-                tvServiceType.setText(service.getService_type() != null ?
-                        service.getService_type() : "Servicio");
-
-                // Cliente
-                tvClientName.setText(service.getClient_name() != null ?
-                        service.getClient_name() : "Cliente");
-
-                // Dirección
-                tvAddress.setText(service.getAddress() != null ?
-                        service.getAddress() : "Sin dirección");
-
-                // Estado
-                tvStatus.setText(service.getStatusDisplayText());
-                tvStatus.setTextColor(
-                        android.graphics.Color.parseColor(service.getStatusColor())
-                );
-
-                // Ícono según estado
-                setStatusIcon(service.getStatus());
-
-                // Tiempo
-                tvTimestamp.setText(service.getTimeAgo());
-
-                // Click listener
-                cardView.setOnClickListener(v -> {
-                    Intent intent = new Intent(ActiveServicesActivity.this,
-                            ServiceDetailWorkerActivity.class);
-                    intent.putExtra("request_id", service.getRequest_id());
-                    startActivity(intent);
-                });
-
-                // Animación de entrada
-                cardView.setAlpha(0f);
-                cardView.setTranslationY(50f);
-                cardView.animate()
-                        .alpha(1f)
-                        .translationY(0f)
-                        .setDuration(300)
-                        .setStartDelay(getAdapterPosition() * 50L)
-                        .start();
-            }
-
-            private void setStatusIcon(String status) {
-                if (status == null) {
-                    ivStatusIcon.setImageResource(R.drawable.ic_pending);
-                    return;
-                }
-
-                switch (status.toLowerCase()) {
-                    case "accepted":
-                        ivStatusIcon.setImageResource(R.drawable.ic_check_circle);
-                        break;
-                    case "on_the_way":
-                        //ivStatusIcon.setImageResource(R.drawable.ic_directions);
-                        break;
-                    case "in_progress":
-                        ivStatusIcon.setImageResource(R.drawable.ic_work_active);
-                        break;
-                    default:
-                        ivStatusIcon.setImageResource(R.drawable.ic_pending);
-                        break;
-                }
-            }
-        }
+        return "accepted".equals(status) || "on_the_way".equals(status) || "in_progress".equals(status);
     }
 
     @Override
@@ -329,6 +148,109 @@ public class ActiveServicesActivity extends AppCompatActivity {
         super.onDestroy();
         if (mServicesListener != null && mServicesQuery != null) {
             mServicesQuery.removeEventListener(mServicesListener);
+        }
+    }
+
+    // ---------- Adapter (tarjeta del historial, item_my_request) ----------
+
+    private class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.Holder> {
+
+        @NonNull
+        @Override
+        public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_request, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull Holder holder, int position) {
+            holder.bind(mServices.get(position), position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mServices.size();
+        }
+
+        class Holder extends RecyclerView.ViewHolder {
+            final MaterialCardView card;
+            final TextView section, title, status, meta, detail;
+
+            Holder(View itemView) {
+                super(itemView);
+                card = itemView.findViewById(R.id.card_request);
+                section = itemView.findViewById(R.id.tv_section);
+                title = itemView.findViewById(R.id.tv_service_type);
+                status = itemView.findViewById(R.id.tv_status);
+                meta = itemView.findViewById(R.id.tv_worker_name);
+                detail = itemView.findViewById(R.id.tv_timestamp);
+            }
+
+            void bind(ServiceRequest request, int position) {
+                boolean pending = isPending(request);
+                boolean firstOfGroup = position == 0 || isPending(mServices.get(position - 1)) != pending;
+                section.setVisibility(firstOfGroup ? View.VISIBLE : View.GONE);
+                section.setText(pending ? R.string.jobs_section_pending : R.string.jobs_section_done);
+
+                title.setText(request.getService_type() != null
+                        ? request.getService_type() : getString(R.string.history_service_default));
+
+                String client = request.getClient_name() != null ? request.getClient_name() : getString(R.string.inbox_client_default);
+                meta.setText(client + " · " + formatDate(request, pending));
+
+                // Chip: naranja en curso, navy completado
+                int label;
+                switch (request.getStatus()) {
+                    case "on_the_way": label = R.string.request_status_on_the_way; break;
+                    case "in_progress": label = R.string.request_status_in_progress; break;
+                    case "completed": label = R.string.jobs_status_completed; break;
+                    default: label = request.isQuoteAccepted()
+                            ? R.string.request_status_accepted : R.string.request_status_quoted;
+                }
+                status.setText(label);
+                boolean done = !pending;
+                ViewCompat.setBackgroundTintList(status, ColorStateList.valueOf(ContextCompat.getColor(
+                        ActiveServicesActivity.this, done ? R.color.ads_text : R.color.ads_chip_bg)));
+                status.setTextColor(ContextCompat.getColor(ActiveServicesActivity.this,
+                        done ? R.color.ads_surface : R.color.ads_chip_text));
+
+                // Precio (pendientes) o calificación (realizados)
+                detail.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+                if (pending) {
+                    detail.setVisibility(request.hasQuote() ? View.VISIBLE : View.GONE);
+                    androidx.core.widget.TextViewCompat.setTextAppearance(detail, R.style.TextAppearance_ADS_Price);
+                    detail.setText(request.getFormattedQuotedPrice());
+                } else if (request.getRating() > 0) {
+                    detail.setVisibility(View.VISIBLE);
+                    androidx.core.widget.TextViewCompat.setTextAppearance(detail, R.style.TextAppearance_ADS_BodySmall_Strong);
+                    detail.setText(String.format(LOCALE, "%.1f", request.getRating()));
+                    detail.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_star_filled, 0, 0, 0);
+                } else {
+                    detail.setVisibility(View.VISIBLE);
+                    androidx.core.widget.TextViewCompat.setTextAppearance(detail, R.style.TextAppearance_ADS_Caption);
+                    detail.setText(R.string.jobs_not_rated);
+                }
+
+                card.setStrokeColor(ContextCompat.getColor(ActiveServicesActivity.this,
+                        pending ? R.color.ads_brand_text : R.color.ads_line));
+                card.setStrokeWidth(getResources().getDimensionPixelSize(
+                        pending ? R.dimen.stroke_focus : R.dimen.stroke_control));
+
+                card.setOnClickListener(v -> {
+                    Intent intent = new Intent(ActiveServicesActivity.this, ServiceDetailWorkerActivity.class);
+                    intent.putExtra("request_id", request.getRequest_id());
+                    startActivity(intent);
+                });
+            }
+
+            /** "Hoy, 3:00 p. m." o "Lun 19 oct, 3:00 p. m." si hay agenda; "14 oct" en realizados. */
+            private String formatDate(ServiceRequest request, boolean pending) {
+                if (pending && request.getScheduledAt() > 0) {
+                    String text = new SimpleDateFormat("EEE d MMM, h:mm a", LOCALE).format(new Date(request.getScheduledAt()));
+                    return text.substring(0, 1).toUpperCase(LOCALE) + text.substring(1);
+                }
+                long time = request.getCompleted_at() > 0 ? request.getCompleted_at() : request.getTimestamp();
+                return time > 0 ? new SimpleDateFormat("d MMM", LOCALE).format(new Date(time)) : request.getTimeAgo();
+            }
         }
     }
 }

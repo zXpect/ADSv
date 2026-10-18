@@ -350,4 +350,38 @@
         <item name="android:paddingBottom">4dp</item>
     </style>
 
+    <!-- Fila de la tarjeta de opciones de Mi cuenta (mockups 37 y 51) -->
+    <style name="Widget.ADS.AccountRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">@dimen/space_4</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Widget.ADS.AccountRow.Icon" parent="">
+        <item name="android:layout_width">22dp</item>
+        <item name="android:layout_height">22dp</item>
+        <item name="tint">@color/ads_text</item>
+    </style>
+
+    <style name="Widget.ADS.AccountRow.Text" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">14dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.BodySmall.Strong</item>
+    </style>
+
+    <style name="Widget.ADS.AccountRow.Chevron" parent="">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:src">@drawable/ic_ads_chevron</item>
+        <item name="tint">@color/ads_muted</item>
+    </style>
 </resources>
