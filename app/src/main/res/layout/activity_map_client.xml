@@ -217,7 +217,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_3"
             android:minHeight="48dp"
-            android:text="@string/request_service" />
+            android:text="@string/profile_view" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

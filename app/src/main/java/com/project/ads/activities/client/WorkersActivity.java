@@ -396,26 +396,13 @@ public class WorkersActivity extends AppCompatActivity {
         loadNearbyWorkers();
     }
 
-    private void showWorkerDetailsDialog(Worker worker) {
-        String message = "Servicio: " + worker.getCategoriesDisplay() + "\n"
-                + "Distancia: " + String.format(new Locale("es", "CO"), "%.1f km", worker.getDistance()) + "\n"
-                + "¿Deseas solicitar este servicio?";
-        new AlertDialog.Builder(this)
-                .setTitle(worker.getName())
-                .setMessage(message)
-                .setPositiveButton("Solicitar", (dialog, which) -> {
-                    Intent intent = new Intent(this, ServiceRequestActivity.class);
-                    intent.putExtra("workerId", worker.getId());
-                    HomeUserActivity.putClientLocation(intent, mCurrentLatLng);
-                    startActivity(intent);
-                })
-                .setNeutralButton("Ver en mapa", (dialog, which) -> {
-                    Intent intent = new Intent(this, MapClientActivity.class);
-                    intent.putExtra("focusWorkerId", worker.getId());
-                    startActivity(intent);
-                })
-                .setNegativeButton("Cancelar", null)
-                .show();
+    /** Perfil del técnico (mockup 09); desde ahí se solicita el servicio. */
+    private void openProfile(Worker worker) {
+        Intent intent = new Intent(this, WorkerProfileActivity.class);
+        intent.putExtra(WorkerProfileActivity.EXTRA_WORKER_ID, worker.getId());
+        intent.putExtra(WorkerProfileActivity.EXTRA_DISTANCE_KM, worker.getDistance());
+        HomeUserActivity.putClientLocation(intent, mCurrentLatLng);
+        startActivity(intent);
     }
 
     private void showToast(String message) {
@@ -553,7 +540,7 @@ public class WorkersActivity extends AppCompatActivity {
                     workerImage.setVisibility(View.GONE);
                 }
 
-                cardView.setOnClickListener(v -> showWorkerDetailsDialog(worker));
+                cardView.setOnClickListener(v -> openProfile(worker));
             }
         }
 

@@ -614,9 +614,16 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         if (distance != null) meta += " · " + distance;
         ((TextView) findViewById(R.id.tv_map_worker_meta)).setText(meta);
 
+        // «Ver perfil» (mockup 56); la solicitud se hace desde el perfil (mockup 09)
         findViewById(R.id.btn_map_worker_request).setOnClickListener(v -> {
-            Intent intent = new Intent(MapClientActivity.this, ServiceRequestActivity.class);
-            intent.putExtra("workerId", workerId);
+            Intent intent = new Intent(MapClientActivity.this, WorkerProfileActivity.class);
+            intent.putExtra(WorkerProfileActivity.EXTRA_WORKER_ID, workerId);
+            if (mCurrentLatLng != null && position != null) {
+                float[] meters = new float[1];
+                Location.distanceBetween(mCurrentLatLng.latitude, mCurrentLatLng.longitude,
+                        position.latitude, position.longitude, meters);
+                intent.putExtra(WorkerProfileActivity.EXTRA_DISTANCE_KM, meters[0] / 1000f);
+            }
             HomeUserActivity.putClientLocation(intent, mCurrentLatLng);
             startActivity(intent);
         });

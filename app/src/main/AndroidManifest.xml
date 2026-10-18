@@ -115,6 +115,9 @@
             android:name="com.project.ads.activities.client.RequestSentActivity"
             android:exported="false" />
         <activity
+            android:name="com.project.ads.activities.client.WorkerProfileActivity"
+            android:exported="false" />
+        <activity
             android:name="com.project.ads.activities.worker.MapWorkerActivity"
             android:exported="false" />
         <activity

@@ -565,4 +565,15 @@
         <item quantity="one">%1$d tarea seleccionada</item>
         <item quantity="other">%1$d tareas seleccionadas</item>
     </plurals>
+
+    <!-- Rediseño: perfil del técnico (mockup 09) -->
+    <string name="profile_view">Ver perfil</string>
+    <string name="profile_verified">Verificado por ADS</string>
+    <string name="profile_new">Nuevo</string>
+    <string name="profile_rating_label">Calificación</string>
+    <string name="profile_ratings_label">Calificaciones</string>
+    <string name="profile_distance_label">De ti</string>
+    <string name="profile_about">Sobre mí</string>
+    <string name="profile_categories">Oficios</string>
+    <string name="profile_request_note">El técnico confirma el precio al cotizar. Tú decides si aceptas.</string>
 </resources>
