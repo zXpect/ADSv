@@ -4,6 +4,16 @@
     <!-- ===================================================================
          TIPOGRAFÍA ADS (Sora). Tamaños de tokens.json y de los mockups.
          =================================================================== -->
+    <!-- Apariencia base de todo TextView sin textAppearance propio: solo cambia la fuente -->
+    <style name="TextAppearance.ADS.Base" parent="TextAppearance.AppCompat.Small">
+        <item name="android:fontFamily">@font/sora</item>
+        <item name="fontFamily">@font/sora</item>
+    </style>
+
+    <style name="Widget.ADS.TextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Base</item>
+    </style>
+
     <style name="TextAppearance.ADS" parent="TextAppearance.Material3.BodyLarge">
         <item name="android:fontFamily">@font/sora</item>
         <item name="fontFamily">@font/sora</item>

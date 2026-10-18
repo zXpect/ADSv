@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ads_navy"
+    android:background="@color/ads_header"
     android:fillViewport="true"
     android:overScrollMode="never"
     tools:context="com.project.ads.activities.LoginActivity">

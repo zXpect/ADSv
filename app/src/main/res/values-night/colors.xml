@@ -23,6 +23,7 @@
     <color name="ads_on_navy">#F6F3EE</color>
     <color name="ads_on_navy_muted">#CFCBDA</color>
     <color name="ads_map_me">#6F8BFF</color>         <!-- (*) -->
+    <color name="ads_header">#0E0C1B</color>         <!-- visto en los mockups -->
 
     <!-- ===================================================================
          HEREDADOS que NO apuntan a tokens: conservan su valor oscuro
