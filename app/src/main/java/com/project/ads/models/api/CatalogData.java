@@ -122,6 +122,13 @@ public class CatalogData {
     }
 
     /** Nombre visible de la unidad de cobro. */
+    /** Unidad en singular o plural según la cantidad ("1 visita", "2 visitas"). */
+    public static String unitLabel(String unit, double quantity) {
+        String label = unitLabel(unit);
+        if (quantity == 1 || "m2".equals(unit) || label.isEmpty()) return label;
+        return label.endsWith("d") ? label + "es" : label + "s";
+    }
+
     public static String unitLabel(String unit) {
         if (unit == null) return "";
         switch (unit) {

@@ -4,18 +4,15 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,14 +22,12 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.project.ads.R;
 import com.project.ads.models.RequestTaskItem;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.Worker;
-import com.project.ads.models.api.ApiBodies;
 import com.project.ads.models.api.CatalogData;
 import com.project.ads.models.api.QuoteReference;
 import com.project.ads.providers.ApiCallback;
@@ -40,13 +35,16 @@ import com.project.ads.providers.CatalogProvider;
 import com.project.ads.providers.WorkerProvider;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
- * Primer paso de la solicitud: el cliente elige el oficio (si el trabajador
- * tiene varios), agrega tareas del catálogo con su cantidad o «Otro», y ve el
- * estimado que calcula el backend (POST /api/requests/estimate/). La solicitud
- * se envía en VerifyRequestActivity (POST /api/requests/).
+ * Solicitud, paso 1 de 2 · mockup 10 (docs/mockups/Solicitud.dc.html).
+ * El cliente elige el oficio (si el trabajador tiene varios) y marca las tareas
+ * del catálogo con su cantidad, o «Otro trabajo» con su descripción. La dirección,
+ * el estimado del backend y el envío están en VerifyRequestActivity (paso 2).
  */
 public class ServiceRequestActivity extends AppCompatActivity {
 
@@ -62,15 +60,11 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private final CatalogProvider mCatalogProvider = new CatalogProvider();
     private final WorkerProvider mWorkerProvider = new WorkerProvider();
 
-    private TextInputEditText addressInput;
-    private TextInputEditText descriptionInput;
     private TextView serviceTypeText;
     private TextView noTasksText;
-    private TextView estimateText;
-    private TextView estimateNoticeText;
+    private TextView selectedCountText;
     private LinearLayout taskItemsLayout;
-    private MaterialButton addTaskButton;
-    private MaterialButton sendRequestButton;
+    private MaterialButton continueButton;
     private ProgressDialog progressDialog;
 
     private String mWorkerId;
@@ -78,18 +72,18 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private Double mLat;
     private Double mLng;
 
-    private CatalogData mCatalog;
     private final List<CatalogData.Category> mWorkerCategories = new ArrayList<>();
     private CatalogData.Category mCategory;
-    private final List<RequestTaskItem> mItems = new ArrayList<>();
-    private QuoteReference mEstimate;
-    private int mEstimateRequestSeq = 0;
+    /** Tareas marcadas (slug → cantidad), en el orden del catálogo. */
+    private final Map<String, Double> mSelected = new LinkedHashMap<>();
+    private boolean mCustomSelected = false;
+    private double mCustomQuantity = 1;
+    private EditText mCustomDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_request);
-        setupStatusBar();
         initViews();
 
         mWorkerId = getIntent().getStringExtra("workerId");
@@ -109,29 +103,19 @@ public class ServiceRequestActivity extends AppCompatActivity {
         loadWorkerAndCatalog();
     }
 
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
-        }
-    }
-
     private void initViews() {
-        addressInput = findViewById(R.id.et_address);
-        descriptionInput = findViewById(R.id.et_description);
         serviceTypeText = findViewById(R.id.tv_service_type);
         noTasksText = findViewById(R.id.tv_no_tasks);
-        estimateText = findViewById(R.id.tv_estimate);
-        estimateNoticeText = findViewById(R.id.tv_estimate_notice);
+        selectedCountText = findViewById(R.id.tv_selected_count);
         taskItemsLayout = findViewById(R.id.layout_task_items);
-        addTaskButton = findViewById(R.id.btn_add_task);
-        sendRequestButton = findViewById(R.id.btn_send_request);
+        continueButton = findViewById(R.id.btn_send_request);
 
-        addTaskButton.setEnabled(false);
-        addTaskButton.setOnClickListener(v -> showAddTaskDialog());
+        findViewById(R.id.btn_request_back).setOnClickListener(v -> finish());
         serviceTypeText.setOnClickListener(v -> showCategoryChooser());
-        sendRequestButton.setOnClickListener(v -> {
+        continueButton.setOnClickListener(v -> {
             if (validateInputs()) navigateToVerifyRequest();
         });
+        updateSelectedCount();
     }
 
     /** Respaldo si quien abrió la pantalla no pasó la coordenada del cliente. */
@@ -167,6 +151,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
                             + (worker.getLastName() != null ? worker.getLastName() : "")).trim();
                     mWorkerName = fullName.isEmpty() ? "Trabajador" : fullName;
                     ((TextView) findViewById(R.id.worker_name)).setText(mWorkerName);
+                    ((TextView) findViewById(R.id.tv_worker_initials)).setText(initialsOf(mWorkerName));
                     loadCatalog(worker);
                 })
                 .addOnFailureListener(e -> {
@@ -182,13 +167,13 @@ public class ServiceRequestActivity extends AppCompatActivity {
             @Override
             public void onSuccess(CatalogData catalog) {
                 hideProgressDialog();
-                mCatalog = catalog;
                 for (String slug : worker.getCategorySlugs()) {
                     CatalogData.Category category = catalog.findCategory(slug);
                     if (category != null) mWorkerCategories.add(category);
                 }
                 if (mWorkerCategories.isEmpty()) {
-                    serviceTypeText.setText(R.string.request_worker_without_category);
+                    noTasksText.setText(R.string.request_worker_without_category);
+                    noTasksText.setVisibility(View.VISIBLE);
                     return;
                 }
                 selectCategory(mWorkerCategories.get(0));
@@ -218,9 +203,11 @@ public class ServiceRequestActivity extends AppCompatActivity {
         serviceTypeText.setText(several
                 ? getString(R.string.request_category_change, category.getName())
                 : category.getName());
-        addTaskButton.setEnabled(true);
-        mItems.clear();
-        renderItems();
+        serviceTypeText.setClickable(several);
+        mSelected.clear();
+        mCustomSelected = false;
+        mCustomQuantity = 1;
+        renderTasks();
     }
 
     private void showCategoryChooser() {
@@ -235,7 +222,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
                     dialog.dismiss();
                     CatalogData.Category chosen = mWorkerCategories.get(which);
                     if (chosen == mCategory) return;
-                    if (mItems.isEmpty()) {
+                    if (selectedCount() == 0) {
                         selectCategory(chosen);
                     } else {
                         // Las tareas son del oficio: al cambiarlo se quitan
@@ -249,100 +236,190 @@ public class ServiceRequestActivity extends AppCompatActivity {
                 .show();
     }
 
-    // ---------- tareas ----------
+    // ---------- tareas (mockup 10) ----------
 
-    private void showAddTaskDialog() {
-        if (mCategory == null) return;
-        if (mItems.size() >= MAX_ITEMS) {
-            Toast.makeText(this, getString(R.string.request_max_items, MAX_ITEMS), Toast.LENGTH_SHORT).show();
-            return;
+    private int selectedCount() {
+        return mSelected.size() + (mCustomSelected ? 1 : 0);
+    }
+
+    /** Una tarjeta por tarea del oficio y «Otro trabajo» al final. */
+    private void renderTasks() {
+        taskItemsLayout.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (CatalogData.Task task : mCategory.getTasks()) {
+            View card = inflater.inflate(R.layout.item_request_task_option, taskItemsLayout, false);
+            bindTaskCard(card, task);
+            taskItemsLayout.addView(card);
         }
+        View custom = inflater.inflate(R.layout.item_request_task_option, taskItemsLayout, false);
+        bindCustomCard(custom);
+        taskItemsLayout.addView(custom);
+        updateSelectedCount();
+    }
 
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_task, null);
-        Spinner taskSpinner = view.findViewById(R.id.sp_task);
-        TextView rangeText = view.findViewById(R.id.tv_task_range);
-        TextInputLayout descriptionLayout = view.findViewById(R.id.til_custom_description);
-        TextInputEditText descriptionEdit = view.findViewById(R.id.et_custom_description);
-        TextInputLayout quantityLayout = view.findViewById(R.id.til_quantity);
-        TextInputEditText quantityEdit = view.findViewById(R.id.et_quantity);
+    private void bindTaskCard(View card, CatalogData.Task task) {
+        ((TextView) card.findViewById(R.id.tv_task_option_name)).setText(task.getName());
+        String unit = CatalogData.unitLabel(task.getUnit());
+        ((TextView) card.findViewById(R.id.tv_task_option_unit)).setText(capitalize(unit));
+        ((TextView) card.findViewById(R.id.tv_task_quantity_label))
+                .setText(capitalize(CatalogData.unitLabel(task.getUnit(), 2)));
 
-        // Opciones: tareas del oficio y al final «Otro»
-        List<String> options = new ArrayList<>();
-        List<CatalogData.Task> tasks = mCategory.getTasks();
-        for (CatalogData.Task task : tasks) options.add(task.getName());
-        options.add(getString(R.string.request_other_task));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        taskSpinner.setAdapter(adapter);
-
-        taskSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-                CatalogData.Task task = position < tasks.size() ? tasks.get(position) : null;
-                descriptionLayout.setVisibility(task == null ? View.VISIBLE : View.GONE);
-                boolean decimals = task != null && task.allowsDecimals();
-                quantityEdit.setInputType(decimals
-                        ? InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL
-                        : InputType.TYPE_CLASS_NUMBER);
-                quantityLayout.setHint(task == null ? getString(R.string.request_quantity_hint)
-                        : getString(R.string.request_quantity_unit_hint, CatalogData.unitLabel(task.getUnit())));
-                if (task == null) {
-                    rangeText.setText(R.string.request_other_task_note);
-                } else if (task.hasRange()) {
-                    rangeText.setText(getString(R.string.request_task_range,
-                            ServiceRequest.formatCop(task.getMinCop()), ServiceRequest.formatCop(task.getMaxCop()),
-                            CatalogData.unitLabel(task.getUnit())));
-                } else {
-                    rangeText.setText(R.string.request_task_without_range);
-                }
+        Runnable refresh = () -> {
+            Double quantity = mSelected.get(task.getSlug());
+            setCardSelected(card, quantity != null);
+            card.findViewById(R.id.tv_task_option_unit).setVisibility(quantity != null ? View.GONE : View.VISIBLE);
+            if (quantity != null) {
+                ((TextView) card.findViewById(R.id.tv_task_quantity)).setText(RequestTaskItem.formatQuantity(quantity));
             }
+            updateSelectedCount();
+        };
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+        card.setOnClickListener(v -> {
+            if (mSelected.containsKey(task.getSlug())) {
+                mSelected.remove(task.getSlug());
+            } else if (selectedCount() >= MAX_ITEMS) {
+                showToast(getString(R.string.request_max_items, MAX_ITEMS));
+                return;
+            } else {
+                mSelected.put(task.getSlug(), 1.0);
             }
+            refresh.run();
         });
+        card.findViewById(R.id.btn_task_minus).setOnClickListener(v -> {
+            Double quantity = mSelected.get(task.getSlug());
+            if (quantity == null) return;
+            if (quantity <= 1) {
+                mSelected.remove(task.getSlug());   // bajar de 1 la desmarca
+            } else {
+                mSelected.put(task.getSlug(), Math.max(1, quantity - 1));
+            }
+            refresh.run();
+        });
+        card.findViewById(R.id.btn_task_plus).setOnClickListener(v -> {
+            Double quantity = mSelected.get(task.getSlug());
+            if (quantity == null || quantity + 1 > MAX_QUANTITY) return;
+            mSelected.put(task.getSlug(), quantity + 1);
+            refresh.run();
+        });
+        // Tocar el número permite escribir la cantidad (p. ej. 12,5 m²)
+        card.findViewById(R.id.tv_task_quantity).setOnClickListener(v -> {
+            Double quantity = mSelected.get(task.getSlug());
+            if (quantity == null) return;
+            askQuantity(quantity, task.allowsDecimals(), value -> {
+                mSelected.put(task.getSlug(), value);
+                refresh.run();
+            });
+        });
+        refresh.run();
+    }
+
+    private void bindCustomCard(View card) {
+        ((TextView) card.findViewById(R.id.tv_task_option_name)).setText(R.string.request_custom_title);
+        ((TextView) card.findViewById(R.id.tv_task_option_unit)).setText(R.string.request_custom_subtitle);
+        ((TextView) card.findViewById(R.id.tv_task_quantity_label)).setText(R.string.request_quantity_label);
+        mCustomDescription = card.findViewById(R.id.et_task_custom);
+
+        Runnable refresh = () -> {
+            setCardSelected(card, mCustomSelected);
+            card.findViewById(R.id.tv_task_option_unit).setVisibility(mCustomSelected ? View.GONE : View.VISIBLE);
+            card.findViewById(R.id.til_task_custom).setVisibility(mCustomSelected ? View.VISIBLE : View.GONE);
+            ((TextView) card.findViewById(R.id.tv_task_quantity)).setText(RequestTaskItem.formatQuantity(mCustomQuantity));
+            updateSelectedCount();
+        };
+
+        card.setOnClickListener(v -> {
+            if (!mCustomSelected && selectedCount() >= MAX_ITEMS) {
+                showToast(getString(R.string.request_max_items, MAX_ITEMS));
+                return;
+            }
+            mCustomSelected = !mCustomSelected;
+            refresh.run();
+            if (mCustomSelected) mCustomDescription.requestFocus();
+        });
+        card.findViewById(R.id.btn_task_minus).setOnClickListener(v -> {
+            if (mCustomQuantity <= 1) {
+                mCustomSelected = false;
+            } else {
+                mCustomQuantity = Math.max(1, mCustomQuantity - 1);
+            }
+            refresh.run();
+        });
+        card.findViewById(R.id.btn_task_plus).setOnClickListener(v -> {
+            if (mCustomQuantity + 1 > MAX_QUANTITY) return;
+            mCustomQuantity += 1;
+            refresh.run();
+        });
+        card.findViewById(R.id.tv_task_quantity).setOnClickListener(v ->
+                askQuantity(mCustomQuantity, false, value -> {
+                    mCustomQuantity = value;
+                    refresh.run();
+                }));
+        refresh.run();
+    }
+
+    /** Borde naranja, casilla marcada y contador visibles cuando la tarea está elegida. */
+    private void setCardSelected(View card, boolean selected) {
+        MaterialCardView materialCard = (MaterialCardView) card;
+        materialCard.setStrokeColor(ContextCompat.getColor(this, selected ? R.color.ads_brand_text : R.color.ads_line));
+        materialCard.setStrokeWidth(getResources().getDimensionPixelSize(
+                selected ? R.dimen.stroke_focus : R.dimen.stroke_control));
+        ImageView check = card.findViewById(R.id.iv_task_check);
+        check.setBackgroundResource(selected ? R.drawable.bg_ads_check_on : R.drawable.bg_ads_check_off);
+        check.setImageResource(selected ? R.drawable.ic_ads_check : 0);
+        card.findViewById(R.id.layout_task_quantity).setVisibility(selected ? View.VISIBLE : View.GONE);
+        materialCard.setContentDescription(null);
+    }
+
+    private void updateSelectedCount() {
+        int count = selectedCount();
+        selectedCountText.setText(getResources().getQuantityString(R.plurals.request_selected_count, count, count));
+    }
+
+    private interface QuantityListener {
+        void onQuantity(double value);
+    }
+
+    /** Diálogo para escribir la cantidad; valida los mismos límites que el backend. */
+    private void askQuantity(double current, boolean decimals, QuantityListener listener) {
+        EditText input = new EditText(this);
+        input.setInputType(decimals
+                ? InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL
+                : InputType.TYPE_CLASS_NUMBER);
+        input.setText(RequestTaskItem.formatQuantity(current));
+        input.setSelectAllOnFocus(true);
+        int padding = getResources().getDimensionPixelSize(R.dimen.screen_margin);
+        LinearLayout container = new LinearLayout(this);
+        container.setPadding(padding, 0, padding, 0);
+        container.addView(input, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.request_add_task)
-                .setView(view)
-                .setPositiveButton(R.string.request_add, null)
+                .setTitle(R.string.request_quantity_label)
+                .setView(container)
+                .setPositiveButton(R.string.accept, null)
                 .setNegativeButton(R.string.cancel, null)
                 .create();
-
         dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            int position = taskSpinner.getSelectedItemPosition();
-            CatalogData.Task task = position < tasks.size() ? tasks.get(position) : null;
-            descriptionLayout.setError(null);
-            quantityLayout.setError(null);
-
-            Double quantity = parseQuantity(quantityEdit.getText() != null ? quantityEdit.getText().toString() : "");
-            boolean decimals = task != null && task.allowsDecimals();
+            Double quantity = parseQuantity(input.getText().toString());
             if (quantity == null || quantity <= 0 || quantity > MAX_QUANTITY
                     || (!decimals && quantity != Math.floor(quantity))) {
-                quantityLayout.setError(getString(decimals ? R.string.request_quantity_error_decimal
+                input.setError(getString(decimals ? R.string.request_quantity_error_decimal
                         : R.string.request_quantity_error_integer, (int) MAX_QUANTITY));
                 return;
             }
-
-            if (task == null) {
-                String description = descriptionEdit.getText() != null ? descriptionEdit.getText().toString().trim() : "";
-                if (description.isEmpty()) {
-                    descriptionLayout.setError(getString(R.string.request_custom_task_required));
-                    return;
-                }
-                mItems.add(RequestTaskItem.custom(description, quantity));
-            } else {
-                mItems.add(RequestTaskItem.fromTask(task, quantity));
-            }
+            listener.onQuantity(quantity);
             dialog.dismiss();
-            renderItems();
         }));
         dialog.show();
     }
 
-    /** Acepta coma o punto decimal y lo deja con dos decimales como máximo. */
+    /**
+     * Acepta coma o punto decimal y lo deja con dos decimales como máximo.
+     * Con coma, el punto se toma como separador de miles ("1.000,5").
+     */
     private static Double parseQuantity(String text) {
-        String value = text.trim().replace(',', '.');
+        String value = text.trim();
+        value = value.contains(",") ? value.replace(".", "").replace(',', '.') : value;
         if (value.isEmpty()) return null;
         try {
             return Math.round(Double.parseDouble(value) * 100) / 100.0;
@@ -351,80 +428,36 @@ public class ServiceRequestActivity extends AppCompatActivity {
         }
     }
 
-    private void renderItems() {
-        taskItemsLayout.removeAllViews();
-        noTasksText.setVisibility(mItems.isEmpty() ? View.VISIBLE : View.GONE);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        for (RequestTaskItem item : new ArrayList<>(mItems)) {
-            View row = inflater.inflate(R.layout.item_request_task, taskItemsLayout, false);
-            ((TextView) row.findViewById(R.id.tv_task_item)).setText(item.getDisplayText());
-            ImageButton remove = row.findViewById(R.id.btn_remove_task);
-            remove.setOnClickListener(v -> {
-                mItems.remove(item);
-                renderItems();
-            });
-            taskItemsLayout.addView(row);
-        }
-        refreshEstimate();
-    }
-
-    // ---------- estimado ----------
-
-    private void refreshEstimate() {
-        mEstimate = null;
-        if (mItems.isEmpty()) {
-            estimateText.setVisibility(View.GONE);
-            estimateNoticeText.setVisibility(View.GONE);
-            return;
-        }
-        estimateText.setVisibility(View.VISIBLE);
-        estimateText.setText(R.string.request_estimate_loading);
-        estimateNoticeText.setVisibility(View.VISIBLE);
-
-        // Solo cuenta la respuesta de la última petición
-        int seq = ++mEstimateRequestSeq;
-        List<ApiBodies.TaskItemBody> bodies = new ArrayList<>();
-        for (RequestTaskItem item : mItems) bodies.add(item.toBody());
-        mCatalogProvider.estimate(mCategory.getSlug(), bodies, new ApiCallback<QuoteReference>() {
-            @Override
-            public void onSuccess(QuoteReference estimate) {
-                if (seq != mEstimateRequestSeq) return;
-                mEstimate = estimate;
-                estimateText.setText(estimateSummary(ServiceRequestActivity.this, estimate));
-            }
-
-            @Override
-            public void onError(String message, int httpStatus) {
-                if (seq != mEstimateRequestSeq) return;
-                estimateText.setText(getString(R.string.request_estimate_error, message));
-            }
-        });
-    }
-
-    /** Texto del estimado; lo reutiliza VerifyRequestActivity. */
-    static String estimateSummary(android.content.Context context, QuoteReference estimate) {
-        if (estimate == null) return context.getString(R.string.request_estimate_unavailable);
-        if (!estimate.hasRange()) return context.getString(R.string.request_estimate_unpriced);
-        String range = context.getString(R.string.request_estimate_range,
-                ServiceRequest.formatCop(estimate.getMinCop()), ServiceRequest.formatCop(estimate.getMaxCop()));
-        return estimate.hasUnpricedItems()
-                ? range + "\n" + context.getString(R.string.request_estimate_partial)
-                : range;
-    }
-
     // ---------- siguiente paso ----------
 
-    private boolean validateInputs() {
-        if (addressInput.getText() == null || addressInput.getText().toString().trim().isEmpty()) {
-            showToast("Por favor, ingresa la dirección.");
-            return false;
+    /** Tareas elegidas en el orden del catálogo, y «Otro» al final. */
+    private List<RequestTaskItem> buildItems() {
+        List<RequestTaskItem> items = new ArrayList<>();
+        for (CatalogData.Task task : mCategory.getTasks()) {
+            Double quantity = mSelected.get(task.getSlug());
+            if (quantity != null) items.add(RequestTaskItem.fromTask(task, quantity));
         }
+        if (mCustomSelected) {
+            String description = mCustomDescription.getText() != null
+                    ? mCustomDescription.getText().toString().trim() : "";
+            items.add(RequestTaskItem.custom(description, mCustomQuantity));
+        }
+        return items;
+    }
+
+    private boolean validateInputs() {
         if (mCategory == null) {
             showToast(getString(R.string.request_worker_without_category));
             return false;
         }
-        if (mItems.isEmpty()) {
+        if (selectedCount() == 0) {
             showToast(getString(R.string.request_tasks_required));
+            return false;
+        }
+        if (mCustomSelected && (mCustomDescription.getText() == null
+                || mCustomDescription.getText().toString().trim().isEmpty())) {
+            mCustomDescription.setError(getString(R.string.request_custom_task_required));
+            mCustomDescription.requestFocus();
             return false;
         }
         if (mLat == null || mLng == null) {
@@ -437,20 +470,34 @@ public class ServiceRequestActivity extends AppCompatActivity {
 
     private void navigateToVerifyRequest() {
         Intent intent = new Intent(this, VerifyRequestActivity.class);
-        intent.putExtra("worker_photo", R.drawable.workerlogo);
         intent.putExtra("worker_name", mWorkerName);
         intent.putExtra("worker_id", mWorkerId);
-        intent.putExtra("address", addressInput.getText().toString().trim());
-        intent.putExtra("description", descriptionInput.getText() != null
-                ? descriptionInput.getText().toString().trim() : "");
         intent.putExtra("service_category", mCategory.getSlug());
         intent.putExtra("service_type", mCategory.getName());
-        intent.putExtra("task_items", new Gson().toJson(mItems.toArray(new RequestTaskItem[0])));
-        intent.putExtra("estimate", estimateSummary(this, mEstimate));
+        intent.putExtra("task_items", new Gson().toJson(buildItems().toArray(new RequestTaskItem[0])));
         intent.putExtra(EXTRA_LAT, mLat);
         intent.putExtra(EXTRA_LNG, mLng);
         startActivity(intent);
         // No se finaliza para poder volver a editar
+    }
+
+    /** Texto del estimado total ("$55.500 – $110.000"); null si no hay rango. */
+    static String estimateRange(QuoteReference estimate) {
+        if (estimate == null || !estimate.hasRange()) return null;
+        return ServiceRequest.formatCop(estimate.getMinCop()) + " – " + ServiceRequest.formatCop(estimate.getMaxCop());
+    }
+
+    private static String initialsOf(String name) {
+        StringBuilder initials = new StringBuilder();
+        for (String part : name.trim().split("\\s+")) {
+            if (!part.isEmpty() && initials.length() < 2) initials.append(Character.toUpperCase(part.charAt(0)));
+        }
+        return initials.toString();
+    }
+
+    private static String capitalize(String text) {
+        if (text == null || text.isEmpty()) return "";
+        return text.substring(0, 1).toUpperCase(new Locale("es", "CO")) + text.substring(1);
     }
 
     private void showToast(String message) {

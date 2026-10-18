@@ -521,4 +521,48 @@
     <string name="tasks_other_title">Otro problema</string>
     <string name="tasks_other_subtitle">Descríbelo y el técnico lo cotiza</string>
     <string name="tasks_next_step">En el siguiente paso eliges al técnico que prefieras.</string>
+
+    <!-- Rediseño: solicitud (mockups 10, 11, 12 y 47) -->
+    <string name="request_step1_label">Paso 1 de 2 · Qué necesitas</string>
+    <string name="request_step1_title">Elige las tareas</string>
+    <string name="request_price_at_end">Precio al final</string>
+    <string name="request_continue">Continuar</string>
+    <string name="request_custom_hint">Describe el trabajo</string>
+    <string name="request_quantity_minus">Quitar uno</string>
+    <string name="request_quantity_plus">Agregar uno</string>
+    <string name="request_custom_title">Otro trabajo</string>
+    <string name="request_custom_subtitle">Lo describes tú</string>
+    <string name="request_quantity_label">Cantidad</string>
+    <string name="request_step2_label">Paso 2 de 2 · Dónde y cuánto</string>
+    <string name="request_step2_title">Revisa tu solicitud</string>
+    <string name="request_address_label">Dirección del trabajo</string>
+    <string name="request_address_hint">Calle, carrera y número</string>
+    <string name="request_use_location">Usar mi ubicación actual</string>
+    <string name="request_details_label">Detalles para el técnico (opcional)</string>
+    <string name="request_details_hint">Ej.: el tablero está en el patio</string>
+    <string name="request_price_estimated">Precio estimado</string>
+    <string name="request_price">Precio</string>
+    <string name="request_total_estimated">Total estimado</string>
+    <string name="request_total">Total</string>
+    <string name="request_total_unpriced">Lo defines al recibir la cotización</string>
+    <string name="request_price_notice">El valor final puede variar según materiales, tiempo, dificultad y condiciones del lugar.</string>
+    <string name="request_price_notice_partial">Algunas tareas no tienen un rango fijo y el técnico las cotiza. El valor final puede variar según materiales, tiempo, dificultad y condiciones del lugar.</string>
+    <string name="request_price_notice_unpriced">Estas tareas no tienen un rango fijo. El técnico revisa tu solicitud y te envía el precio.</string>
+    <string name="request_min_fee_notice">La tarifa mínima por visita es %1$s. Es el piso del precio, no un cobro aparte.</string>
+    <string name="request_send">Enviar solicitud</string>
+    <string name="request_send_note">Aún no pagas nada. %1$s te enviará una cotización.</string>
+    <string name="request_the_worker">El técnico</string>
+    <string name="request_task_quoted_by_worker">El técnico la cotizará</string>
+    <string name="request_custom_row">Otro: %1$s</string>
+    <string name="request_location_address_error">No pudimos obtener la dirección de tu ubicación. Escríbela, por favor.</string>
+    <string name="request_address_required">Escribe la dirección del trabajo</string>
+    <string name="request_sent_title">Solicitud enviada</string>
+    <string name="request_sent_message">%1$s la revisará y te enviará una cotización con el precio, la fecha y la hora de llegada.</string>
+    <string name="request_sent_status_desc">Estado: pendiente. Siguientes: cotizada, aceptada</string>
+    <string name="request_sent_view">Ver mi solicitud</string>
+    <string name="request_sent_home">Volver al inicio</string>
+    <plurals name="request_selected_count">
+        <item quantity="one">%1$d tarea seleccionada</item>
+        <item quantity="other">%1$d tareas seleccionadas</item>
+    </plurals>
 </resources>

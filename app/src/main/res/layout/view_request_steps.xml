@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Barra de pasos de la solicitud (2 pasos). El segundo tramo se colorea desde el código. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="4dp"
+    android:importantForAccessibility="no"
+    android:orientation="horizontal">
+
+    <View
+        android:id="@+id/view_step_1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/bg_ads_progress_on" />
+
+    <View
+        android:id="@+id/view_step_2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="6dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_ads_progress_off" />
+</LinearLayout>

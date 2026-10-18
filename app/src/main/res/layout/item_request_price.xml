@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fila de precio por tarea · mockups 11 y 47: nombre, cantidad y rango
+     (o el chip «El técnico la cotizará»). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/space_3"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_price_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+            tools:text="Reparar cortocircuito" />
+
+        <TextView
+            android:id="@+id/tv_price_item_quantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/sora"
+            android:textAppearance="@style/TextAppearance.ADS.Label"
+            tools:text="1 visita" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_price_item_range"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_3"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+        tools:text="$25.500 – $60.000" />
+
+    <TextView
+        android:id="@+id/tv_price_item_unpriced"
+        style="@style/Widget.ADS.StatusChip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_3"
+        android:maxLines="2"
+        android:text="@string/request_task_quoted_by_worker"
+        android:visibility="gone" />
+</LinearLayout>

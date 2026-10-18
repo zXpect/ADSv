@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Píldora con borde fino (técnico elegido en la solicitud, mockup 10) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ads_card" />
+    <corners android:radius="22dp" />
+    <stroke
+        android:width="@dimen/stroke_control"
+        android:color="@color/ads_line" />
+</shape>

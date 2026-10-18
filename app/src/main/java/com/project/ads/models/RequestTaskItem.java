@@ -58,6 +58,18 @@ public class RequestTaskItem {
         this.quantity = quantity;
     }
 
+    /** Nombre de la tarea, o la descripción en «Otro». */
+    public String getName() {
+        return name;
+    }
+
+    /** "1 visita", "2 unidades", "12,5 m²"; en «Otro» solo la cantidad. */
+    public String getQuantityLabel() {
+        String quantityText = formatQuantity(quantity);
+        if (isCustom() || unit == null) return quantityText;
+        return quantityText + " " + CatalogData.unitLabel(unit, quantity);
+    }
+
     /** "Pintura sobre estuco, 2 manos · 12,5 m²" o "Otro: Revisar humedad · 1". */
     public String getDisplayText() {
         String quantityText = formatQuantity(quantity);

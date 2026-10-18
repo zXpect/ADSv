@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Botón redondo del contador (- / +), 44 dp -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/ads_card" />
+    <stroke
+        android:width="@dimen/stroke_control"
+        android:color="@color/ads_control" />
+</shape>
