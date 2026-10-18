@@ -1,43 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- COLORES MODO CLARO -->
+    <!-- ===================================================================
+         TOKENS ADS (docs/mockups/ds/ads/tokens.json) · MODO CLARO
+         Los layouts nuevos usan solo estos colores (ads_*). Su versión
+         oscura está en values-night/colors.xml.
+         =================================================================== -->
+    <color name="ads_brand">#E8751A</color>          <!-- botones principales, acentos -->
+    <color name="ads_brand_text">#B45309</color>     <!-- texto/enlaces naranja sobre claro (AA) -->
+    <color name="ads_navy">#1B1830</color>           <!-- azul noche: barras, fichas, fondo oscuro -->
+    <color name="ads_on_brand">#1B1830</color>       <!-- texto sobre botón naranja (nunca blanco) -->
+    <color name="ads_charcoal">#3A3F47</color>       <!-- texto de cuerpo -->
+    <color name="ads_text">#1B1830</color>           <!-- títulos y texto fuerte -->
+    <color name="ads_muted">#5B606B</color>          <!-- texto secundario, etiquetas -->
+    <color name="ads_surface">#F6F3EE</color>        <!-- fondo de pantallas -->
+    <color name="ads_surface_alt">#E7E3DB</color>    <!-- zonas secundarias, avisos -->
+    <color name="ads_card">#FFFFFF</color>           <!-- tarjetas y campos -->
+    <color name="ads_bar">#FFFFFF</color>            <!-- barra inferior y barra de acción fija -->
+    <color name="ads_line">#CFCAC0</color>           <!-- bordes finos y divisores -->
+    <color name="ads_control">#858A93</color>        <!-- borde de campos y botones secundarios -->
+    <color name="ads_chip_bg">#FBE7D3</color>        <!-- chip naranja claro, indicador activo -->
+    <color name="ads_chip_text">#8F3F06</color>      <!-- texto de chip naranja -->
+    <color name="ads_on_navy">#F6F3EE</color>        <!-- texto sobre navy -->
+    <color name="ads_on_navy_muted">#CFCBDA</color>  <!-- texto secundario sobre navy -->
+    <color name="ads_map_me">#3A5BD9</color>         <!-- punto "tu ubicación" en el mapa -->
+
+    <!-- ===================================================================
+         COLORES HEREDADOS
+         Se conservan los nombres para no tocar los layouts, pero apuntan a
+         los tokens ADS. Se irán dejando de usar pantalla por pantalla.
+         white/black/whitevariable/textOnlywhite y los colores de estado
+         conservan su valor (cambiarlos ahora alteraría textos y fondos).
+         =================================================================== -->
     <color name="status_bar_dark">#CC1A1A1A</color>
     <color name="black">#FF000000</color>
-    <color name="whitevariable">#FFFFFFFF</color>
+    <color name="whitevariable">@color/ads_card</color>
     <color name="white">#FFFFFFFF</color>
     <color name="textOnlywhite">#FFFFFFFF</color>
-    <color name="nav_item_selected_bg">#0DFF7500</color>
+    <color name="nav_item_selected_bg">@color/ads_chip_bg</color>
 
-    <!-- Primary / Accent (Paleta naranja elegante y sofisticada) -->
-    <color name="colorPrimary">#E86A33</color>
-    <color name="colorPrimaryDark">#CC511B</color>
-    <color name="colorPrimaryLight">#FF8A5B</color>
-    <color name="colorAccent">#F09068</color>
+    <!-- Primary / Accent -->
+    <color name="colorPrimary">@color/ads_brand</color>
+    <color name="colorPrimaryDark">@color/ads_brand_text</color>
+    <color name="colorPrimaryLight">#F28A2E</color>
+    <color name="colorAccent">@color/ads_brand</color>
 
     <!-- Alternativa azul (para elementos secundarios) -->
     <color name="blue">#5B9BD5</color>
 
-    <!-- Otras referencias de acento -->
-    <color name="accent_color">#E86A33</color>
+    <color name="accent_color">@color/ads_brand</color>
 
-    <!-- Fondos y superficies (tonos suaves para reducir cansancio) -->
-    <color name="background_color">#FAFBFC</color>
-    <color name="background_light">#FFFFFF</color>
-    <color name="background_dark">#0F1419</color>
-    <color name="surface_dark">#1C2128</color>
-    <color name="background_card">#FFFFFF</color>
-    <color name="card_background">#FFFFFF</color>
+    <!-- Fondos y superficies -->
+    <color name="background_color">@color/ads_surface</color>
+    <color name="background_light">@color/ads_card</color>
+    <color name="background_dark">@color/ads_navy</color>
+    <color name="surface_dark">#26223F</color>
+    <color name="background_card">@color/ads_card</color>
+    <color name="card_background">@color/ads_card</color>
 
-    <!-- Textos (contraste optimizado) -->
-    <color name="text_primary">#1A1F36</color>
-    <color name="text_secondary">#697386</color>
-    <color name="text_hint">#A3ACBC</color>
-    <color name="text_primary_dark">#E8EAED</color>
-    <color name="text_secondary_dark">#9AA0A6</color>
-    <color name="primary_text">#1A1F36</color>
-    <color name="secondary_text">#697386</color>
+    <!-- Textos -->
+    <color name="text_primary">@color/ads_text</color>
+    <color name="text_secondary">@color/ads_muted</color>
+    <color name="text_hint">@color/ads_control</color>
+    <color name="text_primary_dark">#F6F3EE</color>
+    <color name="text_secondary_dark">#B9B6C4</color>
+    <color name="primary_text">@color/ads_text</color>
+    <color name="secondary_text">@color/ads_muted</color>
 
-    <!-- Colores de estado (tonos refinados) -->
+    <!-- Colores de estado (sin token ADS todavía; se conservan) -->
     <color name="success_color">#34C759</color>
     <color name="success_light">#E8F7ED</color>
     <color name="error_color">#E65245</color>
@@ -47,57 +76,52 @@
     <color name="status_busy">#E65245</color>
     <color name="green">#34C759</color>
     <color name="red">#E65245</color>
-    <color name="orange">#E86A33</color>
+    <color name="orange">@color/ads_brand</color>
 
     <!-- Botones / UI -->
-    <color name="button_color">#E86A33</color>
-    <color name="rating_color">#F5A623</color>
-    <color name="star_color">#FDB813</color>
-    <color name="primary_color">#E86A33</color>
+    <color name="button_color">@color/ads_brand</color>
+    <color name="rating_color">@color/ads_brand</color>
+    <color name="star_color">@color/ads_brand</color>
+    <color name="primary_color">@color/ads_brand</color>
 
-    <!-- Dividers / bordes (sutiles) -->
-    <color name="divider_color">#E5E8EB</color>
-    <color name="gray_light">#F7F8FA</color>
-    <color name="gray_medium">#DFE3E8</color>
-    <color name="gray_dark">#8B95A5</color>
-    <color name="border_gray">#E5E8EB</color>
+    <!-- Divisores / bordes -->
+    <color name="divider_color">@color/ads_line</color>
+    <color name="gray_light">@color/ads_surface</color>
+    <color name="gray_medium">@color/ads_line</color>
+    <color name="gray_dark">@color/ads_control</color>
+    <color name="border_gray">@color/ads_line</color>
 
-    <!-- ESTADÍSTICAS - Elegante y minimalista -->
-    <color name="stat_card_bg_1">#FFFAF7</color>
-    <color name="stat_card_bg_2">#FFFAF7</color>
-    <color name="stat_card_bg_3">#FFFAF7</color>
-    <color name="stat_card_bg_4">#FFFAF7</color>
+    <!-- Estadísticas -->
+    <color name="stat_card_bg_1">@color/ads_card</color>
+    <color name="stat_card_bg_2">@color/ads_card</color>
+    <color name="stat_card_bg_3">@color/ads_card</color>
+    <color name="stat_card_bg_4">@color/ads_card</color>
+    <color name="stat_value_color">@color/ads_brand_text</color>
+    <color name="stat_icon_color">@color/ads_muted</color>
 
-    <!-- Color de los números - Naranja sofisticado -->
-    <color name="stat_value_color">#E86A33</color>
-
-    <!-- Color del texto descriptivo -->
-    <color name="stat_icon_color">#697386</color>
-
-    <!-- INDICADORES / BADGES -->
+    <!-- Indicadores / badges -->
     <color name="circle_red">#E65245</color>
     <color name="circle_green">#34C759</color>
-    <color name="notification_badge_bg">#FFF5F0</color>
+    <color name="notification_badge_bg">@color/ads_chip_bg</color>
     <color name="notification_badge_bg_dark">#2A2D32</color>
 
-    <!-- ACCESOS RÁPIDOS -->
-    <color name="quick_access_bg_1">#FFFAF7</color>
-    <color name="quick_access_bg_1_dark">#1C2128</color>
-    <color name="quick_access_bg_2">#FFFAF7</color>
-    <color name="quick_access_bg_2_dark">#1C2128</color>
+    <!-- Accesos rápidos -->
+    <color name="quick_access_bg_1">@color/ads_card</color>
+    <color name="quick_access_bg_1_dark">#26223F</color>
+    <color name="quick_access_bg_2">@color/ads_card</color>
+    <color name="quick_access_bg_2_dark">#26223F</color>
 
     <!-- Estadísticas (legacy) -->
-    <color name="stat_card_bg">#FFFAF7</color>
-    <color name="stat_card_bg_dark">#1C2128</color>
+    <color name="stat_card_bg">@color/ads_card</color>
+    <color name="stat_card_bg_dark">#26223F</color>
 
-    <!-- Warning & Error colors -->
+    <!-- Warning & Error -->
     <color name="warning_light">#FFF8EC</color>
     <color name="error_light">#FDEEED</color>
 
-    <!-- Divider -->
-    <color name="divider">#E0E0E0</color>
+    <color name="divider">@color/ads_line</color>
 
-    <!-- Status Colors -->
+    <!-- Estados del servicio (heredados; los mockups usan chips, no colores) -->
     <color name="pending">#FFC107</color>
     <color name="accepted">#4CAF50</color>
     <color name="on_the_way">#2196F3</color>
@@ -106,13 +130,13 @@
     <color name="cancelled">#F44336</color>
     <color name="rejected">#F44336</color>
 
-    <!-- Utility Colors -->
+    <!-- Utilidad -->
     <color name="success">#4CAF50</color>
     <color name="error">#F44336</color>
     <color name="warning">#FFC107</color>
     <color name="info">#2196F3</color>
 
-    <!-- Fondos para iconos de verificación -->
+    <!-- Fondos para íconos de verificación -->
     <color name="warning_light_bg">#FFF8E1</color>
     <color name="success_light_bg">#E8F5E9</color>
     <color name="error_light_bg">#FFEBEE</color>

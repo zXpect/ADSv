@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Barra inferior del cliente (mockups 06, 37, 41, 42) -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_client_home"
+        android:icon="@drawable/ic_nav_home"
+        android:title="@string/nav_home" />
+    <item
+        android:id="@+id/nav_client_requests"
+        android:icon="@drawable/ic_nav_requests"
+        android:title="@string/nav_client_requests" />
+    <item
+        android:id="@+id/nav_client_pqr"
+        android:icon="@drawable/ic_nav_pqr"
+        android:title="@string/nav_pqr" />
+    <item
+        android:id="@+id/nav_client_account"
+        android:icon="@drawable/ic_nav_account"
+        android:title="@string/nav_account" />
+</menu>

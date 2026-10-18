@@ -1,43 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- COLORES MODO OSCURO -->
+    <!-- ===================================================================
+         TOKENS ADS · MODO OSCURO (se activa con el tema oscuro del teléfono)
+         Valores de tokens.json. Los marcados (*) no están en tokens.json:
+         se derivan de los mockups o se proponen; revisar al probar.
+         =================================================================== -->
+    <color name="ads_brand">#F28A2E</color>
+    <color name="ads_brand_text">#F28A2E</color>
+    <color name="ads_navy">#1B1830</color>
+    <color name="ads_on_brand">#1B1830</color>
+    <color name="ads_charcoal">#F6F3EE</color>
+    <color name="ads_text">#F6F3EE</color>
+    <color name="ads_muted">#B9B6C4</color>
+    <color name="ads_surface">#1B1830</color>
+    <color name="ads_surface_alt">#26223F</color>
+    <color name="ads_card">#26223F</color>           <!-- (*) -->
+    <color name="ads_bar">#2A2647</color>            <!-- (*) visto en los mockups sobre navy -->
+    <color name="ads_line">#3A3658</color>
+    <color name="ads_control">#8C88A3</color>        <!-- (*) borde secundario sobre navy en los mockups -->
+    <color name="ads_chip_bg">#4A2C12</color>        <!-- (*) propuesto -->
+    <color name="ads_chip_text">#FBD3AE</color>      <!-- (*) propuesto -->
+    <color name="ads_on_navy">#F6F3EE</color>
+    <color name="ads_on_navy_muted">#CFCBDA</color>
+    <color name="ads_map_me">#6F8BFF</color>         <!-- (*) -->
+
+    <!-- ===================================================================
+         HEREDADOS que NO apuntan a tokens: conservan su valor oscuro
+         anterior. El resto de nombres heredados se resuelve solo con los
+         tokens de arriba (ver values/colors.xml).
+         Ojo: "white" y "black" aquí NO son blanco ni negro (se invierten);
+         no usarlos en layouts nuevos.
+         =================================================================== -->
     <color name="status_bar_dark">#0A0E13</color>
     <color name="black">#D1CDCD</color>
-    <color name="whitevariable">#0A0E13</color>
     <color name="white">#ECEFF4</color>
     <color name="textOnlywhite">#ECEFF4</color>
-    <color name="nav_item_selected_bg">#26FF8A5B</color>
 
-    <!-- Primary / Accent (naranja vibrante para modo oscuro) -->
-    <color name="colorPrimary">#D65E2E</color>
-    <color name="colorPrimaryDark">#CA5B2A</color>
     <color name="colorPrimaryLight">#FFB088</color>
-    <color name="colorAccent">#FFA178</color>
-
-    <!-- Alternativa azul -->
     <color name="blue">#6BABDE</color>
 
-    <!-- Otras referencias de acento -->
-    <color name="accent_color">#FB7B3A</color>
-
-    <!-- Fondos y superficies (gris azulado oscuro elegante) -->
-    <color name="background_color">#0A0E13</color>
-    <color name="background_light">#151A21</color>
-    <color name="background_dark">#0A0E13</color>
-    <color name="surface_dark">#151A21</color>
-    <color name="background_card">#1A2027</color>
-    <color name="card_background">#1A2027</color>
-
-    <!-- Textos (alto contraste optimizado) -->
-    <color name="text_primary">#ECEFF4</color>
-    <color name="text_secondary">#A8B2C1</color>
-    <color name="text_hint">#6B7785</color>
-    <color name="text_primary_dark">#ECEFF4</color>
-    <color name="text_secondary_dark">#A8B2C1</color>
-    <color name="primary_text">#ECEFF4</color>
-    <color name="secondary_text">#A8B2C1</color>
-
-    <!-- Colores de estado (vibrantes para modo oscuro) -->
+    <!-- Colores de estado -->
     <color name="success_color">#52D86A</color>
     <color name="success_light">#1A2E20</color>
     <color name="error_color">#F56B5F</color>
@@ -47,57 +49,15 @@
     <color name="status_busy">#F56B5F</color>
     <color name="green">#52D86A</color>
     <color name="red">#F56B5F</color>
-    <color name="orange">#FF8A5B</color>
 
-    <!-- Botones / UI -->
-    <color name="button_color">#FF8A5B</color>
-    <color name="rating_color">#FFB340</color>
-    <color name="star_color">#FFC93E</color>
-    <color name="primary_color">#FF8A5B</color>
-
-    <!-- Dividers / bordes (sutiles pero visibles) -->
-    <color name="divider_color">#2A3139</color>
-    <color name="gray_light">#1A2027</color>
-    <color name="gray_medium">#2A3139</color>
-    <color name="gray_dark">#6B7785</color>
-    <color name="border_gray">#2A3139</color>
-
-    <!-- ESTADÍSTICAS - Tarjetas elevadas con contraste -->
-    <color name="stat_card_bg_1">#1F262E</color>
-    <color name="stat_card_bg_2">#1F262E</color>
-    <color name="stat_card_bg_3">#1F262E</color>
-    <color name="stat_card_bg_4">#1F262E</color>
-
-    <!-- Color de los números (naranja brillante) -->
-    <color name="stat_value_color">#FB7B3A</color>
-
-    <!-- Color del texto descriptivo -->
-    <color name="stat_icon_color">#A8B2C1</color>
-
-    <!-- INDICADORES / BADGES -->
     <color name="circle_red">#F56B5F</color>
     <color name="circle_green">#52D86A</color>
-    <color name="notification_badge_bg">#2D1F17</color>
     <color name="notification_badge_bg_dark">#2D1F17</color>
 
-    <!-- ACCESOS RÁPIDOS (con sutil tono naranja) -->
-    <color name="quick_access_bg_1">#1F262E</color>
-    <color name="quick_access_bg_1_dark">#151A21</color>
-    <color name="quick_access_bg_2">#1F262E</color>
-    <color name="quick_access_bg_2_dark">#151A21</color>
-
-    <!-- Estadísticas (legacy) -->
-    <color name="stat_card_bg">#1F262E</color>
-    <color name="stat_card_bg_dark">#151A21</color>
-
-    <!-- Warning & Error colors (fondos con tinte) -->
     <color name="warning_light">#2D2417</color>
     <color name="error_light">#2D1A19</color>
 
-    <!-- Divider -->
-    <color name="divider">#2A3139</color>
-
-    <!-- Status Colors (vibrantes para modo oscuro) -->
+    <!-- Estados del servicio -->
     <color name="pending">#FFB340</color>
     <color name="accepted">#52D86A</color>
     <color name="on_the_way">#6BABDE</color>
@@ -106,7 +66,7 @@
     <color name="cancelled">#F56B5F</color>
     <color name="rejected">#F56B5F</color>
 
-    <!-- Utility Colors -->
+    <!-- Utilidad -->
     <color name="success">#52D86A</color>
     <color name="error">#F56B5F</color>
     <color name="warning">#FFB340</color>
