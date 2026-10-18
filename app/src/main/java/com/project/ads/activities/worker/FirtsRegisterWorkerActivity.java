@@ -33,10 +33,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.project.ads.activities.TermsConditionsActivity;
-import com.project.ads.includes.MyToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.project.ads.R;
+import com.project.ads.activities.LoginActivity;
+import com.project.ads.helpers.RegisterStepsHelper;
 
 import com.project.ads.models.api.CatalogData;
 import com.project.ads.providers.ApiCallback;
@@ -63,12 +64,8 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
     private Button mButtonContinue;
     private TextInputEditText mTextInputNames, mTextInputLastNames, mTextInputEmail, mTextInputPassword, mTextInputPhone;
     private TextInputLayout mTextInputLayoutNames, mTextInputLayoutLastNames, mTextInputLayoutEmail, mTextInputLayoutPassword, mTextInputLayoutPhone;
-    private AutoCompleteTextView mSpinnerWork;
-    // Oficios máximos por trabajador (D16; worker_max_categories en el backend)
-    private static final int MAX_CATEGORIES = 3;
-    private final ArrayList<String> mSelectedCategories = new ArrayList<>();
-    private List<CatalogData.Category> mCategoryOptions;
     private CheckBox mCheckBoxTerms;
+    private CheckBox mCheckBoxData;
     private TextView mTextViewTerms;
     private CircleImageView mCircleImageProfile;
     private ImageView mImageViewAddPhoto;
@@ -131,15 +128,17 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_register_worker);
-        MyToolbar.showTransparent(this, "Registro de Trabajador", true);
+        RegisterStepsHelper.bind(this, 1, R.string.register_step1);
+        findViewById(R.id.btn_back).setOnClickListener(v -> onBackPressed());
+        findViewById(R.id.btn_register_login).setOnClickListener(v -> {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        });
 
         initializeViews();
         handleGoogleSignInData();
-        setupServiceTypeDropdown();
         setupTermsAndConditionsLink();
         setupClickListeners();
-
-        setupStatusBar();
     }
 
     @Override
@@ -204,8 +203,8 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
         mTextInputEmail = findViewById(R.id.emailAddress);
         mTextInputPassword = findViewById(R.id.password);
         mTextInputPhone = findViewById(R.id.phone_number); // ⭐ NUEVO
-        mSpinnerWork = findViewById(R.id.spinner_service_type);
         mCheckBoxTerms = findViewById(R.id.checkBox2);
+        mCheckBoxData = findViewById(R.id.checkbox_data);
         mTextViewTerms = findViewById(R.id.textViewTerms);
         mCircleImageProfile = findViewById(R.id.circleImageProfile);
         mImageViewAddPhoto = findViewById(R.id.imageViewAddPhoto);
@@ -241,13 +240,8 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
                 mTextInputLayoutEmail.setHelperText("Autenticado con Google");
             }
 
-            mTextInputPassword.setText("••••••••••••");
-            mTextInputPassword.setEnabled(false);
-            mTextInputLayoutPassword.setEnabled(false);
-            mTextInputLayoutPassword.setHelperText("Credenciales de Google");
-            mTextInputLayoutPassword.setHint("Contraseña (Google)");
-
-            mButtonContinue.setText("Continuar Registro");
+            findViewById(R.id.layout_password).setVisibility(View.GONE);
+            mButtonContinue.setText(R.string.register_continue);
 
             showToast("Completando registro con Google");
         }
@@ -354,82 +348,35 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
     }
 
     private void setupTermsAndConditionsLink() {
-        SpannableString spannableString = new SpannableString("Términos y Condiciones");
-        ClickableSpan clickableSpan = new ClickableSpan() {
+        mTextViewTerms.setText(linkText(R.string.register_terms_text, R.string.register_terms_link));
+        mTextViewTerms.setMovementMethod(LinkMovementMethod.getInstance());
+        TextView data = findViewById(R.id.textViewData);
+        data.setText(linkText(R.string.register_data_text, R.string.register_data_link));
+        data.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    /** "Acepto los Términos y Condiciones" con el enlace en negrita sobre la parte indicada. */
+    private SpannableString linkText(int textRes, int linkRes) {
+        String text = getString(textRes);
+        String link = getString(linkRes);
+        SpannableString spannable = new SpannableString(text);
+        int start = Math.max(0, text.indexOf(link));
+        int end = Math.min(text.length(), start + link.length());
+        spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
                 openTermsAndConditions();
             }
-        };
-        spannableString.setSpan(clickableSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        mTextViewTerms.setText(spannableString);
-        mTextViewTerms.setMovementMethod(LinkMovementMethod.getInstance());
+        }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
     }
 
     private void openTermsAndConditions() {
         Intent intent = new Intent(FirtsRegisterWorkerActivity.this, TermsConditionsActivity.class);
         intent.putExtra("terms_url", TERMS_URL);
         startActivity(intent);
-    }
-
-    private void setupServiceTypeDropdown() {
-        // Selección de hasta MAX_CATEGORIES oficios del catálogo (D16) en un diálogo
-        mSpinnerWork.setFocusable(false);
-        mSpinnerWork.setOnClickListener(v -> showCategoriesDialog());
-        new CatalogProvider().getCategoriesWithFallback(new ApiCallback<CatalogData>() {
-            @Override
-            public void onSuccess(CatalogData catalog) {
-                mCategoryOptions = catalog.getCategories();
-            }
-
-            @Override
-            public void onError(String message, int httpStatus) {
-                // getCategoriesWithFallback no falla
-            }
-        });
-    }
-
-    private void showCategoriesDialog() {
-        List<CatalogData.Category> options = mCategoryOptions != null
-                ? mCategoryOptions : CatalogProvider.localCatalog().getCategories();
-        String[] names = new String[options.size()];
-        boolean[] checked = new boolean[options.size()];
-        for (int i = 0; i < options.size(); i++) {
-            names[i] = options.get(i).getName();
-            checked[i] = mSelectedCategories.contains(options.get(i).getSlug());
-        }
-
-        List<String> selection = new ArrayList<>(mSelectedCategories);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.worker_categories_title, MAX_CATEGORIES))
-                .setMultiChoiceItems(names, checked, null)
-                .setPositiveButton(R.string.accept, (d, which) -> {
-                    mSelectedCategories.clear();
-                    mSelectedCategories.addAll(selection);
-                    mSpinnerWork.setText(CatalogProvider.joinNames(mSelectedCategories));
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .create();
-        dialog.setOnShowListener(d -> dialog.getListView().setOnItemClickListener((parent, view, position, id) -> {
-            String slug = options.get(position).getSlug();
-            boolean isChecked = dialog.getListView().isItemChecked(position);
-            if (isChecked && selection.size() >= MAX_CATEGORIES) {
-                dialog.getListView().setItemChecked(position, false);
-                showToast(getString(R.string.worker_categories_max, MAX_CATEGORIES));
-            } else if (isChecked) {
-                selection.add(slug);
-            } else {
-                selection.remove(slug);
-            }
-        }));
-        dialog.show();
-    }
-
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
-        }
     }
 
     private void validateAndContinue() {
@@ -440,8 +387,6 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
         String phone = mTextInputPhone.getText().toString().trim(); // ⭐ NUEVO
         String email = mTextInputEmail.getText().toString().trim().toLowerCase();
         String password = isFromGoogleSignIn ? "" : mTextInputPassword.getText().toString();
-        // `work` se sigue escribiendo con el primer oficio como respaldo para versiones viejas de la app
-        String work = mSelectedCategories.isEmpty() ? "" : CatalogProvider.categoryName(mSelectedCategories.get(0));
 
         boolean isValid = true;
 
@@ -471,13 +416,11 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        if (TextUtils.isEmpty(work)) {
-            showToast(getString(R.string.worker_categories_required));
-            isValid = false;
-        }
-
         if (!mCheckBoxTerms.isChecked()) {
             showToast("Debe aceptar los términos y condiciones");
+            isValid = false;
+        } else if (!mCheckBoxData.isChecked()) {
+            showToast(getString(R.string.register_error_data));
             isValid = false;
         }
 
@@ -485,15 +428,13 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
             return;
         }
 
-        // Pasar datos a la segunda actividad
-        Intent intent = new Intent(FirtsRegisterWorkerActivity.this, SecondRegisterWorkerActivity.class);
+        // Paso 2 (oficios); de ahí los datos siguen a SecondRegisterWorkerActivity
+        Intent intent = new Intent(FirtsRegisterWorkerActivity.this, WorkerSkillsActivity.class);
         intent.putExtra("name", name);
         intent.putExtra("lastName", lastName);
         intent.putExtra("phone", phone);
         intent.putExtra("email", email);
         intent.putExtra("password", password);
-        intent.putExtra("work", work);
-        intent.putStringArrayListExtra("categories", mSelectedCategories);
 
         // Pasar información de la imagen
         if (mImageSelected && mImageUri != null) {

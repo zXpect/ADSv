@@ -76,6 +76,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     // Datos del usuario
     private String name, lastName, email, password, work, phone, workerId; // ⭐ AGREGADO phone
     private java.util.ArrayList<String> categories;   // slugs de los oficios (D16)
+    private String description;                        // descripción opcional (paso 2)
 
     // Variables para Google Sign-In
     private boolean isFromGoogleSignIn = false;
@@ -114,6 +115,8 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second_register_worker);
+        com.project.ads.helpers.RegisterStepsHelper.bind(this, 3, R.string.register_step3);
+        findViewById(R.id.btn_back).setOnClickListener(v -> onBackPressed());
 
         getIntentData();
         initializeViews();
@@ -131,6 +134,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         password = intent.getStringExtra("password");
         work = intent.getStringExtra("work");
         categories = intent.getStringArrayListExtra("categories");
+        description = intent.getStringExtra("description");
 
         // Datos de Google Sign-In
         isFromGoogleSignIn = intent.getBooleanExtra("fromGoogleSignIn", false);
@@ -236,7 +240,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null) {
                         hojaVidaUri = uri;
                         hojaVidaFileName = "hoja_vida_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvHojaVidaStatus, ivHojaVidaCheck, "Archivo seleccionado", true);
+                        updateDocumentStatus(tvHojaVidaStatus, ivHojaVidaCheck, getString(R.string.docs_selected), true);
                         checkSubmitButton();
                     }
                 }
@@ -248,7 +252,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null) {
                         antecedentesUri = uri;
                         antecedentesFileName = "antecedentes_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvAntecedentesStatus, ivAntecedentesCheck, "Archivo seleccionado", true);
+                        updateDocumentStatus(tvAntecedentesStatus, ivAntecedentesCheck, getString(R.string.docs_selected), true);
                         checkSubmitButton();
                     }
                 }
@@ -261,7 +265,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null) {
                         carta1Uri = uri;
                         carta1FileName = "carta_recomendacion_1_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvCarta1Status, ivCarta1Check, "Archivo seleccionado", true);
+                        updateDocumentStatus(tvCarta1Status, ivCarta1Check, getString(R.string.docs_selected), true);
                         checkSubmitButton();
                     }
                 }
@@ -273,7 +277,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null) {
                         carta2Uri = uri;
                         carta2FileName = "carta_recomendacion_2_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvCarta2Status, ivCarta2Check, "Archivo seleccionado", true);
+                        updateDocumentStatus(tvCarta2Status, ivCarta2Check, getString(R.string.docs_selected), true);
                         checkSubmitButton();
                     }
                 }
@@ -285,7 +289,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null) {
                         carta3Uri = uri;
                         carta3FileName = "carta_recomendacion_3_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvCarta3Status, ivCarta3Check, "Archivo seleccionado", true);
+                        updateDocumentStatus(tvCarta3Status, ivCarta3Check, getString(R.string.docs_selected), true);
                         checkSubmitButton();
                     }
                 }
@@ -298,7 +302,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null) {
                         titulo1Uri = uri;
                         titulo1FileName = "titulo_certificado_1_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvTitulo1Status, ivTitulo1Check, "Archivo seleccionado", true);
+                        updateDocumentStatus(tvTitulo1Status, ivTitulo1Check, getString(R.string.docs_selected), true);
                         checkSubmitButton();
                     }
                 }
@@ -310,7 +314,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null) {
                         titulo2Uri = uri;
                         titulo2FileName = "titulo_certificado_2_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvTitulo2Status, ivTitulo2Check, "Archivo seleccionado", true);
+                        updateDocumentStatus(tvTitulo2Status, ivTitulo2Check, getString(R.string.docs_selected), true);
                         checkSubmitButton();
                     }
                 }
@@ -322,7 +326,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null) {
                         titulo3Uri = uri;
                         titulo3FileName = "titulo_certificado_3_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvTitulo3Status, ivTitulo3Check, "Archivo seleccionado", true);
+                        updateDocumentStatus(tvTitulo3Status, ivTitulo3Check, getString(R.string.docs_selected), true);
                         checkSubmitButton();
                     }
                 }
@@ -419,6 +423,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     private Worker newWorker() {
         Worker worker = new Worker(workerId, name, lastName, email, work, phone, null);
         worker.setCategories(categories);
+        if (description != null && !description.isEmpty()) worker.setDescription(description);
         return worker;
     }
 
@@ -718,11 +723,19 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
 
     private void updateDocumentStatus(TextView statusView, ImageView checkView, String status, boolean selected) {
         statusView.setText(status);
-        if (selected) {
-            checkView.setVisibility(View.VISIBLE);
-            checkView.setColorFilter(ContextCompat.getColor(this, R.color.green));
-        } else {
-            checkView.setVisibility(View.GONE);
+        checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+        // Fila con archivo: borde naranja oscuro y ficha naranja clara (mockup 33)
+        View parent = (View) statusView.getParent();
+        while (parent != null && !(parent instanceof com.google.android.material.card.MaterialCardView)) {
+            parent = parent.getParent() instanceof View ? (View) parent.getParent() : null;
+        }
+        if (parent != null) {
+            com.google.android.material.card.MaterialCardView card = (com.google.android.material.card.MaterialCardView) parent;
+            card.setStrokeColor(ContextCompat.getColor(this, selected ? R.color.ads_brand_text : R.color.ads_line));
+            card.setStrokeWidth(getResources().getDimensionPixelSize(selected ? R.dimen.stroke_focus : R.dimen.stroke_control));
+            View tile = ((android.view.ViewGroup) ((android.view.ViewGroup) card.getChildAt(0))).getChildAt(0);
+            androidx.core.view.ViewCompat.setBackgroundTintList(tile, selected
+                    ? android.content.res.ColorStateList.valueOf(ContextCompat.getColor(this, R.color.ads_chip_bg)) : null);
         }
     }
 

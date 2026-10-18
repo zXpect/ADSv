@@ -1,727 +1,802 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Registro de trabajador, paso 3 de 3 · mockup 33 (docs/mockups/DocumentosTrabajador.dc.html).
+     Se conservan los tipos de documento del código (hoja de vida, antecedentes y
+     cartas o títulos) y los IDs que usa SecondRegisterWorkerActivity. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/whitevariable"
+    android:background="@color/ads_surface"
+    android:orientation="vertical"
     tools:context="com.project.ads.activities.worker.SecondRegisterWorkerActivity">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <!-- Header -->
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Documentos de Verificación"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary_text"
-            android:gravity="center"
-            android:layout_marginBottom="10dp"/>
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="@dimen/space_4"
+            android:paddingEnd="@dimen/screen_margin"
+            android:paddingBottom="@dimen/space_6">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sube los documentos requeridos para verificar tu perfil"
-            android:textSize="14sp"
-            android:textColor="@color/secondary_text"
-            android:gravity="center"
-            android:layout_marginBottom="30dp"/>
+            <include layout="@layout/view_register_steps" />
 
-        <!-- Documentos Obligatorios -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Documentos Obligatorios"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary_text"
-            android:layout_marginBottom="15dp"/>
-
-        <!-- Hoja de Vida -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/layoutHojaVida"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/card_background">
-
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginTop="2dp"
+                android:accessibilityHeading="true"
+                android:text="@string/docs_title"
+                android:textAppearance="@style/TextAppearance.ADS.Headline" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                android:text="@string/docs_subtitle"
+                android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                android:textColor="@color/ads_muted" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layoutHojaVida"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="20dp"
+                app:contentPadding="@dimen/space_4">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_document"
-                        app:tint="@color/primary_color"/>
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_ads_doc_tile">
 
-                    <TextView
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_document"
+                            app:tint="@color/ads_text" />
+                    </FrameLayout>
+
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
                         android:layout_weight="1"
-                        android:text="Hoja de Vida (CV)"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_text"
-                        android:layout_marginStart="10dp"/>
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/docs_cv"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+
+                        <TextView
+                            android:id="@+id/tvHojaVidaStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/docs_pdf_required"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                    </LinearLayout>
 
                     <ImageView
                         android:id="@+id/ivHojaVidaCheck"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_check_circle"
-                        android:visibility="gone"/>
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:contentDescription="@string/docs_loaded"
+                        android:src="@drawable/ic_ads_check"
+                        android:visibility="gone"
+                        app:tint="@color/ads_chip_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectHojaVida"
+                        style="@style/Widget.ADS.Button.Strong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/touch_min"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minWidth="0dp"
+                        android:paddingStart="@dimen/space_4"
+                        android:paddingEnd="@dimen/space_4"
+                        android:text="@string/docs_upload"
+                        android:textSize="13sp"
+                        app:cornerRadius="14dp" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvHojaVidaStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="No seleccionado"
-                    android:textSize="12sp"
-                    android:textColor="@color/secondary_text"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="34dp"/>
-
-                <Button
-                    android:id="@+id/btnSelectHojaVida"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Seleccionar PDF"
-                    android:textAllCaps="false"
-                    android:layout_marginTop="10dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Antecedentes Judiciales -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/layoutAntecedentes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/card_background">
-
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layoutAntecedentes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="20dp"
+                app:contentPadding="@dimen/space_4">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_document"
-                        app:tint="@color/primary_color"/>
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_ads_doc_tile">
 
-                    <TextView
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_shield_check"
+                            app:tint="@color/ads_text" />
+                    </FrameLayout>
+
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
                         android:layout_weight="1"
-                        android:text="Antecedentes Judiciales"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_text"
-                        android:layout_marginStart="10dp"/>
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/docs_background"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+
+                        <TextView
+                            android:id="@+id/tvAntecedentesStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/docs_pdf_required"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                    </LinearLayout>
 
                     <ImageView
                         android:id="@+id/ivAntecedentesCheck"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_check_circle"
-                        android:visibility="gone"/>
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:contentDescription="@string/docs_loaded"
+                        android:src="@drawable/ic_ads_check"
+                        android:visibility="gone"
+                        app:tint="@color/ads_chip_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectAntecedentes"
+                        style="@style/Widget.ADS.Button.Strong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/touch_min"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minWidth="0dp"
+                        android:paddingStart="@dimen/space_4"
+                        android:paddingEnd="@dimen/space_4"
+                        android:text="@string/docs_upload"
+                        android:textSize="13sp"
+                        app:cornerRadius="14dp" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvAntecedentesStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="No seleccionado"
-                    android:textSize="12sp"
-                    android:textColor="@color/secondary_text"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="34dp"/>
-
-                <Button
-                    android:id="@+id/btnSelectAntecedentes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Seleccionar PDF"
-                    android:textAllCaps="false"
-                    android:layout_marginTop="10dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Sección de Certificaciones (Obligatorio) -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Certificaciones (Obligatorio)"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary_text"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Selecciona el tipo de certificación que deseas subir"
-            android:textSize="14sp"
-            android:textColor="@color/secondary_text"
-            android:layout_marginBottom="15dp"/>
-
-        <!-- Radio Group para seleccionar tipo -->
-        <RadioGroup
-            android:id="@+id/rgCertificationType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
-
-            <RadioButton
-                android:id="@+id/rbCartas"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cartas de Recomendación"
-                android:textColor="@color/primary_text"
-                android:checked="true"/>
-
-            <RadioButton
-                android:id="@+id/rbTitulos"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Títulos/Certificados"
-                android:textColor="@color/primary_text"/>
-        </RadioGroup>
-
-        <!-- Sección de Cartas de Recomendación -->
-        <LinearLayout
-            android:id="@+id/layoutCartasSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
-
+            <!-- Certificaciones: cartas o títulos -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cartas de Recomendación (Mínimo 3)"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary_text"
-                android:layout_marginBottom="15dp"/>
+                android:layout_marginTop="@dimen/space_5"
+                android:accessibilityHeading="true"
+                android:text="@string/docs_certifications"
+                android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
 
-            <!-- Carta 1 -->
-            <androidx.cardview.widget.CardView
+            <RadioGroup
+                android:id="@+id/rgCertificationType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/rbCartas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:minHeight="@dimen/touch_min"
+                    android:text="@string/docs_letters_option"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                    app:buttonTint="@color/ads_brand" />
+
+                <RadioButton
+                    android:id="@+id/rbTitulos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/touch_min"
+                    android:text="@string/docs_titles_option"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                    app:buttonTint="@color/ads_brand" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/layoutCartasSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/layoutCarta1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background">
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="20dp"
+                app:contentPadding="@dimen/space_4">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_ads_doc_tile">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_document"
+                            app:tint="@color/ads_text" />
+                    </FrameLayout>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_document"
-                            app:tint="@color/primary_color"/>
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Carta de Recomendación 1"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/primary_text"
-                            android:layout_marginStart="10dp"/>
+                            android:text="@string/docs_letter_1"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
 
-                        <ImageView
-                            android:id="@+id/ivCarta1Check"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_check_circle"
-                            android:visibility="gone"/>
+                        <TextView
+                            android:id="@+id/tvCarta1Status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/docs_pdf"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvCarta1Status"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No seleccionado"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="34dp"/>
+                    <ImageView
+                        android:id="@+id/ivCarta1Check"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:contentDescription="@string/docs_loaded"
+                        android:src="@drawable/ic_ads_check"
+                        android:visibility="gone"
+                        app:tint="@color/ads_chip_text" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnSelectCarta1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Seleccionar PDF"
-                        android:textAllCaps="false"
-                        android:layout_marginTop="10dp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                        style="@style/Widget.ADS.Button.Strong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/touch_min"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minWidth="0dp"
+                        android:paddingStart="@dimen/space_4"
+                        android:paddingEnd="@dimen/space_4"
+                        android:text="@string/docs_upload"
+                        android:textSize="13sp"
+                        app:cornerRadius="14dp" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Carta 2 -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/layoutCarta2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background">
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="20dp"
+                app:contentPadding="@dimen/space_4">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_ads_doc_tile">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_document"
+                            app:tint="@color/ads_text" />
+                    </FrameLayout>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_document"
-                            app:tint="@color/primary_color"/>
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Carta de Recomendación 2"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/primary_text"
-                            android:layout_marginStart="10dp"/>
+                            android:text="@string/docs_letter_2"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
 
-                        <ImageView
-                            android:id="@+id/ivCarta2Check"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_check_circle"
-                            android:visibility="gone"/>
+                        <TextView
+                            android:id="@+id/tvCarta2Status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/docs_pdf"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvCarta2Status"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No seleccionado"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="34dp"/>
+                    <ImageView
+                        android:id="@+id/ivCarta2Check"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:contentDescription="@string/docs_loaded"
+                        android:src="@drawable/ic_ads_check"
+                        android:visibility="gone"
+                        app:tint="@color/ads_chip_text" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnSelectCarta2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Seleccionar PDF"
-                        android:textAllCaps="false"
-                        android:layout_marginTop="10dp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                        style="@style/Widget.ADS.Button.Strong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/touch_min"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minWidth="0dp"
+                        android:paddingStart="@dimen/space_4"
+                        android:paddingEnd="@dimen/space_4"
+                        android:text="@string/docs_upload"
+                        android:textSize="13sp"
+                        app:cornerRadius="14dp" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Carta 3 -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/layoutCarta3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background">
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="20dp"
+                app:contentPadding="@dimen/space_4">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_ads_doc_tile">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_document"
+                            app:tint="@color/ads_text" />
+                    </FrameLayout>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_document"
-                            app:tint="@color/primary_color"/>
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Carta de Recomendación 3"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/primary_text"
-                            android:layout_marginStart="10dp"/>
+                            android:text="@string/docs_letter_3"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
 
-                        <ImageView
-                            android:id="@+id/ivCarta3Check"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_check_circle"
-                            android:visibility="gone"/>
+                        <TextView
+                            android:id="@+id/tvCarta3Status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/docs_pdf"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvCarta3Status"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No seleccionado"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="34dp"/>
+                    <ImageView
+                        android:id="@+id/ivCarta3Check"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:contentDescription="@string/docs_loaded"
+                        android:src="@drawable/ic_ads_check"
+                        android:visibility="gone"
+                        app:tint="@color/ads_chip_text" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnSelectCarta3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Seleccionar PDF"
-                        android:textAllCaps="false"
-                        android:layout_marginTop="10dp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                        style="@style/Widget.ADS.Button.Strong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/touch_min"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minWidth="0dp"
+                        android:paddingStart="@dimen/space_4"
+                        android:paddingEnd="@dimen/space_4"
+                        android:text="@string/docs_upload"
+                        android:textSize="13sp"
+                        app:cornerRadius="14dp" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-        <!-- Sección de Títulos/Certificados -->
-        <LinearLayout
-            android:id="@+id/layoutTitulosSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            <LinearLayout
+                android:id="@+id/layoutTitulosSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layoutTitulo1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="20dp"
+                app:contentPadding="@dimen/space_4">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_ads_doc_tile">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_document"
+                            app:tint="@color/ads_text" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/docs_title_1"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+
+                        <TextView
+                            android:id="@+id/tvTitulo1Status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/docs_pdf"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/ivTitulo1Check"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:contentDescription="@string/docs_loaded"
+                        android:src="@drawable/ic_ads_check"
+                        android:visibility="gone"
+                        app:tint="@color/ads_chip_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectTitulo1"
+                        style="@style/Widget.ADS.Button.Strong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/touch_min"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minWidth="0dp"
+                        android:paddingStart="@dimen/space_4"
+                        android:paddingEnd="@dimen/space_4"
+                        android:text="@string/docs_upload"
+                        android:textSize="13sp"
+                        app:cornerRadius="14dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layoutTitulo2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="20dp"
+                app:contentPadding="@dimen/space_4">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_ads_doc_tile">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_document"
+                            app:tint="@color/ads_text" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/docs_title_2"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+
+                        <TextView
+                            android:id="@+id/tvTitulo2Status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/docs_pdf_optional"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/ivTitulo2Check"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:contentDescription="@string/docs_loaded"
+                        android:src="@drawable/ic_ads_check"
+                        android:visibility="gone"
+                        app:tint="@color/ads_chip_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectTitulo2"
+                        style="@style/Widget.ADS.Button.Strong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/touch_min"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minWidth="0dp"
+                        android:paddingStart="@dimen/space_4"
+                        android:paddingEnd="@dimen/space_4"
+                        android:text="@string/docs_upload"
+                        android:textSize="13sp"
+                        app:cornerRadius="14dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layoutTitulo3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="20dp"
+                app:contentPadding="@dimen/space_4">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_ads_doc_tile">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_document"
+                            app:tint="@color/ads_text" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/docs_title_3"
+                            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+
+                        <TextView
+                            android:id="@+id/tvTitulo3Status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/docs_pdf_optional"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/ivTitulo3Check"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:contentDescription="@string/docs_loaded"
+                        android:src="@drawable/ic_ads_check"
+                        android:visibility="gone"
+                        app:tint="@color/ads_chip_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectTitulo3"
+                        style="@style/Widget.ADS.Button.Strong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/touch_min"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minWidth="0dp"
+                        android:paddingStart="@dimen/space_4"
+                        android:paddingEnd="@dimen/space_4"
+                        android:text="@string/docs_upload"
+                        android:textSize="13sp"
+                        app:cornerRadius="14dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Privacidad -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_shield_check"
+                    app:tint="@color/ads_muted" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_2"
+                    android:layout_weight="1"
+                    android:text="@string/docs_privacy"
+                    android:textAppearance="@style/TextAppearance.ADS.Caption" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Títulos o Certificados (Mínimo 1)"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary_text"
-                android:layout_marginBottom="15dp"/>
-
-            <!-- Título 1 -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/layoutTitulo1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_document"
-                            app:tint="@color/primary_color"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Título/Certificado 1"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/primary_text"
-                            android:layout_marginStart="10dp"/>
-
-                        <ImageView
-                            android:id="@+id/ivTitulo1Check"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_check_circle"
-                            android:visibility="gone"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvTitulo1Status"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No seleccionado"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="34dp"/>
-
-                    <Button
-                        android:id="@+id/btnSelectTitulo1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Seleccionar PDF"
-                        android:textAllCaps="false"
-                        android:layout_marginTop="10dp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Título 2 -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/layoutTitulo2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_document"
-                            app:tint="@color/primary_color"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Título/Certificado 2 (Opcional)"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/primary_text"
-                            android:layout_marginStart="10dp"/>
-
-                        <ImageView
-                            android:id="@+id/ivTitulo2Check"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_check_circle"
-                            android:visibility="gone"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvTitulo2Status"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No seleccionado"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="34dp"/>
-
-                    <Button
-                        android:id="@+id/btnSelectTitulo2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Seleccionar PDF"
-                        android:textAllCaps="false"
-                        android:layout_marginTop="10dp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Título 3 -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/layoutTitulo3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_document"
-                            app:tint="@color/primary_color"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Título/Certificado 3 (Opcional)"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/primary_text"
-                            android:layout_marginStart="10dp"/>
-
-                        <ImageView
-                            android:id="@+id/ivTitulo3Check"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_check_circle"
-                            android:visibility="gone"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvTitulo3Status"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No seleccionado"
-                        android:textSize="12sp"
-                        android:textColor="@color/secondary_text"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="34dp"/>
-
-                    <Button
-                        android:id="@+id/btnSelectTitulo3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Seleccionar PDF"
-                        android:textAllCaps="false"
-                        android:layout_marginTop="10dp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                android:layout_marginTop="@dimen/space_2"
+                android:text="@string/docs_rules"
+                android:textAppearance="@style/TextAppearance.ADS.Caption" />
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <!-- Progress Bar -->
+    <!-- Barra de acción fija -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ads_bar"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/stroke_line"
+            android:background="@color/ads_line" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="20dp">
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="14dp"
+            android:paddingEnd="@dimen/screen_margin"
+            android:paddingBottom="@dimen/space_4">
+
+            <TextView
+                android:id="@+id/tvProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                android:visibility="gone" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_2"
                 android:max="100"
                 android:progress="0"
-                android:visibility="gone"/>
+                android:progressTint="@color/ads_brand"
+                android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tvProgress"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmitDocuments"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:enabled="false"
+                android:text="@string/docs_submit" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSkip"
+                style="@style/Widget.ADS.Button.Text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="0 de 0 documentos subidos"
-                android:textSize="12sp"
-                android:textColor="@color/secondary_text"
-                android:gravity="center"
-                android:layout_marginTop="5dp"
-                android:visibility="gone"/>
+                android:layout_marginTop="@dimen/space_1"
+                android:text="@string/docs_skip"
+                android:textColor="@color/ads_muted" />
         </LinearLayout>
-
-        <!-- Botones de Acción -->
-        <Button
-            android:id="@+id/btnSubmitDocuments"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Subir Documentos"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:enabled="false"
-            android:backgroundTint="@color/primary_color"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="10dp"/>
-
-        <Button
-            android:id="@+id/btnSkip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Omitir por ahora"
-            android:textAllCaps="false"
-            android:textColor="@color/secondary_text"
-            style="@style/Widget.MaterialComponents.Button.TextButton"/>
-
-        <!-- Info adicional -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Los documentos deben estar en formato PDF. Si eliges cartas de recomendación, debes subir mínimo 3. Si eliges títulos/certificados, debes subir mínimo 1. Serán revisados por nuestro equipo en un plazo de 24-48 horas."
-            android:textSize="12sp"
-            android:textColor="@color/secondary_text"
-            android:gravity="center"
-            android:layout_marginTop="15dp"
-            android:padding="10dp"
-            android:background="@drawable/bg_info_box"/>
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

@@ -792,4 +792,43 @@
     <string name="register_complete">Completar registro</string>
     <string name="register_error_adult">Debes ser mayor de edad para crear una cuenta</string>
     <string name="register_error_data">Debes autorizar el tratamiento de tus datos personales</string>
+
+    <!-- Rediseño: registro del trabajador (mockups 05, 32 y 33) -->
+    <string name="register_role_worker">Trabajador</string>
+    <string name="register_step_label">Paso %1$d de 3 · %2$s</string>
+    <string name="register_step_desc">Paso %1$d de 3</string>
+    <string name="register_step1">Tu cuenta</string>
+    <string name="register_step2">Tu especialidad</string>
+    <string name="register_step3">Verificación</string>
+    <string name="register_continue">Continuar</string>
+    <string name="register_worker_notice">En los siguientes pasos elegirás tus oficios y subirás tus documentos. Revisamos tu perfil antes de mostrarte a los clientes.</string>
+    <string name="skills_title">¿Qué sabes hacer?</string>
+    <string name="skills_categories">Oficios</string>
+    <string name="skills_counter">%1$d de %2$d máximo</string>
+    <string name="skills_hint">Elige hasta 3. Los clientes te encuentran por tus oficios.</string>
+    <string name="skills_description">Descripción (opcional)</string>
+    <string name="skills_description_placeholder">Cuéntales a los clientes tu experiencia</string>
+    <string name="docs_title">Sube tus documentos</string>
+    <string name="docs_subtitle">Los revisamos antes de mostrarte a los clientes.</string>
+    <string name="docs_cv">Hoja de vida</string>
+    <string name="docs_background">Antecedentes judiciales</string>
+    <string name="docs_pdf_required">PDF · Obligatorio</string>
+    <string name="docs_pdf">PDF</string>
+    <string name="docs_pdf_optional">PDF · Opcional</string>
+    <string name="docs_upload">Subir</string>
+    <string name="docs_loaded">Cargado</string>
+    <string name="docs_selected">Archivo listo para enviar</string>
+    <string name="docs_certifications">Certificaciones</string>
+    <string name="docs_letters_option">Cartas de recomendación (mínimo 3)</string>
+    <string name="docs_titles_option">Títulos o certificados (mínimo 1)</string>
+    <string name="docs_letter_1">Carta de recomendación 1</string>
+    <string name="docs_letter_2">Carta de recomendación 2</string>
+    <string name="docs_letter_3">Carta de recomendación 3</string>
+    <string name="docs_title_1">Título o certificado 1</string>
+    <string name="docs_title_2">Título o certificado 2</string>
+    <string name="docs_title_3">Título o certificado 3</string>
+    <string name="docs_privacy">Usamos tus documentos solo para verificar tu perfil.</string>
+    <string name="docs_rules">Los documentos van en PDF. Los revisamos en 24 a 48 horas.</string>
+    <string name="docs_submit">Enviar para verificación</string>
+    <string name="docs_skip">Subirlos más tarde</string>
 </resources>
