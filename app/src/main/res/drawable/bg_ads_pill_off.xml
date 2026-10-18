@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Interruptor Desconectado del mapa del trabajador (mockup 58): píldora con borde de control -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ads_card" />
+    <corners android:radius="22dp" />
+    <stroke
+        android:width="@dimen/stroke_control"
+        android:color="@color/ads_control" />
+</shape>

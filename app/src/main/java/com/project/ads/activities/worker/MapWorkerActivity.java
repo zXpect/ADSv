@@ -15,10 +15,12 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.project.ads.includes.MyToolbar;
 import com.project.ads.models.Worker;
 import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.GeofireProvider;
@@ -41,7 +43,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.firebase.database.Query;
+import com.project.ads.models.ServiceRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+/**
+ * Mapa del trabajador · mockups 57 (conectado) y 58 (desconectado).
+ * La conexión, Geofire y la verificación no cambian; la hoja inferior muestra la
+ * solicitud nueva más reciente (con su distancia si la solicitud tiene lat/lng)
+ * o el aviso del estado.
+ */
 public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "MapWorkerActivity";
@@ -52,6 +71,27 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
 
     private GoogleMap mMap;
     private Button mBtnConnect;
+    private LinearLayout mToggle;
+    private MaterialSwitch mSwitch;
+    private TextView mConnectionLabel;
+    private TextView mSubtitle;
+    private View mGroupRequest;
+    private TextView mRequestTitle;
+    private TextView mRequestMeta;
+    private TextView mSheetTitle;
+    private TextView mSheetMessage;
+
+    // Solicitudes nuevas (status pending) dirigidas a este trabajador
+    private final List<PendingPin> mPending = new ArrayList<>();
+    private final List<Marker> mMarkers = new ArrayList<>();
+    private PendingPin mSelected;
+    private Query mRequestsQuery;
+    private ValueEventListener mRequestsListener;
+
+    private static class PendingPin {
+        ServiceRequest request;
+        LatLng position;
+    }
 
     // Providers
     private AuthProvider mAuthProvider;
@@ -79,16 +119,12 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_worker);
 
-        initToolbar();
         initProviders();
         initViews();
         initMap();
         setupLocationCallback();
         loadWorkerData();
-    }
-
-    private void initToolbar() {
-        MyToolbar.showColorToolBarr(this, "Mapa del Trabajador", true);
+        listenPendingRequests();
     }
 
     private void initProviders() {
@@ -100,13 +136,22 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void initViews() {
         mBtnConnect = findViewById(R.id.btnconnect);
+        mToggle = findViewById(R.id.btn_connection_toggle);
+        mSwitch = findViewById(R.id.switch_connection);
+        mConnectionLabel = findViewById(R.id.tv_connection_label);
+        mSubtitle = findViewById(R.id.tv_map_subtitle);
+        mGroupRequest = findViewById(R.id.group_sheet_request);
+        mRequestTitle = findViewById(R.id.tv_sheet_request_title);
+        mRequestMeta = findViewById(R.id.tv_sheet_request_meta);
+        mSheetTitle = findViewById(R.id.tv_sheet_title);
+        mSheetMessage = findViewById(R.id.tv_sheet_message);
 
+        findViewById(R.id.btn_back).setOnClickListener(v -> onBackPressed());
         // Inicialmente deshabilitado hasta verificar estado
         mBtnConnect.setEnabled(false);
-        mBtnConnect.setAlpha(0.5f);
-        mBtnConnect.setText(R.string.conectarse);
-
-        mBtnConnect.setOnClickListener(v -> toggleConnection());
+        mToggle.setEnabled(false);
+        mToggle.setOnClickListener(v -> toggleConnection());
+        mBtnConnect.setOnClickListener(v -> onSheetAction());
     }
 
     private void initMap() {
@@ -121,7 +166,17 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+        // La hoja inferior se monta 24 dp sobre el mapa
+        mMap.setPadding(0, 0, 0, Math.round(24 * getResources().getDisplayMetrics().density));
+        mMap.setOnMarkerClickListener(marker -> {
+            Object tag = marker.getTag();
+            if (tag instanceof PendingPin) {
+                mSelected = (PendingPin) tag;
+                renderState();
+            }
+            return false;
+        });
 
         // Aplicar estilo oscuro si está habilitado
         if (isDarkModeEnabled()) {
@@ -169,6 +224,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
                         if (mMap != null) {
                             moveCamera(mCurrentLatLng);
                         }
+                        renderState();
                     }
                 }
             }
@@ -287,10 +343,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
         // Asegurar que isAvailable sea false
         updateWorkerAvailabilityStatus(false);
 
-        // Deshabilitar botón
-        mBtnConnect.setEnabled(false);
-        mBtnConnect.setAlpha(0.5f);
-        mBtnConnect.setText("Verificación Pendiente");
+        renderState();
 
         showVerificationDialog();
 
@@ -462,19 +515,142 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void updateButtonState(boolean connected) {
-        runOnUiThread(() -> {
-            if (connected) {
-                mBtnConnect.setText("Desconectarse");
-                mBtnConnect.setEnabled(true);
-                mBtnConnect.setAlpha(1.0f);
-                mBtnConnect.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.error_color));
-            } else {
-                mBtnConnect.setText(R.string.conectarse);
-                mBtnConnect.setEnabled(true);
-                mBtnConnect.setAlpha(1.0f);
-                mBtnConnect.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorPrimary));
+        runOnUiThread(this::renderState);
+    }
+
+    /** Píldora, subtítulo y hoja inferior según verificación, conexión y solicitudes nuevas. */
+    private void renderState() {
+        if (!isVerificationChecked) return;
+        boolean on = isVerified && isConnected;
+
+        mToggle.setEnabled(true);
+        mToggle.setBackgroundResource(on ? R.drawable.bg_ads_pill_on : R.drawable.bg_ads_pill_off);
+        mSwitch.setChecked(on);
+        mConnectionLabel.setText(on ? R.string.map_worker_connected : R.string.map_worker_disconnected);
+        mConnectionLabel.setTextColor(ContextCompat.getColor(this, on ? R.color.ads_on_navy : R.color.ads_text));
+        mToggle.setContentDescription(getString(on ? R.string.map_worker_connected : R.string.map_worker_disconnected));
+        mSubtitle.setText(on ? R.string.map_worker_subtitle_on : R.string.map_worker_subtitle_off);
+
+        PendingPin shown = null;
+        if (on && !mPending.isEmpty()) {
+            shown = mPending.contains(mSelected) ? mSelected : mPending.get(0);
+        }
+        mGroupRequest.setVisibility(shown != null ? View.VISIBLE : View.GONE);
+        mSheetTitle.setVisibility(shown != null ? View.GONE : View.VISIBLE);
+        mSheetMessage.setVisibility(shown != null ? View.GONE : View.VISIBLE);
+        mBtnConnect.setEnabled(true);
+        mBtnConnect.setVisibility(View.VISIBLE);
+
+        if (!isVerified) {
+            mSheetTitle.setText(R.string.map_worker_unverified_title);
+            mSheetMessage.setText(getVerificationMessage());
+            mBtnConnect.setText(R.string.map_worker_view_documents);
+        } else if (!isConnected) {
+            mSheetTitle.setText(R.string.map_worker_off_title);
+            mSheetMessage.setText(R.string.map_worker_off_message);
+            mBtnConnect.setText(R.string.map_worker_connect);
+        } else if (shown != null) {
+            ServiceRequest request = shown.request;
+            String client = request.getClient_name() != null ? request.getClient_name() : getString(R.string.inbox_client_default);
+            String service = request.getService_type() != null ? request.getService_type() : getString(R.string.history_service_default);
+            mRequestTitle.setText(client + " · " + service);
+            mRequestMeta.setText(requestMeta(shown));
+            mBtnConnect.setText(R.string.map_worker_view_request);
+        } else {
+            mSheetTitle.setText(R.string.map_worker_on_title);
+            mSheetMessage.setText(R.string.map_worker_on_message);
+            mBtnConnect.setVisibility(View.GONE);
+        }
+        renderMarkers();
+    }
+
+    /** "A 1,2 km de ti" si hay coordenadas; si no, la dirección o hace cuánto llegó. */
+    private String requestMeta(PendingPin pin) {
+        if (pin.position != null && mCurrentLatLng != null) {
+            float[] meters = new float[1];
+            Location.distanceBetween(mCurrentLatLng.latitude, mCurrentLatLng.longitude,
+                    pin.position.latitude, pin.position.longitude, meters);
+            return getString(R.string.map_worker_distance,
+                    String.format(new Locale("es", "CO"), "%.1f", meters[0] / 1000f));
+        }
+        String address = pin.request.getAddress();
+        return address != null && !address.isEmpty() ? address : pin.request.getTimeAgo();
+    }
+
+    private void onSheetAction() {
+        if (!isVerificationChecked) return;
+        if (!isVerified) {
+            openDocumentsStatus();
+        } else if (!isConnected) {
+            toggleConnection();
+        } else if (!mPending.isEmpty()) {
+            PendingPin pin = mPending.contains(mSelected) ? mSelected : mPending.get(0);
+            Intent intent = new Intent(this, RequestDetailActivity.class);
+            intent.putExtra("request_id", pin.request.getRequest_id());
+            startActivity(intent);
+        }
+    }
+
+    /** Pines de las solicitudes nuevas, solo mientras está conectado. */
+    private void renderMarkers() {
+        if (mMap == null) return;
+        for (Marker marker : mMarkers) marker.remove();
+        mMarkers.clear();
+        if (!isVerified || !isConnected) return;
+        for (PendingPin pin : mPending) {
+            if (pin.position == null) continue;
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(pin.position)
+                    .title(pin.request.getService_type())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            if (marker != null) {
+                marker.setTag(pin);
+                mMarkers.add(marker);
             }
-        });
+        }
+    }
+
+    /** Misma consulta que el inicio y la bandeja: requests filtrado por el propio uid. */
+    private void listenPendingRequests() {
+        String workerId = mAuthProvider.getId();
+        if (workerId == null) return;
+        mRequestsQuery = FirebaseDatabase.getInstance().getReference().child("requests")
+                .orderByChild("worker_id").equalTo(workerId);
+        mRequestsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<PendingPin> pending = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    if (!"pending".equals(child.child("status").getValue(String.class))) continue;
+                    try {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> data = (Map<String, Object>) child.getValue();
+                        if (data == null) continue;
+                        PendingPin pin = new PendingPin();
+                        pin.request = ServiceRequest.fromMap(data);
+                        pin.request.setRequest_id(child.getKey());
+                        Double lat = child.child("lat").getValue(Double.class);
+                        Double lng = child.child("lng").getValue(Double.class);
+                        if (lat != null && lng != null) pin.position = new LatLng(lat, lng);
+                        pending.add(pin);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error leyendo solicitud " + child.getKey(), e);
+                    }
+                }
+                // La más reciente primero
+                java.util.Collections.sort(pending, (a, b) ->
+                        Long.compare(b.request.getTimestamp(), a.request.getTimestamp()));
+                mPending.clear();
+                mPending.addAll(pending);
+                renderState();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error al cargar solicitudes nuevas: " + error.getMessage());
+            }
+        };
+        mRequestsQuery.addValueEventListener(mRequestsListener);
     }
 
     private void startLocationIfPermitted() {
@@ -551,26 +727,18 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private String getVerificationMessage() {
-        if (mVerificationStatus == null || "incomplete".equalsIgnoreCase(mVerificationStatus)) {
-            return "📄 Debes completar tu perfil y subir los documentos requeridos para poder conectarte.";
-        }
-
+        if (mVerificationStatus == null) return getString(R.string.map_worker_unverified_incomplete);
         switch (mVerificationStatus.toLowerCase()) {
             case "documents_submitted":
             case "pending":
-                return "⏳ Tus documentos están en proceso de verificación. Podrás conectarte cuando sean aprobados.";
-
+                return getString(R.string.map_worker_unverified_pending);
             case "rejected":
-                return "❌ Tus documentos fueron rechazados. Por favor, actualiza tu información en tu perfil.";
-
-            case "incomplete":
-                return "📋 Debes completar la verificación de documentos para poder conectarte.";
-
+                return getString(R.string.map_worker_unverified_rejected);
             case "approved":
-                return "✅ Tus documentos han sido verificados. Ya puedes conectarte.";
-
+                return getString(R.string.map_worker_unverified_approved);
+            case "incomplete":
             default:
-                return "⚠️ Verificación de documentos pendiente. Contacta con soporte si el problema persiste.";
+                return getString(R.string.map_worker_unverified_incomplete);
         }
     }
 
@@ -626,6 +794,10 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        if (mRequestsQuery != null && mRequestsListener != null) {
+            mRequestsQuery.removeEventListener(mRequestsListener);
+        }
 
         // Remover listener
         if (mWorkerDataListener != null && mAuthProvider.getId() != null) {

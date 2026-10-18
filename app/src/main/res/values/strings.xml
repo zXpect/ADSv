@@ -107,7 +107,7 @@
     <string name="worker_info_message">Mensaje</string>
     <string name="request_service">Solicitar servicio</string>
     <string name="cancel">Cancelar</string>
-    <string name="map_worker_title">Mapa Trabajador</string>
+    <string name="map_worker_title">Mapa</string>
     <string name="filter_icon">Filtrar</string>
     <string name="default_web_client_id">125108376031-7l3e1tdjbvhae0h951kavkj4onskb6nc.apps.googleusercontent.com</string>
     <string name="app_logo">logo app</string>
@@ -712,4 +712,23 @@
     <string name="account_verification_rejected">Verificación rechazada</string>
     <string name="account_documents_missing">Documentos pendientes</string>
     <string name="profile_photo_desc">Foto de perfil</string>
+
+    <!-- Rediseño: mapa del trabajador (mockups 57 y 58) -->
+    <string name="map_worker_subtitle_on">Solicitudes cerca de ti</string>
+    <string name="map_worker_subtitle_off">Sin recibir solicitudes</string>
+    <string name="map_worker_connected">Conectado</string>
+    <string name="map_worker_disconnected">Desconectado</string>
+    <string name="map_worker_off_title">Estás desconectado</string>
+    <string name="map_worker_off_message">Los clientes no te ven en el mapa ni pueden enviarte solicitudes nuevas. Tus servicios ya aceptados siguen activos.</string>
+    <string name="map_worker_connect">Conectarme</string>
+    <string name="map_worker_on_title">Estás conectado</string>
+    <string name="map_worker_on_message">Aún no tienes solicitudes nuevas. Te avisaremos cuando llegue una.</string>
+    <string name="map_worker_view_request">Ver solicitud</string>
+    <string name="map_worker_distance">A %1$s km de ti</string>
+    <string name="map_worker_view_documents">Ver mis documentos</string>
+    <string name="map_worker_unverified_title">Verificación pendiente</string>
+    <string name="map_worker_unverified_incomplete">Debes subir los documentos requeridos para poder conectarte.</string>
+    <string name="map_worker_unverified_pending">Tus documentos están en revisión. Podrás conectarte cuando sean aprobados.</string>
+    <string name="map_worker_unverified_rejected">Tus documentos fueron rechazados. Revisa el motivo y vuelve a subirlos.</string>
+    <string name="map_worker_unverified_approved">Tus documentos fueron verificados. Ya puedes conectarte.</string>
 </resources>
