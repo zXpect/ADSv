@@ -751,4 +751,22 @@
     <string name="service_worker_note_accepted">Puedes cancelar o reprogramar antes de iniciar el viaje.</string>
     <string name="service_worker_note_waiting">Podrás iniciar el viaje cuando el cliente acepte tu cotización.</string>
     <string name="service_worker_note_no_cancel">Ya no puedes cancelar. Si hay un problema, crea una PQR.</string>
+
+    <!-- Rediseño: Bienvenida y Elegir rol (mockups 02 y 03) -->
+    <string name="welcome_logo_desc">Logotipo ADS</string>
+    <string name="welcome_wordmark">ADS</string>
+    <string name="welcome_tagline">Reparaciones del hogar, con técnicos de confianza en Ubaté.</string>
+    <string name="welcome_create_account">Crear cuenta</string>
+    <string name="welcome_have_account">Ya tengo cuenta</string>
+    <string name="role_title">¿Cómo quieres usar ADS?</string>
+    <string name="role_subtitle_register">Elige tu rol para crear la cuenta. Más adelante no se puede cambiar.</string>
+    <string name="role_subtitle_login">Elige con qué rol vas a iniciar sesión.</string>
+    <string name="role_client">Soy cliente</string>
+    <string name="role_client_desc">Necesito una reparación. Recibo cotizaciones de técnicos verificados.</string>
+    <string name="role_worker">Soy trabajador</string>
+    <string name="role_worker_desc">Ofrezco mis servicios. Recibo solicitudes y cotizo mi trabajo.</string>
+    <string name="role_have_account">¿Ya tienes cuenta?</string>
+    <string name="role_login">Inicia sesión</string>
+    <string name="role_no_account">¿No tienes cuenta?</string>
+    <string name="role_register">Crea una</string>
 </resources>

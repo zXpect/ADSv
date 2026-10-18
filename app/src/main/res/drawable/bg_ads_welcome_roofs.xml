@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Techos decorativos de la Bienvenida (mockup 02) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="390dp"
+    android:height="520dp"
+    android:viewportWidth="390"
+    android:viewportHeight="520">
+    <path
+        android:pathData="M-60,300L195,60L450,300"
+        android:strokeAlpha="0.06"
+        android:strokeColor="#FFF6F3EE"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="44" />
+    <path
+        android:pathData="M-20,380L195,180L410,380"
+        android:strokeAlpha="0.04"
+        android:strokeColor="#FFF6F3EE"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="44" />
+</vector>

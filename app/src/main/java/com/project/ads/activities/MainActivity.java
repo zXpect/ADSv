@@ -1,13 +1,13 @@
 package com.project.ads.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
@@ -32,44 +32,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
-        SharedPreferences.Editor editor = mPref.edit();
 
+        // Bienvenida (mockup 02): ambos caminos pasan por Elegir rol, que guarda el rol
         mButtonClient = findViewById(R.id.buttonLoginClient);
         mButtonWorker = findViewById(R.id.buttonLoginWorker);
+        mButtonClient.setOnClickListener(v -> openRole(RoleActivity.MODE_REGISTER));
+        mButtonWorker.setOnClickListener(v -> openRole(RoleActivity.MODE_LOGIN));
 
-        mButtonClient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editor.putString("user","cliente");
-                editor.apply();
-                goToLogin();
-            }
+        // Barra de estado navy con íconos claros
+        Window window = getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_header));
+        new WindowInsetsControllerCompat(window, window.getDecorView()).setAppearanceLightStatusBars(false);
+    }
 
-            private void goToLogin() {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        mButtonWorker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editor.putString("user","trabajador");
-                editor.apply();
-                goToLoginWorker();
-            }
-
-            private void goToLoginWorker() {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        // Configurar el color de la barra de estado
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
-        }
+    private void openRole(String mode) {
+        Intent intent = new Intent(this, RoleActivity.class);
+        intent.putExtra(RoleActivity.EXTRA_MODE, mode);
+        startActivity(intent);
     }
 
     @Override
