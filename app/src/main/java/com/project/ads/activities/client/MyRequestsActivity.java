@@ -2,26 +2,29 @@ package com.project.ads.activities.client;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
-import android.os.Build;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.card.MaterialCardView;
 import com.project.ads.R;
+import com.project.ads.helpers.ReasonHelper;
 import com.project.ads.models.ServiceRequest;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -31,9 +34,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MyRequestsActivity extends AppCompatActivity {
@@ -73,7 +79,6 @@ public class MyRequestsActivity extends AppCompatActivity {
         }
 
         initViews();
-        setupStatusBar();
         setupRecyclerView();
         loadMyRequests();
     }
@@ -95,14 +100,7 @@ public class MyRequestsActivity extends AppCompatActivity {
         );
         mSwipeRefresh.setOnRefreshListener(this::loadMyRequests);
 
-        mTvTitle.setText("Mis Solicitudes");
-    }
-
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
+        mTvTitle.setText(R.string.history_title);
     }
 
     private void setupRecyclerView() {
@@ -153,11 +151,11 @@ public class MyRequestsActivity extends AppCompatActivity {
                     }
                 }
 
-                // Ordenar por timestamp (más reciente primero)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Collections.sort(requests, (r1, r2) ->
-                            Long.compare(r2.getTimestamp(), r1.getTimestamp()));
-                }
+                // Activas primero (mockup 41) y, dentro de cada grupo, la más reciente primero
+                Collections.sort(requests, (r1, r2) -> {
+                    int byGroup = Boolean.compare(isActive(r2), isActive(r1));
+                    return byGroup != 0 ? byGroup : Long.compare(r2.getTimestamp(), r1.getTimestamp());
+                });
 
                 updateUI(requests);
             }
@@ -189,9 +187,6 @@ public class MyRequestsActivity extends AppCompatActivity {
             showLoading(false);
             mSwipeRefresh.setRefreshing(false);
 
-            // Actualizar título con cantidad
-            mTvTitle.setText("Mis Solicitudes (" + requests.size() + ")");
-
             if (requests.isEmpty()) {
                 mRecyclerView.setVisibility(View.GONE);
                 mEmptyState.setVisibility(View.VISIBLE);
@@ -200,6 +195,13 @@ public class MyRequestsActivity extends AppCompatActivity {
                 mEmptyState.setVisibility(View.GONE);
             }
         });
+    }
+
+    /** Solicitud en curso: todavía no termina ni se canceló. */
+    private static boolean isActive(ServiceRequest request) {
+        String status = request.getStatus();
+        return status != null && !status.equals("completed")
+                && !status.equals("cancelled") && !status.equals("rejected");
     }
 
     private void showLoading(boolean show) {
@@ -230,60 +232,130 @@ public class MyRequestsActivity extends AppCompatActivity {
         }
 
         class RequestViewHolder extends RecyclerView.ViewHolder {
-            CardView cardView;
-            TextView tvServiceType, tvWorkerName, tvAddress, tvStatus, tvTimestamp;
-            View statusIndicator;
+            MaterialCardView cardView;
+            TextView tvSection, tvServiceType, tvWorkerName, tvStatus, tvDetail;
 
             RequestViewHolder(View itemView) {
                 super(itemView);
                 cardView = itemView.findViewById(R.id.card_request);
+                tvSection = itemView.findViewById(R.id.tv_section);
                 tvServiceType = itemView.findViewById(R.id.tv_service_type);
                 tvWorkerName = itemView.findViewById(R.id.tv_worker_name);
-                tvAddress = itemView.findViewById(R.id.tv_address);
                 tvStatus = itemView.findViewById(R.id.tv_status);
-                tvTimestamp = itemView.findViewById(R.id.tv_timestamp);
-                statusIndicator = itemView.findViewById(R.id.status_indicator);
+                tvDetail = itemView.findViewById(R.id.tv_timestamp);
             }
 
             void bind(ServiceRequest request) {
-                // Tipo de servicio
-                tvServiceType.setText(request.getService_type() != null ?
-                        request.getService_type() : "Servicio");
+                int position = getBindingAdapterPosition();
+                boolean active = isActive(request);
 
-                // Trabajador
-                tvWorkerName.setText(request.getWorker_name() != null ?
-                        request.getWorker_name() : "Trabajador asignado");
+                // Etiqueta de sección en el primer ítem de cada grupo
+                boolean firstOfGroup = position <= 0
+                        || isActive(mRequests.get(position - 1)) != active;
+                tvSection.setVisibility(firstOfGroup ? View.VISIBLE : View.GONE);
+                tvSection.setText(active ? R.string.history_section_active
+                        : R.string.history_section_previous);
 
-                // Dirección
-                tvAddress.setText(request.getAddress() != null ?
-                        request.getAddress() : "Sin dirección");
+                tvServiceType.setText(request.getService_type() != null
+                        ? request.getService_type() : getString(R.string.history_service_default));
 
-                // Estado
-                tvStatus.setText(request.getStatusDisplayText());
-                int statusColor = android.graphics.Color.parseColor(request.getStatusColor());
-                tvStatus.setTextColor(statusColor);
-                statusIndicator.setBackgroundColor(statusColor);
+                // Técnico · fecha (la agendada si existe)
+                String worker = request.getWorker_name() != null
+                        ? request.getWorker_name() : getString(R.string.history_worker_pending);
+                tvWorkerName.setText(worker + " · " + formatDate(request, active));
 
-                // Tiempo
-                tvTimestamp.setText(request.getTimeAgo());
+                bindStatus(request);
+                bindDetail(request, active);
 
-                // Click listener para abrir detalles
+                // La tarjeta activa lleva borde naranja (como Widget.ADS.Card.Highlight)
+                cardView.setStrokeColor(ContextCompat.getColor(MyRequestsActivity.this,
+                        active ? R.color.ads_brand_text : R.color.ads_line));
+                cardView.setStrokeWidth(getResources().getDimensionPixelSize(
+                        active ? R.dimen.stroke_focus : R.dimen.stroke_control));
+
                 cardView.setOnClickListener(v -> {
                     Intent intent = new Intent(MyRequestsActivity.this,
                             ServiceRequestDetailActivity.class);
                     intent.putExtra("request_id", request.getRequest_id());
                     startActivity(intent);
                 });
+            }
 
-                // Animación de entrada
-                cardView.setAlpha(0f);
-                cardView.setTranslationY(50f);
-                cardView.animate()
-                        .alpha(1f)
-                        .translationY(0f)
-                        .setDuration(300)
-                        .setStartDelay(getAdapterPosition() * 50L)
-                        .start();
+            /** Chip de estado: naranja en curso, navy completada, gris cancelada. */
+            private void bindStatus(ServiceRequest request) {
+                String status = request.getStatus() != null ? request.getStatus() : "";
+                int label;
+                int background = R.color.ads_chip_bg;
+                int text = R.color.ads_chip_text;
+                switch (status) {
+                    case "pending":
+                        label = "quoted".equals(request.getQuote_status())
+                                ? R.string.request_status_quoted : R.string.request_status_pending;
+                        break;
+                    case "accepted":
+                        label = R.string.request_status_accepted;
+                        break;
+                    case "on_the_way":
+                        label = R.string.request_status_on_the_way;
+                        break;
+                    case "in_progress":
+                        label = R.string.request_status_in_progress;
+                        break;
+                    case "completed":
+                        label = R.string.request_status_completed;
+                        background = R.color.ads_text;
+                        text = R.color.ads_surface;
+                        break;
+                    case "rejected":
+                        label = R.string.request_status_rejected;
+                        background = R.color.ads_surface_alt;
+                        text = R.color.ads_charcoal;
+                        break;
+                    default:
+                        label = R.string.request_status_cancelled;
+                        background = R.color.ads_surface_alt;
+                        text = R.color.ads_charcoal;
+                }
+                tvStatus.setText(label);
+                ViewCompat.setBackgroundTintList(tvStatus, ColorStateList.valueOf(
+                        ContextCompat.getColor(MyRequestsActivity.this, background)));
+                tvStatus.setTextColor(ContextCompat.getColor(MyRequestsActivity.this, text));
+            }
+
+            /** Precio (activas), calificación (completadas) o motivo (canceladas). */
+            private void bindDetail(ServiceRequest request, boolean active) {
+                tvDetail.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+                String status = request.getStatus();
+                if (active && request.getQuoted_price() > 0) {
+                    TextViewCompat.setTextAppearance(tvDetail, R.style.TextAppearance_ADS_Price);
+                    tvDetail.setText(ServiceRequest.formatCop(request.getQuoted_price()));
+                } else if ("completed".equals(status) && request.getRating() > 0) {
+                    TextViewCompat.setTextAppearance(tvDetail, R.style.TextAppearance_ADS_BodySmall_Strong);
+                    tvDetail.setText(String.format(new Locale("es", "CO"), "%.1f", request.getRating()));
+                    tvDetail.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_star_filled, 0, 0, 0);
+                } else if ("cancelled".equals(status) && request.getCancellationReasonCode() != null) {
+                    TextViewCompat.setTextAppearance(tvDetail, R.style.TextAppearance_ADS_Caption);
+                    tvDetail.setTextColor(ContextCompat.getColor(MyRequestsActivity.this, R.color.ads_charcoal));
+                    tvDetail.setText(getString(R.string.history_cancel_reason, ReasonHelper.cancellationLabel(
+                            request.getCancellationReasonCode(), request.getCancellationReasonText())));
+                } else {
+                    tvDetail.setVisibility(View.GONE);
+                    return;
+                }
+                tvDetail.setVisibility(View.VISIBLE);
+            }
+
+            /** "Lun 19 oct, 3:00 p. m." para activas agendadas; "3 oct" para el resto. */
+            private String formatDate(ServiceRequest request, boolean active) {
+                Locale locale = new Locale("es", "CO");
+                if (active && request.getScheduledAt() > 0) {
+                    String text = new SimpleDateFormat("EEE d MMM, h:mm a", locale)
+                            .format(new Date(request.getScheduledAt()));
+                    return text.substring(0, 1).toUpperCase(locale) + text.substring(1);
+                }
+                long time = request.getTimestamp();
+                return time > 0 ? new SimpleDateFormat("d MMM", locale).format(new Date(time))
+                        : request.getTimeAgo();
             }
         }
     }

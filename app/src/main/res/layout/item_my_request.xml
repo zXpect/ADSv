@@ -1,163 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Tarjeta del historial · mockup 41. La etiqueta de sección ("Activas" /
+     "Anteriores") va dentro del ítem y se muestra en el primero de cada grupo. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_request"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
-    app:cardBackgroundColor="@color/card_background"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="@dimen/space_4"
+        android:layout_marginBottom="@dimen/space_2"
+        android:accessibilityHeading="true"
+        android:textAppearance="@style/TextAppearance.ADS.Label"
+        android:visibility="gone"
+        tools:text="Activas"
+        tools:visibility="visible" />
 
-        <!-- Status Indicator -->
-        <View
-            android:id="@+id/status_indicator"
-            android:layout_width="5dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorPrimary" />
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:focusable="true">
 
-        <!-- Content -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Header: Service Type and Status -->
+            <!-- Oficio y estado -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tv_service_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Electricidad"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                    tools:text="Electricidad" />
 
                 <TextView
                     android:id="@+id/tv_status"
+                    style="@style/Widget.ADS.StatusChip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="En Progreso"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimary"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp"
-                    android:background="@drawable/bg_status_badge" />
-
+                    android:layout_marginStart="@dimen/space_2"
+                    tools:text="Aceptada" />
             </LinearLayout>
 
-            <!-- Worker Info -->
-            <LinearLayout
+            <!-- Técnico · fecha -->
+            <TextView
+                android:id="@+id/tv_worker_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/space_2"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                tools:text="Carlos Rojas · Lun 19 oct, 3:00 p. m." />
+
+            <!-- Precio (activas), calificación (completadas) o motivo (canceladas) -->
+            <TextView
+                android:id="@+id/tv_timestamp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2"
+                android:drawablePadding="@dimen/space_1"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="8dp">
+                android:textAppearance="@style/TextAppearance.ADS.Price"
+                android:visibility="gone"
+                tools:text="$95.000"
+                tools:visibility="visible" />
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_person"
-                    app:tint="@color/text_secondary"
-                    android:layout_marginEnd="8dp" />
-
-                <TextView
-                    android:id="@+id/tv_worker_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Carlos Electricista"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
-
-            </LinearLayout>
-
-            <!-- Address -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- La dirección no aparece en el mockup; se conserva oculta para el código -->
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="8dp">
+                android:visibility="gone" />
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_location"
-                    app:tint="@color/text_secondary"
-                    android:layout_marginEnd="8dp" />
-
-                <TextView
-                    android:id="@+id/tv_address"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Calle 123 #45-67, Neiva"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_secondary"
-                    android:maxLines="2"
-                    android:ellipsize="end" />
-
-            </LinearLayout>
-
-            <!-- Timestamp -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_time_small"
-                    app:tint="@color/text_secondary"
-                    android:layout_marginEnd="8dp" />
-
-                <TextView
-                    android:id="@+id/tv_timestamp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Hace 30 minutos"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
-
-                <!-- Arrow indicator -->
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_arrow_forward"
-                    app:tint="@color/text_hint"
-                    android:alpha="0.6" />
-
-            </LinearLayout>
-
+            <View
+                android:id="@+id/status_indicator"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
         </LinearLayout>
-
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>
