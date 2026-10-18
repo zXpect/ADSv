@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oficio: genérico, trabajador sin oficio. Ícono de trazo, fuente en iconos_tipos_trabajo/vectoriales/icon_worker.svg -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M5,16v-3a7,7 0,0 1,14,0v3"
+        android:strokeColor="@color/ads_brand_text"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M12,6v10"
+        android:strokeColor="@color/ads_brand_text"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M4.5,16h15a1.5,1.5 0,0 1,1.5,1.5v0.5a1.5,1.5 0,0 1,-1.5,1.5h-15a1.5,1.5 0,0 1,-1.5,-1.5v-0.5a1.5,1.5 0,0 1,1.5,-1.5z"
+        android:strokeColor="@color/ads_brand_text"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

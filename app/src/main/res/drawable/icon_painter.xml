@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oficio: Pintura. Ícono de trazo, fuente en iconos_tipos_trabajo/vectoriales/icon_painter.svg -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M4.5,3h11a1.5,1.5 0,0 1,1.5,1.5v3a1.5,1.5 0,0 1,-1.5,1.5h-11a1.5,1.5 0,0 1,-1.5,-1.5v-3a1.5,1.5 0,0 1,1.5,-1.5z"
+        android:strokeColor="@color/ads_brand_text"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M17,6h2.5a1.5,1.5 0,0 1,1.5,1.5v3a1.5,1.5 0,0 1,-1.5,1.5H12v2"
+        android:strokeColor="@color/ads_brand_text"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M11,14h2a1,1 0,0 1,1,1v5a1,1 0,0 1,-1,1h-2a1,1 0,0 1,-1,-1v-5a1,1 0,0 1,1,-1z"
+        android:strokeColor="@color/ads_brand_text"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

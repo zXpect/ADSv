@@ -19,7 +19,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
@@ -110,17 +111,6 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private ChipGroup mFilterChips;
     private String mCurrentFilter = CategoryHelper.ALL;   // slug del oficio o CategoryHelper.ALL
     private LinearLayout mLegendContainer;
-    private static final Map<String, Integer> WORKER_ICONS = new HashMap<>();
-
-    static {
-        WORKER_ICONS.put("Carpintería", R.drawable.icon_carpenter);
-        WORKER_ICONS.put("Ferretería", R.drawable.icon_ferreteria);
-        WORKER_ICONS.put("Pintor", R.drawable.icon_painter);
-        WORKER_ICONS.put("Electricista", R.drawable.icon_electrician);
-        WORKER_ICONS.put("Plomería", R.drawable.icon_plumber);
-        WORKER_ICONS.put("Jardinería", R.drawable.icon_gardener);
-        WORKER_ICONS.put("Albañilería", R.drawable.icon_mason);
-    }
 
     private FloatingActionButton mFabLegend;
     private MaterialCardView mLegendCard;
@@ -183,8 +173,9 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
     private List<LegendItem> getLegendItems() {
         List<LegendItem> items = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : WORKER_ICONS.entrySet()) {
-            items.add(new LegendItem(entry.getKey(), entry.getValue()));
+        // Oficios del catálogo (mismo orden y nombres que el backend)
+        for (String slug : CatalogProvider.localSlugs()) {
+            items.add(new LegendItem(CatalogProvider.categoryName(slug), CategoryHelper.iconFor(slug)));
         }
         return items;
     }
@@ -464,7 +455,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
                         Marker marker = mMap.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(worker.getName() != null ? worker.getName() : "Unknown Worker")
-                                .icon(resizeMapIcon(CategoryHelper.iconFor(worker), 60, 60)));
+                                .icon(workerMarkerIcon(CategoryHelper.iconFor(worker))));
                         marker.setTag(workerId);
                         mWorkersMarkers.put(workerId, marker);
                         mWorkers.put(workerId, worker);
@@ -536,10 +527,32 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    private BitmapDescriptor resizeMapIcon(int iconResource, int width, int height) {
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), iconResource);
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
-        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
+    /**
+     * Pin del trabajador: marker_worker_base con el ícono vectorial del oficio
+     * centrado en la cabeza del pin. Los íconos son vectores, así que se
+     * dibujan en un Canvas (BitmapFactory.decodeResource no los lee).
+     */
+    private BitmapDescriptor workerMarkerIcon(int iconResource) {
+        Drawable pin = ContextCompat.getDrawable(this, R.drawable.marker_worker_base);
+        Drawable icon = ContextCompat.getDrawable(this, iconResource);
+        if (pin == null || icon == null) return BitmapDescriptorFactory.defaultMarker();
+
+        int width = pin.getIntrinsicWidth();
+        int height = pin.getIntrinsicHeight();
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        pin.setBounds(0, 0, width, height);
+        pin.draw(canvas);
+
+        // Cabeza del pin: círculo de centro (24, 22) en el lienzo de 48 x 56
+        int centerX = width / 2;
+        int centerY = Math.round(height * 22f / 56f);
+        int half = Math.round(width * 11f / 48f);
+        icon = icon.mutate();
+        icon.setTint(ContextCompat.getColor(this, R.color.ads_marker_icon));
+        icon.setBounds(centerX - half, centerY - half, centerX + half, centerY + half);
+        icon.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     private void startLocation() {

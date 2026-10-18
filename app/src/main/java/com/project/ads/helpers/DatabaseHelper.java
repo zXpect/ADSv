@@ -19,10 +19,9 @@ public class DatabaseHelper {
     }
 
     public void uploadWorkerIcons(Resources resources) {
-        String[] workerTypes = {"carpintería", "ferretería", "pintor", "electricista", "plomería", "jardinería", "albañilería"};
+        String[] workerTypes = {"carpintería", "pintor", "electricista", "plomería", "jardinería", "albañilería"};
         int[] iconResources = {
                 R.drawable.icon_carpenter,
-                R.drawable.icon_ferreteria,
                 R.drawable.icon_painter,
                 R.drawable.icon_electrician,
                 R.drawable.icon_plumber,

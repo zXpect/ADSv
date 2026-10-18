@@ -34,6 +34,8 @@ public final class CategoryHelper {
                 return R.drawable.icon_gardener;
             case "albanileria":
                 return R.drawable.icon_mason;
+            case "cerrajeria":
+                return R.drawable.icon_locksmith;
             default:
                 return R.drawable.icon_worker;
         }
