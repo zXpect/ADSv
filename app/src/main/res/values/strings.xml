@@ -479,4 +479,39 @@
         <item quantity="one">%1$s · %2$d calificación</item>
         <item quantity="other">%1$s · %2$d calificaciones</item>
     </plurals>
+
+    <!-- Rediseño: inicio del cliente (mockup 06) y técnicos (mockup 08) -->
+    <string name="nav_coming_soon">Disponible pronto</string>
+    <string name="home_location">Ubaté, Cundinamarca</string>
+    <string name="home_greeting">Hola, %1$s</string>
+    <string name="home_greeting_default">Hola</string>
+    <string name="home_question">¿Qué necesitas reparar hoy?</string>
+    <string name="home_search_hint">Busca un técnico u oficio</string>
+    <string name="home_map_title">Ver técnicos en el mapa</string>
+    <string name="home_map_subtitle">Encuentra quién está cerca de ti</string>
+    <string name="home_categories_title">Oficios</string>
+    <string name="home_categories_hint">Elige uno para ver los técnicos</string>
+    <string name="home_active_service">Servicio activo · %1$s</string>
+    <string name="home_active_pending">Esperando la cotización del técnico</string>
+    <string name="home_active_quoted">Tienes una cotización por revisar</string>
+    <string name="home_active_accepted">Servicio aceptado</string>
+    <string name="home_active_on_the_way">El técnico va en camino</string>
+    <string name="home_active_in_progress">El técnico está trabajando</string>
+    <string name="workers_label">Técnicos disponibles</string>
+    <string name="workers_all_title">Todos los oficios</string>
+    <string name="workers_search_title">Resultados para «%1$s»</string>
+    <string name="workers_tab_list">Lista</string>
+    <string name="workers_tab_map">Mapa</string>
+    <string name="workers_sort_label">Más cerca primero</string>
+    <string name="workers_empty_title">No hay técnicos cerca</string>
+    <string name="workers_empty_message">Prueba con otro oficio o vuelve más tarde.</string>
+    <plurals name="workers_count">
+        <item quantity="one">%1$d técnico disponible</item>
+        <item quantity="other">%1$d técnicos disponibles</item>
+    </plurals>
+    <plurals name="workers_rating">
+        <item quantity="one">%1$s · %2$d calificación</item>
+        <item quantity="other">%1$s · %2$d calificaciones</item>
+    </plurals>
+    <string name="profile_logout">Cerrar sesión</string>
 </resources>

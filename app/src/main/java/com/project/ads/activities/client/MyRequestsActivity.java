@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.google.android.material.card.MaterialCardView;
 import com.project.ads.R;
+import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.ReasonHelper;
 import com.project.ads.models.ServiceRequest;
 import com.google.firebase.auth.FirebaseAuth;
@@ -79,6 +80,7 @@ public class MyRequestsActivity extends AppCompatActivity {
         }
 
         initViews();
+        ClientNavHelper.setup(this, R.id.nav_client_requests);
         setupRecyclerView();
         loadMyRequests();
     }

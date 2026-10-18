@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Historial de solicitudes · mockup 41 (docs/mockups/Historial.dc.html).
-     La barra inferior llega en la Fase 3; mientras tanto se conserva la flecha de volver. -->
+     Pestaña «Solicitudes» de la barra inferior; la flecha de volver queda oculta. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/space_2"
+        android:paddingStart="@dimen/screen_margin"
         android:paddingTop="@dimen/space_3"
         android:paddingEnd="@dimen/screen_margin">
 
@@ -26,13 +26,13 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/action_back"
             android:src="@drawable/ic_arrow_back"
+            android:visibility="gone"
             app:tint="@color/ads_text" />
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_1"
             android:layout_weight="1"
             android:accessibilityHeading="true"
             android:text="@string/history_title"
@@ -42,7 +42,8 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -102,4 +103,6 @@
             </LinearLayout>
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include layout="@layout/view_bottom_nav_client" />
 </LinearLayout>

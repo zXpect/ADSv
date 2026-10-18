@@ -106,6 +106,9 @@
             android:name="com.project.ads.activities.client.HomeUserActivity"
             android:exported="false" />
         <activity
+            android:name="com.project.ads.activities.client.WorkersActivity"
+            android:exported="false" />
+        <activity
             android:name="com.project.ads.activities.worker.MapWorkerActivity"
             android:exported="false" />
         <activity

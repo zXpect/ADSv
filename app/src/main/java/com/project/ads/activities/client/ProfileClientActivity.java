@@ -111,6 +111,14 @@ public class ProfileClientActivity extends AppCompatActivity {
             animateClick(v);
             changeProfileImage();
         });
+
+        findViewById(R.id.btnLogout).setOnClickListener(v -> new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.profile_logout)
+                .setMessage("¿Estás seguro que deseas cerrar sesión?")
+                .setPositiveButton("Sí", (dialog, which) ->
+                        com.project.ads.helpers.LogoutHelper.performLogout(this, mAuthProvider, null, null))
+                .setNegativeButton("No", null)
+                .show());
     }
 
     private void changeProfileImage() {
