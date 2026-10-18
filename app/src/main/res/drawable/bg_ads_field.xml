@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fondo de campo ADS para vistas que no son TextInputLayout (p. ej. Spinner) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ads_card" />
+    <corners android:radius="@dimen/radius_field" />
+    <stroke
+        android:width="@dimen/stroke_control"
+        android:color="@color/ads_control" />
+</shape>

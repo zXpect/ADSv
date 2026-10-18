@@ -1,13 +1,20 @@
 package com.project.ads.helpers;
 
+import com.google.android.material.chip.ChipGroup;
+
+import com.google.android.material.chip.Chip;
+
+import com.google.android.material.button.MaterialButton;
+
+import androidx.appcompat.app.AppCompatDialog;
+
+import android.view.ViewGroup;
+
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,55 +101,64 @@ public class QuoteDialogHelper {
         if (mActivity.isFinishing()) return;
         QuoteReference reference = request.getQuoteReference();
 
+        // Pantalla completa con el diseño del mockup 16
+        AppCompatDialog dialog = new AppCompatDialog(mActivity, R.style.Theme_ADS_FullScreenDialog);
         View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_send_quote, null);
+        dialog.setContentView(view, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        TextView tvHint = view.findViewById(R.id.tv_quote_hint);
         TextView tvReference = view.findViewById(R.id.tv_quote_reference);
         TextInputLayout tilPrice = view.findViewById(R.id.til_quote_price);
         TextInputEditText etPrice = view.findViewById(R.id.et_quote_price);
         TextView tvLimits = view.findViewById(R.id.tv_quote_limits);
         View reasonLayout = view.findViewById(R.id.layout_adjustment_reason);
         TextView reasonLabel = view.findViewById(R.id.tv_adjustment_reason_label);
-        Spinner reasonSpinner = view.findViewById(R.id.sp_adjustment_reason);
+        ChipGroup reasonChips = view.findViewById(R.id.chip_group_adjustment_reason);
         TextInputLayout tilReasonText = view.findViewById(R.id.til_adjustment_reason_text);
         TextInputEditText etReasonText = view.findViewById(R.id.et_adjustment_reason_text);
         ScheduleFields schedule = new ScheduleFields(mActivity, view.findViewById(R.id.schedule_fields));
+        MaterialButton send = view.findViewById(R.id.btn_quote_send);
+        view.findViewById(R.id.btn_quote_back).setOnClickListener(v -> dialog.dismiss());
 
-        tvReference.setText(referenceText(request, reference, catalog));
+        // «Estimado de ADS: $X – $Y» y las tareas pedidas
+        tvHint.setText(estimateText(reference));
+        String tasks = request.getTaskItemsDisplay(catalog);
+        tvReference.setText(tasks);
+        tvReference.setVisibility(tasks != null ? View.VISIBLE : View.GONE);
         if (limits != null) {
             tvLimits.setVisibility(View.VISIBLE);
             tvLimits.setText(mActivity.getString(R.string.quote_dialog_min_fee,
                     ServiceRequest.formatCop(limits.getMinPrice())));
         }
 
-        // Motivos: primera opción vacía para obligar a elegir
-        List<String> codes = new ArrayList<>();
-        List<String> labels = new ArrayList<>();
-        codes.add(null);
-        labels.add(mActivity.getString(R.string.quote_reason_choose));
+        // Motivos como chips (mockup 16); «Otro» pide escribirlo
         for (Map.Entry<String, String> entry : ReasonHelper.ADJUSTMENT.entrySet()) {
-            codes.add(entry.getKey());
-            labels.add(entry.getValue());
+            Chip chip = new Chip(mActivity);
+            chip.setId(View.generateViewId());
+            chip.setTag(entry.getKey());
+            chip.setText(entry.getValue());
+            chip.setCheckable(true);
+            reasonChips.addView(chip);
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, labels);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        reasonSpinner.setAdapter(adapter);
-        reasonSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-                tilReasonText.setVisibility(ReasonHelper.OTHER.equals(codes.get(position)) ? View.VISIBLE : View.GONE);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+        Chip other = new Chip(mActivity);
+        other.setId(View.generateViewId());
+        other.setTag(ReasonHelper.OTHER);
+        other.setText(R.string.quote_reason_other);
+        other.setCheckable(true);
+        reasonChips.addView(other);
+        reasonChips.setOnCheckedStateChangeListener((group, ids) -> {
+            String code = selectedReason(group);
+            tilReasonText.setVisibility(ReasonHelper.OTHER.equals(code) ? View.VISIBLE : View.GONE);
         });
 
         // El motivo aparece cuando el precio necesita ajuste (mismo criterio que el backend)
         Runnable updateReasonVisibility = () -> {
             Long price = parsePrice(etPrice.getText() != null ? etPrice.getText().toString() : "");
-            boolean adjusted = price == null || QuoteReference.isAdjusted(reference, price);
+            boolean adjusted = price != null && QuoteReference.isAdjusted(reference, price);
             reasonLayout.setVisibility(adjusted ? View.VISIBLE : View.GONE);
             reasonLabel.setText(reference == null || reference.hasUnpricedItems() || !reference.hasRange()
-                    ? R.string.quote_reason_label_unpriced : R.string.quote_reason_label);
+                    ? R.string.quote_reason_label_unpriced : R.string.quote_card_reason_label);
         };
         updateReasonVisibility.run();
         etPrice.addTextChangedListener(new TextWatcher() {
@@ -160,15 +176,7 @@ public class QuoteDialogHelper {
             }
         });
 
-        AlertDialog dialog = new AlertDialog.Builder(mActivity)
-                .setTitle(R.string.quote_dialog_title)
-                .setView(view)
-                .setPositiveButton(R.string.quote_dialog_send, null)
-                .setNegativeButton(R.string.quote_dialog_cancel, null)
-                .create();
-
-        // Se reemplaza el click para validar sin cerrar el diálogo
-        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+        send.setOnClickListener(v -> {
             tilPrice.setError(null);
             tilReasonText.setError(null);
             Long price = parsePrice(etPrice.getText() != null ? etPrice.getText().toString() : "");
@@ -190,7 +198,7 @@ public class QuoteDialogHelper {
             String reasonCode = null;
             String reasonText = null;
             if (QuoteReference.isAdjusted(reference, price)) {
-                reasonCode = codes.get(reasonSpinner.getSelectedItemPosition());
+                reasonCode = selectedReason(reasonChips);
                 if (reasonCode == null) {
                     Toast.makeText(mActivity, R.string.quote_reason_required, Toast.LENGTH_SHORT).show();
                     return;
@@ -207,7 +215,7 @@ public class QuoteDialogHelper {
             Long scheduledAt = schedule.getScheduledAt();
             if (scheduledAt == null) return;
 
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+            send.setEnabled(false);
             ApiBodies.QuoteBody body = new ApiBodies.QuoteBody(
                     price, reasonCode, reasonText, scheduledAt, schedule.getDurationMin());
             mQuoteProvider.submitQuote(request.getRequest_id(), body, new ApiCallback<QuoteData>() {
@@ -220,32 +228,29 @@ public class QuoteDialogHelper {
 
                 @Override
                 public void onError(String message, int httpStatus) {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                    send.setEnabled(true);
                     tilPrice.setError(message);
                 }
             });
-        }));
+        });
 
         dialog.show();
     }
 
-    /** Tareas pedidas y rango de referencia congelado, para orientar la cotización. */
-    private String referenceText(ServiceRequest request, QuoteReference reference, CatalogData catalog) {
-        StringBuilder text = new StringBuilder();
-        String tasks = request.getTaskItemsDisplay(catalog);
-        if (tasks != null) text.append(tasks).append("\n\n");
-        if (reference == null) {
-            text.append(mActivity.getString(R.string.quote_reference_missing));
-        } else if (!reference.hasRange()) {
-            text.append(mActivity.getString(R.string.quote_reference_unpriced));
-        } else {
-            text.append(mActivity.getString(R.string.quote_reference_range,
-                    ServiceRequest.formatCop(reference.getMinCop()), ServiceRequest.formatCop(reference.getMaxCop())));
-            if (reference.hasUnpricedItems()) {
-                text.append('\n').append(mActivity.getString(R.string.quote_reference_partial));
-            }
-        }
-        return text.toString();
+    private static String selectedReason(ChipGroup group) {
+        int id = group.getCheckedChipId();
+        View chip = id != View.NO_ID ? group.findViewById(id) : null;
+        return chip != null ? (String) chip.getTag() : null;
+    }
+
+    /** «Estimado de ADS: $X – $Y», o el aviso cuando no hay rango. */
+    private String estimateText(QuoteReference reference) {
+        if (reference == null) return mActivity.getString(R.string.quote_reference_missing);
+        if (!reference.hasRange()) return mActivity.getString(R.string.quote_reference_unpriced);
+        String text = mActivity.getString(R.string.quote_screen_estimate,
+                ServiceRequest.formatCop(reference.getMinCop()), ServiceRequest.formatCop(reference.getMaxCop()));
+        return reference.hasUnpricedItems()
+                ? text + "\n" + mActivity.getString(R.string.quote_reference_partial) : text;
     }
 
     // ---------- reprogramar ----------

@@ -163,6 +163,17 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
+    <!-- Botón con aspecto de campo (fecha y hora de la cotización, mockup 16) -->
+    <style name="Widget.ADS.Button.Field" parent="Widget.ADS.Button.Secondary">
+        <item name="android:minHeight">48dp</item>
+        <item name="cornerRadius">@dimen/radius_field</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.BodySmall</item>
+        <item name="android:textColor">@color/ads_text</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+    </style>
+
     <!-- Botón sobre fondo navy (Bienvenida): borde claro, texto claro -->
     <style name="Widget.ADS.Button.OnNavy" parent="Widget.ADS.Button.Secondary">
         <item name="android:textColor">@color/ads_on_navy</item>

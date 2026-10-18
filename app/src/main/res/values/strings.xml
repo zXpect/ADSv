@@ -677,4 +677,22 @@
     <string name="inbox_empty_active">No tienes servicios activos</string>
     <string name="inbox_client_default">Cliente</string>
     <string name="inbox_price_to_quote">Por cotizar</string>
+
+    <!-- Rediseño: detalle de solicitud y cotizar del trabajador (mockups 15 y 16) -->
+    <string name="quote_screen_title">Tu cotización</string>
+    <string name="quote_screen_estimate">Estimado de ADS: %1$s – %2$s</string>
+    <string name="quote_screen_price_label">Tu precio (COP)</string>
+    <string name="quote_screen_price_hint">95000</string>
+    <string name="quote_screen_other_hint">Si eliges «Otro», escribe el motivo.</string>
+    <string name="quote_screen_note">El cliente podrá aceptarla o rechazarla.</string>
+    <string name="quote_reason_other">Otro</string>
+    <string name="worker_detail_request_of">Solicitud de</string>
+    <string name="worker_detail_tasks">Tareas</string>
+    <string name="worker_detail_where">Dónde</string>
+    <string name="worker_detail_quote">Cotizar</string>
+    <string name="worker_detail_reject">Rechazar solicitud</string>
+    <string name="worker_detail_price_note">Puedes confirmar el estimado o ajustarlo con un motivo.</string>
+    <string name="worker_detail_price_note_fee">Tarifa mínima por visita: %1$s. Puedes confirmar el estimado o ajustarlo con un motivo.</string>
+    <string name="worker_detail_price_quoted">Precio que cotizaste.</string>
+    <string name="worker_detail_price_unpriced">Estas tareas no tienen un rango fijo: define el precio al cotizar.</string>
 </resources>

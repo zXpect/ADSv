@@ -29,6 +29,11 @@ import com.project.ads.providers.RequestProvider;
 
 import java.util.Map;
 
+/**
+ * Detalle de una solicitud nueva para el trabajador · mockup 15.
+ * «Cotizar» abre la cotización (mockup 16); al enviarla el backend pasa la
+ * solicitud a aceptada. «Rechazar solicitud» se conserva del flujo anterior.
+ */
 public class RequestDetailActivity extends AppCompatActivity {
     
     private static final String TAG = "RequestDetailActivity";
@@ -119,8 +124,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         
         // Set up click listeners
         btnBack.setOnClickListener(v -> finish());
-        // Aceptar = enviar cotización: el backend marca la solicitud como aceptada
-        btnAccept.setText(R.string.quote_accept_with_price);
+        // Cotizar = enviar cotización: el backend marca la solicitud como aceptada
         btnAccept.setOnClickListener(v -> acceptRequest());
         btnReject.setOnClickListener(v -> rejectRequest());
         
@@ -207,43 +211,82 @@ public class RequestDetailActivity extends AppCompatActivity {
     }
     
     private void populateUI(ServiceRequest request) {
-        tvRequestId.setText("ID: #" + (request.getRequest_id() != null ? request.getRequest_id() : "N/A"));
-        tvStatus.setText(request.getStatusDisplayText());
-        tvTimestamp.setText(request.getFormattedTimestamp());
-        
-        tvClientName.setText(request.getClient_name() != null ? request.getClient_name() : "N/A");
-        tvClientPhone.setText(request.getClient_phone() != null ? request.getClient_phone() : "N/A");
-        tvClientEmail.setText(request.getClient_email() != null ? request.getClient_email() : "N/A");
-        
-        // Oficio y tareas pedidas (con el estimado congelado, si lo hay)
-        String serviceType = request.getService_type() != null ? request.getService_type() : "N/A";
-        String details = RequestDetailsHelper.details(this, request, CatalogProvider.cachedCatalog());
-        tvServiceType.setText(details != null ? serviceType + "\n\n" + details : serviceType);
-        tvAddress.setText(request.getAddress() != null ? request.getAddress() : "N/A");
-        tvUrgencyLevel.setText(request.getUrgency_level() != null ? request.getUrgency_level() : "Normal");
-        
+        tvStatus.setText(statusLabel(request.getStatus()));
+        tvClientName.setText(request.getClient_name() != null ? request.getClient_name() : "Cliente");
+        String service = request.getService_type() != null ? request.getService_type() : "";
+        tvTimestamp.setText(service.isEmpty() ? request.getTimeAgo() : service + " · " + request.getTimeAgo());
+
+        boolean hasPhone = request.getClient_phone() != null && !request.getClient_phone().isEmpty();
+        tvClientPhone.setText(hasPhone ? request.getClient_phone() : "");
+        tvClientPhone.setVisibility(hasPhone ? View.VISIBLE : View.GONE);
+        boolean hasEmail = request.getClient_email() != null && !request.getClient_email().isEmpty();
+        tvClientEmail.setText(hasEmail ? request.getClient_email() : "");
+        tvClientEmail.setVisibility(hasEmail ? View.VISIBLE : View.GONE);
+
+        bindTasks(request);
+        tvAddress.setText(request.getAddress() != null ? request.getAddress() : "Sin dirección");
+        boolean hasDescription = request.getDescription() != null && !request.getDescription().isEmpty();
+        tvDescription.setText(hasDescription ? request.getDescription() : "");
+        tvDescription.setVisibility(hasDescription ? View.VISIBLE : View.GONE);
+
+        // Precio: el cotizado si ya hay; si no, el estimado de referencia congelado
+        com.project.ads.models.api.QuoteReference reference = request.getQuoteReference();
+        TextView priceNote = findViewById(R.id.tv_detail_price_note);
         if (request.hasQuote()) {
             tvEstimatedCost.setText(request.getFormattedQuotedPrice());
+            priceNote.setText(R.string.worker_detail_price_quoted);
+        } else if (reference != null && reference.hasRange()) {
+            tvEstimatedCost.setText(ServiceRequest.formatCop(reference.getMinCop()) + " – "
+                    + ServiceRequest.formatCop(reference.getMaxCop()));
+            priceNote.setText(reference.getMinVisitFeeCop() > 0
+                    ? getString(R.string.worker_detail_price_note_fee,
+                    ServiceRequest.formatCop(reference.getMinVisitFeeCop()))
+                    : getString(R.string.worker_detail_price_note));
         } else {
-            tvEstimatedCost.setText("Por determinar");
+            tvEstimatedCost.setText(R.string.request_task_quoted_by_worker);
+            priceNote.setText(R.string.worker_detail_price_unpriced);
         }
-        
-        tvDescription.setText(request.getDescription() != null ? request.getDescription() : "Sin descripción");
-        
-        // Update button visibility based on status
+
         updateButtonsVisibility(request.getStatus());
     }
-    
-    private void updateButtonsVisibility(String status) {
-        if ("pending".equals(status)) {
-            btnAccept.setVisibility(View.VISIBLE);
-            btnReject.setVisibility(View.VISIBLE);
-        } else {
-            btnAccept.setVisibility(View.GONE);
-            btnReject.setVisibility(View.GONE);
+
+    /** Tareas y cantidades (mockup 15), a partir del texto de tareas del catálogo. */
+    private void bindTasks(ServiceRequest request) {
+        android.widget.LinearLayout rows = findViewById(R.id.layout_detail_tasks);
+        rows.removeAllViews();
+        String tasks = request.getTaskItemsDisplay(CatalogProvider.cachedCatalog());
+        boolean has = tasks != null && !tasks.isEmpty();
+        findViewById(R.id.tv_detail_tasks_title).setVisibility(has ? View.VISIBLE : View.GONE);
+        findViewById(R.id.card_detail_tasks).setVisibility(has ? View.VISIBLE : View.GONE);
+        if (!has) return;
+        for (String line : tasks.split("\n")) {
+            String text = line.startsWith("• ") ? line.substring(2) : line;
+            int split = text.lastIndexOf(" · ");
+            View row = getLayoutInflater().inflate(R.layout.item_detail_task_row, rows, false);
+            ((TextView) row.findViewById(R.id.tv_detail_task_name)).setText(split > 0 ? text.substring(0, split) : text);
+            ((TextView) row.findViewById(R.id.tv_detail_task_quantity)).setText(split > 0 ? text.substring(split + 3) : "");
+            rows.addView(row);
         }
     }
-    
+
+    private String statusLabel(String status) {
+        if (status == null) return "";
+        switch (status) {
+            case "pending": return getString(R.string.request_status_pending);
+            case "accepted": return getString(R.string.request_status_quoted);
+            case "rejected": return getString(R.string.request_status_rejected);
+            case "cancelled": return getString(R.string.request_status_cancelled);
+            default: return status;
+        }
+    }
+
+    private void updateButtonsVisibility(String status) {
+        boolean pending = "pending".equals(status);
+        findViewById(R.id.layout_detail_actions).setVisibility(pending ? View.VISIBLE : View.GONE);
+        btnAccept.setVisibility(pending ? View.VISIBLE : View.GONE);
+        btnReject.setVisibility(pending ? View.VISIBLE : View.GONE);
+    }
+
     /**
      * Aceptar una solicitud exige cotizarla: el backend guarda el precio, pasa
      * la solicitud a 'accepted' y notifica al cliente.
@@ -253,7 +296,7 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         new QuoteDialogHelper(this).show(serviceRequest, quote -> {
             serviceRequest.setStatus(quote.getStatus());
-            tvStatus.setText(serviceRequest.getStatusDisplayText());
+            tvStatus.setText(statusLabel(quote.getStatus()));
             updateButtonsVisibility(quote.getStatus());
             if (quote.getQuotedPrice() != null) {
                 tvEstimatedCost.setText(ServiceRequest.formatCop(quote.getQuotedPrice()));
@@ -275,7 +318,7 @@ public class RequestDetailActivity extends AppCompatActivity {
                     
                     // Update local object and UI
                     serviceRequest.setStatus("rejected");
-                    tvStatus.setText(serviceRequest.getStatusDisplayText());
+                    tvStatus.setText(statusLabel("rejected"));
                     updateButtonsVisibility("rejected");
                     
                     btnAccept.setEnabled(true);
