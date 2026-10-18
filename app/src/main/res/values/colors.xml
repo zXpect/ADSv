@@ -23,7 +23,8 @@
     <color name="ads_on_navy">#F6F3EE</color>        <!-- texto sobre navy -->
     <color name="ads_on_navy_muted">#CFCBDA</color>  <!-- texto secundario sobre navy -->
     <color name="ads_map_me">#3A5BD9</color>
-    <color name="ads_header">#1B1830</color>         <!-- cabeceras navy (login) -->         <!-- punto "tu ubicación" en el mapa -->
+    <color name="ads_header">#1B1830</color>
+    <color name="ads_segment_selected">#FFFFFF</color> <!-- opción elegida del control Lista / Mapa -->         <!-- cabeceras navy (login) -->         <!-- punto "tu ubicación" en el mapa -->
 
     <!-- ===================================================================
          COLORES HEREDADOS
