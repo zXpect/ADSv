@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
+import com.project.ads.activities.NotificationsActivity;
 import com.project.ads.activities.TermsConditionsActivity;
 import com.project.ads.helpers.WorkerNavHelper;
 
@@ -165,7 +166,8 @@ public class ProfileWorkerActivity extends AppCompatActivity {
         });
 
         View.OnClickListener comingSoon = v -> Toast.makeText(this, R.string.account_coming_soon, Toast.LENGTH_SHORT).show();
-        findViewById(R.id.row_account_notifications).setOnClickListener(comingSoon);
+        findViewById(R.id.row_account_notifications).setOnClickListener(v ->
+                startActivity(new Intent(this, NotificationsActivity.class)));
         findViewById(R.id.row_account_pqr).setOnClickListener(comingSoon);
         findViewById(R.id.row_account_terms).setOnClickListener(v -> {
             Intent intent = new Intent(this, TermsConditionsActivity.class);

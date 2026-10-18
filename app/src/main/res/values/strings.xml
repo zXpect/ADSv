@@ -683,4 +683,20 @@
     <string name="workers_list_end">Has visto todos los técnicos disponibles</string>
     <string name="workers_load_more">Cargar más técnicos</string>
     <string name="workers_loading_more">Cargando más técnicos…</string>
+
+    <!-- Rediseño: Notificaciones (mockups 40 y 53) -->
+    <string name="notifications_mark_read">Marcar como leídas</string>
+    <string name="notifications_today">Hoy</string>
+    <string name="notifications_earlier">Antes</string>
+    <string name="notifications_unread">Nueva</string>
+    <string name="notifications_empty_title">No tienes notificaciones</string>
+    <string name="notifications_empty_message">Aquí verás las novedades de tus solicitudes: cotizaciones, cambios de estado y pagos.</string>
+    <string name="notifications_error_title">No pudimos cargar tus notificaciones</string>
+    <string name="notifications_error_message">Revisa tu conexión e intenta de nuevo.</string>
+    <string name="notifications_retry">Reintentar</string>
+    <string name="notifications_mark_read_error">No pudimos marcarlas como leídas. Intenta de nuevo.</string>
+    <string name="notifications_time_now">Hace un momento</string>
+    <string name="notifications_time_minutes">Hace %1$d min</string>
+    <string name="notifications_time_hours">Hace %1$d h</string>
+    <string name="notifications_time_yesterday">Ayer</string>
 </resources>

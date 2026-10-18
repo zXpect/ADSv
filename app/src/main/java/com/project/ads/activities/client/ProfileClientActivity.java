@@ -20,6 +20,7 @@ import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.ClientProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.project.ads.R;
+import com.project.ads.activities.NotificationsActivity;
 import com.project.ads.activities.MyDataActivity;
 import com.project.ads.activities.TermsConditionsActivity;
 import com.project.ads.helpers.ClientNavHelper;
@@ -30,7 +31,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 /**
  * Mi cuenta del cliente · mockup 37 (docs/mockups/MiCuenta.dc.html).
- * Pestaña de la barra inferior. Notificaciones y PQR esperan su backend.
+ * Pestaña de la barra inferior. PQR espera su backend.
  */
 public class ProfileClientActivity extends AppCompatActivity {
 
@@ -106,7 +107,8 @@ public class ProfileClientActivity extends AppCompatActivity {
         });
 
         View.OnClickListener comingSoon = v -> Toast.makeText(this, R.string.account_coming_soon, Toast.LENGTH_SHORT).show();
-        findViewById(R.id.row_account_notifications).setOnClickListener(comingSoon);
+        findViewById(R.id.row_account_notifications).setOnClickListener(v ->
+                startActivity(new Intent(this, NotificationsActivity.class)));
         findViewById(R.id.row_account_pqr).setOnClickListener(comingSoon);
         findViewById(R.id.row_account_history).setOnClickListener(v -> {
             Intent intent = new Intent(this, MyRequestsActivity.class);
