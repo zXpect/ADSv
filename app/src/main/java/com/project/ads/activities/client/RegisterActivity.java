@@ -17,7 +17,6 @@ import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -39,7 +38,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.project.ads.R;
 import com.project.ads.activities.TermsConditionsActivity;
-import com.project.ads.includes.MyToolbar;
+import com.project.ads.activities.LoginActivity;
 import com.project.ads.models.Client;
 import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.ClientProvider;
@@ -49,6 +48,11 @@ import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * Registro de cliente · mockup 04 (docs/mockups/RegistroCliente.dc.html).
+ * Mayor de edad, términos y datos personales son tres casillas obligatorias;
+ * todavía no se guardan como marcas de consentimiento (pendiente del backend).
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";
@@ -73,6 +77,8 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText mTextInputPassword;
     private TextInputEditText mTextInputPhone; // ⭐ NUEVO
     private CheckBox mCheckBoxTerms;
+    private CheckBox mCheckBoxAdult;
+    private CheckBox mCheckBoxData;
     private TextView mTextViewTerms;
     private CircleImageView mCircleImageProfile;
     private ImageView mImageViewAddPhoto;
@@ -144,7 +150,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         initializeComponents();
-        setupStatusBar();
         handleGoogleSignInData();
         setupClickListeners();
         setupTermsAndConditionsLink();
@@ -204,7 +209,11 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initializeComponents() {
-        MyToolbar.showTransparent(this, "Registro de Cliente", true);
+        findViewById(R.id.btn_back).setOnClickListener(v -> onBackPressed());
+        findViewById(R.id.btn_register_login).setOnClickListener(v -> {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        });
 
         mAuthProvider = new AuthProvider();
         mClientProvider = new ClientProvider();
@@ -218,6 +227,9 @@ public class RegisterActivity extends AppCompatActivity {
         mTextInputPassword = findViewById(R.id.Password);
         mTextInputPhone = findViewById(R.id.phone_number); // ⭐ NUEVO
         mCheckBoxTerms = findViewById(R.id.checkBox2);
+        mCheckBoxAdult = findViewById(R.id.checkbox_adult);
+        mCheckBoxData = findViewById(R.id.checkbox_data);
+        findViewById(R.id.tv_register_adult).setOnClickListener(v -> mCheckBoxAdult.toggle());
         mTextViewTerms = findViewById(R.id.textViewTerms);
         mCircleImageProfile = findViewById(R.id.circleImageProfile);
         mImageViewAddPhoto = findViewById(R.id.imageViewAddPhoto);
@@ -251,15 +263,8 @@ public class RegisterActivity extends AppCompatActivity {
                 mTextInputEmail.setEnabled(false);
             }
 
-            mTextInputLayoutPassword.setVisibility(View.GONE);
-            mButtonRegister.setText("Completar Registro");
-        }
-    }
-
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
+            findViewById(R.id.layout_password).setVisibility(View.GONE);
+            mButtonRegister.setText(R.string.register_complete);
         }
     }
 
@@ -364,16 +369,28 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupTermsAndConditionsLink() {
-        SpannableString spannableString = new SpannableString("Términos y Condiciones");
-        ClickableSpan clickableSpan = new ClickableSpan() {
+        mTextViewTerms.setText(linkText(R.string.register_terms_text, R.string.register_terms_link));
+        mTextViewTerms.setMovementMethod(LinkMovementMethod.getInstance());
+        TextView data = findViewById(R.id.textViewData);
+        data.setText(linkText(R.string.register_data_text, R.string.register_data_link));
+        data.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    /** "Acepto los Términos y Condiciones" con el enlace en negrita sobre la parte indicada. */
+    private SpannableString linkText(int textRes, int linkRes) {
+        String text = getString(textRes);
+        String link = getString(linkRes);
+        SpannableString spannable = new SpannableString(text);
+        int start = Math.max(0, text.indexOf(link));
+        spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
                 openTermsAndConditions();
             }
-        };
-        spannableString.setSpan(clickableSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        mTextViewTerms.setText(spannableString);
-        mTextViewTerms.setMovementMethod(LinkMovementMethod.getInstance());
+        }, start, Math.min(text.length(), start + link.length()), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                start, Math.min(text.length(), start + link.length()), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
     }
 
     private void openTermsAndConditions() {
@@ -395,8 +412,18 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        if (!mCheckBoxAdult.isChecked()) {
+            showToast(getString(R.string.register_error_adult));
+            return;
+        }
+
         if (!mCheckBoxTerms.isChecked()) {
             showToast("Debe aceptar los términos y condiciones");
+            return;
+        }
+
+        if (!mCheckBoxData.isChecked()) {
+            showToast(getString(R.string.register_error_data));
             return;
         }
 

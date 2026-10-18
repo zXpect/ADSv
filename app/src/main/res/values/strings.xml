@@ -769,4 +769,27 @@
     <string name="role_login">Inicia sesión</string>
     <string name="role_no_account">¿No tienes cuenta?</string>
     <string name="role_register">Crea una</string>
+
+    <!-- Rediseño: registro de cliente (mockup 04) -->
+    <string name="register_role_client">Cliente</string>
+    <string name="register_title">Crea tu cuenta</string>
+    <string name="register_subtitle">Solo necesitamos lo básico para empezar.</string>
+    <string name="register_names">Nombres</string>
+    <string name="register_last_names">Apellidos</string>
+    <string name="register_email">Correo</string>
+    <string name="register_phone">Teléfono</string>
+    <string name="register_phone_prefix">+57</string>
+    <string name="register_phone_placeholder">300 123 4567</string>
+    <string name="register_password_placeholder">Mínimo 8 caracteres</string>
+    <string name="register_adult">Soy mayor de edad</string>
+    <string name="register_terms_text">Acepto los Términos y Condiciones</string>
+    <string name="register_terms_link">Términos y Condiciones</string>
+    <string name="register_terms_desc">Acepto los Términos y Condiciones</string>
+    <string name="register_data_text">Autorizo el tratamiento de mis datos personales</string>
+    <string name="register_data_link">datos personales</string>
+    <string name="register_data_desc">Autorizo el tratamiento de mis datos personales</string>
+    <string name="register_submit">Crear cuenta</string>
+    <string name="register_complete">Completar registro</string>
+    <string name="register_error_adult">Debes ser mayor de edad para crear una cuenta</string>
+    <string name="register_error_data">Debes autorizar el tratamiento de tus datos personales</string>
 </resources>
