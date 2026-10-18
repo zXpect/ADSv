@@ -4,14 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -45,60 +48,53 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Detalle y seguimiento de la solicitud del cliente · mockups 17 (revisar
+ * cotización), 20 (aceptada), 45 (en camino), 46 (en progreso) y 55 (completada).
+ * Escucha requests/<id> en Firebase; aceptar o rechazar la cotización, cancelar,
+ * pagar y calificar siguen pasando por el backend como antes.
+ */
 public class ServiceRequestDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "ServiceRequestDetail";
+    private static final Locale LOCALE = new Locale("es", "CO");
 
     // UI Components
     private ProgressBar mProgressBar;
     private LinearLayout mLayoutContent;
     private TextView mTvError;
-    private ImageButton mBtnBack;
     private RequestProvider mRequestProvider;
     private QuoteProvider mQuoteProvider;
 
-    // Service Info
-    private TextView mTvRequestId;
+    // Encabezado y técnico
     private TextView mTvStatus;
+    private TextView mTvEyebrow;
+    private TextView mTvTitle;
     private TextView mTvServiceType;
+    private TextView mTvWorkerInitials;
     private TextView mTvWorkerName;
     private TextView mTvWorkerPhone;
     private TextView mTvAddress;
     private TextView mTvDescription;
-    private TextView mTvTimestamp;
-    private ImageView mIvStatusIcon;
+    private ImageButton mBtnCallWorker;
+    private View mStatusFlow;
+    private LinearLayout mTimeline;
 
-    // Status Flow
-    private LinearLayout mLayoutStatusFlow;
-    private View mStatusPending;
-    private View mStatusAccepted;
-    private View mStatusOnTheWay;
-    private View mStatusInProgress;
-    private View mStatusCompleted;
-    private View mLinePendingToAccepted;
-    private View mLineAcceptedToWay;
-    private View mLineWayToProgress;
-    private View mLineProgressToCompleted;
-    private TextView mTvStatusPending;
-    private TextView mTvStatusAccepted;
-    private TextView mTvStatusOnTheWay;
-    private TextView mTvStatusInProgress;
-    private TextView mTvStatusCompleted;
-
-    // Action Buttons
-    private CardView mCardActions;
-    private Button mBtnCallWorker;
+    // Barra de acciones
+    private View mCardActions;
+    private TextView mTvActionsNoteTop;
+    private TextView mTvActionsNote;
     private Button mBtnCancelRequest;
     private Button mBtnRateService;
     private Button mBtnPayService;
+    private Button mBtnAcceptQuote;
+    private Button mBtnRejectQuote;
 
     // Quote and Payment Card
     private CardView mCardQuote;
     private TextView mTvQuoteAmount;
     private TextView mTvQuoteStatus;
     private TextView mTvPaymentStatus;
-    private Button mBtnAcceptQuote;
-    private Button mBtnRejectQuote;
     private TextView mTvQuoteDetails;
     private CatalogData mCatalog;   // nombres de las tareas; puede no estar cargado
 
@@ -125,71 +121,47 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         }
 
         initViews();
-        setupStatusBar();
         mRequestProvider = new RequestProvider(this);
         mQuoteProvider = new QuoteProvider();
         loadRequestData();
         loadCatalog();
-
     }
-    
-
 
     private void initViews() {
-        // Loading and Error
         mProgressBar = findViewById(R.id.progress_bar);
         mLayoutContent = findViewById(R.id.layout_content);
         mTvError = findViewById(R.id.tv_error);
-        mBtnBack = findViewById(R.id.btn_back);
 
-        // Service Info
-        mTvRequestId = findViewById(R.id.tv_request_id);
         mTvStatus = findViewById(R.id.tv_status);
+        mTvEyebrow = findViewById(R.id.tv_detail_eyebrow);
+        mTvTitle = findViewById(R.id.tv_detail_title);
         mTvServiceType = findViewById(R.id.tv_service_type);
+        mTvWorkerInitials = findViewById(R.id.tv_worker_initials);
         mTvWorkerName = findViewById(R.id.tv_worker_name);
         mTvWorkerPhone = findViewById(R.id.tv_worker_phone);
         mTvAddress = findViewById(R.id.tv_address);
         mTvDescription = findViewById(R.id.tv_description);
-        mTvTimestamp = findViewById(R.id.tv_timestamp);
-        mIvStatusIcon = findViewById(R.id.iv_status_icon);
-
-        // Status Flow
-        mLayoutStatusFlow = findViewById(R.id.layout_status_flow);
-        mStatusPending = findViewById(R.id.status_pending);
-        mStatusAccepted = findViewById(R.id.status_accepted);
-        mStatusOnTheWay = findViewById(R.id.status_on_the_way);
-        mStatusInProgress = findViewById(R.id.status_in_progress);
-        mStatusCompleted = findViewById(R.id.status_completed);
-        mLinePendingToAccepted = findViewById(R.id.line_pending_to_accepted);
-        mLineAcceptedToWay = findViewById(R.id.line_accepted_to_way);
-        mLineWayToProgress = findViewById(R.id.line_way_to_progress);
-        mLineProgressToCompleted = findViewById(R.id.line_progress_to_completed);
-        mTvStatusPending = findViewById(R.id.tv_status_pending);
-        mTvStatusAccepted = findViewById(R.id.tv_status_accepted);
-        mTvStatusOnTheWay = findViewById(R.id.tv_status_on_the_way);
-        mTvStatusInProgress = findViewById(R.id.tv_status_in_progress);
-        mTvStatusCompleted = findViewById(R.id.tv_status_completed);
-
-        // Action Buttons
-        mCardActions = findViewById(R.id.card_actions);
         mBtnCallWorker = findViewById(R.id.btn_call_worker);
+        mStatusFlow = findViewById(R.id.layout_status_flow);
+        mTimeline = findViewById(R.id.layout_timeline);
+
+        mCardActions = findViewById(R.id.card_actions);
+        mTvActionsNoteTop = findViewById(R.id.tv_actions_note_top);
+        mTvActionsNote = findViewById(R.id.tv_actions_note);
         mBtnCancelRequest = findViewById(R.id.btn_cancel_request);
         mBtnRateService = findViewById(R.id.btn_rate_service);
         mBtnPayService = findViewById(R.id.btn_pay_service);
+        // Aceptar y rechazar van en la barra fija (mockup 17), no dentro de la tarjeta
+        mBtnAcceptQuote = findViewById(R.id.btn_detail_accept_quote);
+        mBtnRejectQuote = findViewById(R.id.btn_detail_reject_quote);
 
-        // Quote and Payment Card
         mCardQuote = findViewById(R.id.card_quote);
         mTvQuoteAmount = findViewById(R.id.tv_quote_amount);
         mTvQuoteStatus = findViewById(R.id.tv_quote_status);
         mTvPaymentStatus = findViewById(R.id.tv_payment_status);
-        mBtnAcceptQuote = findViewById(R.id.btn_quote_primary);
-        mBtnRejectQuote = findViewById(R.id.btn_quote_secondary);
         mTvQuoteDetails = findViewById(R.id.tv_quote_details);
-        mBtnAcceptQuote.setText(R.string.quote_accept);
-        mBtnRejectQuote.setText(R.string.quote_reject);
 
-        // Setup click listeners
-        mBtnBack.setOnClickListener(v -> finish());
+        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         mBtnCallWorker.setOnClickListener(v -> callWorker());
         mBtnCancelRequest.setOnClickListener(v -> cancelRequest());
         mBtnRateService.setOnClickListener(v -> openRatingActivity());
@@ -211,13 +183,6 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 // Sin catálogo las tareas se muestran por su identificador
             }
         });
-    }
-
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
     }
 
     private void loadRequestData() {
@@ -266,152 +231,234 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(ServiceRequest request) {
-        // Basic Info
-        mTvRequestId.setText("Solicitud #" + mRequestId.substring(0, Math.min(8, mRequestId.length())));
-        mTvStatus.setText(request.getStatusDisplayText());
-        mTvServiceType.setText(request.getService_type() != null ? request.getService_type() : "N/A");
-        mTvWorkerName.setText(request.getWorker_name() != null ? request.getWorker_name() : "Trabajador");
-        mTvWorkerPhone.setText(request.getWorker_phone() != null ? request.getWorker_phone() : "N/A");
-        mTvAddress.setText(request.getAddress() != null ? request.getAddress() : "Sin dirección");
-        mTvDescription.setText(request.getDescription() != null ? request.getDescription() : "Sin descripción");
-        mTvTimestamp.setText(request.getTimeAgo());
+        String workerName = !TextUtils.isEmpty(request.getWorker_name())
+                ? request.getWorker_name() : getString(R.string.request_the_worker);
+        mTvWorkerName.setText(workerName);
+        mTvWorkerInitials.setText(initialsOf(workerName));
+        boolean hasPhone = !TextUtils.isEmpty(request.getWorker_phone());
+        mTvWorkerPhone.setText(hasPhone ? request.getWorker_phone() : "");
+        mTvWorkerPhone.setVisibility(hasPhone ? View.VISIBLE : View.GONE);
 
-        // Update status color
-        mTvStatus.setTextColor(
-                android.graphics.Color.parseColor(request.getStatusColor())
-        );
+        mTvAddress.setText(!TextUtils.isEmpty(request.getAddress()) ? request.getAddress() : "Sin dirección");
+        boolean hasDescription = !TextUtils.isEmpty(request.getDescription());
+        mTvDescription.setText(hasDescription ? request.getDescription() : "");
+        mTvDescription.setVisibility(hasDescription ? View.VISIBLE : View.GONE);
+        findViewById(R.id.tv_description_label).setVisibility(hasDescription ? View.VISIBLE : View.GONE);
 
-        // Update status flow
-        updateStatusFlow(request.getStatus());
-
-        // Update quote/payment card and action buttons
+        bindHeader(request, workerName);
+        bindTimeline(request);
         updateQuoteCard(request);
         updateActionButtons(request);
 
-        // Update call button state
-        mBtnCallWorker.setEnabled(request.getWorker_phone() != null && !request.getWorker_phone().isEmpty());
+        boolean activeWithWorker = "accepted".equals(request.getStatus())
+                || "on_the_way".equals(request.getStatus()) || "in_progress".equals(request.getStatus());
+        mBtnCallWorker.setVisibility(hasPhone && activeWithWorker ? View.VISIBLE : View.GONE);
     }
-    private void updateStatusFlow(String status) {
-        if (status == null) return;
 
-        // Reset all
-        resetStatusFlow();
+    // ---------- encabezado ----------
 
-        switch (status.toLowerCase()) {
-            case "pending":
-                activateStatus(mStatusPending, mTvStatusPending);
-                break;
-            case "accepted":
-                activateStatus(mStatusPending, mTvStatusPending);
-                activateLine(mLinePendingToAccepted);
-                activateStatus(mStatusAccepted, mTvStatusAccepted);
-                break;
+    /** Chip de estado, título y línea de contexto según el estado (mockups 17, 20, 45, 46, 55). */
+    private void bindHeader(ServiceRequest request, String workerName) {
+        String status = request.getStatus() != null ? request.getStatus() : "";
+        String service = !TextUtils.isEmpty(request.getService_type())
+                ? request.getService_type() : getString(R.string.history_service_default);
+        String firstName = workerName.trim().split(" ")[0];
+        String schedule = request.hasSchedule() ? formatSchedule(request.getScheduledAt()) : null;
+
+        mTvEyebrow.setVisibility(View.GONE);
+        int chipStyle = 0;   // 0 naranja, 1 navy, 2 gris
+        String chip;
+        String title;
+        String subtitle;
+        switch (status) {
             case "on_the_way":
-                activateStatus(mStatusPending, mTvStatusPending);
-                activateLine(mLinePendingToAccepted);
-                activateStatus(mStatusAccepted, mTvStatusAccepted);
-                activateLine(mLineAcceptedToWay);
-                activateStatus(mStatusOnTheWay, mTvStatusOnTheWay);
+                chip = getString(R.string.request_status_on_the_way);
+                chipStyle = 1;
+                title = getString(R.string.detail_title_on_the_way, firstName);
+                subtitle = schedule != null ? getString(R.string.detail_subtitle_arrival, service, schedule) : service;
                 break;
             case "in_progress":
-                activateStatus(mStatusPending, mTvStatusPending);
-                activateLine(mLinePendingToAccepted);
-                activateStatus(mStatusAccepted, mTvStatusAccepted);
-                activateLine(mLineAcceptedToWay);
-                activateStatus(mStatusOnTheWay, mTvStatusOnTheWay);
-                activateLine(mLineWayToProgress);
-                activateStatus(mStatusInProgress, mTvStatusInProgress);
+                chip = getString(R.string.request_status_in_progress);
+                chipStyle = 1;
+                title = getString(R.string.detail_title_in_progress, firstName);
+                subtitle = request.getEstimatedDurationMin() > 0
+                        ? getString(R.string.detail_subtitle_duration, service,
+                        ServiceRequest.formatDuration(request.getEstimatedDurationMin()))
+                        : service;
                 break;
             case "completed":
-                activateStatus(mStatusPending, mTvStatusPending);
-                activateLine(mLinePendingToAccepted);
-                activateStatus(mStatusAccepted, mTvStatusAccepted);
-                activateLine(mLineAcceptedToWay);
-                activateStatus(mStatusOnTheWay, mTvStatusOnTheWay);
-                activateLine(mLineWayToProgress);
-                activateStatus(mStatusInProgress, mTvStatusInProgress);
-                activateLine(mLineProgressToCompleted);
-                activateStatus(mStatusCompleted, mTvStatusCompleted);
-                break;
-        }
-    }
-
-    private void resetStatusFlow() {
-        // Reset status circles
-        deactivateStatus(mStatusPending, mTvStatusPending);
-        deactivateStatus(mStatusAccepted, mTvStatusAccepted);
-        deactivateStatus(mStatusOnTheWay, mTvStatusOnTheWay);
-        deactivateStatus(mStatusInProgress, mTvStatusInProgress);
-        deactivateStatus(mStatusCompleted, mTvStatusCompleted);
-
-        // Reset lines
-        deactivateLine(mLinePendingToAccepted);
-        deactivateLine(mLineAcceptedToWay);
-        deactivateLine(mLineWayToProgress);
-        deactivateLine(mLineProgressToCompleted);
-    }
-
-    private void activateStatus(View statusView, TextView textView) {
-        statusView.setBackgroundResource(R.drawable.bg_status_active);
-        textView.setTextColor(getResources().getColor(R.color.colorPrimary));
-        textView.setTypeface(null, android.graphics.Typeface.BOLD);
-    }
-
-    private void deactivateStatus(View statusView, TextView textView) {
-        statusView.setBackgroundResource(R.drawable.bg_status_inactive);
-        textView.setTextColor(getResources().getColor(R.color.text_secondary));
-        textView.setTypeface(null, android.graphics.Typeface.NORMAL);
-    }
-
-    private void activateLine(View lineView) {
-        lineView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-    }
-
-    private void deactivateLine(View lineView) {
-        lineView.setBackgroundColor(getResources().getColor(R.color.gray_light));
-    }
-
-    private void updateActionButtons(ServiceRequest request) {
-        // Hide all buttons first
-        mCardActions.setVisibility(View.VISIBLE);
-        mBtnCallWorker.setVisibility(View.VISIBLE);
-        mBtnCancelRequest.setVisibility(View.GONE);
-        mBtnRateService.setVisibility(View.GONE);
-        mBtnPayService.setVisibility(View.GONE);
-
-        String status = request.getStatus();
-        if (status == null) return;
-
-        // Se puede cancelar, con motivo, hasta que el trabajador inicie el viaje (D8)
-        if (request.canBeCancelled()) {
-            mBtnCancelRequest.setVisibility(View.VISIBLE);
-        }
-
-        switch (status.toLowerCase()) {
-            case "pending":
-                mBtnCallWorker.setVisibility(View.GONE);
-                break;
-            case "accepted":
-            case "on_the_way":
-            case "in_progress":
-                mBtnCallWorker.setVisibility(View.VISIBLE);
-                break;
-            case "completed":
-                mBtnCallWorker.setVisibility(View.GONE);
-                if (request.isPaid()) {
-                    // La calificación se habilita después del pago
-                    mBtnRateService.setVisibility(View.VISIBLE);
-                    mBtnRateService.setText(request.isRated() ? "Ver Calificación" : "Calificar Servicio");
-                } else if (request.isQuoteAccepted()) {
-                    mBtnPayService.setVisibility(View.VISIBLE);
-                }
+                chip = getString(R.string.request_status_completed);
+                chipStyle = 1;
+                title = getString(R.string.detail_title_completed);
+                subtitle = request.hasQuote()
+                        ? service + " · " + workerName + " · " + request.getFormattedQuotedPrice()
+                        : service + " · " + workerName;
                 break;
             case "cancelled":
             case "rejected":
-                mCardActions.setVisibility(View.GONE);
+                chip = getString("rejected".equals(status)
+                        ? R.string.request_status_rejected : R.string.request_status_cancelled);
+                chipStyle = 2;
+                title = getString(R.string.detail_title_cancelled);
+                String reason = request.getCancellationReasonCode() != null
+                        ? ReasonHelper.cancellationLabel(request.getCancellationReasonCode(),
+                        request.getCancellationReasonText()) : null;
+                subtitle = reason != null ? getString(R.string.history_cancel_reason, reason) : service;
                 break;
+            case "accepted":
+                if (request.isQuotePendingAnswer()) {
+                    // Revisar cotización (mockup 17)
+                    chip = getString(R.string.request_status_quoted);
+                    mTvEyebrow.setText(R.string.detail_eyebrow_quote);
+                    mTvEyebrow.setVisibility(View.VISIBLE);
+                    title = workerName;
+                    subtitle = service;
+                } else if (request.isQuoteAccepted()) {
+                    chip = getString(R.string.request_status_accepted);
+                    title = getString(R.string.detail_title_service);
+                    subtitle = schedule != null ? service + " · " + schedule : service;
+                } else {
+                    chip = getString(R.string.request_status_pending);
+                    title = getString(request.isQuoteRejected()
+                            ? R.string.detail_title_new_quote : R.string.detail_title_waiting_quote);
+                    subtitle = service + " · " + workerName;
+                }
+                break;
+            default:   // pending
+                chip = getString(R.string.request_status_pending);
+                title = getString(R.string.detail_title_pending);
+                subtitle = service + " · " + workerName;
+        }
+
+        mTvStatus.setText(chip);
+        int background = chipStyle == 1 ? R.color.ads_text : chipStyle == 2 ? R.color.ads_surface_alt : R.color.ads_chip_bg;
+        int text = chipStyle == 1 ? R.color.ads_surface : chipStyle == 2 ? R.color.ads_charcoal : R.color.ads_chip_text;
+        ViewCompat.setBackgroundTintList(mTvStatus, ColorStateList.valueOf(ContextCompat.getColor(this, background)));
+        mTvStatus.setTextColor(ContextCompat.getColor(this, text));
+        mTvTitle.setText(title);
+        mTvServiceType.setText(subtitle);
+    }
+
+    /** "Lun 19 oct, 3:00 p. m." */
+    private static String formatSchedule(long millis) {
+        String text = new SimpleDateFormat("EEE d MMM, h:mm a", LOCALE).format(new Date(millis));
+        return text.substring(0, 1).toUpperCase(LOCALE) + text.substring(1);
+    }
+
+    // ---------- línea de tiempo ----------
+
+    /**
+     * Aceptada → En camino → En progreso → Completada. Se muestra desde que el
+     * cliente acepta la cotización; antes la pantalla es la cotización (mockup 17).
+     */
+    private void bindTimeline(ServiceRequest request) {
+        String status = request.getStatus() != null ? request.getStatus() : "";
+        int current;
+        switch (status) {
+            case "on_the_way": current = 1; break;
+            case "in_progress": current = 2; break;
+            case "completed": current = 4; break;   // todos hechos
+            case "accepted": current = request.isQuoteAccepted() ? 0 : -1; break;
+            default: current = -1;
+        }
+        mStatusFlow.setVisibility(current >= 0 ? View.VISIBLE : View.GONE);
+        if (current < 0) return;
+
+        int[] titles = {R.string.request_status_accepted, R.string.request_status_on_the_way,
+                R.string.request_status_in_progress, R.string.request_status_completed};
+        int[] descriptions = {R.string.detail_timeline_accepted, R.string.detail_timeline_on_the_way,
+                R.string.detail_timeline_in_progress, R.string.detail_timeline_completed};
+        mTimeline.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (int i = 0; i < titles.length; i++) {
+            View row = inflater.inflate(R.layout.item_timeline_step, mTimeline, false);
+            boolean done = i < current || (current == 0 && i == 0);
+            boolean isCurrent = i == current && current > 0;
+            ImageView dot = row.findViewById(R.id.iv_timeline_dot);
+            if (done) {
+                dot.setBackgroundResource(R.drawable.bg_ads_check_on);
+                dot.setImageResource(R.drawable.ic_ads_check);
+            } else {
+                dot.setBackgroundResource(isCurrent ? R.drawable.bg_ads_timeline_current : R.drawable.bg_ads_check_off);
+                dot.setImageDrawable(null);
+            }
+            View line = row.findViewById(R.id.view_timeline_line);
+            line.setVisibility(i == titles.length - 1 ? View.GONE : View.VISIBLE);
+            if (i == titles.length - 1) ((android.view.ViewGroup) row).getChildAt(1).setPadding(0, 0, 0, 0);
+            line.setBackgroundColor(ContextCompat.getColor(this, i < current ? R.color.ads_brand_text : R.color.ads_line));
+
+            TextView title = row.findViewById(R.id.tv_timeline_title);
+            title.setText(titles[i]);
+            title.setTextColor(ContextCompat.getColor(this, done || isCurrent ? R.color.ads_text : R.color.ads_muted));
+            // La descripción acompaña al último paso alcanzado
+            boolean latest = (current == 0 && i == 0) || isCurrent || (current == 4 && i == 3);
+            TextView description = row.findViewById(R.id.tv_timeline_description);
+            description.setText(descriptions[i]);
+            description.setVisibility(latest ? View.VISIBLE : View.GONE);
+            mTimeline.addView(row);
         }
     }
+
+    // ---------- barra de acciones ----------
+
+    private void updateActionButtons(ServiceRequest request) {
+        mBtnAcceptQuote.setVisibility(View.GONE);
+        mBtnRejectQuote.setVisibility(View.GONE);
+        mBtnPayService.setVisibility(View.GONE);
+        mBtnRateService.setVisibility(View.GONE);
+        mBtnCancelRequest.setVisibility(View.GONE);
+        mTvActionsNoteTop.setVisibility(View.GONE);
+        mTvActionsNote.setVisibility(View.GONE);
+
+        String status = request.getStatus() != null ? request.getStatus().toLowerCase(LOCALE) : "";
+        boolean any = false;
+
+        // Cotización por responder (mockup 17)
+        if ("accepted".equals(status) && request.isQuotePendingAnswer()) {
+            mBtnAcceptQuote.setVisibility(View.VISIBLE);
+            mBtnRejectQuote.setVisibility(View.VISIBLE);
+            any = true;
+        }
+
+        // Completada: pagar y luego calificar (mockup 55)
+        if ("completed".equals(status)) {
+            if (request.isPaid()) {
+                mBtnRateService.setVisibility(View.VISIBLE);
+                mBtnRateService.setText(request.isRated() ? R.string.detail_view_rating : R.string.detail_rate);
+                any = true;
+            } else if (request.isPaymentPending()) {
+                showNote(mTvActionsNoteTop, R.string.payment_status_in_process);
+                any = true;
+            } else if (request.isQuoteAccepted()) {
+                mBtnPayService.setVisibility(View.VISIBLE);
+                mBtnPayService.setText(getString(R.string.detail_pay, request.getFormattedQuotedPrice()));
+                showNote(mTvActionsNote, R.string.detail_pay_note);
+                any = true;
+            }
+        }
+
+        // Cancelar con motivo hasta que el técnico inicie el viaje (D8, mockup 20)
+        if (request.canBeCancelled()) {
+            mBtnCancelRequest.setVisibility(View.VISIBLE);
+            ((android.widget.LinearLayout.LayoutParams) mBtnCancelRequest.getLayoutParams()).topMargin =
+                    any ? getResources().getDimensionPixelSize(R.dimen.space_3) : 0;
+            if (!request.isQuotePendingAnswer()) showNote(mTvActionsNote, R.string.detail_cancel_note);
+            any = true;
+        } else if ("on_the_way".equals(status) || "in_progress".equals(status)) {
+            // Después de «Iniciar viaje» ya no se cancela aquí (mockups 45 y 46)
+            showNote(mTvActionsNoteTop, R.string.detail_cannot_cancel_note);
+            any = true;
+        }
+
+        mCardActions.setVisibility(any ? View.VISIBLE : View.GONE);
+    }
+
+    private void showNote(TextView note, int text) {
+        note.setText(text);
+        note.setVisibility(View.VISIBLE);
+    }
+
+    // ---------- cotización (mockup 17) ----------
 
     private void updateQuoteCard(ServiceRequest request) {
         String status = request.getStatus();
@@ -428,14 +475,14 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
 
         mTvQuoteDetails.setVisibility(details != null ? View.VISIBLE : View.GONE);
         mTvQuoteDetails.setText(details);
-        mBtnAcceptQuote.setVisibility(View.GONE);
-        mBtnRejectQuote.setVisibility(View.GONE);
         mTvPaymentStatus.setVisibility(View.GONE);
         if (!withQuote) {
             mTvQuoteAmount.setVisibility(View.GONE);
             mTvQuoteStatus.setText("pending".equals(status) ? getString(R.string.quote_status_missing_client) : "");
+            mTvQuoteStatus.setVisibility(mTvQuoteStatus.getText().length() > 0 ? View.VISIBLE : View.GONE);
             return;
         }
+        mTvQuoteStatus.setVisibility(View.VISIBLE);
 
         if (request.hasQuote()) {
             mTvQuoteAmount.setVisibility(View.VISIBLE);
@@ -448,8 +495,6 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             mTvQuoteStatus.setText(R.string.quote_status_agreed);
         } else if (request.isQuotePendingAnswer()) {
             mTvQuoteStatus.setText(R.string.quote_status_answer_client);
-            mBtnAcceptQuote.setVisibility(View.VISIBLE);
-            mBtnRejectQuote.setVisibility(View.VISIBLE);
         } else if (request.isQuoteRejected()) {
             mTvQuoteStatus.setText(R.string.quote_status_rejected_client);
         } else {
@@ -460,13 +505,13 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             mTvPaymentStatus.setVisibility(View.VISIBLE);
             if (request.isPaid()) {
                 mTvPaymentStatus.setText(R.string.payment_status_paid);
-                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.success_color));
+                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
             } else if (request.isPaymentPending()) {
                 mTvPaymentStatus.setText(R.string.payment_status_in_process);
-                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.warning_color));
+                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
             } else {
                 mTvPaymentStatus.setText(R.string.payment_status_pending_client);
-                mTvPaymentStatus.setTextColor(getResources().getColor(R.color.warning_color));
+                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
             }
         }
     }
@@ -474,6 +519,8 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     /** Bloque navy del precio con la referencia ADS, motivo del ajuste y agenda (mockup 17). */
     private void bindQuoteBreakdown(ServiceRequest request, boolean showPrice) {
         findViewById(R.id.layout_quote_price).setVisibility(showPrice ? View.VISIBLE : View.GONE);
+        ((TextView) findViewById(R.id.tv_quote_title)).setText(request.isQuotePendingAnswer()
+                ? R.string.detail_quote_proposed : R.string.quote_card_title);
 
         QuoteReference reference = request.getQuoteReference();
         boolean showReference = showPrice && reference != null && reference.hasRange();
@@ -501,11 +548,10 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         boolean showSchedule = showPrice && request.hasSchedule() && !request.isCancelled();
         findViewById(R.id.layout_quote_schedule).setVisibility(showSchedule ? View.VISIBLE : View.GONE);
         if (showSchedule) {
-            Locale locale = new Locale("es", "CO");
-            String arrival = new SimpleDateFormat("EEE d MMM · h:mm a", locale)
+            String arrival = new SimpleDateFormat("EEE d MMM · h:mm a", LOCALE)
                     .format(new Date(request.getScheduledAt()));
             ((TextView) findViewById(R.id.tv_quote_arrival))
-                    .setText(arrival.substring(0, 1).toUpperCase(locale) + arrival.substring(1));
+                    .setText(arrival.substring(0, 1).toUpperCase(LOCALE) + arrival.substring(1));
             ((TextView) findViewById(R.id.tv_quote_arrival_label)).setText(request.getRescheduleCount() > 0
                     ? R.string.quote_arrival_rescheduled_label : R.string.quote_arrival_label);
             int duration = request.getEstimatedDurationMin();
@@ -527,27 +573,31 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 .show();
     }
 
+    /** Confirmar rechazo (mockup 19); el motivo sigue siendo opcional. */
     private void showRejectQuoteDialog() {
+        if (mServiceRequest == null) return;
         EditText reasonInput = new EditText(this);
         reasonInput.setHint(R.string.quote_reject_reason_hint);
         reasonInput.setMaxLines(3);
         reasonInput.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(200)});
-        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        int padding = getResources().getDimensionPixelSize(R.dimen.screen_margin);
 
         android.widget.FrameLayout container = new android.widget.FrameLayout(this);
         container.setPadding(padding, padding / 2, padding, 0);
         container.addView(reasonInput);
 
+        String worker = !TextUtils.isEmpty(mServiceRequest.getWorker_name())
+                ? mServiceRequest.getWorker_name() : getString(R.string.request_the_worker);
         new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle(R.string.quote_reject_title)
-                .setMessage(R.string.quote_reject_message)
+                .setTitle(R.string.detail_reject_title)
+                .setMessage(getString(R.string.detail_reject_message, worker, mServiceRequest.getFormattedQuotedPrice()))
                 .setView(container)
-                .setPositiveButton(R.string.quote_reject, (dialog, which) -> {
+                .setPositiveButton(R.string.detail_reject_confirm, (dialog, which) -> {
                     setQuoteButtonsEnabled(false);
                     mQuoteProvider.rejectQuote(mRequestId, reasonInput.getText().toString().trim(),
                             quoteCallback(R.string.quote_rejected_toast));
                 })
-                .setNegativeButton(R.string.quote_dialog_cancel, null)
+                .setNegativeButton(R.string.detail_reject_back, null)
                 .show();
     }
 
@@ -555,7 +605,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         return new ApiCallback<QuoteData>() {
             @Override
             public void onSuccess(QuoteData data) {
-                // El listener de Firebase actualiza la tarjeta con el nuevo estado
+                // El listener de Firebase actualiza la pantalla con el nuevo estado
                 setQuoteButtonsEnabled(true);
                 Toast.makeText(ServiceRequestDetailActivity.this, successMessage, Toast.LENGTH_SHORT).show();
             }
@@ -579,6 +629,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         intent.putExtra(PaymentActivity.EXTRA_REQUEST_ID, mRequestId);
         startActivity(intent);
     }
+
     private void callWorker() {
         if (mServiceRequest != null && mServiceRequest.getWorker_phone() != null) {
             Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -641,7 +692,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     }
 
     private void showAlreadyRatedDialog(float rating, String comment) {
-        String ratingText = String.format("%.1f", rating);
+        String ratingText = String.format(LOCALE, "%.1f", rating);
         String message = "Ya calificaste este servicio con " + ratingText + " estrellas";
 
         if (comment != null && !comment.isEmpty()) {
@@ -649,36 +700,30 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         }
 
         new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Ya Calificado")
+                .setTitle("Ya calificado")
                 .setMessage(message)
                 .setPositiveButton("Aceptar", null)
-                .setIcon(R.drawable.ic_star)
                 .show();
     }
+
+    private static String initialsOf(String name) {
+        StringBuilder initials = new StringBuilder();
+        for (String part : name.trim().split("\\s+")) {
+            if (!part.isEmpty() && initials.length() < 2) initials.append(Character.toUpperCase(part.charAt(0)));
+        }
+        return initials.toString();
+    }
+
     private void showLoading(boolean show) {
         mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         mLayoutContent.setVisibility(show ? View.GONE : View.VISIBLE);
-
-        // Ocultar el contenedor de error
-        LinearLayout errorContainer = findViewById(R.id.error_container);
-        if (errorContainer != null) {
-            errorContainer.setVisibility(View.GONE);
-        }
-        mTvError.setVisibility(View.GONE);
+        findViewById(R.id.error_container).setVisibility(View.GONE);
     }
 
     private void showError(String message) {
         mProgressBar.setVisibility(View.GONE);
         mLayoutContent.setVisibility(View.GONE);
-
-        // Mostrar el contenedor de error completo
-        LinearLayout errorContainer = findViewById(R.id.error_container);
-        if (errorContainer != null) {
-            errorContainer.setVisibility(View.VISIBLE);
-        }
-
-        // Actualizar el mensaje de error
-        mTvError.setVisibility(View.VISIBLE);
+        findViewById(R.id.error_container).setVisibility(View.VISIBLE);
         mTvError.setText(message);
     }
 

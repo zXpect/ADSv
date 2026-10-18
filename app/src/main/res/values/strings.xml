@@ -576,4 +576,37 @@
     <string name="profile_about">Sobre mí</string>
     <string name="profile_categories">Oficios</string>
     <string name="profile_request_note">El técnico confirma el precio al cotizar. Tú decides si aceptas.</string>
+
+    <!-- Rediseño: detalle y seguimiento de la solicitud (mockups 17, 19, 20, 45, 46, 55) -->
+    <string name="detail_call_worker">Llamar al técnico</string>
+    <string name="detail_address">Dirección</string>
+    <string name="detail_description">Detalles</string>
+    <string name="detail_accept_quote">Aceptar cotización</string>
+    <string name="detail_cancel_service">Cancelar servicio</string>
+    <string name="detail_title_on_the_way">%1$s va hacia tu casa</string>
+    <string name="detail_subtitle_arrival">%1$s · Llegada %2$s</string>
+    <string name="detail_title_in_progress">%1$s está trabajando</string>
+    <string name="detail_subtitle_duration">%1$s · Duración estimada: %2$s</string>
+    <string name="detail_title_completed">Trabajo terminado</string>
+    <string name="detail_title_cancelled">Servicio cancelado</string>
+    <string name="detail_eyebrow_quote">Cotización de</string>
+    <string name="detail_title_service">Tu servicio</string>
+    <string name="detail_title_new_quote">Esperando una nueva cotización</string>
+    <string name="detail_title_waiting_quote">Esperando la cotización</string>
+    <string name="detail_title_pending">Esperando al técnico</string>
+    <string name="detail_timeline_accepted">Cotización aceptada por ti</string>
+    <string name="detail_timeline_on_the_way">El técnico salió hacia tu dirección</string>
+    <string name="detail_timeline_in_progress">El técnico está trabajando</string>
+    <string name="detail_timeline_completed">Trabajo terminado</string>
+    <string name="detail_view_rating">Ver calificación</string>
+    <string name="detail_rate">Calificar servicio</string>
+    <string name="detail_pay">Pagar %1$s</string>
+    <string name="detail_pay_note">Pagas en línea. Después podrás calificar el servicio.</string>
+    <string name="detail_cancel_note">Puedes cancelar hasta que el técnico salga. Después, usa una PQR.</string>
+    <string name="detail_cannot_cancel_note">Ya no puedes cancelar desde aquí. Si hay un problema, crea una PQR.</string>
+    <string name="detail_quote_proposed">Precio propuesto</string>
+    <string name="detail_reject_title">¿Rechazar la cotización?</string>
+    <string name="detail_reject_message">%1$s recibirá un aviso de que no aceptaste su cotización de %2$s. Podrá enviarte una nueva.</string>
+    <string name="detail_reject_confirm">Sí, rechazar</string>
+    <string name="detail_reject_back">Volver a la cotización</string>
 </resources>
