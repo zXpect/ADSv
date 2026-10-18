@@ -34,3 +34,7 @@ adsv-d87e1-*.json
 
 # Capturas del celular para comparar con los mockups (rediseño)
 capturas/
+
+# Llaves de firma: nunca versionarlas
+*.jks
+*.keystore
