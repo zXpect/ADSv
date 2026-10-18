@@ -709,7 +709,9 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     }
 
     private void finishRegistration() {
-        Intent intent = new Intent(this, HomeWorkerActivity.class);
+        // Mockups 34-36: estado de verificación; desde ahí sigue al inicio
+        Intent intent = new Intent(this, VerificationStatusActivity.class);
+        intent.putExtra(VerificationStatusActivity.EXTRA_FROM_REGISTRATION, true);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

@@ -698,39 +698,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
         }
     }private void connectWorker() {
         if (!isVerified) {
-            showErrorToast("No puedes conectarte hasta que tus documentos sean verificados");
-
-            // Crear vista personalizada para el AlertDialog
-            View dialogView = getLayoutInflater().inflate(R.layout.dialog_verification_status, null);
-
-            ImageView iconView = dialogView.findViewById(R.id.dialogIcon);
-            TextView messageView = dialogView.findViewById(R.id.dialogMessage);
-            androidx.cardview.widget.CardView iconBackground = dialogView.findViewById(R.id.dialogIconBackground);
-
-            // Obtener el icono, color y fondo según el estado
-            int iconRes = getVerificationIcon();
-            int iconColor = getVerificationIconColor();
-            int backgroundColor = getVerificationBackgroundColor();
-
-            // Configurar el icono con su color
-            iconView.setImageResource(iconRes);
-            iconView.setColorFilter(ContextCompat.getColor(this, iconColor));
-
-            // Configurar el fondo del círculo del icono
-            iconBackground.setCardBackgroundColor(ContextCompat.getColor(this, backgroundColor));
-
-            // Configurar el mensaje
-            messageView.setText(getVerificationMessage());
-
-            new AlertDialog.Builder(this)
-                    .setTitle("Verificación de Documentos Pendiente")
-                    .setView(dialogView)
-                    .setPositiveButton("Ver Documentos", (dialog, which) -> {
-                        openDocumentsStatus();
-                    })
-                    .setNegativeButton("Entendido", null)
-                    .show();
-
+            // Mockups 34-36: pantalla de estado de verificación en vez del diálogo
+            startActivity(new Intent(HomeWorkerActivity.this, VerificationStatusActivity.class));
             return;
         }
 

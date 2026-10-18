@@ -831,4 +831,26 @@
     <string name="docs_rules">Los documentos van en PDF. Los revisamos en 24 a 48 horas.</string>
     <string name="docs_submit">Enviar para verificación</string>
     <string name="docs_skip">Subirlos más tarde</string>
+
+    <!-- Rediseño: estado de verificación del trabajador (mockups 34, 35 y 36) -->
+    <string name="verify_pending_title">Estamos revisando tu perfil</string>
+    <string name="verify_pending_message">Te avisaremos cuando esté listo. Hasta entonces no apareces en las búsquedas de los clientes.</string>
+    <string name="verify_step_sent">Documentos enviados</string>
+    <string name="verify_step_review">En revisión</string>
+    <string name="verify_step_approved">Perfil aprobado</string>
+    <string name="verify_ok">Entendido</string>
+    <string name="verify_rejected_title">No pudimos aprobar tu perfil</string>
+    <string name="verify_rejected_message">Corrige lo que indica el equipo de ADS y vuelve a enviarlo.</string>
+    <string name="verify_reason_label">Motivo</string>
+    <string name="verify_reason_missing">El equipo de ADS no dejó un motivo. Revisa tus documentos y vuelve a subirlos.</string>
+    <string name="verify_reupload">Volver a subir documentos</string>
+    <string name="verify_exit">Salir</string>
+    <string name="verify_approved_title">Perfil verificado</string>
+    <string name="verify_approved_message">Ya puedes activar «Disponible» y empezar a recibir solicitudes de clientes en Ubaté.</string>
+    <string name="verify_chip_new">Verificado – nuevo</string>
+    <string name="verify_start">Empezar</string>
+    <string name="verify_incomplete_title">Te faltan tus documentos</string>
+    <string name="verify_incomplete_message">Súbelos para que revisemos tu perfil. Hasta entonces no apareces en las búsquedas de los clientes.</string>
+    <string name="verify_upload">Subir documentos</string>
+    <string name="verify_later">Más tarde</string>
 </resources>

@@ -145,6 +145,9 @@
             android:parentActivityName="com.project.ads.activities.worker.HomeWorkerActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:name="com.project.ads.activities.worker.VerificationStatusActivity"
+            android:exported="false" />
+        <activity
             android:name="com.project.ads.activities.worker.WorkerSkillsActivity"
             android:exported="false" />
         <activity
