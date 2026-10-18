@@ -321,34 +321,9 @@
     <!-- ===================================================================
          HEREDADOS (pantallas aún no rediseñadas)
          =================================================================== -->
-    <style name="ToolbarTitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:fontFamily">@font/sora_semibold</item>
-        <item name="android:letterSpacing">-0.01</item>
-    </style>
 
-    <style name="ToolbarSubtitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:fontFamily">@font/sora</item>
-    </style>
 
-    <style name="TabTextStyle" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">@font/sora_semibold</item>
-        <item name="textAllCaps">false</item>
-    </style>
 
-    <style name="StatusBadgeStyle">
-        <item name="android:textSize">12sp</item>
-        <item name="android:fontFamily">@font/sora_semibold</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:paddingStart">12dp</item>
-        <item name="android:paddingEnd">12dp</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-    </style>
 
     <!-- Fila de la tarjeta de opciones de Mi cuenta (mockups 37 y 51) -->
     <style name="Widget.ADS.AccountRow" parent="">

@@ -14,4 +14,8 @@
     <item name="card_credentials" type="id"></item>
     <item name="card_professional" type="id"></item>
     <item name="terms_layout" type="id"></item>
+    <!-- IDs que aún nombra el código del diseño anterior (menú lateral y toolbar de
+         color, borrados en la Fase 6); ninguna pantalla los muestra. -->
+    <item name="action_logout" type="id" />
+    <item name="toolbar_color" type="id" />
 </resources>

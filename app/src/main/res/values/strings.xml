@@ -1,292 +1,104 @@
 <resources>
     <string name="app_name">ADS</string>
-    <string name="boton_client">CLIENTE</string>
-    <string name="boton_worker">TRABAJADOR</string>
-    <string name="select_tipe_user">¡Bienvenido/a! Selecciona el tipo de Usuario</string>
-    <string name="boton_login">INICIAR SESIÓN</string>
     <string name="email">Correo</string>
     <string name="contraseña">Contraseña</string>
-    <string name="boton_register">REGISTRARSE</string>
-    <string name="boton_continue">CONTINUAR</string>
-    <string name="boton_usuario">USUARIO</string>
-    <string name="boton_trabajador">TRABAJADOR</string>
-    <string name="documentid">Numero de Documento</string>
-    <string name="date">Fecha de Nacimiento</string>
-    <string name="datexp">Fecha de Expedicion</string>
-    <string name="ddmmaaaa">DD/MM/AAAA</string>
-    <string name="fromexp">Lugar de Expedicion</string>
-    <string name="UserName">Nombres</string>
-    <string name="UserLastName">Apellidos</string>
-    <string name="UserEmail">Correo</string>
-    <string name="UserPassword">Contraseña</string>
-    <string name="UserPhone">Telefono</string>
-    <string name="UserAddress">Direccion</string>
-    <string name="UserContinue">Continuar</string>
-    <string name="Direccion">Calle 3####</string>
-    <string name="title_activity_drawer">DrawerActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Nombre de Usuario</string>
-    <string name="nav_header_subtitle">username@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Direcciones</string>
-    <string name="mostrar_mapa">Ver Mapa</string>
-    <string name="Mostrar">Mostrar</string>
-    <string name="direcciones">DIRECCIONES</string>
-    <string name="type_work">Tipo de Trabajo</string>
-    <string name="vermapaworker">Ver Mapa</string>
-    <string name="conectarse">Conectarse</string>
-    <string name="worker_photo_desc">Descripcion</string>
 
 
 
 
-    <string name="logo_description">Logo de la aplicación</string>
-    <string name="footer_text">© 2024 ADS. Todos los derechos reservados.</string>
 
 
-    <string name="tools_banner_description">Tools and materials banner</string>
-    <string name="featured_tools">Featured Tools</string>
-    <string name="all_tools">All Tools</string>
-    <string name="tool_image_description">Tool image</string>
-    <string name="available_tools">Herramientas destacadas</string>
 
     <!-- Martillo -->
-    <string name="hammer">Martillo</string>
-    <string name="hammer_description">Un martillo resistente para trabajos duros</string>
-    <string name="hammer_price">$60,000 COP</string>
 
     <!-- Juego de Destornilladores -->
-    <string name="screwdriver_set">Juego de Destornilladores</string>
-    <string name="screwdriver_set_description">Un juego de destornilladores de precisión</string>
-    <string name="screwdriver_set_price">$80,000 COP</string>
 
     <!-- Taladro Eléctrico -->
-    <string name="power_drill">Taladro Eléctrico</string>
-    <string name="power_drill_description">Taladro eléctrico inalámbrico con batería</string>
-    <string name="power_drill_price">$200,000 COP</string>
 
     <!-- Juego de Llaves -->
-    <string name="wrench_set">Juego de Llaves</string>
-    <string name="wrench_set_description">Un juego completo de llaves</string>
-    <string name="wrench_set_price">$120,000 COP</string>
 
     <!-- Cinta Métrica -->
-    <string name="measuring_tape">Cinta Métrica</string>
-    <string name="measuring_tape_description">Una cinta métrica duradera</string>
-    <string name="measuring_tape_price">$40,000 COP</string>
 
     <!-- Sierra -->
-    <string name="saw">Sierra</string>
-    <string name="saw_description">Sierra manual de alta calidad</string>
-    <string name="saw_price">$100,000 COP</string>
 
     <!-- Nivel -->
-    <string name="level">Nivel</string>
-    <string name="level_description">Una herramienta confiable para verificar el nivel</string>
-    <string name="level_price">$48,000 COP</string>
 
     <!-- Alicates -->
-    <string name="pliers">Alicates</string>
-    <string name="pliers_description">Alicates duraderos para varios usos</string>
-    <string name="pliers_price">$32,000 COP</string>
 
     <!-- Destornillador Eléctrico -->
-    <string name="electric_screwdriver">Destornillador Eléctrico</string>
-    <string name="electric_screwdriver_description">Destornillador eléctrico recargable</string>
-    <string name="electric_screwdriver_price">$160,000 COP</string>
 
-    <string name="map_client_title">Mapa Cliente</string>
     <string name="location_permission_title">Permisos de Ubicacion</string>
     <string name="location_permission_message">Concede permisos de Ubicacion a la Aplicacion</string>
     <string name="ok">Aceptar</string>
     <string name="location_permission_denied">Permisos denegados</string>
-    <string name="worker_info_title">Informacion del trabajador</string>
-    <string name="worker_info_message">Mensaje</string>
     <string name="request_service">Solicitar servicio</string>
     <string name="cancel">Cancelar</string>
     <string name="map_worker_title">Mapa</string>
-    <string name="filter_icon">Filtrar</string>
     <string name="default_web_client_id">125108376031-7l3e1tdjbvhae0h951kavkj4onskb6nc.apps.googleusercontent.com</string>
-    <string name="app_logo">logo app</string>
-    <string name="facebook_login">inicia sesion con Facebook</string>
     <string name="google_login">inicia sesión con Google</string>
-    <string name="twitter_login">Inicia sesión con Twitter(X)</string>
-    <string name="filter_by_tool">Filtrar por herramienta</string>
-    <string name="sort_by">Ordenar por</string>
-    <string name="apply">Aplicar</string>
-    <string name="flashlight_description">flashlight_description</string>
-    <string name="search_icon">Buscar</string>
-    <string name="search_tools">Buscar Herramientas</string>
-    <string name="add_to_cart">Agregar al carrito</string>
-    <string name="add_to_favorites">Agregar a Favoritos</string>
-    <string name="filter_tools">Filtrar Herramientas</string>
-    <string name="discount_percentage">Porcentaje de Descuento</string>
     <string name="my_location">Mi ubicacion</string>
     <string name="legend_toggle">Leyenda</string>
-    <string name="distance_filter">Distancia</string>
 
     <!-- Sort options for spinner -->
-    <string-array name="sort_options">
-        <item>Distance (closest first)</item>
-        <item>Price (low to high)</item>
-        <item>Price (high to low)</item>
-        <item>Rating (highest first)</item>
-    </string-array>
 
     <!-- Estados de solicitud -->
-    <string name="status_pending">Pendiente</string>
-    <string name="status_accepted">Aceptado</string>
-    <string name="status_on_the_way">En camino</string>
-    <string name="status_in_progress">En progreso</string>
-    <string name="status_completed">Completado</string>
-    <string name="status_rejected">Rechazado</string>
-    <string name="status_cancelled">Cancelado</string>
 
     <!-- Tabs de filtros -->
-    <string name="tab_all">Todas</string>
-    <string name="tab_active">Activas</string>
-    <string name="tab_completed">Completadas</string>
-    <string name="tab_cancelled">Canceladas</string>
 
     <!-- MyRequestsActivity -->
-    <string name="my_requests_title">Mis Solicitudes</string>
-    <string name="no_requests_title">No tienes solicitudes</string>
-    <string name="no_requests_message">Solicita un servicio y aparecerá aquí</string>
-    <string name="loading_requests">Cargando solicitudes...</string>
-    <string name="error_loading_requests">Error al cargar solicitudes</string>
 
     <!-- Request Details -->
-    <string name="request_details_title">Detalles de Solicitud</string>
-    <string name="worker_assigned">Trabajador asignado</string>
-    <string name="no_worker_assigned">Sin trabajador asignado</string>
-    <string name="waiting_response">Esperando respuesta...</string>
-    <string name="worker_on_the_way">El trabajador va en camino</string>
-    <string name="service_in_progress">Servicio en progreso</string>
-    <string name="service_completed">Servicio completado</string>
-    <string name="request_rejected">Solicitud rechazada</string>
-    <string name="request_cancelled">Solicitud cancelada</string>
 
     <!-- Acciones -->
-    <string name="action_cancel_request">Cancelar solicitud</string>
-    <string name="action_call_worker">Llamar trabajador</string>
-    <string name="action_rate_service">Calificar servicio</string>
-    <string name="action_view_details">Ver detalles</string>
-    <string name="action_view_on_map">Ver en mapa</string>
 
     <!-- Rating -->
-    <string name="rate_service_title">Califica el servicio</string>
-    <string name="rate_experience">¿Cómo fue tu experiencia?</string>
     <string name="rating_comment_hint">Escribe tus comentarios aquí (opcional)</string>
-    <string name="rating_submitted">¡Gracias por tu calificación!</string>
-    <string name="rating_error">Error al enviar calificación</string>
 
     <!-- Confirmaciones -->
-    <string name="cancel_request_title">¿Cancelar solicitud?</string>
-    <string name="cancel_request_message">¿Estás seguro de que deseas cancelar esta solicitud?</string>
-    <string name="cancel_reason_hint">Motivo de cancelación (opcional)</string>
-    <string name="request_cancelled_success">Solicitud cancelada</string>
 
     <!-- Timeline -->
-    <string name="timeline_created">Solicitud creada</string>
-    <string name="timeline_accepted">Aceptada por trabajador</string>
-    <string name="timeline_on_the_way">Trabajador en camino</string>
-    <string name="timeline_started">Servicio iniciado</string>
-    <string name="timeline_completed">Servicio completado</string>
 
     <!-- Mensajes -->
-    <string name="request_created_success">Solicitud creada exitosamente</string>
-    <string name="request_updated_success">Solicitud actualizada</string>
-    <string name="worker_notified">Trabajador notificado</string>
 
     <!-- Botones -->
-    <string name="btn_submit_rating">Enviar calificación</string>
-    <string name="btn_cancel">Cancelar</string>
-    <string name="btn_confirm">Confirmar</string>
-    <string name="btn_close">Cerrar</string>
-    <string name="btn_retry">Reintentar</string>
 
 
     <!-- Login Activity - Mensajes de error mejorados -->
-    <string name="error_email_required">El correo electrónico es requerido</string>
-    <string name="error_email_invalid">Ingrese un correo electrónico válido</string>
-    <string name="error_password_required">La contraseña es requerida</string>
-    <string name="error_password_min_length">La contraseña debe tener al menos 6 caracteres</string>
-    <string name="error_email_not_registered">No existe una cuenta con este correo</string>
-    <string name="error_password_incorrect">Contraseña incorrecta. Verifica tus datos e intenta de nuevo</string>
-    <string name="error_authentication">Error de autenticación</string>
-    <string name="error_verification">Error al verificar usuario</string>
 
     <!-- Recuperación de contraseña -->
     <string name="forgot_password_title">Recuperar contraseña</string>
     <string name="forgot_password_enter_email">Ingrese su correo electrónico para restablecer la contraseña</string>
-    <string name="forgot_password_verifying">Verificando correo electrónico...</string>
     <string name="forgot_password_sending">Enviando correo de recuperación...</string>
     <string name="forgot_password_success_title">Correo enviado</string>
-    <string name="forgot_password_success_message">Se ha enviado un correo de recuperación a:\n%1$s\n\nPor favor, revisa tu bandeja de entrada y sigue las instrucciones para restablecer tu contraseña.\n\nSi no recibes el correo en unos minutos, revisa tu carpeta de spam.</string>
     <string name="forgot_password_error_title">Error</string>
-    <string name="forgot_password_email_not_exists">No existe una cuenta registrada con este correo electrónico</string>
-    <string name="forgot_password_verify_error">Error al verificar el correo. Intente nuevamente</string>
     <string name="forgot_password_send_error">Error al enviar el correo. Intente nuevamente</string>
     <string name="forgot_password_confirm_message">Se enviará un enlace para restablecer la contraseña a:\n\n%1$s\n\n¿Deseas continuar?</string>
     <string name="forgot_password_confirm_yes">Sí, enviar</string>
     <string name="forgot_password_cancel">Cancelar</string>
     <string name="forgot_password_neutral_message">Si existe una cuenta registrada con:\n\n%1$s\n\nrecibirás un correo con las instrucciones para restablecer tu contraseña.\n\nSi no lo ves en unos minutos, revisa tu carpeta de spam y verifica que escribiste bien el correo.</string>
-    <string name="forgot_password_not_registered_as">Esta cuenta no está registrada como %1$s. Complete su registro primero.</string>
 
     <!-- Tipo de usuario incorrecto -->
-    <string name="wrong_user_type_title">Tipo de usuario incorrecto</string>
-    <string name="wrong_user_type_login_message">Este correo está registrado como %1$s, no como %2$s.\n\n¿Deseas cambiar a iniciar sesión como %1$s?</string>
-    <string name="wrong_user_type_recovery_message">Este correo electrónico está registrado como %1$s, no como %2$s.\n\nPara recuperar tu contraseña, debes iniciar sesión como %1$s.</string>
-    <string name="wrong_user_type_change_button">Cambiar a %1$s</string>
-    <string name="wrong_user_type_google_message">Esta cuenta de Google ya está registrada como %1$s. No puedes usar la misma cuenta para diferentes tipos de usuario.\n\nPor favor, usa otra cuenta de Google o inicia sesión como %1$s.</string>
 
     <!-- Cuenta existente -->
-    <string name="account_exists_title">Cuenta existente</string>
 
     <!-- Bloqueo de cuenta -->
-    <string name="account_locked_title">Cuenta bloqueada temporalmente</string>
-    <string name="account_locked_message_minutes">Demasiados intentos fallidos. Por favor, espere %1$d minuto(s) y %2$d segundo(s).</string>
-    <string name="account_locked_message_seconds">Demasiados intentos fallidos. Por favor, espere %1$d segundo(s).</string>
 
     <!-- Sugerencia de recuperación de contraseña -->
-    <string name="password_recovery_hint_title">¿Olvidaste tu contraseña?</string>
-    <string name="password_recovery_hint_message">Has tenido varios intentos fallidos. ¿Deseas recuperar tu contraseña?</string>
-    <string name="password_recovery_hint_yes">Sí, recuperar</string>
-    <string name="password_recovery_hint_no">No, intentar de nuevo</string>
 
     <!-- Login con Google -->
-    <string name="google_sign_in_authenticating">Autenticando con Google...</string>
-    <string name="google_sign_in_error">Error al iniciar sesión con Google</string>
-    <string name="google_sign_in_complete_registration">Por favor, completa tu registro</string>
 
     <!-- Mensajes de verificación -->
-    <string name="verifying_credentials">Verificando credenciales...</string>
-    <string name="verifying_user">Verificando usuario en la base de datos...</string>
 
     <!-- Navegación -->
-    <string name="login_success">Inicio de sesión exitoso</string>
 
     <!-- Botones generales -->
-    <string name="btn_understood">Entendido</string>
-    <string name="btn_yes_change">Sí, cambiar</string>
 
     <!-- Permisos de notificaciones -->
-    <string name="notification_permission_granted">Permiso de notificaciones concedido</string>
-    <string name="notification_permission_denied">Permiso de notificaciones denegado</string>
 
     <!-- Cotización -->
     <string name="quote_card_title">Precio del servicio</string>
-    <string name="quote_accept_with_price">Cotizar y aceptar</string>
-    <string name="quote_dialog_title">Enviar cotización</string>
-    <string name="quote_dialog_hint">Indica el precio total de mano de obra en pesos colombianos y cuándo llegas. El cliente debe aceptarlo antes de que puedas iniciar el viaje.</string>
-    <string name="quote_dialog_price_hint">Precio (COP)</string>
-    <string name="quote_dialog_limits">El precio debe estar entre %1$s y %2$s</string>
     <string name="quote_dialog_send">Enviar</string>
     <string name="quote_dialog_cancel">Cancelar</string>
-    <string name="quote_loading_limits">Consultando rango de precios…</string>
     <string name="quote_error_invalid">Ingresa un precio válido</string>
     <string name="quote_sent">Cotización enviada al cliente</string>
     <string name="quote_send">Enviar cotización</string>
@@ -296,8 +108,6 @@
     <string name="quote_accept_title">Aceptar cotización</string>
     <string name="quote_accept_message">El precio del servicio será %1$s. Una vez aceptado no se puede cambiar. ¿Deseas continuar?</string>
     <string name="quote_accepted_toast">Cotización aceptada</string>
-    <string name="quote_reject_title">Rechazar cotización</string>
-    <string name="quote_reject_message">El trabajador podrá enviarte una nueva cotización.</string>
     <string name="quote_reject_reason_hint">Motivo (opcional)</string>
     <string name="quote_rejected_toast">Cotización rechazada</string>
     <string name="quote_status_agreed">Precio acordado</string>
@@ -310,22 +120,13 @@
     <string name="quote_status_rejected_client">Rechazaste la cotización. Esperando una nueva del trabajador.</string>
 
     <!-- Pagos -->
-    <string name="payment_title">Pago del servicio</string>
-    <string name="payment_pay_button">Pagar servicio</string>
-    <string name="payment_pay_now_button">Pagar ahora</string>
     <string name="payment_retry_button">Reintentar pago</string>
     <string name="payment_reopen_button">Volver a abrir el pago</string>
     <string name="payment_rate_button">Calificar servicio</string>
     <string name="payment_back">Volver</string>
-    <string name="payment_worker">Trabajador: %1$s</string>
     <string name="payment_loading">Cargando…</string>
     <string name="payment_creating">Preparando el pago…</string>
-    <string name="payment_ready">El servicio fue completado. Realiza el pago para poder calificar.</string>
-    <string name="payment_confirming">Confirmando tu pago con la pasarela…</string>
-    <string name="payment_approved">¡Pago aprobado! Gracias.</string>
-    <string name="payment_declined">El pago fue rechazado. Puedes intentarlo de nuevo.</string>
     <string name="payment_error">No se pudo completar el pago. Puedes intentarlo de nuevo.</string>
-    <string name="payment_secure_note">El pago se realiza en la pasarela de pagos. ADS no ve ni guarda los datos de tu tarjeta.</string>
     <string name="payment_error_no_request">No se encontró la solicitud</string>
     <string name="payment_error_not_owner">Solo el cliente de la solicitud puede pagarla</string>
     <string name="payment_error_not_payable">Esta solicitud todavía no se puede pagar</string>
@@ -339,39 +140,18 @@
 
     <!-- Catálogo de oficios (Sprint 4: B3, D16) -->
     <string name="accept">Aceptar</string>
-    <string name="all_services">Todos los servicios</string>
-    <string name="worker_categories_title">Tus oficios (hasta %1$d)</string>
     <string name="worker_categories_max">Puedes elegir hasta %1$d oficios</string>
     <string name="worker_categories_required">Selecciona al menos un oficio</string>
     <string name="no_specialty">Sin especialidad</string>
     <!-- Crear solicitud con tareas del catálogo (Sprint 4: B1, B14, B18) -->
     <string name="loading">Cargando…</string>
     <string name="retry">Reintentar</string>
-    <string name="request_tasks_title">Tareas</string>
-    <string name="request_tasks_empty">Agrega lo que necesitas: elige tareas del catálogo o describe otra.</string>
-    <string name="request_add_task">Agregar tarea</string>
-    <string name="request_add">Agregar</string>
-    <string name="request_remove_task">Quitar tarea</string>
-    <string name="request_other_task">Otro (describir)</string>
-    <string name="request_other_task_note">El trabajador cotizará esta tarea directamente.</string>
-    <string name="request_custom_task_hint">Describe la tarea</string>
     <string name="request_custom_task_required">Describe la tarea</string>
-    <string name="request_quantity_hint">Cantidad</string>
-    <string name="request_quantity_unit_hint">Cantidad (%1$s)</string>
     <string name="request_quantity_error_integer">Ingresa un número entero entre 1 y %1$d</string>
     <string name="request_quantity_error_decimal">Ingresa una cantidad mayor que 0 y hasta %1$d</string>
-    <string name="request_task_range">Referencia en Ubaté: %1$s – %2$s por %3$s</string>
-    <string name="request_task_without_range">Sin precio de referencia: el trabajador la cotiza directamente.</string>
     <string name="request_max_items">Puedes agregar hasta %1$d tareas</string>
     <string name="request_tasks_required">Agrega al menos una tarea</string>
-    <string name="request_description_hint">Detalles adicionales (opcional)</string>
-    <string name="request_estimate_loading">Calculando estimado…</string>
-    <string name="request_estimate_range">Estimado: %1$s – %2$s</string>
-    <string name="request_estimate_partial">Algunas tareas no tienen precio de referencia; el trabajador las cotizará.</string>
-    <string name="request_estimate_unpriced">Sin precio de referencia: el trabajador cotizará el servicio.</string>
     <string name="request_estimate_unavailable">El trabajador te enviará la cotización.</string>
-    <string name="request_estimate_error">No se pudo calcular el estimado: %1$s</string>
-    <string name="request_estimate_notice">Valor de referencia de mano de obra. El precio final lo propone el trabajador y puede variar por materiales, tiempo, dificultad y condiciones del lugar.</string>
     <string name="request_worker_without_category">Este trabajador aún no tiene un oficio del catálogo</string>
     <string name="request_choose_category">Elige el oficio</string>
     <string name="request_category_change">%1$s (tocar para cambiar)</string>
@@ -379,18 +159,13 @@
     <string name="request_catalog_error_title">No se pudo cargar el catálogo</string>
     <string name="request_location_required">No se pudo obtener tu ubicación. Activa la ubicación e intenta de nuevo.</string>
     <string name="request_sending">Enviando solicitud…</string>
-    <string name="request_sent">Solicitud enviada con éxito</string>
     <!-- Cotización con motivo y agenda, reprogramación y cancelación (Sprint 4: B1, B2, B4) -->
     <string name="quote_dialog_min_fee">Mínimo %1$s (tarifa mínima por visita)</string>
     <string name="quote_error_too_high">El precio supera el máximo permitido</string>
-    <string name="quote_reference_range">Referencia para el cliente: %1$s – %2$s</string>
     <string name="quote_reference_partial">Algunas tareas no tienen rango: el precio necesita motivo.</string>
     <string name="quote_reference_unpriced">Sin precio de referencia: indica el motivo de tu precio.</string>
     <string name="quote_reference_missing">Solicitud sin precio de referencia: indica el motivo de tu precio.</string>
-    <string name="quote_reason_label">El precio está fuera del rango de referencia. Motivo:</string>
     <string name="quote_reason_label_unpriced">Motivo del precio:</string>
-    <string name="quote_reason_choose">Elige un motivo</string>
-    <string name="quote_reason_text_hint">Describe el motivo</string>
     <string name="quote_reason_required">Elige el motivo del precio</string>
     <string name="reason_text_required">Describe el motivo</string>
     <string name="quote_detail_reason">Motivo del precio: %1$s</string>
@@ -409,10 +184,6 @@
     <string name="reschedule_send">Reprogramar</string>
     <string name="reschedule_done">Servicio reprogramado; avisamos al cliente</string>
     <string name="reschedule_action">Reprogramar</string>
-    <string name="cancel_title">Cancelar solicitud</string>
-    <string name="cancel_message">Puedes cancelar sin costo hasta que el trabajador inicie el viaje. ¿Por qué cancelas?</string>
-    <string name="cancel_confirm">Cancelar solicitud</string>
-    <string name="cancel_back">Volver</string>
     <string name="cancel_reason_required">Elige un motivo</string>
     <string name="cancel_reason_text_hint">Describe el motivo</string>
     <string name="cancel_done">Solicitud cancelada</string>

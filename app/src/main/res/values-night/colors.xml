@@ -33,46 +33,21 @@
          Ojo: "white" y "black" aquí NO son blanco ni negro (se invierten);
          no usarlos en layouts nuevos.
          =================================================================== -->
-    <color name="status_bar_dark">#0A0E13</color>
     <color name="black">#D1CDCD</color>
-    <color name="white">#ECEFF4</color>
     <color name="textOnlywhite">#ECEFF4</color>
 
-    <color name="colorPrimaryLight">#FFB088</color>
-    <color name="blue">#6BABDE</color>
 
     <!-- Colores de estado -->
     <color name="success_color">#52D86A</color>
-    <color name="success_light">#1A2E20</color>
     <color name="error_color">#F56B5F</color>
-    <color name="desconect">#FA3B3B</color>
     <color name="warning_color">#FFB340</color>
     <color name="status_available">#52D86A</color>
-    <color name="status_busy">#F56B5F</color>
-    <color name="green">#52D86A</color>
-    <color name="red">#F56B5F</color>
 
-    <color name="circle_red">#F56B5F</color>
-    <color name="circle_green">#52D86A</color>
-    <color name="notification_badge_bg_dark">#2D1F17</color>
 
-    <color name="warning_light">#2D2417</color>
-    <color name="error_light">#2D1A19</color>
 
     <!-- Estados del servicio -->
-    <color name="pending">#FFB340</color>
-    <color name="accepted">#52D86A</color>
-    <color name="on_the_way">#6BABDE</color>
-    <color name="in_progress">#B77DE8</color>
-    <color name="completed">#52D86A</color>
-    <color name="cancelled">#F56B5F</color>
-    <color name="rejected">#F56B5F</color>
 
     <!-- Utilidad -->
-    <color name="success">#52D86A</color>
-    <color name="error">#F56B5F</color>
-    <color name="warning">#FFB340</color>
-    <color name="info">#6BABDE</color>
     <color name="ads_tile">#1B1830</color>          <!-- ficha de ícono gris dentro de una tarjeta -->
     <color name="ads_divider">#3A3658</color>       <!-- divisor entre filas dentro de una tarjeta -->
 </resources>
