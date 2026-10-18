@@ -31,3 +31,6 @@ node_modules/
 *serviceAccount*.json
 *firebase-adminsdk*.json
 adsv-d87e1-*.json
+
+# Capturas del celular para comparar con los mockups (rediseño)
+capturas/
