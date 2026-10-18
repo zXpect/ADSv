@@ -467,4 +467,16 @@
     <string name="quote_arrival_label">Llegada</string>
     <string name="quote_arrival_rescheduled_label">Llegada (reprogramada)</string>
     <string name="quote_duration_label">Duración estimada</string>
+
+    <!-- Rediseño: mapa del cliente (mockup 56) -->
+    <string name="map_client_heading">Cerca de ti</string>
+    <string name="map_client_subtitle">Técnicos disponibles en Ubaté</string>
+    <string name="map_filter_all">Todos</string>
+    <string name="map_worker_card_title">%1$s · %2$s</string>
+    <string name="map_worker_new">Verificado – nuevo</string>
+    <string name="map_worker_close">Cerrar</string>
+    <plurals name="map_worker_ratings">
+        <item quantity="one">%1$s · %2$d calificación</item>
+        <item quantity="other">%1$s · %2$d calificaciones</item>
+    </plurals>
 </resources>

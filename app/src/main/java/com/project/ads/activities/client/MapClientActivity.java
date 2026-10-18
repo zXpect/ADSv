@@ -33,16 +33,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import android.widget.Toast;
 
 import com.project.ads.activities.MainActivity;
-import com.project.ads.includes.MyToolbar;
 import com.project.ads.models.Worker;
 import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.GeofireProvider;
@@ -82,6 +80,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 public class MapClientActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -101,13 +100,14 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
     private LatLng mCurrentLatLng;
     private Map<String, Marker> mWorkersMarkers = new HashMap<>();
+    private final Map<String, Worker> mWorkers = new HashMap<>();
     private boolean mIsFirstTime = true;
 
     private PlacesClient mPlaces;
     private AutocompleteSupportFragment mAutoComplete;
     private String mOrigin;
     private LatLng mOriginLatLng;
-    private Spinner mFilterSpinner;
+    private ChipGroup mFilterChips;
     private String mCurrentFilter = CategoryHelper.ALL;   // slug del oficio o CategoryHelper.ALL
     private LinearLayout mLegendContainer;
     private static final Map<String, Integer> WORKER_ICONS = new HashMap<>();
@@ -271,8 +271,9 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void initToolbar() {
-        // Usar MyToolbar con color primario
-        MyToolbar.showColorPrimary(this, getString(R.string.map_client_title), true);
+        // Encabezado del mockup 56: botón de volver propio, sin toolbar
+        findViewById(R.id.btn_map_back).setOnClickListener(v -> onBackPressed());
+        findViewById(R.id.btn_map_worker_close).setOnClickListener(v -> hideWorkerCard());
     }
 
     private void initProviders() {
@@ -361,7 +362,8 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.setOnMapClickListener(latLng -> hideWorkerCard());
 
         if (isDarkModeEnabled()) {
             try {
@@ -387,7 +389,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
         mMap.setOnMarkerClickListener(marker -> {
             if (marker.getTag() != null) {
-                showWorkerInfoDialog((String) marker.getTag());
+                showWorkerCard((String) marker.getTag(), marker.getPosition());
             }
             return false;
         });
@@ -465,6 +467,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
                                 .icon(resizeMapIcon(CategoryHelper.iconFor(worker), 60, 60)));
                         marker.setTag(workerId);
                         mWorkersMarkers.put(workerId, marker);
+                        mWorkers.put(workerId, worker);
                     }
                 }
             }
@@ -474,14 +477,14 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void initFilterSpinner() {
-        mFilterSpinner = findViewById(R.id.spinner_filter);
+        mFilterChips = findViewById(R.id.chip_group_filter);
 
         // Oficios del catálogo del backend; si no responde, la lista local
         new CatalogProvider().getCategoriesWithFallback(new ApiCallback<CatalogData>() {
             @Override
             public void onSuccess(CatalogData catalog) {
                 if (isFinishing()) return;
-                bindFilterSpinner(CategoryHelper.filterOptions(catalog, getString(R.string.all_services)));
+                bindFilterChips(CategoryHelper.filterOptions(catalog, getString(R.string.map_filter_all)));
             }
 
             @Override
@@ -491,67 +494,25 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
-    private void bindFilterSpinner(List<CatalogData.Category> filterOptions) {
-        ArrayAdapter<CatalogData.Category> adapter = new ArrayAdapter<CatalogData.Category>(
-                this,
-                R.layout.spinner_item,
-                filterOptions
-        ) {
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-
-                // Adaptar colores del dropdown según el tema
-                int backgroundColor = position == mFilterSpinner.getSelectedItemPosition() ?
-                        ContextCompat.getColor(getContext(), R.color.colorPrimaryLight) :
-                        ContextCompat.getColor(getContext(), R.color.background_card);
-
-                view.setBackgroundColor(backgroundColor);
-
-                // Adaptar color del texto
-                if (view instanceof TextView) {
-                    ((TextView) view).setTextColor(
-                            ContextCompat.getColor(getContext(), R.color.text_primary)
-                    );
-                }
-
-                return view;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-
-                // Adaptar color del texto seleccionado
-                if (view instanceof TextView) {
-                    ((TextView) view).setTextColor(
-                            ContextCompat.getColor(getContext(), R.color.text_primary)
-                    );
-                }
-
-                return view;
-            }
-        };
-
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        mFilterSpinner.setAdapter(adapter);
-
-        mFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = ((CatalogData.Category) parent.getItemAtPosition(position)).getSlug();
-                if (!selected.equals(mCurrentFilter)) {
-                    mCurrentFilter = selected;
+    /** Un chip por oficio (mockup 56); el primero es «Todos». */
+    private void bindFilterChips(List<CatalogData.Category> filterOptions) {
+        mFilterChips.removeAllViews();
+        for (CatalogData.Category category : filterOptions) {
+            Chip chip = new Chip(this);
+            chip.setId(View.generateViewId());
+            chip.setText(category.getName());
+            chip.setCheckable(true);
+            chip.setChecked(category.getSlug().equals(mCurrentFilter));
+            chip.setOnCheckedChangeListener((button, isChecked) -> {
+                if (isChecked && !category.getSlug().equals(mCurrentFilter)) {
+                    mCurrentFilter = category.getSlug();
+                    hideWorkerCard();
                     clearWorkersFromMap();
                     getActiveWorkers();
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                mCurrentFilter = CategoryHelper.ALL;
-            }
-        });
+            });
+            mFilterChips.addView(chip);
+        }
     }
 
     private void clearWorkersFromMap() {
@@ -619,20 +580,58 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    private void showWorkerInfoDialog(String workerId) {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.worker_info_title)
-                .setMessage(R.string.worker_info_message)
-                .setPositiveButton(R.string.request_service, (dialog, which) -> {
-                    Intent intent = new Intent(MapClientActivity.this, ServiceRequestActivity.class);
-                    intent.putExtra("workerId", workerId);
-                    HomeUserActivity.putClientLocation(intent, mCurrentLatLng);
-                    startActivity(intent);
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
+    /** Hoja inferior con el técnico del marcador (mockup 56). */
+    private void showWorkerCard(String workerId, LatLng position) {
+        Worker worker = mWorkers.get(workerId);
+        View card = findViewById(R.id.card_map_worker);
+        String name = worker != null && worker.getName() != null ? worker.getName() : "";
+        if (worker != null && worker.getLastName() != null) name = (name + " " + worker.getLastName()).trim();
+
+        TextView initials = findViewById(R.id.tv_map_worker_initials);
+        initials.setText(initialsOf(name));
+
+        String categories = worker != null ? worker.getCategoriesDisplay() : null;
+        ((TextView) findViewById(R.id.tv_map_worker_name)).setText(categories != null && !categories.isEmpty()
+                ? getString(R.string.map_worker_card_title, name, categories) : name);
+
+        String distance = null;
+        if (mCurrentLatLng != null && position != null) {
+            float[] meters = new float[1];
+            Location.distanceBetween(mCurrentLatLng.latitude, mCurrentLatLng.longitude,
+                    position.latitude, position.longitude, meters);
+            distance = String.format(new Locale("es", "CO"), "%.1f km", meters[0] / 1000f);
+        }
+        String meta;
+        if (worker != null && worker.getTotalRatings() > 0) {
+            String rating = String.format(new Locale("es", "CO"), "%.1f", worker.getRating());
+            meta = getResources().getQuantityString(R.plurals.map_worker_ratings,
+                    worker.getTotalRatings(), rating, worker.getTotalRatings());
+        } else {
+            meta = getString(R.string.map_worker_new);
+        }
+        if (distance != null) meta += " · " + distance;
+        ((TextView) findViewById(R.id.tv_map_worker_meta)).setText(meta);
+
+        findViewById(R.id.btn_map_worker_request).setOnClickListener(v -> {
+            Intent intent = new Intent(MapClientActivity.this, ServiceRequestActivity.class);
+            intent.putExtra("workerId", workerId);
+            HomeUserActivity.putClientLocation(intent, mCurrentLatLng);
+            startActivity(intent);
+        });
+        card.setVisibility(View.VISIBLE);
     }
 
+    private void hideWorkerCard() {
+        findViewById(R.id.card_map_worker).setVisibility(View.GONE);
+    }
+
+    private static String initialsOf(String name) {
+        StringBuilder initials = new StringBuilder();
+        for (String part : name.trim().split("\\s+")) {
+            if (!part.isEmpty() && initials.length() < 2) initials.append(Character.toUpperCase(part.charAt(0)));
+        }
+        return initials.toString();
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
