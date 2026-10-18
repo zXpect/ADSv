@@ -394,6 +394,8 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         } else {
             mTvQuoteAmount.setVisibility(View.GONE);
         }
+        // El bloque navy del precio solo se muestra cuando hay precio
+        findViewById(R.id.layout_quote_price).setVisibility(request.hasQuote() ? View.VISIBLE : View.GONE);
 
         if (request.isQuoteAccepted()) {
             mTvQuoteStatus.setText(R.string.quote_status_agreed);

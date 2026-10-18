@@ -3,6 +3,7 @@ package com.project.ads.activities.client;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.project.ads.R;
 import com.project.ads.helpers.CancelDialogHelper;
 import com.project.ads.helpers.ReasonHelper;
+import com.project.ads.models.api.QuoteReference;
 import com.project.ads.helpers.RequestDetailsHelper;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.api.CatalogData;
@@ -38,6 +40,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class ServiceRequestDetailActivity extends AppCompatActivity {
 
@@ -409,9 +415,12 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
 
     private void updateQuoteCard(ServiceRequest request) {
         String status = request.getStatus();
-        String details = RequestDetailsHelper.details(this, request, mCatalog);
         boolean withQuote = "accepted".equals(status) || "on_the_way".equals(status)
                 || "in_progress".equals(status) || "completed".equals(status);
+        // Con precio, la referencia, el motivo y la agenda van en sus propias filas (mockup 17)
+        boolean showPrice = withQuote && request.hasQuote();
+        String details = RequestDetailsHelper.details(this, request, mCatalog, !showPrice);
+        bindQuoteBreakdown(request, showPrice);
         // En pending y cancelled la tarjeta muestra solo las tareas, la referencia y la cancelación
         boolean relevant = withQuote || (details != null && ("pending".equals(status) || "cancelled".equals(status)));
         mCardQuote.setVisibility(relevant ? View.VISIBLE : View.GONE);
@@ -459,6 +468,49 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 mTvPaymentStatus.setText(R.string.payment_status_pending_client);
                 mTvPaymentStatus.setTextColor(getResources().getColor(R.color.warning_color));
             }
+        }
+    }
+
+    /** Bloque navy del precio con la referencia ADS, motivo del ajuste y agenda (mockup 17). */
+    private void bindQuoteBreakdown(ServiceRequest request, boolean showPrice) {
+        findViewById(R.id.layout_quote_price).setVisibility(showPrice ? View.VISIBLE : View.GONE);
+
+        QuoteReference reference = request.getQuoteReference();
+        boolean showReference = showPrice && reference != null && reference.hasRange();
+        findViewById(R.id.layout_quote_reference).setVisibility(showReference ? View.VISIBLE : View.GONE);
+        if (showReference) {
+            long min = reference.getMinCop();
+            long max = reference.getMaxCop();
+            ((TextView) findViewById(R.id.tv_quote_reference_min)).setText(ServiceRequest.formatCop(min));
+            ((TextView) findViewById(R.id.tv_quote_reference_max)).setText(ServiceRequest.formatCop(max));
+            float position = max > min ? (float) (request.getQuoted_price() - min) / (max - min) : 0.5f;
+            View marker = findViewById(R.id.view_quote_marker);
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) marker.getLayoutParams();
+            params.horizontalBias = Math.max(0f, Math.min(1f, position));
+            marker.setLayoutParams(params);
+        }
+
+        boolean showReason = showPrice && request.isQuoteAdjusted()
+                && request.getQuoteAdjustmentReasonCode() != null;
+        findViewById(R.id.layout_quote_reason).setVisibility(showReason ? View.VISIBLE : View.GONE);
+        if (showReason) {
+            ((TextView) findViewById(R.id.tv_quote_reason)).setText(ReasonHelper.label(ReasonHelper.ADJUSTMENT,
+                    request.getQuoteAdjustmentReasonCode(), request.getQuoteAdjustmentReasonText()));
+        }
+
+        boolean showSchedule = showPrice && request.hasSchedule() && !request.isCancelled();
+        findViewById(R.id.layout_quote_schedule).setVisibility(showSchedule ? View.VISIBLE : View.GONE);
+        if (showSchedule) {
+            Locale locale = new Locale("es", "CO");
+            String arrival = new SimpleDateFormat("EEE d MMM · h:mm a", locale)
+                    .format(new Date(request.getScheduledAt()));
+            ((TextView) findViewById(R.id.tv_quote_arrival))
+                    .setText(arrival.substring(0, 1).toUpperCase(locale) + arrival.substring(1));
+            ((TextView) findViewById(R.id.tv_quote_arrival_label)).setText(request.getRescheduleCount() > 0
+                    ? R.string.quote_arrival_rescheduled_label : R.string.quote_arrival_label);
+            int duration = request.getEstimatedDurationMin();
+            findViewById(R.id.layout_quote_duration).setVisibility(duration > 0 ? View.VISIBLE : View.GONE);
+            ((TextView) findViewById(R.id.tv_quote_duration)).setText(ServiceRequest.formatDuration(duration));
         }
     }
 

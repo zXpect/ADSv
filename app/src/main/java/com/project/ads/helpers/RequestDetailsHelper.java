@@ -19,24 +19,35 @@ public final class RequestDetailsHelper {
 
     /** null si la solicitud no tiene nada de esto (p. ej. una anterior al catálogo). */
     public static String details(Context context, ServiceRequest request, CatalogData catalog) {
+        return details(context, request, catalog, true);
+    }
+
+    /**
+     * Igual que {@link #details(Context, ServiceRequest, CatalogData)}; con
+     * includeQuoteParts en false omite la referencia, el motivo del ajuste y la
+     * agenda, porque la tarjeta de cotización rediseñada los muestra aparte.
+     */
+    public static String details(Context context, ServiceRequest request, CatalogData catalog,
+                                 boolean includeQuoteParts) {
         StringBuilder text = new StringBuilder();
 
         String tasks = request.getTaskItemsDisplay(catalog);
         if (tasks != null) append(text, tasks);
 
         QuoteReference reference = request.getQuoteReference();
-        if (reference != null && reference.hasRange()) {
+        if (includeQuoteParts && reference != null && reference.hasRange()) {
             append(text, context.getString(R.string.quote_detail_reference,
                     ServiceRequest.formatCop(reference.getMinCop()), ServiceRequest.formatCop(reference.getMaxCop())));
         }
 
-        if (request.hasQuote() && request.isQuoteAdjusted() && request.getQuoteAdjustmentReasonCode() != null) {
+        if (includeQuoteParts && request.hasQuote() && request.isQuoteAdjusted()
+                && request.getQuoteAdjustmentReasonCode() != null) {
             append(text, context.getString(R.string.quote_detail_reason, ReasonHelper.label(
                     ReasonHelper.ADJUSTMENT, request.getQuoteAdjustmentReasonCode(),
                     request.getQuoteAdjustmentReasonText())));
         }
 
-        if (request.hasSchedule() && !request.isCancelled()) {
+        if (includeQuoteParts && request.hasSchedule() && !request.isCancelled()) {
             append(text, context.getString(request.getRescheduleCount() > 0
                     ? R.string.schedule_detail_rescheduled : R.string.schedule_detail, request.getScheduleDisplay()));
         }

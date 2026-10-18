@@ -460,4 +460,11 @@
     <string name="request_status_completed">Completada</string>
     <string name="request_status_cancelled">Cancelada</string>
     <string name="request_status_rejected">Rechazada</string>
+
+    <!-- Rediseño: tarjeta de cotización (mockup 17) -->
+    <string name="quote_reference_label">Referencia ADS</string>
+    <string name="quote_card_reason_label">Motivo del ajuste</string>
+    <string name="quote_arrival_label">Llegada</string>
+    <string name="quote_arrival_rescheduled_label">Llegada (reprogramada)</string>
+    <string name="quote_duration_label">Duración estimada</string>
 </resources>
