@@ -165,7 +165,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
     }
 
     private void setupPendingStatus(DocumentViewHolder holder, WorkerDocument document) {
-        setChip(holder, R.string.mydocs_chip_pending, R.color.ads_surface_alt, R.color.ads_charcoal);
+        setChip(holder, R.string.mydocs_chip_pending, R.color.ads_tile, R.color.ads_charcoal);
         holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.ads_line));
 
         holder.tvReviewDate.setVisibility(View.GONE);
