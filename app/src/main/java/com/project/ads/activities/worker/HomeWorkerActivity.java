@@ -33,6 +33,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.helpers.LogoutHelper;
+import com.project.ads.helpers.WorkerNavHelper;
+import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.Worker;
 import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.GeofireProvider;
@@ -45,7 +47,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -68,7 +70,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private static final int ICON_PADDING_DP = 8; // Padding entre icono y texto
 
     // Componentes UI
-    MaterialButton mButtonToggleConnection; // BOTÓN ÚNICO
+    MaterialSwitch mButtonToggleConnection; // Interruptor Disponible (mockup 13)
     LinearLayout mButtonViewMap2;
     View mConnectionIndicator;
     View mConnectionIndicatorGlow;
@@ -121,10 +123,9 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
         initProviders();
         initViews();
-        setupNavigationDrawer();
         setupClickListeners();
-        setupStatusBar();
         setupLocationCallback();
+        WorkerNavHelper.setup(this, R.id.nav_worker_home);
         generateToken();
 
         loadWorkerData();
@@ -145,10 +146,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        mToolbar = findViewById(R.id.toolbar);
-
         mButtonViewMap2 = findViewById(R.id.vermapaworker);
 
         // BOTÓN ÚNICO
@@ -173,13 +170,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
         mTextPendingRequests = findViewById(R.id.textPendingRequests);
         mLayoutPendingRequests = findViewById(R.id.layoutPendingRequests);
 
-        View headerView = navigationView.getHeaderView(0);
-        if (headerView != null) {
-            mNavHeaderProfileImage = headerView.findViewById(R.id.nav_header_profile_image);
-            mNavHeaderName = headerView.findViewById(R.id.nav_header_name);
-            mNavHeaderEmail = headerView.findViewById(R.id.nav_header_email);
-        }
-
         // Inicializar en estado deshabilitado por defecto
         mButtonToggleConnection.setEnabled(false);
         mButtonToggleConnection.setAlpha(0.5f);
@@ -187,37 +177,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
-    }
-
-    private void setupNavigationDrawer() {
-        setSupportActionBar(mToolbar);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, mToolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
-        );
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_home) {
-                Toast.makeText(HomeWorkerActivity.this, "Ya estás en Inicio", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_profile) {
-                openProfile();
-            } else if (id == R.id.nav_settings) {
-                openSettings();
-            } else if (id == R.id.nav_faq) {
-                openFAQ();
-            } else if (id == R.id.action_logout) {
-                logout();
-            }
-
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        });
     }
 
     private void openFAQ() {
@@ -241,7 +200,12 @@ public class HomeWorkerActivity extends AppCompatActivity {
         });
 
         // LISTENER DEL BOTÓN ÚNICO
-        mButtonToggleConnection.setOnClickListener(v -> toggleConnection());
+        mButtonToggleConnection.setOnClickListener(v -> {
+            toggleConnection();
+            // El interruptor muestra el estado real (p. ej. si falta el permiso de ubicación)
+            mButtonToggleConnection.setChecked(isConnected);
+        });
+        findViewById(R.id.card_next_service).setOnClickListener(v -> openNextService());
     }
 
     // MÉTODO NUEVO: Toggle entre conectar/desconectar
@@ -256,12 +220,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private void viewActiveServices() {
         if (mAuthProvider == null || mAuthProvider.getId() == null) {
             showErrorToast("Error: Usuario no autenticado");
-            return;
-        }
-
-        String currentText = mTextActiveServices.getText().toString();
-        if (currentText.contains("No hay")) {
-            showInfoToast("No tienes servicios activos en este momento");
             return;
         }
 
@@ -292,7 +250,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private void animateEntranceEffects() {
         View[] views = {
                 findViewById(R.id.cardConnectionStatus),
-                findViewById(R.id.cardPerformance),
                 findViewById(R.id.cardPendingRequests)
         };
 
@@ -311,13 +268,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
                             .start();
                 }, i * 100L);
             }
-        }
-    }
-
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
     }
 
@@ -407,7 +357,9 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private void updateWorkerInfoUI() {
         if (mCurrentWorker != null) {
             runOnUiThread(() -> {
-                mTextWorkerName.setText(mCurrentWorker.getFullName());
+                String fullName = mCurrentWorker.getFullName() != null ? mCurrentWorker.getFullName().trim() : "";
+                mTextWorkerName.setText(fullName.isEmpty() ? getString(R.string.home_greeting_default)
+                        : getString(R.string.home_greeting, fullName.split(" ")[0]));
                 String categories = mCurrentWorker.getCategoriesDisplay();
                 mTextWorkerType.setText(categories != null ? categories : getString(R.string.no_specialty));
 
@@ -556,13 +508,13 @@ public class HomeWorkerActivity extends AppCompatActivity {
         Log.d(TAG, "🎯 Actualizando UI para trabajador VERIFICADO");
 
 
-        // Estado: Desconectado (pero puede conectarse)
-        mTextConnectionStatus.setText("Desconectado");
-        mTextConnectionStatus.setTextColor(getResources().getColor(R.color.error_color, getTheme()));
+        // Estado: no disponible (pero puede conectarse)
+        mTextConnectionStatus.setText(R.string.worker_home_status_off);
+        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
 
         // Mensaje alentador
-        mTextConnectionMessage.setText("Conéctate para recibir solicitudes de trabajo cercanas");
-        mTextConnectionMessage.setTextColor(getResources().getColor(R.color.text_secondary, getTheme()));
+        mTextConnectionMessage.setText(R.string.worker_home_message_off);
+        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy_muted));
 
         // Limpiar icono del mensaje (no necesita icono cuando está verificado y desconectado)
         mTextConnectionMessage.setCompoundDrawablesRelative(null, null, null, null);
@@ -573,14 +525,10 @@ public class HomeWorkerActivity extends AppCompatActivity {
             mConnectionIndicatorGlow.setBackgroundResource(R.drawable.circle_glow_red);
         }
 
-        // Habilitar botón en modo "Conectar"
+        // Interruptor habilitado y apagado
         mButtonToggleConnection.setEnabled(true);
         mButtonToggleConnection.setAlpha(1.0f);
-        mButtonToggleConnection.setText("Conectar");
-        mButtonToggleConnection.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_power));
-        mButtonToggleConnection.setBackgroundTintList(
-                ContextCompat.getColorStateList(this, R.color.success_color)
-        );
+        mButtonToggleConnection.setChecked(false);
 
         Log.d(TAG, "✅ UI configurada - Botón HABILITADO para conectar");
     }
@@ -605,12 +553,12 @@ public class HomeWorkerActivity extends AppCompatActivity {
         // Actualizar texto de estado según verificación
         String statusText = getVerificationStatusText();
         mTextConnectionStatus.setText(statusText);
-        mTextConnectionStatus.setTextColor(getResources().getColor(statusColor, getTheme()));
+        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
 
-        // Configurar el mensaje con icono y color apropiado
+        // Configurar el mensaje con icono (sobre la tarjeta navy)
         mTextConnectionMessage.setText(message);
-        mTextConnectionMessage.setTextColor(getResources().getColor(textColor, getTheme()));
-        setTextViewIcon(mTextConnectionMessage, iconRes, iconColor);
+        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy_muted));
+        setTextViewIcon(mTextConnectionMessage, iconRes, R.color.ads_brand);
 
         // Actualizar indicador visual según estado
         mConnectionIndicator.setBackgroundResource(indicatorBg);
@@ -618,14 +566,10 @@ public class HomeWorkerActivity extends AppCompatActivity {
             mConnectionIndicatorGlow.setBackgroundResource(indicatorGlow);
         }
 
-        // Deshabilitar botón cuando no está verificado
+        // Interruptor deshabilitado mientras no esté verificado
         mButtonToggleConnection.setEnabled(false);
         mButtonToggleConnection.setAlpha(0.5f);
-        mButtonToggleConnection.setText("No disponible");
-        mButtonToggleConnection.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_lock));
-        mButtonToggleConnection.setBackgroundTintList(
-                ContextCompat.getColorStateList(this, R.color.text_secondary)
-        );
+        mButtonToggleConnection.setChecked(false);
 
         // Forzar desconexión si estaba conectado
         if (isConnected) {
@@ -637,25 +581,25 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
     private String getVerificationStatusText() {
         if (mVerificationStatus == null || "incomplete".equalsIgnoreCase(mVerificationStatus)) {
-            return "Perfil Incompleto";
+            return "Perfil incompleto";
         }
 
         switch (mVerificationStatus.toLowerCase()) {
             case "documents_submitted":
             case "pending":
-                return "En Verificación";
+                return "En verificación";
 
             case "rejected":
-                return "Documentos Rechazados";
+                return "Documentos rechazados";
 
             case "incomplete":
-                return "Perfil Incompleto";
+                return "Perfil incompleto";
 
             case "approved":
                 return "Verificado ✓";
 
             default:
-                return "Verificación Pendiente";
+                return "Verificación pendiente";
         }
     }
     private int getVerificationStatusColor() {
@@ -1107,21 +1051,18 @@ public class HomeWorkerActivity extends AppCompatActivity {
             if (isConnected) {
                 // MODO CONECTADO
                 Log.d(TAG, "🟢 Actualizando UI - CONECTADO");
-                mTextConnectionStatus.setText("Conectado");
-                mTextConnectionStatus.setTextColor(getResources().getColor(R.color.success_color, getTheme()));
-                mTextConnectionMessage.setText("Estás visible para recibir solicitudes de trabajo");
+                mTextConnectionStatus.setText(R.string.worker_home_status_on);
+                mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
+                mTextConnectionMessage.setText(R.string.worker_home_message_on);
+                mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy_muted));
                 mTextConnectionMessage.setCompoundDrawablesRelative(null, null, null, null);
                 mConnectionIndicator.setBackgroundResource(R.drawable.circle_green);
                 mConnectionIndicatorGlow.setBackgroundResource(R.drawable.circle_glow_green);
 
-                // Cambiar botón a modo "Desconectar"
-                mButtonToggleConnection.setText("Desconectar");
-                mButtonToggleConnection.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_power_off_));
-                mButtonToggleConnection.setBackgroundTintList(
-                        ContextCompat.getColorStateList(this, R.color.desconect)
-                );
-
-                animateButtonTransition(mButtonToggleConnection, true);
+                // Interruptor encendido
+                mButtonToggleConnection.setEnabled(true);
+                mButtonToggleConnection.setAlpha(1.0f);
+                mButtonToggleConnection.setChecked(true);
             } else {
                 // MODO DESCONECTADO (pero verificado)
                 Log.d(TAG, "🔴 Actualizando UI - DESCONECTADO");
@@ -1166,16 +1107,10 @@ public class HomeWorkerActivity extends AppCompatActivity {
                 .start();
     }
 
+    private String mNextServiceId;
+
     private void updateServicesStatus() {
         if (mAuthProvider == null || mAuthProvider.getId() == null) {
-            runOnUiThread(() -> {
-                if (mTextActiveServices != null) {
-                    mTextActiveServices.setText("Error: Usuario no autenticado");
-                }
-                if (mTextPendingRequests != null) {
-                    mTextPendingRequests.setText("Error: Usuario no autenticado");
-                }
-            });
             return;
         }
 
@@ -1191,87 +1126,110 @@ public class HomeWorkerActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         int pendingCount = 0;
                         int activeCount = 0;
+                        ServiceRequest next = null;
 
-                        if (snapshot.exists()) {
-                            for (DataSnapshot requestSnapshot : snapshot.getChildren()) {
-                                String status = requestSnapshot.child("status").getValue(String.class);
-
-                                if (status != null) {
-                                    switch (status.toLowerCase()) {
-                                        case "pending":
-                                            pendingCount++;
-                                            break;
-                                        case "accepted":
-                                        case "in_progress":
-                                            activeCount++;
-                                            break;
+                        for (DataSnapshot requestSnapshot : snapshot.getChildren()) {
+                            String status = requestSnapshot.child("status").getValue(String.class);
+                            if (status == null) continue;
+                            switch (status.toLowerCase()) {
+                                case "pending":
+                                    pendingCount++;
+                                    break;
+                                case "accepted":
+                                case "on_the_way":
+                                case "in_progress":
+                                    activeCount++;
+                                    // Próximo servicio: el activo con la llegada más cercana
+                                    try {
+                                        @SuppressWarnings("unchecked")
+                                        java.util.Map<String, Object> data =
+                                                (java.util.Map<String, Object>) requestSnapshot.getValue();
+                                        if (data == null) break;
+                                        ServiceRequest request = ServiceRequest.fromMap(data);
+                                        request.setRequest_id(requestSnapshot.getKey());
+                                        if (next == null || isSooner(request, next)) next = request;
+                                    } catch (Exception e) {
+                                        Log.e(TAG, "Error leyendo servicio activo", e);
                                     }
-                                }
+                                    break;
                             }
                         }
 
                         final int finalPendingCount = pendingCount;
                         final int finalActiveCount = activeCount;
-
-                        runOnUiThread(() -> updateServicesUI(finalPendingCount, finalActiveCount));
+                        final ServiceRequest finalNext = next;
+                        runOnUiThread(() -> {
+                            updateServicesUI(finalPendingCount, finalActiveCount);
+                            bindNextService(finalNext);
+                        });
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         Log.e(TAG, "Error al cargar estado de servicios", error.toException());
-                        runOnUiThread(() -> {
-                            if (mTextActiveServices != null) {
-                                mTextActiveServices.setText("Error al cargar");
-                            }
-                            if (mTextPendingRequests != null) {
-                                mTextPendingRequests.setText("Error al cargar");
-                            }
-                        });
                     }
                 });
     }
 
+    /** Sin agenda va al final; entre agendados, el más cercano. */
+    private static boolean isSooner(ServiceRequest a, ServiceRequest b) {
+        if (a.getScheduledAt() <= 0) return false;
+        return b.getScheduledAt() <= 0 || a.getScheduledAt() < b.getScheduledAt();
+    }
+
+    /** Contadores del mockup 13: solicitudes nuevas y servicios activos. */
     private void updateServicesUI(int pendingCount, int activeCount) {
-        try {
-            if (mTextActiveServices != null && mTextActiveServicesCount != null) {
-                if (activeCount > 0) {
-                    mTextActiveServices.setText(activeCount + " servicio(s) en curso - Toca para ver");
-                    mTextActiveServicesCount.setText(String.valueOf(activeCount));
+        mTextPendingRequests.setText(String.valueOf(pendingCount));
+        mTextActiveServicesCount.setText(String.valueOf(activeCount));
+        com.google.android.material.card.MaterialCardView newRequests = findViewById(R.id.card_new_requests);
+        // Borde naranja cuando hay solicitudes nuevas por responder
+        newRequests.setStrokeColor(ContextCompat.getColor(this,
+                pendingCount > 0 ? R.color.ads_brand_text : R.color.ads_line));
+        newRequests.setStrokeWidth(getResources().getDimensionPixelSize(
+                pendingCount > 0 ? R.dimen.stroke_focus : R.dimen.stroke_control));
+        if (pendingCount > 0) animateAttention(mLayoutPendingRequests);
+    }
 
-                    if (mLayoutActiveServices != null) {
-                        mLayoutActiveServices.setEnabled(true);
-                        mLayoutActiveServices.setAlpha(1.0f);
-                    }
-                } else {
-                    mTextActiveServices.setText("No hay servicios activos");
-                    mTextActiveServicesCount.setText("0");
+    /** Tarjeta «Próximo servicio» (mockup 13). */
+    private void bindNextService(ServiceRequest request) {
+        View title = findViewById(R.id.tv_next_service_title);
+        View card = findViewById(R.id.card_next_service);
+        mNextServiceId = request != null ? request.getRequest_id() : null;
+        title.setVisibility(request != null ? View.VISIBLE : View.GONE);
+        card.setVisibility(request != null ? View.VISIBLE : View.GONE);
+        if (request == null) return;
 
-                    if (mLayoutActiveServices != null) {
-                        mLayoutActiveServices.setEnabled(false);
-                        mLayoutActiveServices.setAlpha(0.7f);
-                    }
-                }
-            }
+        String service = request.getService_type() != null ? request.getService_type() : "Servicio";
+        String client = request.getClient_name();
+        ((TextView) findViewById(R.id.tv_next_service_name)).setText(
+                client != null && !client.isEmpty() ? service + " · " + client : service);
 
-            if (mTextPendingRequests != null && mLayoutPendingRequests != null) {
-                if (pendingCount > 0) {
-                    mTextPendingRequests.setText(pendingCount + " nueva(s) - Toca para ver");
-                    mLayoutPendingRequests.setEnabled(true);
-                    mLayoutPendingRequests.setAlpha(1.0f);
+        TextView status = findViewById(R.id.tv_next_service_status);
+        String state = request.getStatus() != null ? request.getStatus() : "";
+        status.setText("on_the_way".equals(state) ? R.string.request_status_on_the_way
+                : "in_progress".equals(state) ? R.string.request_status_in_progress
+                : R.string.request_status_accepted);
 
-                    animateAttention(mLayoutPendingRequests);
-                } else {
-                    mTextPendingRequests.setText("No hay solicitudes pendientes");
-                    mLayoutPendingRequests.setEnabled(false);
-                    mLayoutPendingRequests.setAlpha(0.7f);
-                }
-            }
-
-            Log.d(TAG, "UI actualizada - Activos: " + activeCount + ", Pendientes: " + pendingCount);
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error al actualizar UI de servicios", e);
+        TextView time = findViewById(R.id.tv_next_service_time);
+        if (request.getScheduledAt() > 0) {
+            java.util.Locale locale = new java.util.Locale("es", "CO");
+            String text = new java.text.SimpleDateFormat("EEE d MMM, h:mm a", locale)
+                    .format(new java.util.Date(request.getScheduledAt()));
+            time.setText(text.substring(0, 1).toUpperCase(locale) + text.substring(1));
+            time.setVisibility(View.VISIBLE);
+        } else {
+            time.setVisibility(View.GONE);
         }
+        TextView address = findViewById(R.id.tv_next_service_address);
+        address.setText(request.getAddress());
+        address.setVisibility(request.getAddress() != null ? View.VISIBLE : View.GONE);
+    }
+
+    private void openNextService() {
+        if (mNextServiceId == null) return;
+        Intent intent = new Intent(this, ServiceDetailWorkerActivity.class);
+        intent.putExtra("request_id", mNextServiceId);
+        startActivity(intent);
     }
 
     private void animateAttention(View view) {
@@ -1299,12 +1257,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private void viewPendingRequests() {
         if (mAuthProvider == null || mAuthProvider.getId() == null) {
             showErrorToast("Error: Usuario no autenticado");
-            return;
-        }
-
-        String currentText = mTextPendingRequests.getText().toString();
-        if (currentText.contains("No hay") || currentText.contains("Error")) {
-            showInfoToast("No hay solicitudes pendientes");
             return;
         }
 
@@ -1472,9 +1424,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        {
             new AlertDialog.Builder(this)
                     .setTitle("Salir de la aplicación")
                     .setMessage("¿Deseas salir?" + (isConnected ? " Te desconectarás automáticamente." : ""))

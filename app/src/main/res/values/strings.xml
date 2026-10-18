@@ -651,4 +651,30 @@
     <string name="cancel_screen_message_client">Cuéntanos el motivo. Es obligatorio y se le avisa al técnico.</string>
     <string name="cancel_screen_message_worker">Elige el motivo. Es obligatorio y se le avisa al cliente.</string>
     <string name="cancel_keep_service">Mantener servicio</string>
+
+    <!-- Rediseño: inicio del trabajador (mockup 13) -->
+    <string name="worker_home_status_label">Tu estado</string>
+    <string name="worker_home_switch_desc">Disponible</string>
+    <string name="worker_home_status_on">Disponible</string>
+    <string name="worker_home_status_off">No disponible</string>
+    <string name="worker_home_message_on">Los clientes cercanos pueden encontrarte. Tu ubicación solo se comparte mientras estés disponible.</string>
+    <string name="worker_home_message_off">Activa «Disponible» para que los clientes cercanos puedan encontrarte.</string>
+    <string name="worker_home_map_title">Ver mapa</string>
+    <string name="worker_home_map_subtitle">Solicitudes cerca de ti</string>
+    <string name="worker_home_new_requests">Solicitudes nuevas</string>
+    <string name="worker_home_active_services">Servicios activos</string>
+    <string name="worker_home_next_service">Próximo servicio</string>
+
+    <!-- Rediseño: bandeja del trabajador (mockup 14) -->
+    <string name="inbox_title">Solicitudes</string>
+    <string name="inbox_tab_new">Nuevas</string>
+    <string name="inbox_tab_new_count">Nuevas · %1$d</string>
+    <string name="inbox_tab_quoted">Cotizadas</string>
+    <string name="inbox_tab_active">Activas</string>
+    <string name="inbox_notice">Responde pronto: el cliente espera tu cotización con precio, fecha y hora.</string>
+    <string name="inbox_empty_new">No tienes solicitudes nuevas</string>
+    <string name="inbox_empty_quoted">No tienes cotizaciones esperando respuesta</string>
+    <string name="inbox_empty_active">No tienes servicios activos</string>
+    <string name="inbox_client_default">Cliente</string>
+    <string name="inbox_price_to_quote">Por cotizar</string>
 </resources>

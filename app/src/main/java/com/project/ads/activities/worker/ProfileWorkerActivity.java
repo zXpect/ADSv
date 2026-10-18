@@ -119,7 +119,33 @@ public class ProfileWorkerActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Antes de cerrar sesión deja al trabajador no disponible y fuera del mapa,
+     * como hacía el menú lateral del inicio.
+     */
+    private void logoutWorker() {
+        String id = new com.project.ads.providers.AuthProvider().getId();
+        if (id == null) {
+            com.project.ads.helpers.LogoutHelper.performLogout(this, new com.project.ads.providers.AuthProvider(), null, null);
+            return;
+        }
+        com.project.ads.providers.WorkerProvider workers = new com.project.ads.providers.WorkerProvider();
+        new com.project.ads.providers.GeofireProvider().removeLocation(id);
+        com.google.android.gms.tasks.Tasks.whenAllComplete(
+                workers.updateWorkerAvailability(id, false),
+                workers.updateWorkerOnlineStatus(id, false))
+                .addOnCompleteListener(task -> com.project.ads.helpers.LogoutHelper.performLogout(
+                        this, new com.project.ads.providers.AuthProvider(), null, null));
+    }
+
     private void setupClickListeners() {
+        findViewById(R.id.btnLogout).setOnClickListener(v -> new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.profile_logout)
+                .setMessage("¿Estás seguro que deseas cerrar sesión?")
+                .setPositiveButton("Sí", (dialog, which) -> logoutWorker())
+                .setNegativeButton("No", null)
+                .show());
+
         btnEditProfile.setOnClickListener(v -> {
             animateClick(v);
             editProfile();

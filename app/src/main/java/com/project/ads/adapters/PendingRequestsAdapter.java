@@ -1,22 +1,30 @@
 package com.project.ads.adapters;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.project.ads.models.ServiceRequest;
+import com.google.android.material.card.MaterialCardView;
 import com.project.ads.R;
+import com.project.ads.models.ServiceRequest;
+import com.project.ads.models.api.QuoteReference;
 
 import java.util.List;
 
+/**
+ * Tarjetas de la bandeja del trabajador (mockup 14): cliente y hace cuánto,
+ * oficio, dirección y precio. Las solicitudes nuevas llevan borde naranja.
+ */
 public class PendingRequestsAdapter extends RecyclerView.Adapter<PendingRequestsAdapter.ViewHolder> {
 
-    private List<ServiceRequest> requests;
-    private OnRequestClickListener listener;
+    private final List<ServiceRequest> requests;
+    private final OnRequestClickListener listener;
 
     public interface OnRequestClickListener {
         void onRequestClick(ServiceRequest request);
@@ -39,11 +47,8 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<PendingRequests
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ServiceRequest request = requests.get(position);
         holder.bind(request);
-
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onRequestClick(request);
-            }
+            if (listener != null) listener.onRequestClick(request);
         });
     }
 
@@ -54,75 +59,56 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<PendingRequests
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvRequestId;
-        private TextView tvClientName;
-        private TextView tvServiceType;
-        private TextView tvAddress;
-        private TextView tvTimestamp;
-        private TextView tvUrgencyLevel;
-        private TextView tvEstimatedCost;
+        private final MaterialCardView card;
+        private final TextView tvClientName;
+        private final TextView tvServiceType;
+        private final TextView tvAddress;
+        private final TextView tvTimestamp;
+        private final TextView tvEstimatedCost;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            tvRequestId = itemView.findViewById(R.id.tvRequestId);
+            card = itemView.findViewById(R.id.card_pending_request);
             tvClientName = itemView.findViewById(R.id.tvClientName);
             tvServiceType = itemView.findViewById(R.id.tvServiceType);
             tvAddress = itemView.findViewById(R.id.tvAddress);
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
-            tvUrgencyLevel = itemView.findViewById(R.id.tvUrgencyLevel);
             tvEstimatedCost = itemView.findViewById(R.id.tvEstimatedCost);
         }
 
         public void bind(ServiceRequest request) {
-            // Set request ID with better formatting
-            String requestId = request.getRequest_id() != null ? request.getRequest_id() : "N/A";
-            tvRequestId.setText("Solicitud #" + requestId);
-            
-            // Set client name
-            tvClientName.setText(request.getClient_name() != null ? request.getClient_name() : "Cliente no especificado");
-            
-            // Set service type
-            tvServiceType.setText(request.getService_type() != null ? request.getService_type() : "Servicio no especificado");
-            
-            // Set address
-            tvAddress.setText(request.getAddress() != null ? request.getAddress() : "Dirección no especificada");
-            
-            // Set timestamp
-            tvTimestamp.setText(request.getFormattedTimestamp());
+            tvClientName.setText(!TextUtils.isEmpty(request.getClient_name())
+                    ? request.getClient_name() : itemView.getContext().getString(R.string.inbox_client_default));
+            tvTimestamp.setText(request.getTimeAgo());
 
-            // Set urgency level with appropriate badge background
-            String urgency = request.getUrgency_level() != null ? request.getUrgency_level() : "Normal";
-            tvUrgencyLevel.setText(urgency.toUpperCase());
+            String service = request.getService_type() != null ? request.getService_type() : "";
+            if (!TextUtils.isEmpty(request.getDescription())) service += " · " + request.getDescription();
+            tvServiceType.setText(service);
 
-            // Set urgency badge background based on level
-            int urgencyBackground;
-            switch (urgency.toLowerCase()) {
-                case "alta":
-                case "high":
-                    urgencyBackground = itemView.getContext().getResources().getIdentifier(
-                            "urgency_badge_high", "drawable", itemView.getContext().getPackageName());
-                    break;
-                case "media":
-                case "medium":
-                    urgencyBackground = itemView.getContext().getResources().getIdentifier(
-                            "urgency_badge_medium", "drawable", itemView.getContext().getPackageName());
-                    break;
-                default:
-                    urgencyBackground = itemView.getContext().getResources().getIdentifier(
-                            "urgency_badge_low", "drawable", itemView.getContext().getPackageName());
-                    break;
-            }
-            tvUrgencyLevel.setBackgroundResource(urgencyBackground);
+            boolean hasAddress = !TextUtils.isEmpty(request.getAddress());
+            tvAddress.setText(hasAddress ? request.getAddress() : "");
+            tvAddress.setVisibility(hasAddress ? View.VISIBLE : View.INVISIBLE);
 
-            // Set estimated cost with better formatting
-            if (request.getEstimated_cost() > 0) {
-                tvEstimatedCost.setText(String.format("$%,.0f", request.getEstimated_cost()));
-                tvEstimatedCost.setTextColor(itemView.getContext().getResources().getColor(R.color.success_color));
+            // Precio cotizado si ya hay; si no, el rango de referencia congelado
+            QuoteReference reference = request.getQuoteReference();
+            if (request.hasQuote()) {
+                tvEstimatedCost.setText(request.getFormattedQuotedPrice());
+                tvEstimatedCost.setVisibility(View.VISIBLE);
+            } else if (reference != null && reference.hasRange()) {
+                tvEstimatedCost.setText(ServiceRequest.formatCop(reference.getMinCop()) + " – "
+                        + ServiceRequest.formatCop(reference.getMaxCop()));
+                tvEstimatedCost.setVisibility(View.VISIBLE);
             } else {
-                tvEstimatedCost.setText("Por determinar");
-                tvEstimatedCost.setTextColor(itemView.getContext().getResources().getColor(R.color.secondary_text));
+                tvEstimatedCost.setText(R.string.inbox_price_to_quote);
+                tvEstimatedCost.setVisibility(View.VISIBLE);
             }
+
+            // Nuevas (por responder): borde naranja
+            boolean isNew = "pending".equals(request.getStatus());
+            card.setStrokeColor(ContextCompat.getColor(itemView.getContext(),
+                    isNew ? R.color.ads_brand_text : R.color.ads_line));
+            card.setStrokeWidth(itemView.getResources().getDimensionPixelSize(
+                    isNew ? R.dimen.stroke_focus : R.dimen.stroke_control));
         }
     }
 }

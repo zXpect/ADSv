@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.adapters.PendingRequestsAdapter;
+import com.project.ads.helpers.WorkerNavHelper;
 import com.project.ads.models.ServiceRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Bandeja de solicitudes del trabajador · mockup 14 (docs/mockups/Bandeja.dc.html).
+ * Pestañas: Nuevas (por responder o cotizar), Cotizadas (esperando al cliente) y
+ * Activas (aceptadas, en camino o en progreso). Lee requests filtrado por su uid.
+ */
 public class PendingRequestsActivity extends AppCompatActivity implements PendingRequestsAdapter.OnRequestClickListener {
 
     private static final String TAG = "PendingRequestsActivity";
@@ -46,6 +52,8 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
     private String workerId;
     private String workerType;
     private List<ServiceRequest> pendingRequests;
+    private final List<ServiceRequest> allRequests = new ArrayList<>();
+    private int currentTab = R.id.chip_inbox_new;
     private PendingRequestsAdapter adapter;
 
     // Firebase
@@ -72,6 +80,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
 
         initializeViews();
         setupRecyclerView();
+        WorkerNavHelper.setup(this, R.id.nav_worker_requests);
         loadPendingRequests();
     }
 
@@ -89,8 +98,14 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
             loadPendingRequests();
         });
 
-        // Update title
-        tvTitle.setText("Solicitudes Pendientes");
+        tvTitle.setText(R.string.inbox_title);
+
+        com.google.android.material.chip.ChipGroup tabs = findViewById(R.id.chip_group_inbox);
+        tabs.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (checkedIds.isEmpty()) return;
+            currentTab = checkedIds.get(0);
+            applyTab();
+        });
 
         // Verificar que todas las vistas se inicializaron correctamente
         if (tvEmpty == null) {
@@ -193,70 +208,55 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
         requestsQuery.addValueEventListener(requestsListener);
     }
 
+    /** Solicitudes del trabajador que todavía no terminaron ni se cancelaron. */
     private boolean isRequestRelevant(ServiceRequest request) {
-        if (request == null) {
-            Log.d(TAG, "Request is null");
-            return false;
+        if (request == null || request.getStatus() == null) return false;
+        if (workerId == null || !workerId.equals(request.getWorker_id())) return false;
+        String status = request.getStatus().toLowerCase();
+        return status.equals("pending") || status.equals("accepted")
+                || status.equals("on_the_way") || status.equals("in_progress");
+    }
+
+    /** Pestaña de cada solicitud: nueva, cotizada o activa. */
+    private int tabOf(ServiceRequest request) {
+        String status = request.getStatus().toLowerCase();
+        if (status.equals("on_the_way") || status.equals("in_progress")) return R.id.chip_inbox_active;
+        if (status.equals("accepted")) {
+            if (request.isQuoteAccepted()) return R.id.chip_inbox_active;
+            if (request.hasQuote()) return R.id.chip_inbox_quoted;
         }
+        return R.id.chip_inbox_new;   // pendiente o aceptada sin cotizar: hay que responder
+    }
 
-        String status = request.getStatus();
-        Log.d(TAG, "Checking request relevance - Status: " + status);
-
-        // Verificar que el status sea "pending"
-        if (status == null || !"pending".equals(status.toLowerCase())) {
-            Log.d(TAG, "Request status is not pending: " + status);
-            return false;
+    private void applyTab() {
+        pendingRequests.clear();
+        int newCount = 0;
+        for (ServiceRequest request : allRequests) {
+            int tab = tabOf(request);
+            if (tab == R.id.chip_inbox_new) newCount++;
+            if (tab == currentTab) pendingRequests.add(request);
         }
+        adapter.notifyDataSetChanged();
 
-        String requestWorkerId = request.getWorker_id();
-        String requestServiceType = request.getService_type();
-
-        Log.d(TAG, "Request worker ID: " + requestWorkerId +
-                ", Request service type: " + requestServiceType +
-                ", My worker ID: " + workerId +
-                ", My worker type: " + workerType);
-
-        // SOLO mostrar solicitudes específicamente asignadas a este trabajador
-        if (requestWorkerId != null && workerId != null && workerId.equals(requestWorkerId)) {
-            Log.d(TAG, "Request assigned to this worker");
-            return true;
-        }
-
-        Log.d(TAG, "Request not assigned to this worker");
-        return false;
+        ((com.google.android.material.chip.Chip) findViewById(R.id.chip_inbox_new)).setText(newCount > 0
+                ? getString(R.string.inbox_tab_new_count, newCount) : getString(R.string.inbox_tab_new));
+        findViewById(R.id.card_inbox_notice).setVisibility(
+                currentTab == R.id.chip_inbox_new && !pendingRequests.isEmpty() ? View.VISIBLE : View.GONE);
+        ((TextView) findViewById(R.id.tv_inbox_empty)).setText(currentTab == R.id.chip_inbox_new
+                ? R.string.inbox_empty_new : currentTab == R.id.chip_inbox_quoted
+                ? R.string.inbox_empty_quoted : R.string.inbox_empty_active);
+        showEmpty(pendingRequests.isEmpty());
     }
 
     private void updateUI(List<ServiceRequest> requests) {
         runOnUiThread(() -> {
-            pendingRequests.clear();
-            pendingRequests.addAll(requests);
-            adapter.notifyDataSetChanged();
-
+            // Más recientes primero
+            java.util.Collections.sort(requests, (a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp()));
+            allRequests.clear();
+            allRequests.addAll(requests);
             showLoading(false);
-
-            // Update title with count
-            updateTitle(requests.size());
-
-            if (requests.isEmpty()) {
-                showEmpty(true);
-                Log.d(TAG, "No requests to show - showing empty state");
-            } else {
-                showEmpty(false);
-                Log.d(TAG, "Showing " + requests.size() + " requests");
-            }
-
-            Log.d(TAG, "UI updated with " + requests.size() + " pending requests");
+            applyTab();
         });
-    }
-
-    private void updateTitle(int requestCount) {
-        if (tvTitle != null) {
-            if (requestCount > 0) {
-                tvTitle.setText("Solicitudes Pendientes (" + requestCount + ")");
-            } else {
-                tvTitle.setText("Solicitudes Pendientes");
-            }
-        }
     }
 
     private void showLoading(boolean show) {
@@ -291,7 +291,8 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
     public void onRequestClick(ServiceRequest request) {
         if (request != null && request.getRequest_id() != null) {
             Log.d(TAG, "Opening request detail for: " + request.getRequest_id());
-            Intent intent = new Intent(this, RequestDetailActivity.class);
+            boolean isNew = "pending".equalsIgnoreCase(request.getStatus());
+            Intent intent = new Intent(this, isNew ? RequestDetailActivity.class : ServiceDetailWorkerActivity.class);
             intent.putExtra("request_id", request.getRequest_id());
             startActivity(intent);
         } else {

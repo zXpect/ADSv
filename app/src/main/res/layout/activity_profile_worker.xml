@@ -598,6 +598,15 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <!-- Cerrar sesión: antes estaba en el menú lateral del inicio (rediseño, Fase 4) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLogout"
+                    style="@style/Widget.ADS.Button.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_4"
+                    android:text="@string/profile_logout" />
+
             </LinearLayout>
 
         </LinearLayout>

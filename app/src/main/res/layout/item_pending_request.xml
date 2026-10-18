@@ -1,248 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Solicitud en la bandeja · mockup 14: cliente y hace cuánto, oficio,
+     dirección y precio (rango de referencia o cotizado). -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_pending_request"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="6dp"
-    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_marginBottom="@dimen/space_3"
     android:clickable="true"
-    android:focusable="true"
-    app:cardBackgroundColor="@color/background_card">
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="vertical">
 
-        <!-- Header with Request ID and Urgency Badge -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:orientation="horizontal">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvClientName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                android:textSize="16sp"
+                tools:text="Laura Gómez" />
 
-                <TextView
-                    android:id="@+id/tvRequestId"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Solicitud #12345"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textColor="@color/primary_text" />
-
-                <TextView
-                    android:id="@+id/tvTimestamp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="15/12/2024 14:30"
-                    android:textSize="12sp"
-                    android:textColor="@color/secondary_text"
-                    android:layout_marginTop="2dp" />
-
-            </LinearLayout>
-
-            <!-- Urgency Badge -->
             <TextView
-                android:id="@+id/tvUrgencyLevel"
+                android:id="@+id/tvTimestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ALTA"
-                android:textStyle="bold"
-                android:textSize="10sp"
-                android:background="@drawable/urgency_badge_high"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="6dp"
-                android:textColor="@color/whitevariable"
-                android:textAllCaps="true" />
-
+                android:layout_marginStart="@dimen/space_2"
+                android:fontFamily="@font/sora"
+                android:textAppearance="@style/TextAppearance.ADS.Label"
+                tools:text="Hace 5 min" />
         </LinearLayout>
 
-        <!-- Client Information Card -->
+        <TextView
+            android:id="@+id/tvServiceType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+            android:textColor="@color/ads_charcoal"
+            tools:text="Electricidad" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
             android:gravity="center_vertical"
-            android:background="@color/card_background"
-            android:padding="12dp"
-            android:layout_marginBottom="12dp">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_person"
-                android:layout_marginEnd="12dp"
-                app:tint="@color/colorPrimary" />
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvAddress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:drawablePadding="6dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                app:drawableStartCompat="@drawable/ic_location_small"
+                app:drawableTint="@color/ads_muted"
+                tools:text="Cra 5 # 4-20" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cliente"
-                    android:textSize="10sp"
-                    android:textColor="@color/secondary_text"
-                    android:textAllCaps="true" />
-
-                <TextView
-                    android:id="@+id/tvClientName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Juan Pérez"
-                    android:textSize="14sp"
-                    android:textColor="@color/primary_text"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- Service Information Card -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@color/card_background"
-            android:padding="12dp"
-            android:layout_marginBottom="12dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_work"
-                android:layout_marginEnd="12dp"
-                app:tint="@color/colorPrimary" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tvEstimatedCost"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Servicio"
-                    android:textSize="10sp"
-                    android:textColor="@color/secondary_text"
-                    android:textAllCaps="true" />
-
-                <TextView
-                    android:id="@+id/tvServiceType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Plomería"
-                    android:textSize="14sp"
-                    android:textColor="@color/primary_text"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
+                android:layout_marginStart="@dimen/space_2"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.ADS.Price"
+                android:textSize="14sp"
+                tools:text="$55.500 – $110.000" />
         </LinearLayout>
 
-        <!-- Address Information Card -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@color/card_background"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp">
+        <!-- Del diseño anterior; el mockup no los muestra -->
+        <TextView
+            android:id="@+id/tvRequestId"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_location"
-                android:layout_marginEnd="12dp"
-                app:tint="@color/colorPrimary" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dirección"
-                    android:textSize="10sp"
-                    android:textColor="@color/secondary_text"
-                    android:textAllCaps="true" />
-
-                <TextView
-                    android:id="@+id/tvAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Calle 123 #45-67, Bogotá"
-                    android:textSize="14sp"
-                    android:textColor="@color/primary_text"
-                    android:textStyle="bold"
-                    android:maxLines="2"
-                    android:ellipsize="end" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- Footer with Cost and Action Indicator -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Costo Estimado"
-                    android:textSize="10sp"
-                    android:textColor="@color/secondary_text"
-                    android:textAllCaps="true" />
-
-                <TextView
-                    android:id="@+id/tvEstimatedCost"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="$50.000"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/success_color" />
-
-            </LinearLayout>
-
-            <!-- Action Arrow -->
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_forward"
-                app:tint="@color/colorPrimary" />
-
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/tvUrgencyLevel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
