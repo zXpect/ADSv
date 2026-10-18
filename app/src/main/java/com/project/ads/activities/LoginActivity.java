@@ -20,7 +20,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.project.ads.activities.client.HomeUserActivity;
 import com.project.ads.activities.client.RegisterActivity;
@@ -143,6 +145,9 @@ public class LoginActivity extends AppCompatActivity {
     private void setupToolbar() {
         String typeUser = capitalizeFirstLetter(mPref.getString("user", ""));
         MyToolbar.showTransparent(this, typeUser, true);
+        // El toolbar va sobre la cabecera navy: título claro
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
     }
 
     private void setupListeners() {
@@ -692,10 +697,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
-        }
+        // Cabecera navy (mockup 01): barra de estado navy con íconos claros
+        Window window = getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_navy));
+        new WindowInsetsControllerCompat(window, window.getDecorView())
+                .setAppearanceLightStatusBars(false);
     }
 
     @Override
