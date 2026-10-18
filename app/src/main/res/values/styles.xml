@@ -262,6 +262,22 @@
         <item name="android:textAppearance">@style/TextAppearance.ADS.Chip</item>
     </style>
 
+    <!-- Ficha informativa no táctil con borde (medios de pago, mockup 25) -->
+    <style name="Widget.ADS.Chip.Static" parent="Widget.Material3.Chip.Assist">
+        <item name="android:checkable">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="chipBackgroundColor">@color/ads_card</item>
+        <item name="chipStrokeColor">@color/ads_line</item>
+        <item name="chipStrokeWidth">@dimen/stroke_control</item>
+        <item name="chipCornerRadius">@dimen/radius_sm</item>
+        <item name="chipMinHeight">36dp</item>
+        <item name="ensureMinTouchTargetSize">false</item>
+        <item name="android:textColor">@color/ads_charcoal</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Chip</item>
+        <item name="android:fontFamily">@font/sora</item>
+    </style>
+
     <!-- ===================================================================
          BARRA INFERIOR: 76 dp, fondo de barra, indicador activo 56x30
          naranja claro, ícono y texto naranja oscuro al estar activo.

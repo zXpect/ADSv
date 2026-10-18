@@ -609,4 +609,40 @@
     <string name="detail_reject_message">%1$s recibirá un aviso de que no aceptaste su cotización de %2$s. Podrá enviarte una nueva.</string>
     <string name="detail_reject_confirm">Sí, rechazar</string>
     <string name="detail_reject_back">Volver a la cotización</string>
+
+    <!-- Rediseño: pago (mockups 25-28) y calificación (mockup 30) -->
+    <string name="payment_checkout_title">El servicio terminó</string>
+    <string name="payment_checkout_subtitle">%1$s finalizó el trabajo. Ya puedes pagar.</string>
+    <string name="payment_total">Total a pagar</string>
+    <string name="payment_methods_title">Podrás pagar con</string>
+    <string name="payment_method_card">Tarjeta</string>
+    <string name="payment_method_nequi">Nequi</string>
+    <string name="payment_method_pse">PSE</string>
+    <string name="payment_method_bancolombia">Bancolombia</string>
+    <string name="payment_sandbox_note">Entorno de pruebas de Wompi: no se hace ningún cobro real.</string>
+    <string name="payment_pay_wompi">Pagar con Wompi</string>
+    <string name="payment_secure_screen_note">Se abrirá la pantalla segura de Wompi.</string>
+    <string name="payment_result_approved">Pago aprobado</string>
+    <string name="payment_result_approved_message">Pagaste con Wompi. Ahora puedes calificar el servicio de %1$s.</string>
+    <string name="payment_result_approved_rated">Pagaste con Wompi y ya calificaste el servicio. ¡Gracias!</string>
+    <string name="payment_result_pending">Pago pendiente</string>
+    <string name="payment_result_pending_message">Estamos esperando la confirmación de Wompi. Te avisaremos cuando se apruebe.</string>
+    <string name="payment_result_declined">Pago rechazado</string>
+    <string name="payment_result_declined_message">Wompi no pudo aprobar la transacción. Revisa los datos o prueba con otro medio de pago.</string>
+    <string name="payment_result_error">No se pudo completar el pago</string>
+    <string name="payment_result_unavailable">Pago no disponible</string>
+    <string name="rating_close">Cerrar</string>
+    <string name="rating_title">¿Cómo te fue con %1$s?</string>
+    <string name="rating_subtitle">Tu calificación ayuda a otros clientes de Ubaté.</string>
+    <string name="rating_star_1">1 estrella</string>
+    <string name="rating_star_2">2 estrellas</string>
+    <string name="rating_star_3">3 estrellas</string>
+    <string name="rating_star_4">4 estrellas</string>
+    <string name="rating_star_5">5 estrellas</string>
+    <string name="rating_label_1">Muy malo</string>
+    <string name="rating_label_2">Malo</string>
+    <string name="rating_label_3">Regular</string>
+    <string name="rating_label_4">Muy bueno</string>
+    <string name="rating_label_5">Excelente</string>
+    <string name="rating_submit">Enviar calificación</string>
 </resources>

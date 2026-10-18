@@ -1,19 +1,18 @@
 package com.project.ads.activities.client;
 
-import android.os.Build;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.project.ads.models.api.RatingData;
 import com.project.ads.providers.ApiCallback;
@@ -22,14 +21,22 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.project.ads.R;
 
+/**
+ * Calificar servicio · mockup 30 (docs/mockups/Calificar.dc.html).
+ * Cinco estrellas enteras (lo que acepta el backend) y comentario opcional.
+ */
 public class RatingActivity extends AppCompatActivity {
     private static final String TAG = "RatingActivity";
 
+    private static final int[] STAR_IDS = {R.id.btn_star_1, R.id.btn_star_2, R.id.btn_star_3,
+            R.id.btn_star_4, R.id.btn_star_5};
+    private static final int[] RATING_LABELS = {R.string.rating_label_1, R.string.rating_label_2,
+            R.string.rating_label_3, R.string.rating_label_4, R.string.rating_label_5};
+
     // UI Components
-    private Toolbar mToolbar;
     private TextView mWorkerName;
-    private TextView mServiceType;
-    private RatingBar mRatingBar;
+    private TextView mRatingLabel;
+    private int mRating = 0;
     private EditText mCommentEditText;
     private Button mSubmitButton;
     private ProgressBar mProgressBar;
@@ -63,8 +70,6 @@ public class RatingActivity extends AppCompatActivity {
             }
 
             initViews();
-            setupToolbar();
-            setupStatusBar();
             setupRatingBar();
             setupSubmitButton();
 
@@ -108,50 +113,42 @@ public class RatingActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        mToolbar = findViewById(R.id.toolbar);
         mWorkerName = findViewById(R.id.tv_worker_name_rating);
-        mServiceType = findViewById(R.id.tv_service_type_rating);
-        mRatingBar = findViewById(R.id.rating_bar);
+        mRatingLabel = findViewById(R.id.tv_rating_label);
+        findViewById(R.id.btn_rating_close).setOnClickListener(v -> finish());
         mCommentEditText = findViewById(R.id.et_rating_comment);
         mSubmitButton = findViewById(R.id.btn_submit_rating);
         mProgressBar = findViewById(R.id.rating_progress_bar);
     }
 
-    private void setupToolbar() {
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Calificar Servicio");
-        }
-        mToolbar.setNavigationOnClickListener(v -> onBackPressed());
-    }
-
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
-    }
-
     private void setupRatingBar() {
-        // Mostrar información del trabajador
-        if (mWorkerNameStr != null) {
-            mWorkerName.setText(mWorkerNameStr);
+        // «¿Cómo te fue con Carlos?» y sus iniciales
+        String name = mWorkerNameStr != null && !mWorkerNameStr.trim().isEmpty()
+                ? mWorkerNameStr.trim() : getString(R.string.request_the_worker);
+        mWorkerName.setText(getString(R.string.rating_title, name.split(" ")[0]));
+        StringBuilder initials = new StringBuilder();
+        for (String part : name.split("\\s+")) {
+            if (!part.isEmpty() && initials.length() < 2) initials.append(Character.toUpperCase(part.charAt(0)));
         }
-        if (mServiceTypeStr != null) {
-            mServiceType.setText("Servicio: " + mServiceTypeStr);
+        ((TextView) findViewById(R.id.tv_rating_initials)).setText(initials.toString());
+
+        // Estrellas enteras de 1 a 5 (lo que acepta el backend)
+        for (int i = 0; i < STAR_IDS.length; i++) {
+            final int value = i + 1;
+            findViewById(STAR_IDS[i]).setOnClickListener(v -> setRating(value));
         }
+        setRating(0);
+    }
 
-        // Configurar rating bar: estrellas enteras de 1 a 5 (lo que acepta el backend)
-        mRatingBar.setStepSize(1f);
-        mRatingBar.setRating(0);
-        mRatingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
-            // Habilitar botón solo si hay rating
-            mSubmitButton.setEnabled(rating > 0);
-        });
-
-        // Deshabilitar botón inicialmente
-        mSubmitButton.setEnabled(false);
+    private void setRating(int rating) {
+        mRating = rating;
+        for (int i = 0; i < STAR_IDS.length; i++) {
+            ImageButton star = findViewById(STAR_IDS[i]);
+            star.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this,
+                    i < rating ? R.color.ads_brand : R.color.ads_line)));
+        }
+        mRatingLabel.setText(rating > 0 ? getString(RATING_LABELS[rating - 1]) : "");
+        mSubmitButton.setEnabled(rating > 0);
     }
 
     private void setupSubmitButton() {
@@ -159,7 +156,7 @@ public class RatingActivity extends AppCompatActivity {
     }
 
     private void submitRating() {
-        float rating = mRatingBar.getRating();
+        float rating = mRating;
 
         if (rating == 0) {
             showError("Por favor selecciona una calificación");

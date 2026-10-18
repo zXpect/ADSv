@@ -1,216 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Calificar servicio · mockup 30 (docs/mockups/Calificar.dc.html). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/background_color">
+    android:background="@color/ads_surface"
+    android:orientation="vertical"
+    tools:context="com.project.ads.activities.client.RatingActivity">
 
-    <!-- AppBar -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:elevation="4dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="Calificar Servicio"
-            app:titleTextColor="@color/textOnlywhite"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:navigationIconTint="@color/textOnlywhite" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Contenido -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="@dimen/space_4"
+            android:paddingEnd="@dimen/screen_margin">
 
-            <!-- Card principal -->
-            <androidx.cardview.widget.CardView
+            <ImageButton
+                android:id="@+id/btn_rating_close"
+                android:layout_width="@dimen/touch_min"
+                android:layout_height="@dimen/touch_min"
+                android:background="@drawable/bg_ads_circle_button"
+                android:contentDescription="@string/rating_close"
+                android:src="@drawable/ic_close"
+                app:tint="@color/ads_text" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
-                app:cardBackgroundColor="@color/card_background"
-                android:layout_marginBottom="20dp">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:minHeight="420dp"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tv_rating_initials"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:background="@drawable/bg_ads_avatar"
+                    android:gravity="center"
+                    android:importantForAccessibility="no"
+                    android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                    android:textColor="@color/ads_surface"
+                    android:textSize="30sp"
+                    tools:text="CR" />
+
+                <TextView
+                    android:id="@+id/tv_worker_name_rating"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="28dp"
-                    android:gravity="center">
+                    android:layout_marginTop="20dp"
+                    android:accessibilityHeading="true"
+                    android:fontFamily="@font/sora_extrabold"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.ADS.Title"
+                    tools:text="¿Cómo te fue con Carlos?" />
 
-                    <!-- Icono de estrella grande -->
-                    <ImageView
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
-                        android:src="@drawable/ic_star_filled"
-                        app:tint="@color/star_color"
-                        android:layout_marginBottom="20dp" />
+                <TextView
+                    android:id="@+id/tv_service_type_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:gravity="center"
+                    android:text="@string/rating_subtitle"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall" />
 
-                    <!-- Título -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="¿Cómo fue tu experiencia?"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:gravity="center"
-                        android:layout_marginBottom="8dp" />
+                <!-- Estrellas de 1 a 5 (lo que acepta el backend) -->
+                <LinearLayout
+                    android:id="@+id/layout_rating_stars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:orientation="horizontal">
 
-                    <!-- Información del trabajador -->
-                    <TextView
-                        android:id="@+id/tv_worker_name_rating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Juan Pérez"
-                        android:textSize="17sp"
-                        android:textColor="@color/colorPrimary"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginBottom="4dp" />
+                    <ImageButton
+                        android:id="@+id/btn_star_1"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/rating_star_1"
+                        android:padding="6dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_star_filled" />
 
-                    <TextView
-                        android:id="@+id/tv_service_type_rating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Servicio: Plomería"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
-                        android:gravity="center"
-                        android:layout_marginBottom="28dp" />
+                    <ImageButton
+                        android:id="@+id/btn_star_2"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="@dimen/space_1"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/rating_star_2"
+                        android:padding="6dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_star_filled" />
 
-                    <!-- RatingBar -->
-                    <RatingBar
-                        android:id="@+id/rating_bar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:numStars="5"
-                        android:stepSize="0.5"
-                        android:rating="0"
-                        android:progressTint="@color/star_color"
-                        android:secondaryProgressTint="@color/gray_medium"
-                        android:layout_marginBottom="28dp"
-                        style="@style/Widget.AppCompat.RatingBar.Indicator"
-                        android:isIndicator="false"
-                        android:scaleX="1.2"
-                        android:scaleY="1.2" />
+                    <ImageButton
+                        android:id="@+id/btn_star_3"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="@dimen/space_1"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/rating_star_3"
+                        android:padding="6dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_star_filled" />
 
-                    <!-- Descripción de rating -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Desliza para calificar"
-                        android:textSize="13sp"
-                        android:textColor="@color/text_hint"
-                        android:gravity="center" />
+                    <ImageButton
+                        android:id="@+id/btn_star_4"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="@dimen/space_1"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/rating_star_4"
+                        android:padding="6dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_star_filled" />
 
+                    <ImageButton
+                        android:id="@+id/btn_star_5"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="@dimen/space_1"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/rating_star_5"
+                        android:padding="6dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_star_filled" />
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/tv_rating_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:minHeight="22dp"
+                    android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                    android:textColor="@color/ads_brand_text"
+                    tools:text="Muy bueno" />
 
-            <!-- Comentarios -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Comentarios (opcional)"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="12dp"
-                android:layout_marginStart="4dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@color/card_background"
-                android:layout_marginBottom="20dp">
-
-                <EditText
-                    android:id="@+id/et_rating_comment"
+                <!-- Comentario opcional (se envía con la calificación) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_rating_comment"
                     android:layout_width="match_parent"
-                    android:layout_height="140dp"
-                    android:background="@android:color/transparent"
-                    android:padding="16dp"
-                    android:gravity="top|start"
-                    android:inputType="textMultiLine|textCapSentences"
-                    android:hint="Comparte tu experiencia con el servicio..."
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="15sp"
-                    android:textColor="@color/text_primary"
-                    android:maxLines="5"
-                    android:scrollbars="vertical" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_5"
+                    app:hintEnabled="false">
 
-            </androidx.cardview.widget.CardView>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_rating_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/rating_comment_hint"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:maxLength="500"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/tv_already_rated_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:padding="16dp"
-                android:background="@drawable/bg_info_message"
-                android:textSize="16sp"
-                android:textColor="@color/text_primary"
-                android:gravity="center"
-                android:visibility="gone"
-                tools:text="Ya calificaste este servicio con 5 estrellas"
-                tools:visibility="visible"/>
-
-            <!-- Botón enviar -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_submit_rating"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="Enviar Calificación"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/textOnlywhite"
-                app:cornerRadius="12dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:enabled="false"
-                app:elevation="2dp" />
-
-            <!-- Info adicional -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tu calificación ayuda a otros usuarios a elegir los mejores trabajadores"
-                android:textSize="12sp"
-                android:textColor="@color/text_hint"
-                android:gravity="center"
-                android:layout_marginTop="16dp"
-                android:paddingHorizontal="20dp"
-                android:lineSpacingExtra="2dp" />
-
-
-
+                <TextView
+                    android:id="@+id/tv_already_rated_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+            </LinearLayout>
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
 
-    <!-- ProgressBar overlay -->
-    <ProgressBar
-        android:id="@+id/rating_progress_bar"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminateTint="@color/colorPrimary"
-        android:visibility="gone" />
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingTop="@dimen/space_3"
+        android:paddingEnd="@dimen/screen_margin"
+        android:paddingBottom="32dp">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <ProgressBar
+            android:id="@+id/rating_progress_bar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/space_2"
+            android:indeterminateTint="@color/ads_brand"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_submit_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rating_submit" />
+    </LinearLayout>
+</LinearLayout>

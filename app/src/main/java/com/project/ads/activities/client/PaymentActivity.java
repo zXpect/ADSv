@@ -3,13 +3,12 @@ package com.project.ads.activities.client;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,7 +34,8 @@ import com.project.ads.providers.PaymentProvider;
 import java.util.Map;
 
 /**
- * Pago de un servicio completado.
+ * Pago de un servicio completado · mockups 25 (pagar con Wompi) y 26-28 (aprobado,
+ * rechazado, pendiente). La pantalla tiene un modo «pagar» y un modo «resultado».
  *
  * 1. Pide al backend el pago (POST /api/payments/); el monto lo define el servidor.
  * 2. Abre el checkout de la pasarela en un Custom Tab (no en un WebView: la app
@@ -71,7 +70,6 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
-        setupStatusBar();
 
         mPaymentProvider = new PaymentProvider();
         initViews();
@@ -122,13 +120,7 @@ public class PaymentActivity extends AppCompatActivity {
         mBtnAction = findViewById(R.id.btn_payment_action);
 
         btnBack.setOnClickListener(v -> finish());
-    }
-
-    private void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        }
+        findViewById(R.id.btn_result_home).setOnClickListener(v -> goHome());
     }
 
     // ---------- Datos ----------
@@ -183,10 +175,11 @@ public class PaymentActivity extends AppCompatActivity {
     // ---------- UI ----------
 
     private void render(ServiceRequest request) {
+        String worker = request.getWorker_name() != null
+                ? request.getWorker_name() : getString(R.string.request_the_worker);
         mTvService.setText(request.getService_type() != null ? request.getService_type() : "");
         mTvAmount.setText(request.hasQuote() ? request.getFormattedQuotedPrice() : "");
-        mTvWorker.setText(request.getWorker_name() != null
-                ? getString(R.string.payment_worker, request.getWorker_name()) : "");
+        mTvWorker.setText(getString(R.string.payment_checkout_subtitle, worker));
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null || !user.getUid().equals(request.getClient_id())) {
@@ -195,12 +188,15 @@ public class PaymentActivity extends AppCompatActivity {
         }
 
         if (request.isPaid()) {
+            // Pago aprobado (mockup 26)
+            String amount = request.hasQuote() ? request.getFormattedQuotedPrice() : null;
             if (request.isRated()) {
-                showState(getString(R.string.payment_approved), R.string.payment_back,
-                        R.color.colorPrimary, v -> finish());
+                showResult(R.drawable.ic_ads_check, getString(R.string.payment_result_approved), amount,
+                        getString(R.string.payment_result_approved_rated), 0, null, false);
             } else {
-                showState(getString(R.string.payment_approved), R.string.payment_rate_button,
-                        R.color.success_color, v -> openRating());
+                showResult(R.drawable.ic_ads_check, getString(R.string.payment_result_approved), amount,
+                        getString(R.string.payment_result_approved_message, worker),
+                        R.string.payment_rate_button, v -> openRating(), false);
             }
             return;
         }
@@ -209,60 +205,93 @@ public class PaymentActivity extends AppCompatActivity {
             return;
         }
         if (mCreatingPayment) {
-            showLoading(getString(R.string.payment_creating));
+            showCheckout(true);
             return;
         }
 
         String paymentStatus = request.getPayment_status();
         if (PaymentProvider.STATUS_PENDING.equals(paymentStatus) && mCheckoutOpened) {
-            // Volvió del checkout: se espera el evento de la pasarela vía backend
-            mProgress.setVisibility(View.VISIBLE);
-            mTvMessage.setText(R.string.payment_confirming);
-            showButton(R.string.payment_reopen_button, R.color.colorPrimary, v -> startPayment());
+            // Volvió del checkout: se espera el evento de la pasarela vía backend (mockup 28)
+            showResult(R.drawable.ic_clock, getString(R.string.payment_result_pending), null,
+                    getString(R.string.payment_result_pending_message),
+                    R.string.payment_reopen_button, v -> startPayment(), true);
         } else if (PaymentProvider.STATUS_DECLINED.equals(paymentStatus)) {
-            showState(getString(R.string.payment_declined), R.string.payment_retry_button,
-                    R.color.colorPrimary, v -> startPayment());
+            // Pago rechazado (mockup 27)
+            showResult(R.drawable.ic_close, getString(R.string.payment_result_declined), null,
+                    getString(R.string.payment_result_declined_message),
+                    R.string.payment_retry_button, v -> startPayment(), false);
         } else if (PaymentProvider.STATUS_ERROR.equals(paymentStatus)
                 || PaymentProvider.STATUS_VOIDED.equals(paymentStatus)) {
-            showState(getString(R.string.payment_error), R.string.payment_retry_button,
-                    R.color.colorPrimary, v -> startPayment());
+            showResult(R.drawable.ic_close, getString(R.string.payment_result_error), null,
+                    getString(R.string.payment_error), R.string.payment_retry_button, v -> startPayment(), false);
         } else {
-            showState(getString(R.string.payment_ready), R.string.payment_pay_now_button,
-                    R.color.success_color, v -> startPayment());
+            // Listo para pagar (mockup 25)
+            showCheckout(false);
+        }
+    }
+
+    /** Modo «pagar» (mockup 25); con loading mientras se crea el pago. */
+    private void showCheckout(boolean loading) {
+        findViewById(R.id.layout_payment_checkout).setVisibility(View.VISIBLE);
+        findViewById(R.id.layout_payment_result).setVisibility(View.GONE);
+        mProgress.setVisibility(loading ? View.VISIBLE : View.GONE);
+        mTvMessage.setText(loading ? R.string.payment_creating : R.string.payment_secure_screen_note);
+        mBtnAction.setText(R.string.payment_pay_wompi);
+        mBtnAction.setEnabled(!loading);
+        mBtnAction.setOnClickListener(v -> startPayment());
+    }
+
+    /** Modo «resultado» (mockups 26, 27, 28 y errores). primaryText 0 = sin botón principal. */
+    private void showResult(int icon, String title, String amount, String message,
+                            int primaryText, View.OnClickListener primaryAction, boolean waiting) {
+        findViewById(R.id.layout_payment_checkout).setVisibility(View.GONE);
+        findViewById(R.id.layout_payment_result).setVisibility(View.VISIBLE);
+        ImageView iconView = findViewById(R.id.iv_result_icon);
+        iconView.setVisibility(View.VISIBLE);
+        iconView.setImageResource(icon);
+        ((TextView) findViewById(R.id.tv_result_title)).setText(title);
+        TextView amountView = findViewById(R.id.tv_result_amount);
+        amountView.setText(amount);
+        amountView.setVisibility(amount != null ? View.VISIBLE : View.GONE);
+        ((TextView) findViewById(R.id.tv_result_message)).setText(message);
+        findViewById(R.id.progress_result).setVisibility(waiting ? View.VISIBLE : View.GONE);
+        Button primary = findViewById(R.id.btn_result_primary);
+        primary.setVisibility(primaryText != 0 ? View.VISIBLE : View.GONE);
+        if (primaryText != 0) {
+            primary.setText(primaryText);
+            primary.setEnabled(true);
+            primary.setOnClickListener(primaryAction);
         }
     }
 
     private void showLoading(String message) {
-        mProgress.setVisibility(View.VISIBLE);
-        mTvMessage.setText(message);
-        mBtnAction.setVisibility(View.GONE);
-    }
-
-    private void showState(String message, int buttonText, int buttonColor, View.OnClickListener action) {
-        mProgress.setVisibility(View.GONE);
-        mTvMessage.setText(message);
-        showButton(buttonText, buttonColor, action);
-    }
-
-    private void showButton(int buttonText, int buttonColor, View.OnClickListener action) {
-        mBtnAction.setText(buttonText);
-        mBtnAction.setBackgroundTintList(ContextCompat.getColorStateList(this, buttonColor));
-        mBtnAction.setOnClickListener(action);
-        mBtnAction.setEnabled(true);
-        mBtnAction.setVisibility(View.VISIBLE);
+        findViewById(R.id.layout_payment_checkout).setVisibility(View.GONE);
+        findViewById(R.id.layout_payment_result).setVisibility(View.VISIBLE);
+        findViewById(R.id.iv_result_icon).setVisibility(View.GONE);
+        ((TextView) findViewById(R.id.tv_result_title)).setText("");
+        findViewById(R.id.tv_result_amount).setVisibility(View.GONE);
+        ((TextView) findViewById(R.id.tv_result_message)).setText(message);
+        findViewById(R.id.progress_result).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_result_primary).setVisibility(View.GONE);
     }
 
     private void showFatal(String message) {
-        mProgress.setVisibility(View.GONE);
-        mTvMessage.setText(message);
-        showButton(R.string.payment_back, R.color.colorPrimary, v -> finish());
+        showResult(R.drawable.ic_info, getString(R.string.payment_result_unavailable), null, message,
+                R.string.payment_back, v -> finish(), false);
+    }
+
+    private void goHome() {
+        Intent intent = new Intent(this, HomeUserActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
     // ---------- Acciones ----------
 
     private void startPayment() {
         mCreatingPayment = true;
-        showLoading(getString(R.string.payment_creating));
+        showCheckout(true);
 
         mPaymentProvider.createPayment(mRequestId, new ApiCallback<PaymentData>() {
             @Override
