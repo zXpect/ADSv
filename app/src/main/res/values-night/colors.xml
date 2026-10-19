@@ -29,6 +29,8 @@
     <color name="ads_on_navy_muted">#C9CCD6</color>
     <color name="ads_map_me">#6F8BFF</color>         <!-- (*) -->
     <color name="ads_header">#1F2540</color>
+    <color name="ads_start_bg">#0F1220</color>       <!-- Bienvenida y Login: lo más oscuro posible -->
+    <color name="ads_sheet">#171B2B</color>          <!-- (*) hoja del Login: se separa del fondo -->
     <color name="ads_segment_selected">#2A2F45</color> <!-- (*) se distingue del fondo ads_surface_alt -->
     <color name="ads_highlight_raised">#2A3152</color> <!-- (*) ficha sobre la tarjeta destacada -->
     <color name="ads_highlight_track">#3A4262</color>  <!-- (*) rieles sobre la tarjeta destacada -->

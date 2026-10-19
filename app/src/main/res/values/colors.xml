@@ -29,6 +29,10 @@
     <color name="ads_marker_stroke">#1B1830</color>
     <color name="ads_marker_icon">#B45309</color>
     <color name="ads_header">#1B1830</color>         <!-- tarjeta destacada (servicio activo) y cabecera del login -->
+    <!-- Pantallas de entrada (Bienvenida y Login): fondo navy y hoja del formulario.
+         En oscuro el fondo es el tono más oscuro de la paleta (= ads_icon_bg). -->
+    <color name="ads_start_bg">#1B1830</color>
+    <color name="ads_sheet">#F6F3EE</color>
     <color name="ads_segment_selected">#FFFFFF</color> <!-- opción elegida del control Lista / Mapa -->
     <!-- Elementos sobre la tarjeta destacada (ads_header) -->
     <color name="ads_highlight_raised">#2A2647</color> <!-- ficha de ícono sobre la tarjeta destacada -->

@@ -53,7 +53,8 @@
             android:accessibilityHeading="true"
             android:text="@string/role_title"
             android:textAppearance="@style/TextAppearance.ADS.Headline"
-            android:textSize="28sp" />
+            android:textSize="28sp"
+            app:lineHeight="36sp" />
 
         <TextView
             android:id="@+id/tv_role_subtitle"

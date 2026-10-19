@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ads_header"
+    android:background="@color/ads_start_bg"
     tools:context="com.project.ads.activities.MainActivity">
 
     <!-- Techos de fondo (decorativos) -->

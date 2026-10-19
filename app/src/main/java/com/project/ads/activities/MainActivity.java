@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Barra de estado navy con íconos claros
         Window window = getWindow();
-        window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_header));
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_start_bg));
         new WindowInsetsControllerCompat(window, window.getDecorView()).setAppearanceLightStatusBars(false);
     }
 

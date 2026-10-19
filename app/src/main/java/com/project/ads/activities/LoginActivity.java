@@ -699,7 +699,7 @@ public class LoginActivity extends AppCompatActivity {
     private void setupStatusBar() {
         // Cabecera navy (mockup 01): barra de estado navy con íconos claros
         Window window = getWindow();
-        window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_header));
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_start_bg));
         new WindowInsetsControllerCompat(window, window.getDecorView())
                 .setAppearanceLightStatusBars(false);
     }
