@@ -58,6 +58,9 @@ public class NotificationsActivity extends AppCompatActivity {
             return;
         }
 
+        // Push sin solicitud: se abrió esta pantalla; se marca esa notificación
+        NotificationRouter.markOpened(this, null);
+
         mRecycler = findViewById(R.id.recycler_notifications);
         mProgress = findViewById(R.id.progress_notifications);
         mEmpty = findViewById(R.id.layout_notifications_empty);

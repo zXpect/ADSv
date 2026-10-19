@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
+import com.project.ads.helpers.NotificationRouter;
 import com.project.ads.helpers.QuoteDialogHelper;
 import com.project.ads.helpers.RequestDetailsHelper;
 import com.project.ads.providers.CatalogProvider;
@@ -77,6 +78,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         
         // Get request ID from intent
         requestId = getIntent().getStringExtra("request_id");
+        NotificationRouter.markOpened(this, requestId);
         
         if (requestId == null || requestId.isEmpty()) {
             Log.e(TAG, "No request ID provided");
@@ -341,6 +343,7 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         // Verificar si hay un nuevo request_id
         String newRequestId = intent.getStringExtra("request_id");
+        NotificationRouter.markOpened(this, newRequestId);
         if (newRequestId != null && !newRequestId.equals(requestId)) {
             Log.d(TAG, "New request ID received: " + newRequestId);
             requestId = newRequestId;

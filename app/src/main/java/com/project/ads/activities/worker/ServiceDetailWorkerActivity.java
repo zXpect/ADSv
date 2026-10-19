@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.R;
+import com.project.ads.helpers.NotificationRouter;
 import com.project.ads.helpers.CancelDialogHelper;
 import com.project.ads.helpers.QuoteDialogHelper;
 import com.project.ads.helpers.ReasonHelper;
@@ -104,6 +105,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
 
         // Get request ID
         mRequestId = getIntent().getStringExtra("request_id");
+        NotificationRouter.markOpened(this, mRequestId);
 
         if (mRequestId == null || mRequestId.isEmpty()) {
             Toast.makeText(this, "Error: ID de solicitud no válido", Toast.LENGTH_SHORT).show();

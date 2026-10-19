@@ -49,12 +49,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String requestId = data.get("requestId");
         String type = data.get("type");
         String pqrId = data.get("pqrId");
+        String notificationId = data.get("notificationId");
 
         Log.d(TAG, "Notification data - Title: " + title + ", Body: " + body + ", RequestId: " + requestId + ", Type: " + type);
 
         if (title != null) {
             // El destino al tocar lo decide NotificationRouter (igual que la pantalla de Notificaciones)
-            PendingIntent intent = NotificationRouter.pendingIntent(this, type, requestId, pqrId);
+            PendingIntent intent = NotificationRouter.pendingIntent(this, type, requestId, pqrId, notificationId);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 showNotificationApiOreo(title, body, requestId, intent);
             } else {
