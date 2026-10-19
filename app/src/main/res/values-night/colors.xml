@@ -2,29 +2,37 @@
 <resources>
     <!-- ===================================================================
          TOKENS ADS · MODO OSCURO (se activa con el tema oscuro del teléfono)
-         Valores de tokens.json. Los marcados (*) no están en tokens.json:
-         se derivan de los mockups o se proponen; revisar al probar.
+         Paleta aprobada el 18/10/2026 (COLORES_ADS_ANDROID.md): azul noche
+         más oscuro y menos morado; el naranja de marca no cambia.
+         Equivalencias con esa tabla: ads_charcoal = ads_on_surface,
+         ads_text = ads_on_surface_strong, ads_header = ads_card_highlight,
+         ads_on_navy(_muted) = ads_on_highlight(_muted),
+         ads_control = ads_control_border.
+         Los marcados (*) no están en la tabla: se derivan de ella.
          =================================================================== -->
     <color name="ads_brand">#F28A2E</color>
     <color name="ads_brand_text">#F28A2E</color>
-    <color name="ads_navy">#1B1830</color>
-    <color name="ads_on_brand">#1B1830</color>
+    <color name="ads_navy">#1F2540</color>           <!-- (*) bloques navy: igual que la tarjeta destacada -->
+    <color name="ads_on_brand">#0F1220</color>
     <color name="ads_charcoal">#F6F3EE</color>
     <color name="ads_text">#F6F3EE</color>
-    <color name="ads_muted">#B9B6C4</color>
-    <color name="ads_surface">#1B1830</color>
-    <color name="ads_surface_alt">#26223F</color>
-    <color name="ads_card">#26223F</color>           <!-- (*) -->
-    <color name="ads_bar">#2A2647</color>            <!-- (*) visto en los mockups sobre navy -->
-    <color name="ads_line">#3A3658</color>
-    <color name="ads_control">#8C88A3</color>        <!-- (*) borde secundario sobre navy en los mockups -->
-    <color name="ads_chip_bg">#4A2C12</color>        <!-- (*) propuesto -->
-    <color name="ads_chip_text">#FBD3AE</color>      <!-- (*) propuesto -->
+    <color name="ads_muted">#A8AEC0</color>
+    <color name="ads_surface">#0F1220</color>
+    <color name="ads_surface_alt">#171B2B</color>
+    <color name="ads_card">#171B2B</color>
+    <color name="ads_bar">#171B2B</color>            <!-- barra inferior = tarjetas -->
+    <color name="ads_line">#2A2F45</color>
+    <color name="ads_control">#6B7288</color>
+    <color name="ads_chip_bg">#3A2616</color>
+    <color name="ads_chip_text">#F28A2E</color>
     <color name="ads_on_navy">#F6F3EE</color>
-    <color name="ads_on_navy_muted">#CFCBDA</color>
+    <color name="ads_on_navy_muted">#C9CCD6</color>
     <color name="ads_map_me">#6F8BFF</color>         <!-- (*) -->
-    <color name="ads_header">#0E0C1B</color>
-    <color name="ads_segment_selected">#3A3658</color> <!-- (*) se distingue del fondo #26223F -->         <!-- visto en los mockups -->
+    <color name="ads_header">#1F2540</color>
+    <color name="ads_segment_selected">#2A2F45</color> <!-- (*) se distingue del fondo ads_surface_alt -->
+    <color name="ads_highlight_raised">#2A3152</color> <!-- (*) ficha sobre la tarjeta destacada -->
+    <color name="ads_highlight_track">#3A4262</color>  <!-- (*) rieles sobre la tarjeta destacada -->
+    <color name="ads_switch_disabled">#6B7288</color>
 
     <!-- ===================================================================
          HEREDADOS que NO apuntan a tokens: conservan su valor oscuro
@@ -48,6 +56,6 @@
     <!-- Estados del servicio -->
 
     <!-- Utilidad -->
-    <color name="ads_tile">#1B1830</color>          <!-- ficha de ícono gris dentro de una tarjeta -->
-    <color name="ads_divider">#3A3658</color>       <!-- divisor entre filas dentro de una tarjeta -->
+    <color name="ads_tile">#0F1220</color>          <!-- ficha de ícono gris dentro de una tarjeta -->
+    <color name="ads_divider">#2A2F45</color>       <!-- divisor entre filas dentro de una tarjeta -->
 </resources>

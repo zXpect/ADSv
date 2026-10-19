@@ -28,8 +28,12 @@
     <color name="ads_marker_fill">#FBE7D3</color>
     <color name="ads_marker_stroke">#1B1830</color>
     <color name="ads_marker_icon">#B45309</color>
-    <color name="ads_header">#1B1830</color>
-    <color name="ads_segment_selected">#FFFFFF</color> <!-- opción elegida del control Lista / Mapa -->         <!-- cabeceras navy (login) -->         <!-- punto "tu ubicación" en el mapa -->
+    <color name="ads_header">#1B1830</color>         <!-- tarjeta destacada (servicio activo) y cabecera del login -->
+    <color name="ads_segment_selected">#FFFFFF</color> <!-- opción elegida del control Lista / Mapa -->
+    <!-- Elementos sobre la tarjeta destacada (ads_header) -->
+    <color name="ads_highlight_raised">#2A2647</color> <!-- ficha de ícono sobre la tarjeta destacada -->
+    <color name="ads_highlight_track">#3A3658</color>  <!-- rieles (interruptor apagado, referencia de precio) -->
+    <color name="ads_switch_disabled">#8C88A3</color>  <!-- botón del interruptor deshabilitado -->
 
     <!-- ===================================================================
          COLORES HEREDADOS

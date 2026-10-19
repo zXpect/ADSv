@@ -25,6 +25,7 @@
         <item name="colorSurfaceVariant">@color/ads_surface_alt</item>
         <item name="colorOnSurfaceVariant">@color/ads_muted</item>
         <item name="colorOutline">@color/ads_control</item>
+        <item name="colorOutlineVariant">@color/ads_line</item>
         <item name="colorError">@color/error_color</item>
         <!-- Atributos heredados de Material 2 que aún leen algunas vistas -->
         <item name="colorPrimaryDark">@color/ads_brand_text</item>
