@@ -24,6 +24,7 @@ import com.project.ads.activities.NotificationsActivity;
 import com.project.ads.activities.MyDataActivity;
 import com.project.ads.activities.TermsConditionsActivity;
 import com.project.ads.helpers.ClientNavHelper;
+import com.project.ads.helpers.NotificationPermissionHelper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -276,6 +277,7 @@ public class ProfileClientActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        NotificationPermissionHelper.bindEnableRow(this, findViewById(R.id.row_account_enable_notifications));
         if (currentClient != null) {
             loadClientData();
         }

@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.helpers.ClientNavHelper;
+import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.api.CatalogData;
 import com.project.ads.providers.ApiCallback;
@@ -79,6 +80,7 @@ public class HomeUserActivity extends AppCompatActivity {
         loadCategories();
         listenActiveService();
         ClientNavHelper.setup(this, R.id.nav_client_home);
+        NotificationPermissionHelper.askOnce(this);
 
         if (mAuthProvider.getId() != null) {
             String userId = mAuthProvider.getId();

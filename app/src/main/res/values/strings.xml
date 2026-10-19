@@ -478,6 +478,8 @@
     <string name="account_my_data">Mis datos</string>
     <string name="account_my_documents">Mis documentos</string>
     <string name="account_notifications">Notificaciones</string>
+    <string name="account_enable_notifications">Activar notificaciones</string>
+    <string name="notifications_permission_denied">Sin notificaciones no te enteras al momento de cotizaciones y cambios. Puedes activarlas en Mi cuenta.</string>
     <string name="account_terms">Términos y datos personales</string>
     <string name="account_coming_soon">Disponible pronto</string>
     <string name="account_verified">Verificado</string>

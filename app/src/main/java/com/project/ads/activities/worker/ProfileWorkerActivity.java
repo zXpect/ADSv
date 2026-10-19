@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.activities.NotificationsActivity;
 import com.project.ads.activities.TermsConditionsActivity;
+import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.WorkerNavHelper;
 
 // ===== AGREGAR ESTOS IMPORTS =====
@@ -418,6 +419,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        NotificationPermissionHelper.bindEnableRow(this, findViewById(R.id.row_account_enable_notifications));
 
         // Recargar datos si ya tenemos un worker cargado
         // Esto es útil para cuando regreses de editar el perfil

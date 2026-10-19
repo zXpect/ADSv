@@ -183,6 +183,26 @@
                                 android:contentDescription="@null" />
                         </LinearLayout>
 
+                        <!-- Solo visible con las notificaciones apagadas (NotificationPermissionHelper) -->
+                        <LinearLayout
+                            android:id="@+id/row_account_enable_notifications"
+                            style="@style/Widget.ADS.AccountRow"
+                            android:visibility="gone">
+
+                            <ImageView
+                                style="@style/Widget.ADS.AccountRow.Icon"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_ads_bell" />
+
+                            <TextView
+                                style="@style/Widget.ADS.AccountRow.Text"
+                                android:text="@string/account_enable_notifications" />
+
+                            <ImageView
+                                style="@style/Widget.ADS.AccountRow.Chevron"
+                                android:contentDescription="@null" />
+                        </LinearLayout>
+
                         <LinearLayout
                             android:id="@+id/row_account_pqr"
                             style="@style/Widget.ADS.AccountRow">

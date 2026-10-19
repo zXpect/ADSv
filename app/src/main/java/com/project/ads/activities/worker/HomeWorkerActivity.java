@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.helpers.LogoutHelper;
+import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.WorkerNavHelper;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.Worker;
@@ -126,6 +127,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
         setupClickListeners();
         setupLocationCallback();
         WorkerNavHelper.setup(this, R.id.nav_worker_home);
+        NotificationPermissionHelper.askOnce(this);
         generateToken();
 
         loadWorkerData();
