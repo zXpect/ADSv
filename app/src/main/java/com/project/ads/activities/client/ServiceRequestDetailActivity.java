@@ -427,7 +427,13 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 mBtnRateService.setText(request.isRated() ? R.string.detail_view_rating : R.string.detail_rate);
                 any = true;
             } else if (request.isPaymentPending()) {
+                // Un intento sin terminar (checkout cerrado a medias) no debe dejar al
+                // cliente sin forma de pagar: el backend reutiliza el intento o, si ya
+                // venció, consulta la pasarela y abre otro sin cobrar dos veces
                 showNote(mTvActionsNoteTop, R.string.payment_status_in_process);
+                mBtnPayService.setVisibility(View.VISIBLE);
+                mBtnPayService.setText(R.string.detail_continue_payment);
+                showNote(mTvActionsNote, R.string.detail_continue_payment_note);
                 any = true;
             } else if (request.isQuoteAccepted()) {
                 mBtnPayService.setVisibility(View.VISIBLE);

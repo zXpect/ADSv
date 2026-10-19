@@ -373,6 +373,8 @@
     <string name="detail_rate">Calificar servicio</string>
     <string name="detail_pay">Pagar %1$s</string>
     <string name="detail_pay_note">Pagas en línea. Después podrás calificar el servicio.</string>
+    <string name="detail_continue_payment">Continuar pago</string>
+    <string name="detail_continue_payment_note">Si no terminaste el pago, puedes continuarlo. No se cobra dos veces.</string>
     <string name="detail_cancel_note">Puedes cancelar hasta que el técnico salga. Después, usa una PQR.</string>
     <string name="detail_cannot_cancel_note">Ya no puedes cancelar desde aquí. Si hay un problema, crea una PQR.</string>
     <string name="detail_quote_proposed">Precio propuesto</string>
