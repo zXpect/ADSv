@@ -14,9 +14,9 @@ import android.widget.Toast;
 
 import com.project.ads.activities.client.HomeUserActivity;
 import com.project.ads.activities.worker.HomeWorkerActivity;
-import com.project.ads.activities.worker.RequestDetailActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.ads.R;
+import com.project.ads.helpers.NotificationRouter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,34 +85,16 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Push tocado: con sesión abre su destino sobre el inicio del rol; sin sesión
+     * lo guarda y el inicio lo abre después del login (NotificationRouter).
+     */
     private boolean handleNotificationIntent() {
-        Intent intent = getIntent();
-        Log.d(TAG, "Checking intent extras: " + (intent.getExtras() != null ? intent.getExtras().toString() : "null"));
-
-        if (intent != null && intent.hasExtra("request_id")) {
-            String requestId = intent.getStringExtra("request_id");
-            Log.d(TAG, "App opened from notification with request ID: " + requestId);
-
-            // Verificar que el usuario está autenticado y es trabajador
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                String userType = mPref.getString("user", "");
-
-                if ("trabajador".equals(userType)) {
-                    // Abrir directamente RequestDetailActivity
-                    Intent requestDetailIntent = new Intent(this, RequestDetailActivity.class);
-                    requestDetailIntent.putExtra("request_id", requestId);
-                    requestDetailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(requestDetailIntent);
-                    finish();
-                    return true;
-                } else {
-                    Log.w(TAG, "Notification intended for worker but user type is: " + userType);
-                    Toast.makeText(this, "Esta notificación es para trabajadores", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Log.w(TAG, "User not authenticated, cannot open request details");
-                Toast.makeText(this, "Debes iniciar sesión para ver los detalles", Toast.LENGTH_SHORT).show();
-            }
+        boolean fromPush = getIntent() != null && getIntent().hasExtra(NotificationRouter.EXTRA_TYPE);
+        if (NotificationRouter.handleLaunchIntent(this)) return true;
+        if (fromPush) {
+            Log.d(TAG, "Push sin sesión: el destino se abre después del login");
+            Toast.makeText(this, R.string.notification_login_required, Toast.LENGTH_SHORT).show();
         }
         return false;
     }

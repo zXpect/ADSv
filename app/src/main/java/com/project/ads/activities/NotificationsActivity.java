@@ -1,7 +1,6 @@
 package com.project.ads.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,10 +17,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
-import com.project.ads.activities.client.ServiceRequestDetailActivity;
-import com.project.ads.activities.worker.RequestDetailActivity;
-import com.project.ads.activities.worker.ServiceDetailWorkerActivity;
 import com.project.ads.adapters.NotificationsAdapter;
+import com.project.ads.helpers.NotificationRouter;
 import com.project.ads.models.AppNotification;
 import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.NotificationHistoryProvider;
@@ -45,7 +42,6 @@ public class NotificationsActivity extends AppCompatActivity {
     private Query mQuery;
     private ValueEventListener mListener;
     private String mUid;
-    private boolean mIsWorker;
 
     private RecyclerView mRecycler;
     private View mProgress, mEmpty, mRetry, mMarkRead;
@@ -56,8 +52,6 @@ public class NotificationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
-        mIsWorker = "trabajador".equals(pref.getString("user", ""));
         mUid = new AuthProvider().getId();
         if (mUid == null) {
             finish();
@@ -156,24 +150,15 @@ public class NotificationsActivity extends AppCompatActivity {
                 .addOnCompleteListener(t -> mMarkRead.setEnabled(true));
     }
 
-    /** Abre la solicitud con la misma pantalla que usan el push y las listas de cada rol. */
+    /** Abre el mismo destino que el push (NotificationRouter). */
     private void openNotification(AppNotification notification) {
         if (!notification.isRead()) {
             mProvider.markAsRead(mUid, Collections.singletonList(notification.getId()));
         }
-        String requestId = notification.getRequestId();
-        if (requestId == null || requestId.isEmpty()) return;
-
-        Class<?> target;
-        if (!mIsWorker) {
-            target = ServiceRequestDetailActivity.class;
-        } else if ("new_request".equals(notification.getType())) {
-            target = RequestDetailActivity.class;
-        } else {
-            target = ServiceDetailWorkerActivity.class;
-        }
-        Intent intent = new Intent(this, target);
-        intent.putExtra("request_id", requestId);
+        Intent intent = NotificationRouter.destinationIntent(
+                this, notification.getType(), notification.getRequestId(), null);
+        // Sin solicitud o tipo desconocido el destino es esta misma pantalla
+        if (NotificationsActivity.class.getName().equals(intent.getComponent().getClassName())) return;
         startActivity(intent);
     }
 

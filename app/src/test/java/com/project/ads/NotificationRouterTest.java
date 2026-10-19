@@ -1,0 +1,54 @@
+package com.project.ads;
+
+import static org.junit.Assert.assertEquals;
+
+import com.project.ads.activities.NotificationsActivity;
+import com.project.ads.activities.client.ServiceRequestDetailActivity;
+import com.project.ads.activities.worker.RequestDetailActivity;
+import com.project.ads.activities.worker.ServiceDetailWorkerActivity;
+import com.project.ads.helpers.NotificationRouter;
+
+import org.junit.Test;
+
+/** Tabla de destinos de PENDIENTES_SIGUIENTES.md §1.2. */
+public class NotificationRouterTest {
+
+    private static final String REQ = "-OGq3VtR8mKx2PzL7aNc";
+
+    private static Class<?> worker(String type) {
+        return NotificationRouter.destination("trabajador", type, REQ);
+    }
+
+    private static Class<?> client(String type) {
+        return NotificationRouter.destination("cliente", type, REQ);
+    }
+
+    @Test
+    public void workerTypes() {
+        assertEquals(RequestDetailActivity.class, worker("new_request"));
+        for (String type : new String[]{"quote_accepted", "quote_rejected", "request_cancelled", "payment_approved",
+                "requote_accepted", "requote_rejected", "pqr_answered"}) {
+            assertEquals(type, ServiceDetailWorkerActivity.class, worker(type));
+        }
+    }
+
+    @Test
+    public void clientTypes() {
+        for (String type : new String[]{"request_accepted", "request_rejected", "quote_received", "request_rescheduled",
+                "status_change", "request_cancelled", "cash_received", "requote_received", "pqr_answered"}) {
+            assertEquals(type, ServiceRequestDetailActivity.class, client(type));
+        }
+    }
+
+    @Test
+    public void withoutRequestOrUnknownTypeGoesToNotifications() {
+        assertEquals(NotificationsActivity.class, NotificationRouter.destination("cliente", "quote_received", null));
+        assertEquals(NotificationsActivity.class, NotificationRouter.destination("trabajador", "new_request", ""));
+        assertEquals(NotificationsActivity.class, client("tipo_nuevo"));
+        assertEquals(NotificationsActivity.class, worker(null));
+        // Un tipo del otro rol no abre una pantalla que no le corresponde
+        assertEquals(NotificationsActivity.class, client("new_request"));
+        assertEquals(NotificationsActivity.class, worker("quote_received"));
+        assertEquals(NotificationsActivity.class, NotificationRouter.destination("", "quote_received", REQ));
+    }
+}
