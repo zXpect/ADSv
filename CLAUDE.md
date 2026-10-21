@@ -53,8 +53,8 @@ com.project.ads/
 
 - Build debug: `./gradlew assembleDebug`
 - Instalar en emulador/dispositivo: `./gradlew installDebug`
-- Tests unitarios: `./gradlew test` (solo existe el boilerplate `ExampleUnitTest`; no hay tests de lógica de negocio todavía)
-- Tests instrumentados: `./gradlew connectedAndroidTest` (boilerplate por defecto de Android Studio, sin tests propios escritos aún)
+- Tests unitarios: `./gradlew testDebugUnitTest` (35 pruebas JUnit al 20/10/2026 en `app/src/test/java/com/project/ads/`; corren en el PC, sin dispositivo, con el JBR 17 de Android Studio). Solo lógica que no depende de Android; si una clase la necesita, separar la lógica en un método estático. Registro en `../contexto/pruebas/`.
+- Tests instrumentados: no hay (se borró el de ejemplo); las pantallas se cubren con los casos funcionales de `../contexto/planes/PLAN_PRUEBAS.md`.
 
 ## Conexión con el backend
 
