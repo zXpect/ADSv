@@ -96,7 +96,8 @@ public class QuoteReference {
         reference.regional_factor_pct = factor != null ? factor.intValue() : 0;
         Long fee = toLong(map.get("min_visit_fee_cop"));
         reference.min_visit_fee_cop = fee != null ? fee : 0;
-        reference.has_unpriced_items = Boolean.TRUE.equals(map.get("has_unpriced_items"));
+        // Si falta, cuenta como «hay ítems sin rango», igual que is_adjusted_price del backend
+        reference.has_unpriced_items = !Boolean.FALSE.equals(map.get("has_unpriced_items"));
 
         Object items = map.get("items");
         if (items instanceof List) {

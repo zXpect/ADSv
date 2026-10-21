@@ -132,9 +132,13 @@ public class CatalogProvider {
     /** Lista de nombres para un conjunto de slugs: "Plomería, Pintura". */
     public static String joinNames(List<String> slugs) {
         if (slugs == null || slugs.isEmpty()) return null;
-        List<String> names = new ArrayList<>();
-        for (String slug : slugs) names.add(categoryName(slug));
-        return android.text.TextUtils.join(", ", names);
+        // Sin TextUtils para que se pueda probar en la JVM (WorkerTest)
+        StringBuilder names = new StringBuilder();
+        for (String slug : slugs) {
+            if (names.length() > 0) names.append(", ");
+            names.append(categoryName(slug));
+        }
+        return names.toString();
     }
 
     public static List<String> localSlugs() {
