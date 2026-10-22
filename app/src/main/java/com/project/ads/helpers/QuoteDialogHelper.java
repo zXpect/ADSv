@@ -132,7 +132,7 @@ public class QuoteDialogHelper {
                     ServiceRequest.formatCop(limits.getMinPrice())));
         }
 
-        // Motivos como chips (mockup 16); «Otro» pide escribirlo
+        // Motivos como chips (mockup 16); «Otro» ya viene en ADJUSTMENT y pide escribirlo (DEF-13)
         for (Map.Entry<String, String> entry : ReasonHelper.ADJUSTMENT.entrySet()) {
             Chip chip = new Chip(mActivity);
             chip.setId(View.generateViewId());
@@ -141,12 +141,6 @@ public class QuoteDialogHelper {
             chip.setCheckable(true);
             reasonChips.addView(chip);
         }
-        Chip other = new Chip(mActivity);
-        other.setId(View.generateViewId());
-        other.setTag(ReasonHelper.OTHER);
-        other.setText(R.string.quote_reason_other);
-        other.setCheckable(true);
-        reasonChips.addView(other);
         reasonChips.setOnCheckedStateChangeListener((group, ids) -> {
             String code = selectedReason(group);
             tilReasonText.setVisibility(ReasonHelper.OTHER.equals(code) ? View.VISIBLE : View.GONE);

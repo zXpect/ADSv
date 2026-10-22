@@ -1,6 +1,7 @@
 package com.project.ads;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -42,5 +43,21 @@ public class ReasonHelperTest {
         assertEquals("Está fuera de mi zona", ReasonHelper.cancellationLabel("fuera_de_zona", null));
         assertEquals("Se mudó", ReasonHelper.cancellationLabel("otro", "Se mudó"));
         assertNull(ReasonHelper.cancellationLabel(null, null));
+    }
+
+    @Test
+    public void adjustmentReasonsHaveOneOther() {
+        // DEF-13: «Otro» ya está en ADJUSTMENT; el diálogo Cotizar no debe agregar otro
+        long others = ReasonHelper.ADJUSTMENT.values().stream().filter("Otro"::equals).count();
+        assertEquals(1, others);
+        assertTrue(ReasonHelper.ADJUSTMENT.containsKey(ReasonHelper.OTHER));
+    }
+
+    @Test
+    public void suspendedOnlyWhenIsActiveIsFalse() {
+        // HU-32: sin el campo la cuenta está activa
+        assertTrue(com.project.ads.helpers.AccountStatusWatcher.isSuspended(false));
+        assertFalse(com.project.ads.helpers.AccountStatusWatcher.isSuspended(true));
+        assertFalse(com.project.ads.helpers.AccountStatusWatcher.isSuspended(null));
     }
 }

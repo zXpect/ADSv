@@ -618,7 +618,16 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.e(TAG, "Error de login: ", exception);
 
-        if (exception instanceof FirebaseAuthInvalidUserException) {
+        if (exception instanceof FirebaseAuthInvalidUserException
+                && "ERROR_USER_DISABLED".equals(((FirebaseAuthInvalidUserException) exception).getErrorCode())) {
+            // Cuenta suspendida desde el panel (HU-32)
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.account_suspended_title)
+                    .setMessage(R.string.account_suspended_login)
+                    .setPositiveButton(R.string.account_suspended_ok, null)
+                    .show();
+
+        } else if (exception instanceof FirebaseAuthInvalidUserException) {
             // Usuario no existe
             tilEmail.setError("No existe una cuenta con este correo");
             tilEmail.setErrorEnabled(true);

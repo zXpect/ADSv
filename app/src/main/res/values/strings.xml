@@ -455,7 +455,6 @@
     <string name="quote_screen_price_hint">95000</string>
     <string name="quote_screen_other_hint">Si eliges «Otro», escribe el motivo.</string>
     <string name="quote_screen_note">El cliente podrá aceptarla o rechazarla.</string>
-    <string name="quote_reason_other">Otro</string>
     <string name="worker_detail_request_of">Solicitud de</string>
     <string name="worker_detail_tasks">Tareas</string>
     <string name="worker_detail_where">Dónde</string>
@@ -821,4 +820,10 @@
     <string name="delete_account_keep">Conservar mi cuenta</string>
     <string name="delete_account_confirm">Sí, eliminar mi cuenta</string>
     <string name="delete_account_done">Tu cuenta fue eliminada</string>
+
+    <!-- Cuenta suspendida desde el panel (HU-32) -->
+    <string name="account_suspended_title">Tu cuenta fue suspendida</string>
+    <string name="account_suspended_message">El equipo de ADS suspendió tu cuenta, así que se cerrará la sesión. Si crees que es un error, escríbenos a soporte.</string>
+    <string name="account_suspended_login">Esta cuenta está suspendida y no puede iniciar sesión. Si crees que es un error, escríbenos a soporte.</string>
+    <string name="account_suspended_ok">Entendido</string>
 </resources>
