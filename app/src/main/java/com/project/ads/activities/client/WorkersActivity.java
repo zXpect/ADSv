@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseError;
 import com.project.ads.R;
+import com.project.ads.helpers.RankingHelper;
 import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.models.Worker;
 import com.project.ads.providers.GeofireProvider;
@@ -332,8 +333,8 @@ public class WorkersActivity extends AppCompatActivity {
             }
             if (matchesFilter && matchesSearch) filtered.add(worker);
         }
-        // Más cerca primero
-        Collections.sort(filtered, (w1, w2) -> Float.compare(w1.getDistance(), w2.getDistance()));
+        // Ranking orientativo: cercanía y calificación ponderadas (D13, HU-10)
+        Collections.sort(filtered, RankingHelper.BY_SCORE);
         mFilteredWorkersList = filtered;
 
         if (mDisplayedWorkersCount == 0 && !filtered.isEmpty()) {
