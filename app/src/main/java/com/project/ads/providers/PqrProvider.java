@@ -18,6 +18,11 @@ public class PqrProvider {
         ApiCallAdapter.enqueue(AdsApiClient.getApi().getPqrs(), callback);
     }
 
+    /** Una PQR propia; 404 si no existe o es de otro usuario. */
+    public void get(String pqrId, ApiCallback<Pqr> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().getPqr(pqrId), callback);
+    }
+
     public void create(String requestId, String type, String description, ApiCallback<Pqr> callback) {
         ApiCallAdapter.enqueue(AdsApiClient.getApi().createPqr(
                 new ApiBodies.PqrBody(requestId, type, description)), callback);

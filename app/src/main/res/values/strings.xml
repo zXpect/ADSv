@@ -728,6 +728,14 @@
     <string name="pqr_status_closed">Respondida</string>
     <string name="pqr_sent_on">Enviada el %1$s</string>
     <string name="pqr_dates_open">%1$s · Responde antes del %2$s</string>
+    <string name="pqr_dates_closed">%1$s · Respondida el %2$s</string>
+    <string name="pqr_detail_title">PQR %1$d</string>
+    <string name="pqr_detail_message">Tu mensaje</string>
+    <string name="pqr_detail_no_response_title">Aún sin respuesta</string>
+    <string name="pqr_detail_no_response">Te avisaremos con una notificación cuando la respondamos.</string>
+    <string name="pqr_detail_view_request">Ver la solicitud</string>
+    <string name="pqr_detail_error">No pudimos cargar la PQR</string>
+    <string name="pqr_detail_not_found">No encontramos esta PQR</string>
     <string name="pqr_response_label">Respuesta de ADS</string>
     <string name="pqr_request_label">Solicitud relacionada</string>
     <string name="pqr_request_placeholder">Elige la solicitud</string>

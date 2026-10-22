@@ -84,6 +84,9 @@ public interface IAdsApi {
     @POST("api/pqr/")
     Call<ApiResponse<Pqr>> createPqr(@Body ApiBodies.PqrBody body);
 
+    @GET("api/pqr/{pqrId}/")
+    Call<ApiResponse<Pqr>> getPqr(@Path("pqrId") String pqrId);
+
     @POST("api/notifications/")
     Call<ApiResponse<NotificationResult>> notify(@Body ApiBodies.NotificationBody body);
 }

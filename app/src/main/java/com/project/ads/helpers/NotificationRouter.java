@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.project.ads.providers.NotificationHistoryProvider;
 import com.project.ads.activities.MainActivity;
 import com.project.ads.activities.NotificationsActivity;
+import com.project.ads.activities.PqrDetailActivity;
 import com.project.ads.activities.PqrListActivity;
 import com.project.ads.activities.client.HomeUserActivity;
 import com.project.ads.activities.client.ServiceRequestDetailActivity;
@@ -54,7 +55,7 @@ public final class NotificationRouter {
             "request_accepted", "request_rejected", "quote_received", "request_rescheduled",
             "status_change", "request_cancelled", "cash_received", "requote_received"));
 
-    // La respuesta se lee en la lista de PQR (no hay pantalla de detalle)
+    // Con pqrId abre el detalle de la PQR (destinationIntent); sin él, la lista
     private static final String TYPE_PQR_ANSWERED = "pqr_answered";
 
     private NotificationRouter() {
@@ -71,6 +72,12 @@ public final class NotificationRouter {
     }
 
     /** Pantalla de destino del tipo para el rol; sin solicitud o tipo desconocido, Notificaciones. */
+    /** Igual que destination(role, type, requestId), pero la respuesta a una PQR abre su detalle. */
+    public static Class<?> destination(String role, String type, String requestId, String pqrId) {
+        if (TYPE_PQR_ANSWERED.equals(type) && pqrId != null && !pqrId.isEmpty()) return PqrDetailActivity.class;
+        return destination(role, type, requestId);
+    }
+
     public static Class<?> destination(String role, String type, String requestId) {
         if (TYPE_PQR_ANSWERED.equals(type)) return PqrListActivity.class;
         if (requestId == null || requestId.isEmpty() || type == null) {
@@ -91,7 +98,7 @@ public final class NotificationRouter {
 
     public static Intent destinationIntent(Context context, String type, String requestId, String pqrId,
                                            String notificationId) {
-        Intent intent = new Intent(context, destination(role(context), type, requestId));
+        Intent intent = new Intent(context, destination(role(context), type, requestId, pqrId));
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         intent.putExtra(EXTRA_TYPE, type);
         if (pqrId != null) intent.putExtra(EXTRA_PQR_ID, pqrId);

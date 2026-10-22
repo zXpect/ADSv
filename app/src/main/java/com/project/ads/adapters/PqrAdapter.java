@@ -15,18 +15,15 @@ import com.project.ads.R;
 import com.project.ads.models.Pqr;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Lista de PQR (mockups 42 y 54). El estado va en texto (Abierta, En revisión,
- * Respondida), no solo en color. Tocar una tarjeta muestra el texto completo.
+ * Respondida), no solo en color. Tocar una tarjeta abre su detalle (HU-09).
  */
 public class PqrAdapter extends RecyclerView.Adapter<PqrAdapter.Holder> {
 
     private final List<Pqr> mItems = new ArrayList<>();
-    private final Set<Long> mExpanded = new HashSet<>();
 
     public void setItems(List<Pqr> items) {
         mItems.clear();
@@ -66,7 +63,6 @@ public class PqrAdapter extends RecyclerView.Adapter<PqrAdapter.Holder> {
 
         void bind(Pqr pqr) {
             Context context = itemView.getContext();
-            boolean expanded = mExpanded.contains(pqr.getId());
 
             type.setText(Pqr.typeLabel(pqr.getType()));
             status.setText(Pqr.statusLabel(pqr.getStatus()));
@@ -76,7 +72,6 @@ public class PqrAdapter extends RecyclerView.Adapter<PqrAdapter.Holder> {
                     pqr.isClosed() ? R.color.ads_charcoal : R.color.ads_chip_text));
 
             description.setText(pqr.getDescription());
-            description.setMaxLines(expanded ? Integer.MAX_VALUE : 2);
 
             String sent = context.getString(R.string.pqr_sent_on, Pqr.shortDate(pqr.getCreatedAt()));
             dates.setText(pqr.isClosed() ? sent
@@ -84,12 +79,9 @@ public class PqrAdapter extends RecyclerView.Adapter<PqrAdapter.Holder> {
 
             responseBlock.setVisibility(pqr.hasResponse() ? View.VISIBLE : View.GONE);
             response.setText(pqr.getResponse());
-            response.setMaxLines(expanded ? Integer.MAX_VALUE : 3);
 
-            itemView.setOnClickListener(v -> {
-                if (!mExpanded.remove(pqr.getId())) mExpanded.add(pqr.getId());
-                notifyItemChanged(getBindingAdapterPosition());
-            });
+            itemView.setOnClickListener(v ->
+                    v.getContext().startActivity(com.project.ads.activities.PqrDetailActivity.intent(v.getContext(), pqr.getId())));
         }
     }
 }

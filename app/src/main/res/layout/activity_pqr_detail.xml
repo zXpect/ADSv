@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Detalle de PQR (HU-09). No hay mockup propio en la app: sigue el estilo de la
+     lista (mockups 42 y 54) y muestra lo que el panel responde (A8). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ads_surface"
+    android:orientation="vertical"
+    tools:context="com.project.ads.activities.PqrDetailActivity">
+
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="@dimen/touch_min"
+        android:layout_height="@dimen/touch_min"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/space_4"
+        android:background="@drawable/bg_ads_circle_button"
+        android:contentDescription="@string/action_back"
+        android:src="@drawable/ic_arrow_back"
+        app:tint="@color/ads_text" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ScrollView
+            android:id="@+id/scroll_pqr_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingTop="@dimen/space_3"
+                android:paddingEnd="@dimen/screen_margin"
+                android:paddingBottom="@dimen/space_6">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_pqr_detail_type"
+                        style="@style/Widget.ADS.StatusChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/ads_navy"
+                        android:textColor="@color/ads_on_navy"
+                        tools:text="Queja" />
+
+                    <TextView
+                        android:id="@+id/tv_pqr_detail_status"
+                        style="@style/Widget.ADS.StatusChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_2"
+                        tools:text="En revisión" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_pqr_detail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:accessibilityHeading="true"
+                    android:textAppearance="@style/TextAppearance.ADS.Headline"
+                    tools:text="PQR 12" />
+
+                <TextView
+                    android:id="@+id/tv_pqr_detail_dates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_1"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                    tools:text="Enviada el 14 oct · Responde antes del 4 nov" />
+
+                <!-- Tu mensaje -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.ADS.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_5">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/pqr_detail_message"
+                            android:textAppearance="@style/TextAppearance.ADS.Label" />
+
+                        <TextView
+                            android:id="@+id/tv_pqr_detail_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_1"
+                            android:textAppearance="@style/TextAppearance.ADS.Body"
+                            android:textColor="@color/ads_charcoal"
+                            android:textIsSelectable="true"
+                            tools:text="El técnico llegó una hora tarde." />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Respuesta de ADS o aviso de espera -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:background="@drawable/bg_ads_notice"
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_4">
+
+                    <TextView
+                        android:id="@+id/tv_pqr_detail_response_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pqr_response_label"
+                        android:textAppearance="@style/TextAppearance.ADS.Label" />
+
+                    <TextView
+                        android:id="@+id/tv_pqr_detail_response"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_1"
+                        android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                        android:textColor="@color/ads_charcoal"
+                        android:textIsSelectable="true"
+                        tools:text="Hablamos con el técnico..." />
+                </LinearLayout>
+
+                <!-- Solicitud relacionada -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_pqr_detail_request"
+                    style="@style/Widget.ADS.Button.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_5"
+                    android:text="@string/pqr_detail_view_request" />
+            </LinearLayout>
+        </ScrollView>
+
+        <ProgressBar
+            android:id="@+id/progress_pqr_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/ads_brand" />
+
+        <!-- Error al cargar -->
+        <LinearLayout
+            android:id="@+id/layout_pqr_detail_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_pqr_detail_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/pqr_detail_error"
+                android:textAppearance="@style/TextAppearance.ADS.Subtitle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pqr_detail_retry"
+                style="@style/Widget.ADS.Button.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2"
+                android:text="@string/notifications_retry" />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

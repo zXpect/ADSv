@@ -3,6 +3,7 @@ package com.project.ads;
 import static org.junit.Assert.assertEquals;
 
 import com.project.ads.activities.NotificationsActivity;
+import com.project.ads.activities.PqrDetailActivity;
 import com.project.ads.activities.PqrListActivity;
 import com.project.ads.activities.client.ServiceRequestDetailActivity;
 import com.project.ads.activities.worker.RequestDetailActivity;
@@ -58,5 +59,14 @@ public class NotificationRouterTest {
         assertEquals(PqrListActivity.class, worker("pqr_answered"));
         assertEquals(PqrListActivity.class, client("pqr_answered"));
         assertEquals(PqrListActivity.class, NotificationRouter.destination("cliente", "pqr_answered", null));
+    }
+
+    @Test
+    public void pqrAnsweredWithIdOpensTheDetail() {
+        assertEquals(PqrDetailActivity.class, NotificationRouter.destination("cliente", "pqr_answered", REQ, "12"));
+        assertEquals(PqrDetailActivity.class, NotificationRouter.destination("trabajador", "pqr_answered", REQ, "12"));
+        assertEquals(PqrListActivity.class, NotificationRouter.destination("cliente", "pqr_answered", REQ, ""));
+        // Los demás tipos no cambian
+        assertEquals(ServiceRequestDetailActivity.class, NotificationRouter.destination("cliente", "quote_received", REQ, "12"));
     }
 }

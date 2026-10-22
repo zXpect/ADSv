@@ -42,6 +42,7 @@ public class Pqr {
     public String getResponse() { return response; }
     public String getCreatedAt() { return created_at; }
     public String getDueAt() { return due_at; }
+    public String getClosedAt() { return closed_at; }
 
     public boolean isClosed() {
         return STATUS_CLOSED.equals(status);
