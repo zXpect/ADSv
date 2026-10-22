@@ -133,5 +133,11 @@ public class WorkerTest {
         assertFalse(Worker.isSearchable(withStatus("documents_submitted"), true));
         assertFalse(Worker.isSearchable(withStatus("rejected"), null));
         assertFalse(Worker.isSearchable(null, true));
+    public void tasksAreSavedOnlyWhenChosen() {
+        // tasks es opcional (mockup 32): sin tareas no se escribe el campo
+        Worker worker = withWork("Electricista");
+        assertFalse(worker.toMap().containsKey("tasks"));
+        worker.setTasks(Arrays.asList("breaker", "tomacorriente"));
+        assertEquals(Arrays.asList("breaker", "tomacorriente"), worker.toMap().get("tasks"));
     }
 }

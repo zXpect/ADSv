@@ -577,6 +577,8 @@
     <string name="register_worker_notice">En los siguientes pasos elegirás tus oficios y subirás tus documentos. Revisamos tu perfil antes de mostrarte a los clientes.</string>
     <string name="skills_title">¿Qué sabes hacer?</string>
     <string name="skills_categories">Oficios</string>
+    <string name="skills_tasks_title">Problemas que resuelves</string>
+    <string name="skills_tasks_hint">Así te encuentran los clientes.</string>
     <string name="skills_counter">%1$d de %2$d máximo</string>
     <string name="skills_hint">Elige hasta 3. Los clientes te encuentran por tus oficios.</string>
     <string name="skills_description">Descripción (opcional)</string>

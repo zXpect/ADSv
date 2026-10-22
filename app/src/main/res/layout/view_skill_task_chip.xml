@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tarea que el trabajador resuelve (mockup 32): blanca con borde; elegida, borde
+     naranja y marca de verificación (el estado no depende solo del color) -->
+<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Material3.Chip.Filter"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:checkable="true"
+    android:textAppearance="@style/TextAppearance.ADS.Chip"
+    android:textColor="@color/ads_text"
+    app:checkedIconTint="@color/ads_brand_text"
+    app:checkedIconVisible="true"
+    app:chipBackgroundColor="@color/ads_card"
+    app:chipCornerRadius="18dp"
+    app:chipMinHeight="36dp"
+    app:chipStrokeColor="@color/ads_task_chip_stroke"
+    app:chipStrokeWidth="@dimen/stroke_control"
+    app:ensureMinTouchTargetSize="true" />

@@ -72,6 +72,36 @@
                 android:text="@string/skills_hint"
                 android:textAppearance="@style/TextAppearance.ADS.Caption" />
 
+            <!-- Problemas que resuelves: tareas del catálogo de cada oficio elegido (D16) -->
+            <LinearLayout
+                android:id="@+id/layout_skills_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:accessibilityHeading="true"
+                    android:text="@string/skills_tasks_title"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_1"
+                    android:text="@string/skills_tasks_hint"
+                    android:textAppearance="@style/TextAppearance.ADS.Caption" />
+
+                <LinearLayout
+                    android:id="@+id/layout_skills_tasks_groups"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
             <!-- Descripción (opcional) -->
             <TextView
                 android:layout_width="match_parent"

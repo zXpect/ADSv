@@ -7,6 +7,7 @@ public class Worker {
     private String email;
     private String work;                 // texto viejo del oficio; respaldo hasta migrar a categories
     private java.util.List<String> categories;  // slugs del catálogo, hasta 3 (D16)
+    private java.util.List<String> tasks;       // slugs de tareas de sus oficios (mockup 32), opcional
     private String fcmToken;
     private boolean isAvailable;
 
@@ -205,6 +206,14 @@ public class Worker {
 
     public void setCategories(java.util.List<String> categories) {
         this.categories = categories;
+    }
+
+    public java.util.List<String> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(java.util.List<String> tasks) {
+        this.tasks = tasks;
     }
 
     /**
@@ -535,6 +544,7 @@ public class Worker {
         map.put("email", email);
         map.put("work", work);
         map.put("categories", categories);
+        if (tasks != null && !tasks.isEmpty()) map.put("tasks", tasks);
         map.put("fcmToken", fcmToken);
         map.put("isAvailable", isAvailable);
         map.put("image", image);

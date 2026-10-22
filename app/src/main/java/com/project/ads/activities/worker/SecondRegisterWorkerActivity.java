@@ -77,6 +77,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     // Datos del usuario
     private String name, lastName, email, password, work, phone, workerId; // ⭐ AGREGADO phone
     private java.util.ArrayList<String> categories;   // slugs de los oficios (D16)
+    private java.util.ArrayList<String> tasks;        // slugs de las tareas que resuelve (mockup 32)
     private String description;                        // descripción opcional (paso 2)
 
     // Variables para Google Sign-In
@@ -135,6 +136,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         password = intent.getStringExtra("password");
         work = intent.getStringExtra("work");
         categories = intent.getStringArrayListExtra("categories");
+        tasks = intent.getStringArrayListExtra("tasks");
         description = intent.getStringExtra("description");
 
         // Datos de Google Sign-In
@@ -424,6 +426,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     private Worker newWorker() {
         Worker worker = new Worker(workerId, name, lastName, email, work, phone, null);
         worker.setCategories(categories);
+        if (tasks != null && !tasks.isEmpty()) worker.setTasks(tasks);
         if (description != null && !description.isEmpty()) worker.setDescription(description);
         return worker;
     }
