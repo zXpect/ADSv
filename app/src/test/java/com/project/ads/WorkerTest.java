@@ -123,4 +123,15 @@ public class WorkerTest {
         assertEquals("Ana Ruiz", withWork(null).getFullName());
         assertEquals("Usuario", new Worker().getFullName());
     }
+
+    @Test
+    public void searchableOnlyWhenVerifiedAndActive() {
+        // B9: solo verificados; HU-32: sin las cuentas suspendidas (isActive == false)
+        assertTrue(Worker.isSearchable(withStatus("approved"), null));
+        assertTrue(Worker.isSearchable(withStatus("approved"), true));
+        assertFalse(Worker.isSearchable(withStatus("approved"), false));
+        assertFalse(Worker.isSearchable(withStatus("documents_submitted"), true));
+        assertFalse(Worker.isSearchable(withStatus("rejected"), null));
+        assertFalse(Worker.isSearchable(null, true));
+    }
 }

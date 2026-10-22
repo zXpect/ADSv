@@ -288,7 +288,11 @@ public class WorkersActivity extends AppCompatActivity {
         mWorkerProvider.getWorker(workerId).addOnSuccessListener(dataSnapshot -> {
             if (!dataSnapshot.exists()) return;
             Worker worker = dataSnapshot.getValue(Worker.class);
-            if (worker == null) return;
+            if (!Worker.isSearchable(worker, dataSnapshot.child("isActive").getValue(Boolean.class))) {
+                // Pudo verse antes de que lo suspendieran o le quitaran la verificación
+                if (mWorkersMap.remove(workerId) != null) updateWorkersList();
+                return;
+            }
             worker.setId(workerId);
             worker.setLatitude(location.latitude);
             worker.setLongitude(location.longitude);

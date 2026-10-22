@@ -132,6 +132,15 @@ public class Worker {
      * Verifica si puede conectarse para trabajar
      * @return true si está verificado y puede trabajar
      */
+    /**
+     * Se muestra al cliente en la búsqueda y en el mapa: verificado (B9, HU-03) y
+     * con la cuenta activa (HU-32). isActive lo escribe el panel al suspender;
+     * sin el campo la cuenta está activa. El backend también rechaza contratarlos (409).
+     */
+    public static boolean isSearchable(Worker worker, Boolean isActive) {
+        return worker != null && worker.isVerified() && !Boolean.FALSE.equals(isActive);
+    }
+
     public boolean canWorkOnline() {
         return isVerified();
     }

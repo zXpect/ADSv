@@ -449,7 +449,10 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         mWorkerProvider.getWorker(workerId).addOnSuccessListener(dataSnapshot -> {
             if (dataSnapshot.exists()) {
                 Worker worker = dataSnapshot.getValue(Worker.class);
-                if (worker != null && !mWorkersMarkers.containsKey(workerId)) {
+                // Solo verificados y con la cuenta activa (B9, HU-32)
+                boolean searchable = Worker.isSearchable(worker,
+                        dataSnapshot.child("isActive").getValue(Boolean.class));
+                if (searchable && !mWorkersMarkers.containsKey(workerId)) {
                     if (CategoryHelper.matches(worker, mCurrentFilter)) {
 
                         Marker marker = mMap.addMarker(new MarkerOptions()
