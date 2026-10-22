@@ -269,7 +269,7 @@
     <string name="workers_search_title">Resultados para «%1$s»</string>
     <string name="workers_tab_list">Lista</string>
     <string name="workers_tab_map">Mapa</string>
-    <string name="workers_sort_label">Más cerca primero</string>
+    <string name="workers_sort_label">Cercanía y calificación</string>
     <string name="workers_empty_title">No hay técnicos cerca</string>
     <string name="workers_empty_message">Prueba con otro oficio o vuelve más tarde.</string>
     <plurals name="workers_count">
