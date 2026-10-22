@@ -126,12 +126,6 @@ public class WorkerProvider {
         return mDataBase.child(workerId).updateChildren(updates);
     }
 
-    public Task<Void> updateWorkerPrice(String workerId, double pricePerHour) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("pricePerHour", pricePerHour);
-        updates.put("timestamp", System.currentTimeMillis());
-        return mDataBase.child(workerId).updateChildren(updates);
-    }
 
     public Task<Void> updateWorkerExperience(String workerId, String experience) {
         Map<String, Object> updates = new HashMap<>();

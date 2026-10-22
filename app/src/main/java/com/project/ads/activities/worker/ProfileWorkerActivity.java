@@ -58,7 +58,6 @@ public class ProfileWorkerActivity extends AppCompatActivity {
     // Stats
     private TextView tvRating;
     private TextView tvTotalServices;
-    private TextView tvPricePerHour;
     private TextView tvMemberSince;
 
     // Action buttons
@@ -107,7 +106,6 @@ public class ProfileWorkerActivity extends AppCompatActivity {
 
         tvRating = findViewById(R.id.tvRating);
         tvTotalServices = findViewById(R.id.tvTotalServices);
-        tvPricePerHour = findViewById(R.id.tvPricePerHour);
         tvMemberSince = findViewById(R.id.tvMemberSince);
 
         btnEditProfile = findViewById(R.id.btnEditProfile);
@@ -227,7 +225,6 @@ public class ProfileWorkerActivity extends AppCompatActivity {
             // Estadísticas
             tvRating.setText(currentWorker.getFormattedRating());
             tvTotalServices.setText(String.valueOf(currentWorker.getTotalRatings()));
-            tvPricePerHour.setText("$" + String.format("%.0f", currentWorker.getPricePerHour()));
 
             // Fecha de registro
             tvMemberSince.setText("Enero 2025");

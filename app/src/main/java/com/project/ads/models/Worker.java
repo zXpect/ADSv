@@ -19,7 +19,6 @@ public class Worker {
 
     private float rating;
     private int totalRatings;
-    private double pricePerHour;
     private String experience;
     private long timestamp;
     private boolean isOnline;
@@ -288,13 +287,7 @@ public class Worker {
         this.totalRatings = totalRatings;
     }
 
-    public double getPricePerHour() {
-        return pricePerHour;
-    }
 
-    public void setPricePerHour(double pricePerHour) {
-        this.pricePerHour = pricePerHour;
-    }
 
     public String getExperience() {
         return experience;
@@ -387,12 +380,6 @@ public class Worker {
         return "0";
     }
 
-    public String getFormattedPrice() {
-        if (pricePerHour > 0) {
-            return String.format("$%.0f/hora", pricePerHour);
-        }
-        return "Precio por consultar";
-    }
 
     public void addRating(float newRating) {
         if (newRating >= 1 && newRating <= 5) {
@@ -535,7 +522,6 @@ public class Worker {
         map.put("longitude", longitude);
         map.put("rating", rating);
         map.put("totalRatings", totalRatings);
-        map.put("pricePerHour", pricePerHour);
         map.put("experience", experience);
         map.put("timestamp", timestamp);
         map.put("isOnline", isOnline);

@@ -80,7 +80,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
     TextView mTextConnectionMessage;
     TextView mTextRating;
     TextView mTextCompletedServices;
-    TextView mTextMonthlyEarnings;
     TextView mTextActiveServices;
     TextView mTextActiveServicesCount;
     TextView mTextPendingRequests;
@@ -166,7 +165,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
         mTextRating = findViewById(R.id.textRating);
         mTextCompletedServices = findViewById(R.id.textCompletedServices);
-        mTextMonthlyEarnings = findViewById(R.id.textMonthlyEarnings);
 
         mTextActiveServices = findViewById(R.id.textActiveServices);
         mTextActiveServicesCount = findViewById(R.id.textActiveServicesCount);
@@ -1063,9 +1061,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 animateNumberChange(mTextRating, mCurrentWorker.getFormattedRating());
                 animateNumberChange(mTextCompletedServices, String.valueOf(mCurrentWorker.getTotalRatings()));
-
-                double estimatedEarnings = mCurrentWorker.getPricePerHour() * mCurrentWorker.getTotalRatings() * 2;
-                animateNumberChange(mTextMonthlyEarnings, "$" + String.format("%.0f", estimatedEarnings));
             });
         }
     }

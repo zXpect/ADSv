@@ -276,11 +276,6 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:id="@+id/tvPricePerHour"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
                         android:id="@+id/tvMemberSince"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
