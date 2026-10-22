@@ -95,6 +95,7 @@ public final class ConnectivityBanner implements Application.ActivityLifecycleCa
         View banner = content.findViewWithTag(TAG_BANNER);
         if (mOnline) {
             if (banner != null) banner.setVisibility(View.GONE);
+            shiftContent(content, 0);
             return;
         }
         if (banner == null) {
@@ -104,6 +105,25 @@ public final class ConnectivityBanner implements Application.ActivityLifecycleCa
         }
         banner.setVisibility(View.VISIBLE);
         banner.bringToFront();
+        // La pantalla baja lo que mide la franja: así no tapa el título ni el botón de volver (DEF-12)
+        View shown = banner;
+        banner.post(() -> {
+            if (shown.getVisibility() == View.VISIBLE) shiftContent(content, shown.getHeight());
+        });
+    }
+
+    /** Margen superior de la vista raíz de la pantalla (la que no es la franja). */
+    private static void shiftContent(ViewGroup content, int top) {
+        for (int i = 0; i < content.getChildCount(); i++) {
+            View child = content.getChildAt(i);
+            if (TAG_BANNER.equals(child.getTag())) continue;
+            if (!(child.getLayoutParams() instanceof ViewGroup.MarginLayoutParams)) continue;
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
+            if (params.topMargin != top) {
+                params.topMargin = top;
+                child.setLayoutParams(params);
+            }
+        }
     }
 
     private static View createBanner(Activity activity) {
