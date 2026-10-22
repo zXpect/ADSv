@@ -365,6 +365,11 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnSendQuote.setVisibility(View.GONE);
         mTvPaymentStatus.setVisibility(View.GONE);
 
+        TextView paymentMethod = findViewById(R.id.tv_payment_method);
+        paymentMethod.setVisibility(request.isQuoteAccepted() ? View.VISIBLE : View.GONE);
+        paymentMethod.setText(request.isCashPayment()
+                ? R.string.payment_method_worker_cash : R.string.payment_method_worker_digital);
+
         String details = RequestDetailsHelper.details(this, request, mCatalog, false);
         mTvQuoteDetails.setVisibility(details != null ? View.VISIBLE : View.GONE);
         findViewById(R.id.tv_quote_details_label).setVisibility(details != null ? View.VISIBLE : View.GONE);
@@ -404,6 +409,9 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
             if (request.isPaid()) {
                 mTvPaymentStatus.setText(R.string.payment_status_paid);
                 mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
+            } else if (request.isCashPayment()) {
+                mTvPaymentStatus.setText(R.string.payment_status_cash_worker);
+                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
             } else {
                 mTvPaymentStatus.setText(R.string.payment_status_waiting_client);
                 mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));

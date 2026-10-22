@@ -6,6 +6,7 @@ import com.project.ads.models.api.ApiResponse;
 import com.project.ads.models.api.CatalogData;
 import com.project.ads.models.api.NotificationResult;
 import com.project.ads.models.api.PaymentData;
+import com.project.ads.models.api.PaymentMethodData;
 import com.project.ads.models.api.QuoteData;
 import com.project.ads.models.api.QuoteLimits;
 import com.project.ads.models.api.QuoteReference;
@@ -54,7 +55,12 @@ public interface IAdsApi {
                                              @Body ApiBodies.QuoteBody body);
 
     @POST("api/requests/{requestId}/quote/accept/")
-    Call<ApiResponse<QuoteData>> acceptQuote(@Path("requestId") String requestId);
+    Call<ApiResponse<QuoteData>> acceptQuote(@Path("requestId") String requestId,
+                                             @Body ApiBodies.PaymentMethodBody body);
+
+    @POST("api/requests/{requestId}/payment-method/")
+    Call<ApiResponse<PaymentMethodData>> setPaymentMethod(@Path("requestId") String requestId,
+                                                          @Body ApiBodies.PaymentMethodBody body);
 
     @POST("api/requests/{requestId}/quote/reject/")
     Call<ApiResponse<QuoteData>> rejectQuote(@Path("requestId") String requestId,

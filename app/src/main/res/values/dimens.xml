@@ -32,4 +32,6 @@
     <dimen name="icon_md">22dp</dimen>
     <!-- Ficha de ícono de las filas de notificaciones -->
     <dimen name="icon_tile">40dp</dimen>
+    <!-- Ficha de ícono de las opciones grandes (métodos de pago) -->
+    <dimen name="icon_tile_lg">48dp</dimen>
 </resources>

@@ -29,9 +29,10 @@ public class QuoteProvider {
         ApiCallAdapter.enqueue(AdsApiClient.getApi().submitQuote(requestId, body), callback);
     }
 
-    /** Cliente: acepta la cotización; queda fija. */
-    public void acceptQuote(String requestId, ApiCallback<QuoteData> callback) {
-        ApiCallAdapter.enqueue(AdsApiClient.getApi().acceptQuote(requestId), callback);
+    /** Cliente: acepta la cotización con el método de pago elegido (D10); queda fija. */
+    public void acceptQuote(String requestId, String paymentMethod, ApiCallback<QuoteData> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().acceptQuote(requestId,
+                new ApiBodies.PaymentMethodBody(paymentMethod)), callback);
     }
 
     /** Cliente: rechaza la cotización; el trabajador puede enviar otra. */

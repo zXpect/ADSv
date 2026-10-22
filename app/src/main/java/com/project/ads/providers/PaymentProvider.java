@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.project.ads.models.api.ApiBodies;
 import com.project.ads.models.api.PaymentData;
+import com.project.ads.models.api.PaymentMethodData;
 import com.project.ads.retrofit.AdsApiClient;
 import com.project.ads.retrofit.ApiCallAdapter;
 
@@ -26,6 +27,16 @@ public class PaymentProvider {
     public static final String STATUS_DECLINED = "declined";
     public static final String STATUS_ERROR = "error";
     public static final String STATUS_VOIDED = "voided";
+
+    // Valores de requests/<id>/payment_method (D10). Sin valor se paga en línea.
+    public static final String METHOD_DIGITAL = "digital";
+    public static final String METHOD_CASH = "cash";
+
+    /** Cliente: cambia el método mientras el servicio no haya terminado. */
+    public void setPaymentMethod(String requestId, String paymentMethod, ApiCallback<PaymentMethodData> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().setPaymentMethod(requestId,
+                new ApiBodies.PaymentMethodBody(paymentMethod)), callback);
+    }
 
     public void createPayment(String requestId, ApiCallback<PaymentData> callback) {
         ApiCallAdapter.enqueue(

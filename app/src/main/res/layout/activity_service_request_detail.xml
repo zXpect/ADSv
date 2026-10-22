@@ -184,6 +184,53 @@
                     android:layout_marginTop="@dimen/space_3"
                     android:layout_marginEnd="0dp" />
 
+                <!-- Método de pago con «Cambiar método» (mockup 20, D10) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_payment_method"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:visibility="gone"
+                    app:contentPaddingBottom="@dimen/space_2"
+                    app:contentPaddingTop="@dimen/space_2">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:minHeight="@dimen/touch_min"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/payment_method_label"
+                                android:textAppearance="@style/TextAppearance.ADS.Label"
+                                android:fontFamily="@font/sora_regular" />
+
+                            <TextView
+                                android:id="@+id/tv_payment_method"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+                                tools:text="Pago en línea" />
+                        </LinearLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_change_payment_method"
+                            style="@style/Widget.ADS.Button.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/payment_method_change" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <!-- Dónde y detalles -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"

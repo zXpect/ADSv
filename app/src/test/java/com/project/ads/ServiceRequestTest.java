@@ -144,4 +144,19 @@ public class ServiceRequestTest {
         assertFalse(ServiceRequestHelper.getBooleanValue(map, "text"));
         assertFalse(ServiceRequestHelper.getBooleanValue(map, "missing"));
     }
+
+    @Test
+    public void paymentMethod() {
+        // Sin método elegido (app anterior) se paga en línea
+        assertFalse(request("quote_status", "accepted").isCashPayment());
+        assertFalse(request("payment_method", "digital").isCashPayment());
+        assertTrue(request("payment_method", "cash").isCashPayment());
+
+        // Se cambia con la cotización aceptada y mientras el servicio no termine (D10)
+        assertTrue(request("status", "accepted", "quote_status", "accepted").canChangePaymentMethod());
+        assertTrue(request("status", "in_progress", "quote_status", "accepted").canChangePaymentMethod());
+        assertFalse(request("status", "accepted", "quote_status", "quoted").canChangePaymentMethod());
+        assertFalse(request("status", "completed", "quote_status", "accepted").canChangePaymentMethod());
+        assertFalse(request("status", "cancelled", "quote_status", "accepted").canChangePaymentMethod());
+    }
 }

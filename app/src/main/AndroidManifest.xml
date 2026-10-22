@@ -167,6 +167,9 @@
             android:name="com.project.ads.activities.PqrDetailActivity"
             android:exported="false" />
         <activity
+            android:name="com.project.ads.activities.client.PaymentMethodActivity"
+            android:exported="false" />
+        <activity
             android:name="com.project.ads.activities.RoleActivity"
             android:exported="false" />
         <activity

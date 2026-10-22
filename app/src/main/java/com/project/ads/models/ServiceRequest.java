@@ -36,6 +36,7 @@ public class ServiceRequest {
     private String quote_rejection_reason;
     private String payment_status;      // pending | approved | declined | error | voided
     private String payment_reference;
+    private String payment_method;      // digital | cash (D10); sin valor = digital
 
     // Sprint 4: catálogo, motivo del ajuste, agenda y cancelación (solo los escribe el backend)
     private String service_category;    // slug del oficio
@@ -102,6 +103,7 @@ public class ServiceRequest {
         request.quote_rejection_reason = getStringValue(map, "quote_rejection_reason");
         request.payment_status = getStringValue(map, "payment_status");
         request.payment_reference = getStringValue(map, "payment_reference");
+        request.payment_method = getStringValue(map, "payment_method");
 
         request.service_category = getStringValue(map, "service_category");
         request.task_items = getMapList(map.get("task_items"));
@@ -428,6 +430,16 @@ public class ServiceRequest {
         return "approved".equals(payment_status);
     }
 
+    /** El cliente eligió pagar en efectivo; sin método elegido se paga en línea. */
+    public boolean isCashPayment() {
+        return "cash".equals(payment_method);
+    }
+
+    /** El método todavía se puede cambiar: cotización aceptada y servicio sin terminar (D10). */
+    public boolean canChangePaymentMethod() {
+        return isQuoteAccepted() && !isCompleted() && !isCancelled();
+    }
+
     public boolean isPaymentPending() {
         return "pending".equals(payment_status);
     }
@@ -646,5 +658,9 @@ public class ServiceRequest {
 
     public String getPayment_reference() {
         return payment_reference;
+    }
+
+    public String getPayment_method() {
+        return payment_method;
     }
 }

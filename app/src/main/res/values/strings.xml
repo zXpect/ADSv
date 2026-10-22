@@ -98,15 +98,11 @@
     <!-- Cotización -->
     <string name="quote_card_title">Precio del servicio</string>
     <string name="quote_dialog_send">Enviar</string>
-    <string name="quote_dialog_cancel">Cancelar</string>
     <string name="quote_error_invalid">Ingresa un precio válido</string>
     <string name="quote_sent">Cotización enviada al cliente</string>
     <string name="quote_send">Enviar cotización</string>
     <string name="quote_send_new">Enviar nueva cotización</string>
-    <string name="quote_accept">Aceptar cotización</string>
     <string name="quote_reject">Rechazar</string>
-    <string name="quote_accept_title">Aceptar cotización</string>
-    <string name="quote_accept_message">El precio del servicio será %1$s. Una vez aceptado no se puede cambiar. ¿Deseas continuar?</string>
     <string name="quote_accepted_toast">Cotización aceptada</string>
     <string name="quote_reject_reason_hint">Motivo (opcional)</string>
     <string name="quote_rejected_toast">Cotización rechazada</string>
@@ -747,4 +743,25 @@
     <string name="pqr_error_request">Elige la solicitud de la PQR</string>
     <string name="pqr_error_no_requests">Para crear una PQR necesitas una solicitud de servicio</string>
     <string name="pqr_error_description">Escribe qué pasó para que podamos ayudarte</string>
+    <!-- Rediseño: Método de pago (mockups 18, 20 y 23, D10) -->
+    <string name="payment_method_title">¿Cómo vas a pagar?</string>
+    <string name="payment_method_subtitle">Puedes cambiar el método hasta que el servicio termine.</string>
+    <string name="payment_method_digital">Pago en línea</string>
+    <string name="payment_method_digital_detail">Tarjeta, Nequi, PSE o Bancolombia con Wompi.</string>
+    <string name="payment_method_sandbox">Entorno de pruebas</string>
+    <string name="payment_method_cash">Efectivo</string>
+    <string name="payment_method_cash_detail">Le pagas al técnico al terminar. Él registra el pago en la app.</string>
+    <string name="payment_method_total">Total acordado</string>
+    <string name="payment_method_confirm_accept">Confirmar y aceptar</string>
+    <string name="payment_method_confirm_change">Guardar método</string>
+    <string name="payment_method_changed">Método de pago actualizado</string>
+    <string name="payment_method_selected">%1$s, seleccionado</string>
+    <string name="payment_method_not_selected">%1$s, no seleccionado</string>
+    <string name="payment_method_label">Pago</string>
+    <string name="payment_method_change">Cambiar método</string>
+    <string name="payment_method_worker_digital">Pago: en línea</string>
+    <string name="payment_method_worker_cash">Pago: efectivo</string>
+    <string name="payment_status_cash_client">Pagas en efectivo al técnico</string>
+    <string name="payment_status_cash_worker">El cliente paga en efectivo</string>
+    <string name="detail_cash_note">Paga en efectivo al técnico. Él registrará el pago y después podrás calificar.</string>
 </resources>

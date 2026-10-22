@@ -116,6 +116,15 @@ public final class ApiBodies {
         }
     }
 
+    /** Método de pago al aceptar la cotización o al cambiarlo (D10): "digital" o "cash". */
+    public static class PaymentMethodBody {
+        final String payment_method;
+
+        public PaymentMethodBody(String paymentMethod) {
+            this.payment_method = paymentMethod;
+        }
+    }
+
     public static class CreatePaymentBody {
         // Solo la solicitud: el monto lo calcula el servidor desde la cotización aceptada
         final String service_request_id;

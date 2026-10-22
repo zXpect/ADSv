@@ -207,6 +207,17 @@
                             android:textColor="@color/ads_muted"
                             tools:text="La luz de la cocina se apaga sola." />
 
+                        <!-- Método de pago elegido por el cliente (mockup 23, D10) -->
+                        <TextView
+                            android:id="@+id/tv_payment_method"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_2"
+                            android:textAppearance="@style/TextAppearance.ADS.Label"
+                            android:fontFamily="@font/sora_regular"
+                            android:visibility="gone"
+                            tools:text="Pago: efectivo" />
+
                         <TextView
                             android:id="@+id/tv_quote_status"
                             android:layout_width="match_parent"

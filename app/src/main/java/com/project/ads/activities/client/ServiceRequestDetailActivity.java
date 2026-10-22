@@ -90,6 +90,9 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     private Button mBtnRateService;
     private Button mBtnPayService;
     private Button mBtnAcceptQuote;
+    private View mCardPaymentMethod;
+    private TextView mTvPaymentMethod;
+    private View mBtnChangePaymentMethod;
     private Button mBtnRejectQuote;
 
     // Quote and Payment Card
@@ -172,7 +175,11 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 startActivity(com.project.ads.activities.PqrCreateActivity.forRequest(this, mRequestId)));
         mBtnRateService.setOnClickListener(v -> openRatingActivity());
         mBtnPayService.setOnClickListener(v -> openPayment());
-        mBtnAcceptQuote.setOnClickListener(v -> confirmAcceptQuote());
+        mBtnAcceptQuote.setOnClickListener(v -> openAcceptQuote());
+        mCardPaymentMethod = findViewById(R.id.card_payment_method);
+        mTvPaymentMethod = findViewById(R.id.tv_payment_method);
+        mBtnChangePaymentMethod = findViewById(R.id.btn_change_payment_method);
+        mBtnChangePaymentMethod.setOnClickListener(v -> openChangePaymentMethod());
         mBtnRejectQuote.setOnClickListener(v -> showRejectQuoteDialog());
     }
 
@@ -254,6 +261,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         bindHeader(request, workerName);
         bindTimeline(request);
         updateQuoteCard(request);
+        updatePaymentMethodCard(request);
         updateActionButtons(request);
 
         boolean activeWithWorker = "accepted".equals(request.getStatus())
@@ -442,6 +450,10 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 mBtnPayService.setText(R.string.detail_continue_payment);
                 showNote(mTvActionsNote, R.string.detail_continue_payment_note);
                 any = true;
+            } else if (request.isQuoteAccepted() && request.isCashPayment()) {
+                // En efectivo no hay pago en línea: el técnico registra el pago (D10)
+                showNote(mTvActionsNoteTop, R.string.detail_cash_note);
+                any = true;
             } else if (request.isQuoteAccepted()) {
                 mBtnPayService.setVisibility(View.VISIBLE);
                 mBtnPayService.setText(getString(R.string.detail_pay, request.getFormattedQuotedPrice()));
@@ -523,6 +535,9 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             } else if (request.isPaymentPending()) {
                 mTvPaymentStatus.setText(R.string.payment_status_in_process);
                 mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
+            } else if (request.isCashPayment()) {
+                mTvPaymentStatus.setText(R.string.payment_status_cash_client);
+                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
             } else {
                 mTvPaymentStatus.setText(R.string.payment_status_pending_client);
                 mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
@@ -574,17 +589,28 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void confirmAcceptQuote() {
+    /** Aceptar lleva a elegir el método de pago (mockup 17 → 18, D10); allí se confirma. */
+    private void openAcceptQuote() {
         if (mServiceRequest == null) return;
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle(R.string.quote_accept_title)
-                .setMessage(getString(R.string.quote_accept_message, mServiceRequest.getFormattedQuotedPrice()))
-                .setPositiveButton(R.string.quote_accept, (dialog, which) -> {
-                    setQuoteButtonsEnabled(false);
-                    mQuoteProvider.acceptQuote(mRequestId, quoteCallback(R.string.quote_accepted_toast));
-                })
-                .setNegativeButton(R.string.quote_dialog_cancel, null)
-                .show();
+        startActivity(PaymentMethodActivity.acceptIntent(this, mRequestId,
+                mServiceRequest.getFormattedQuotedPrice()));
+    }
+
+    /** Fila del método de pago (mockup 20): se puede cambiar hasta que el servicio termine. */
+    private void updatePaymentMethodCard(ServiceRequest request) {
+        boolean show = request.isQuoteAccepted() && !request.isCancelled();
+        mCardPaymentMethod.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (!show) return;
+        mTvPaymentMethod.setText(request.isCashPayment()
+                ? R.string.payment_method_cash : R.string.payment_method_digital);
+        mBtnChangePaymentMethod.setVisibility(request.canChangePaymentMethod() && !request.isPaid()
+                ? View.VISIBLE : View.GONE);
+    }
+
+    private void openChangePaymentMethod() {
+        if (mServiceRequest == null) return;
+        startActivity(PaymentMethodActivity.changeIntent(this, mRequestId,
+                mServiceRequest.getFormattedQuotedPrice(), mServiceRequest.getPayment_method()));
     }
 
     /** Confirmar rechazo (mockup 19); el motivo sigue siendo opcional. */
