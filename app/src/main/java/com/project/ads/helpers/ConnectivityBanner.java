@@ -69,7 +69,8 @@ public final class ConnectivityBanner implements Application.ActivityLifecycleCa
                     banner.mNetworks.remove(network);
                     any = !banner.mNetworks.isEmpty();
                 }
-                banner.setOnline(any || hasInternet(cm, cm.getActiveNetwork()));
+                // No se consulta getActiveNetwork(): en onLost todavía puede ser la red perdida
+                banner.setOnline(any);
             }
         });
     }
