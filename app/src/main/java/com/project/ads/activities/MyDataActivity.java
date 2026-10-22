@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -17,6 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.project.ads.R;
+import com.project.ads.helpers.LogoutHelper;
+import com.project.ads.providers.AccountProvider;
 import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.ClientProvider;
 import com.project.ads.providers.WorkerProvider;
@@ -30,7 +33,7 @@ import java.util.regex.Pattern;
  * según el rol guardado en "typeUser". Edita nombres, apellidos y teléfono con los
  * mismos providers y validaciones del registro; el correo es el de Firebase Auth y
  * no se edita. Cambiar contraseña envía el correo de restablecimiento de Firebase.
- * Eliminar cuenta (mockup 39) espera el endpoint del backend.
+ * Eliminar cuenta (mockup 39) llama a DELETE /api/me/ y cierra la sesión.
  */
 public class MyDataActivity extends AppCompatActivity {
 
@@ -68,8 +71,7 @@ public class MyDataActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         findViewById(R.id.btn_data_save).setOnClickListener(v -> save());
         findViewById(R.id.btn_data_password).setOnClickListener(v -> changePassword());
-        findViewById(R.id.btn_data_delete).setOnClickListener(v ->
-                Toast.makeText(this, R.string.account_coming_soon, Toast.LENGTH_SHORT).show());
+        findViewById(R.id.btn_data_delete).setOnClickListener(v -> confirmDeleteAccount());
 
         android.text.TextWatcher watcher = new android.text.TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) { }
@@ -171,5 +173,45 @@ public class MyDataActivity extends AppCompatActivity {
                                 .addOnFailureListener(e -> Toast.makeText(this, R.string.data_password_error, Toast.LENGTH_SHORT).show()))
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+    }
+
+    /** Eliminar cuenta (mockup 39, D18): DELETE /api/me/ y, con 204, se cierra la sesión. */
+    private void confirmDeleteAccount() {
+        android.view.View view = getLayoutInflater().inflate(R.layout.dialog_delete_account, null);
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(view).create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        View keep = view.findViewById(R.id.btn_delete_account_keep);
+        View confirm = view.findViewById(R.id.btn_delete_account_confirm);
+        View progress = view.findViewById(R.id.progress_delete_account);
+        keep.setOnClickListener(v -> dialog.dismiss());
+        confirm.setOnClickListener(v -> {
+            keep.setEnabled(false);
+            confirm.setEnabled(false);
+            progress.setVisibility(View.VISIBLE);
+            dialog.setCancelable(false);
+            new AccountProvider().deleteAccount(new com.project.ads.providers.ApiCallback<Void>() {
+                @Override
+                public void onSuccess(Void data) {
+                    dialog.dismiss();
+                    Toast.makeText(MyDataActivity.this, R.string.delete_account_done, Toast.LENGTH_LONG).show();
+                    // La cuenta ya no existe en Auth: cerrar la sesión local y volver a la bienvenida
+                    getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE).edit().clear().apply();
+                    LogoutHelper.performLogout(MyDataActivity.this, new AuthProvider(), null, null);
+                }
+
+                @Override
+                public void onError(String message, int httpStatus) {
+                    // 409: hay un servicio en camino o en progreso; el mensaje viene del backend
+                    progress.setVisibility(View.GONE);
+                    keep.setEnabled(true);
+                    confirm.setEnabled(true);
+                    dialog.setCancelable(true);
+                    ((TextView) view.findViewById(R.id.tv_delete_account_message)).setText(message);
+                }
+            });
+        });
+        dialog.show();
     }
 }

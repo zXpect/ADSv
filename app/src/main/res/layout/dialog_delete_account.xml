@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Eliminar cuenta · mockup 39 (docs/mockups/EliminarCuenta.dc.html). Se abre desde Mis datos. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_ads_dialog"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/space_6"
+    android:paddingTop="28dp"
+    android:paddingEnd="@dimen/space_6"
+    android:paddingBottom="@dimen/space_6">
+
+    <FrameLayout
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:background="@drawable/bg_ads_icon_circle_brand">
+
+        <ImageView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_ads_trash"
+            app:tint="@color/ads_brand_text" />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:accessibilityHeading="true"
+        android:text="@string/delete_account_title"
+        android:textAppearance="@style/TextAppearance.ADS.Headline"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/tv_delete_account_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="@string/delete_account_message"
+        android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+        android:textColor="@color/ads_charcoal" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_delete_account_keep"
+        style="@style/Widget.ADS.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:text="@string/delete_account_keep" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_delete_account_confirm"
+        style="@style/Widget.ADS.Button.Secondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/delete_account_confirm" />
+
+    <ProgressBar
+        android:id="@+id/progress_delete_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/space_3"
+        android:indeterminateTint="@color/ads_brand"
+        android:visibility="gone" />
+</LinearLayout>

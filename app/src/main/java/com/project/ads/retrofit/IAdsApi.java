@@ -109,6 +109,11 @@ public interface IAdsApi {
 
     @GET("api/workers/{workerId}/stats/")
     Call<ApiResponse<WorkerStats>> getWorkerStats(@Path("workerId") String workerId);
+    // ---------- Cuenta ----------
+
+    /** 204 sin cuerpo; ver AccountProvider. */
+    @retrofit2.http.DELETE("api/me/")
+    Call<Void> deleteAccount();
 
     @POST("api/notifications/")
     Call<ApiResponse<NotificationResult>> notify(@Body ApiBodies.NotificationBody body);

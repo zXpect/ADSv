@@ -815,4 +815,10 @@
     <string name="requote_answer_accepted">Aceptaste el nuevo precio</string>
     <string name="requote_answer_rejected">Se mantiene el precio original</string>
     <string name="detail_cash_note">Paga en efectivo al técnico. Él registrará el pago y después podrás calificar.</string>
+    <!-- Rediseño: Eliminar cuenta (mockup 39, D18) -->
+    <string name="delete_account_title">¿Eliminar tu cuenta?</string>
+    <string name="delete_account_message">Perderás el acceso a ADS con esta cuenta. Esta acción no se puede deshacer.</string>
+    <string name="delete_account_keep">Conservar mi cuenta</string>
+    <string name="delete_account_confirm">Sí, eliminar mi cuenta</string>
+    <string name="delete_account_done">Tu cuenta fue eliminada</string>
 </resources>
