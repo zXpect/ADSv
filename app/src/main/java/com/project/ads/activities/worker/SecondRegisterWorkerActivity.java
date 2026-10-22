@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.ads.R;
+import com.project.ads.helpers.ConsentHelper;
 import com.project.ads.models.Worker;
 import com.project.ads.models.WorkerDocument;
 import com.project.ads.providers.AuthProvider;
@@ -530,6 +531,8 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
             worker.setPhone(phone);
             Log.d(TAG, "Worker con teléfono: " + phone);
         }
+
+        worker.setConsentAcceptedAt(getIntent().getLongExtra(ConsentHelper.EXTRA_ACCEPTED_AT, 0));
 
         mWorkerProvider.create(worker).addOnCompleteListener(task -> {
             mProgressDialog.dismiss();

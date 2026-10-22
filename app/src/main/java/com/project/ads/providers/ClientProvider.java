@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.project.ads.helpers.ConsentHelper;
 import com.project.ads.models.Client;
 
 import java.util.HashMap;
@@ -43,6 +44,12 @@ public class ClientProvider {
         // Incluir imagen si existe
         if (client.getImage() != null && !client.getImage().isEmpty()) {
             map.put("image", client.getImage());
+        }
+
+        // Consentimiento y mayoría de edad del registro (D18, D19, HU-02)
+        if (client.getConsentAcceptedAt() > 0) {
+            map.put("consent", ConsentHelper.consent(client.getConsentAcceptedAt()));
+            map.put("isAdult", true);
         }
 
         return mDataBase.child(client.getId()).setValue(map);

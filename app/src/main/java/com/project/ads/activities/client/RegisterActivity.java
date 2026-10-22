@@ -79,6 +79,7 @@ public class RegisterActivity extends AppCompatActivity {
     private CheckBox mCheckBoxTerms;
     private CheckBox mCheckBoxAdult;
     private CheckBox mCheckBoxData;
+    private long mConsentAcceptedAt;
     private TextView mTextViewTerms;
     private CircleImageView mCircleImageProfile;
     private ImageView mImageViewAddPhoto;
@@ -426,6 +427,7 @@ public class RegisterActivity extends AppCompatActivity {
             showToast(getString(R.string.register_error_data));
             return;
         }
+        mConsentAcceptedAt = System.currentTimeMillis();
 
         if (isFromGoogleSignIn) {
             createClientFromGoogle(name, lastName, phone, email); // ⭐ AGREGADO phone
@@ -518,6 +520,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void createClientFromGoogle(String name, String lastName, String phone, String email) { // ⭐ AGREGADO phone
         Client client = new Client(googleUserId, name, lastName, email, phone); // ⭐ AGREGADO phone
+        client.setConsentAcceptedAt(mConsentAcceptedAt);
 
         if (mImageSelected && mImageUri != null) {
             // Crear cliente con imagen
@@ -552,6 +555,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         Client client = new Client(id, name, lastName, email, phone); // ⭐ AGREGADO phone
+                        client.setConsentAcceptedAt(mConsentAcceptedAt);
                         createClient(client);
                     } else {
                         handleRegistrationError(task.getException());

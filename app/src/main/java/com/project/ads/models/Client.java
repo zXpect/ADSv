@@ -7,6 +7,8 @@ public class Client {
     private String email;
     private String image;
     private String phone;
+    // Solo para el registro: no es un campo del nodo (se guarda como consent)
+    private long consentAcceptedAt;
 
     public Client() {
     }
@@ -128,5 +130,15 @@ public class Client {
                 ", phone='" + phone + '\'' +
                 ", hasImage=" + (image != null && !image.isEmpty()) +
                 '}';
+    }
+
+    @com.google.firebase.database.Exclude
+    public long getConsentAcceptedAt() {
+        return consentAcceptedAt;
+    }
+
+    @com.google.firebase.database.Exclude
+    public void setConsentAcceptedAt(long consentAcceptedAt) {
+        this.consentAcceptedAt = consentAcceptedAt;
     }
 }

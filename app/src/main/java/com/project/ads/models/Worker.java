@@ -27,6 +27,19 @@ public class Worker {
     // ⭐ NUEVO: Campo de verificación
     private VerificationStatus verificationStatus;
 
+    // Solo para el registro: se guarda como consent (D18, HU-02)
+    private long consentAcceptedAt;
+
+    @com.google.firebase.database.Exclude
+    public long getConsentAcceptedAt() {
+        return consentAcceptedAt;
+    }
+
+    @com.google.firebase.database.Exclude
+    public void setConsentAcceptedAt(long consentAcceptedAt) {
+        this.consentAcceptedAt = consentAcceptedAt;
+    }
+
     // ⭐ CLASE INTERNA para el estado de verificación
     public static class VerificationStatus {
         private String status;
@@ -534,6 +547,9 @@ public class Worker {
         map.put("experience", experience);
         map.put("timestamp", timestamp);
         map.put("isOnline", isOnline);
+        if (consentAcceptedAt > 0) {
+            map.put("consent", com.project.ads.helpers.ConsentHelper.consent(consentAcceptedAt));
+        }
 
         return map;
     }

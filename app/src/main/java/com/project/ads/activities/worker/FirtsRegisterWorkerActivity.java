@@ -36,6 +36,7 @@ import com.project.ads.activities.TermsConditionsActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.project.ads.R;
+import com.project.ads.helpers.ConsentHelper;
 import com.project.ads.activities.LoginActivity;
 import com.project.ads.helpers.RegisterStepsHelper;
 
@@ -435,6 +436,8 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
         intent.putExtra("phone", phone);
         intent.putExtra("email", email);
         intent.putExtra("password", password);
+        // Las dos casillas ya se validaron: momento de la aceptación (D18)
+        intent.putExtra(ConsentHelper.EXTRA_ACCEPTED_AT, System.currentTimeMillis());
 
         // Pasar información de la imagen
         if (mImageSelected && mImageUri != null) {
