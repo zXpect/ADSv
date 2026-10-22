@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.project.ads.R;
+import com.project.ads.helpers.SearchTimer;
 import com.project.ads.models.Worker;
 import com.project.ads.providers.CatalogProvider;
 import com.project.ads.providers.WorkerProvider;
@@ -124,6 +125,7 @@ public class WorkerProfileActivity extends AppCompatActivity {
     }
 
     private void openRequest() {
+        SearchTimer.markSelected(this);
         Intent intent = new Intent(this, ServiceRequestActivity.class);
         intent.putExtra("workerId", mWorkerId);
         if (getIntent().hasExtra(ServiceRequestActivity.EXTRA_LAT)) {

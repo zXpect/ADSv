@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
+import com.project.ads.helpers.SearchTimer;
 import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.NotificationPermissionHelper;
@@ -106,14 +107,17 @@ public class HomeUserActivity extends AppCompatActivity {
         mActiveServiceLabel = findViewById(R.id.tv_active_service_label);
         mActiveServiceStatus = findViewById(R.id.tv_active_service_status);
 
-        findViewById(R.id.vermapa).setOnClickListener(v ->
-                startActivity(new Intent(this, MapClientActivity.class)));
+        findViewById(R.id.vermapa).setOnClickListener(v -> {
+            SearchTimer.start(this);
+            startActivity(new Intent(this, MapClientActivity.class));
+        });
 
         // Buscar: abre la lista de técnicos filtrada por nombre u oficio
         mSearchBar.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId != EditorInfo.IME_ACTION_SEARCH) return false;
             String query = mSearchBar.getText() != null ? mSearchBar.getText().toString().trim() : "";
             if (query.isEmpty()) return true;
+            SearchTimer.start(this);
             Intent intent = new Intent(this, WorkersActivity.class);
             intent.putExtra(WorkersActivity.EXTRA_QUERY, query);
             startActivity(intent);
@@ -159,6 +163,7 @@ public class HomeUserActivity extends AppCompatActivity {
 
     /** Oficio → Problemas del oficio (mockup 07) → Técnicos (mockup 08). */
     private void openTasks(CatalogData.Category category) {
+        SearchTimer.start(this);
         Intent intent = new Intent(this, TasksActivity.class);
         intent.putExtra(WorkersActivity.EXTRA_CATEGORY, category.getSlug());
         intent.putExtra(WorkersActivity.EXTRA_CATEGORY_NAME, category.getName());

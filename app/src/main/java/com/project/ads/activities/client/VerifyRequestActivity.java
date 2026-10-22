@@ -20,6 +20,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.project.ads.R;
+import com.project.ads.helpers.SearchTimer;
 import com.project.ads.models.RequestTaskItem;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.api.ApiBodies;
@@ -255,14 +256,18 @@ public class VerifyRequestActivity extends AppCompatActivity {
         List<ApiBodies.TaskItemBody> items = new ArrayList<>();
         for (RequestTaskItem item : mItems) items.add(item.toBody());
         String description = mDescriptionInput.getText() != null ? mDescriptionInput.getText().toString().trim() : "";
+        // Tiempo de búsqueda (D22): sin una medición válida se envían vacías
+        long[] timing = SearchTimer.values(this);
         ApiBodies.CreateRequestBody body = new ApiBodies.CreateRequestBody(
-                mWorkerId, mCategorySlug, address(), description, mLat, mLng, items, null, null);
+                mWorkerId, mCategorySlug, address(), description, mLat, mLng, items,
+                timing != null ? timing[0] : null, timing != null ? timing[1] : null);
 
         mRequestProvider.createRequest(body, new ApiCallback<RequestActionData>() {
             @Override
             public void onSuccess(RequestActionData data) {
                 hideProgressDialog();
                 Log.d(TAG, "Solicitud creada con ID: " + data.getRequestId());
+                SearchTimer.clear(VerifyRequestActivity.this);
                 navigateToRequestSent(data.getRequestId());
             }
 
