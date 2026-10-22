@@ -704,4 +704,7 @@
     <string name="notifications_time_minutes">Hace %1$d min</string>
     <string name="notifications_time_hours">Hace %1$d h</string>
     <string name="notifications_time_yesterday">Ayer</string>
+
+    <!-- Aviso sin conexión (HU-35) -->
+    <string name="offline_banner">Sin conexión. Algunas acciones no estarán disponibles hasta que vuelva internet.</string>
 </resources>
