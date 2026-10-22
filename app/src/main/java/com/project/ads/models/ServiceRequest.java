@@ -42,6 +42,7 @@ public class ServiceRequest {
     private String service_category;    // slug del oficio
     private java.util.List<Map<String, Object>> task_items;
     private com.project.ads.models.api.QuoteReference quote_reference;   // congelado al crear
+    private Requote requote;            // re-cotización (D7); la escribe el backend
     private boolean quote_is_adjusted;
     private String quote_adjustment_reason_code;
     private String quote_adjustment_reason_text;
@@ -108,6 +109,7 @@ public class ServiceRequest {
         request.service_category = getStringValue(map, "service_category");
         request.task_items = getMapList(map.get("task_items"));
         request.quote_reference = com.project.ads.models.api.QuoteReference.fromMap(map.get("quote_reference"));
+        request.requote = Requote.fromMap(map.get("requote"));
         request.quote_is_adjusted = getBooleanValue(map, "quote_is_adjusted");
         request.quote_adjustment_reason_code = getStringValue(map, "quote_adjustment_reason_code");
         request.quote_adjustment_reason_text = getStringValue(map, "quote_adjustment_reason_text");
@@ -428,6 +430,21 @@ public class ServiceRequest {
 
     public boolean isPaid() {
         return "approved".equals(payment_status);
+    }
+
+    public Requote getRequote() {
+        return requote;
+    }
+
+    /** Re-cotización esperando la respuesta del cliente: no se puede finalizar (reglas de Firebase). */
+    public boolean hasPendingRequote() {
+        return requote != null && requote.isPending();
+    }
+
+    /** El trabajador puede re-cotizar una sola vez, en camino o en progreso (D7). */
+    public boolean canRequote() {
+        return requote == null && status != null
+                && ("on_the_way".equalsIgnoreCase(status) || "in_progress".equalsIgnoreCase(status));
     }
 
     /** El cliente eligió pagar en efectivo; sin método elegido se paga en línea. */

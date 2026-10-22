@@ -136,6 +136,19 @@ public final class ApiBodies {
         }
     }
 
+    /** Re-cotización (D7): precio entero en COP, motivo y texto solo con «otro». */
+    public static class RequoteBody {
+        final long price;
+        final String reason_code;
+        final String reason_text;
+
+        public RequoteBody(long price, String reasonCode, String reasonText) {
+            this.price = price;
+            this.reason_code = reasonCode;
+            this.reason_text = reasonText;
+        }
+    }
+
     public static class PqrBody {
         final String service_request_id;
         final String type;

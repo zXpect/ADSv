@@ -176,6 +176,12 @@
             android:name="com.project.ads.activities.worker.CashReceivedActivity"
             android:exported="false" />
         <activity
+            android:name="com.project.ads.activities.worker.RequoteActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.client.RequoteAnswerActivity"
+            android:exported="false" />
+        <activity
             android:name="com.project.ads.activities.RoleActivity"
             android:exported="false" />
         <activity

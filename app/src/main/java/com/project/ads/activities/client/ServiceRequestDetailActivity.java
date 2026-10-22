@@ -170,6 +170,11 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         mBtnCallWorker.setOnClickListener(v -> callWorker());
         mBtnCancelRequest.setOnClickListener(v -> cancelRequest());
+        findViewById(R.id.btn_detail_review_requote).setOnClickListener(v -> {
+            if (mServiceRequest != null && mServiceRequest.hasPendingRequote()) {
+                startActivity(RequoteAnswerActivity.intent(this, mServiceRequest));
+            }
+        });
         mBtnCreatePqr = findViewById(R.id.btn_detail_create_pqr);
         mBtnCreatePqr.setOnClickListener(v ->
                 startActivity(com.project.ads.activities.PqrCreateActivity.forRequest(this, mRequestId)));
@@ -425,6 +430,8 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         mBtnRateService.setVisibility(View.GONE);
         mBtnCancelRequest.setVisibility(View.GONE);
         mBtnCreatePqr.setVisibility(View.GONE);
+        View reviewRequote = findViewById(R.id.btn_detail_review_requote);
+        reviewRequote.setVisibility(View.GONE);
         mTvActionsNoteTop.setVisibility(View.GONE);
         mTvActionsNote.setVisibility(View.GONE);
 
@@ -474,7 +481,12 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             any = true;
         } else if ("on_the_way".equals(status) || "in_progress".equals(status)) {
             // Después de «Iniciar viaje» ya no se cancela aquí (mockups 45 y 46)
-            showNote(mTvActionsNoteTop, R.string.detail_cannot_cancel_note);
+            if (request.hasPendingRequote()) {
+                showNote(mTvActionsNoteTop, R.string.requote_client_pending);
+                reviewRequote.setVisibility(View.VISIBLE);
+            } else {
+                showNote(mTvActionsNoteTop, R.string.detail_cannot_cancel_note);
+            }
             mBtnCreatePqr.setVisibility(View.VISIBLE);
             any = true;
         }

@@ -779,5 +779,37 @@
     <string name="cash_paid_disagree">¿No estás de acuerdo? Puedes abrir una PQR y la revisamos. Respondemos en 15 días hábiles.</string>
     <string name="cash_paid_open_pqr">Abrir una PQR</string>
     <string name="cash_paid_home">Volver al inicio</string>
+    <!-- Re-cotización (mockups 22, 24, 46 y 49, D7) -->
+    <string name="requote_action">Re-cotizar</string>
+    <string name="requote_title">Re-cotizar</string>
+    <string name="requote_subtitle">Si el trabajo cambió, propón un nuevo precio. El cliente decide si lo acepta.</string>
+    <string name="requote_once">Solo puedes re-cotizar una vez por servicio.</string>
+    <string name="requote_current">Precio actual: %1$s</string>
+    <string name="requote_price_label">Nuevo precio (COP)</string>
+    <string name="requote_reason_label">Motivo</string>
+    <string name="requote_reason_text_hint">Cuéntale al cliente qué cambió</string>
+    <string name="requote_send">Enviar nueva cotización</string>
+    <string name="requote_sent">Nueva cotización enviada al cliente</string>
+    <string name="requote_error_price">Escribe el nuevo precio</string>
+    <string name="requote_error_same">El nuevo precio debe ser distinto al actual</string>
+    <string name="requote_error_reason">Elige el motivo</string>
+    <string name="requote_error_reason_text">Escribe el motivo</string>
+    <string name="requote_worker_hint">Si el trabajo cambió, puedes re-cotizar una sola vez.</string>
+    <string name="requote_worker_waiting">Esperando que el cliente responda tu nueva cotización. Podrás finalizar cuando responda.</string>
+    <string name="requote_worker_rejected">El cliente rechazó la nueva cotización: el servicio sigue con el precio original.</string>
+    <string name="requote_review">Revisar nuevo precio</string>
+    <string name="requote_client_pending">El técnico propone un nuevo precio. Revísalo para continuar.</string>
+    <string name="requote_answer_status_on_the_way">En camino</string>
+    <string name="requote_answer_status_in_progress">En progreso</string>
+    <string name="requote_answer_title">%1$s propone un nuevo precio</string>
+    <string name="requote_answer_title_generic">El técnico propone un nuevo precio</string>
+    <string name="requote_answer_once">Solo puede hacerlo una vez por servicio.</string>
+    <string name="requote_answer_current">Precio actual</string>
+    <string name="requote_answer_new">Nuevo precio</string>
+    <string name="requote_answer_reject_note">Si rechazas, se mantiene el precio original de %1$s.</string>
+    <string name="requote_answer_accept">Aceptar nuevo precio</string>
+    <string name="requote_answer_reject">Rechazar</string>
+    <string name="requote_answer_accepted">Aceptaste el nuevo precio</string>
+    <string name="requote_answer_rejected">Se mantiene el precio original</string>
     <string name="detail_cash_note">Paga en efectivo al técnico. Él registrará el pago y después podrás calificar.</string>
 </resources>

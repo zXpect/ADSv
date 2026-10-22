@@ -313,6 +313,16 @@
                     tools:text="Ya no puedes cancelar desde aquí. Si hay un problema, crea una PQR."
                     tools:visibility="visible" />
 
+                <!-- Re-cotización por responder (mockups 22 y 46, D7) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_detail_review_requote"
+                    style="@style/Widget.ADS.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/requote_review"
+                    android:visibility="gone" />
+
                 <!-- Cotización por responder (mockup 17) -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_detail_accept_quote"

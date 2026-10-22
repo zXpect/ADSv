@@ -58,6 +58,15 @@ public interface IAdsApi {
     Call<ApiResponse<QuoteData>> acceptQuote(@Path("requestId") String requestId,
                                              @Body ApiBodies.PaymentMethodBody body);
 
+    @POST("api/requests/{requestId}/requote/")
+    Call<ApiResponse<Object>> requote(@Path("requestId") String requestId, @Body ApiBodies.RequoteBody body);
+
+    @POST("api/requests/{requestId}/requote/accept/")
+    Call<ApiResponse<Object>> acceptRequote(@Path("requestId") String requestId);
+
+    @POST("api/requests/{requestId}/requote/reject/")
+    Call<ApiResponse<Object>> rejectRequote(@Path("requestId") String requestId);
+
     @POST("api/requests/{requestId}/cash-received/")
     Call<ApiResponse<PaymentMethodData>> registerCash(@Path("requestId") String requestId);
 

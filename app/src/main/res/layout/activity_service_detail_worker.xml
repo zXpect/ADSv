@@ -410,6 +410,16 @@
                 android:text="@string/cash_register_action"
                 android:visibility="gone" />
 
+            <!-- En camino o en progreso: re-cotizar una vez (mockups 24 y 49, D7) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_requote"
+                style="@style/Widget.ADS.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/requote_action"
+                android:visibility="gone" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_quote_cancel"
                 style="@style/Widget.ADS.Button.Secondary"

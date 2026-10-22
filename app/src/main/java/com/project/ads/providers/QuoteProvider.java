@@ -35,6 +35,18 @@ public class QuoteProvider {
                 new ApiBodies.PaymentMethodBody(paymentMethod)), callback);
     }
 
+    /** Trabajador: una sola re-cotización, en camino o en progreso (D7). La respuesta llega por Firebase. */
+    public void requote(String requestId, long price, String reasonCode, String reasonText, ApiCallback<Object> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().requote(requestId,
+                new ApiBodies.RequoteBody(price, reasonCode, reasonText)), callback);
+    }
+
+    /** Cliente: acepta (quoted_price pasa al nuevo) o rechaza (se mantiene el original). */
+    public void answerRequote(String requestId, boolean accept, ApiCallback<Object> callback) {
+        ApiCallAdapter.enqueue(accept ? AdsApiClient.getApi().acceptRequote(requestId)
+                : AdsApiClient.getApi().rejectRequote(requestId), callback);
+    }
+
     /** Cliente: rechaza la cotización; el trabajador puede enviar otra. */
     public void rejectQuote(String requestId, String reason, ApiCallback<QuoteData> callback) {
         ApiCallAdapter.enqueue(

@@ -159,4 +159,42 @@ public class ServiceRequestTest {
         assertFalse(request("status", "completed", "quote_status", "accepted").canChangePaymentMethod());
         assertFalse(request("status", "cancelled", "quote_status", "accepted").canChangePaymentMethod());
     }
+
+    @Test
+    public void requoteOnlyOnceWhileOnTheWayOrInProgress() {
+        // D7: una sola re-cotización, en on_the_way o in_progress
+        assertTrue(request("status", "on_the_way").canRequote());
+        assertTrue(request("status", "in_progress").canRequote());
+        assertFalse(request("status", "accepted").canRequote());
+        assertFalse(request("status", "completed").canRequote());
+
+        Map<String, Object> rejected = new HashMap<>();
+        rejected.put("price", 130000L);
+        rejected.put("reason_code", "dificultad");
+        rejected.put("status", "rejected");
+        ServiceRequest afterReject = request("status", "in_progress", "requote", rejected);
+        assertFalse(afterReject.canRequote());
+        assertFalse(afterReject.hasPendingRequote());
+        assertTrue(afterReject.getRequote().isRejected());
+    }
+
+    @Test
+    public void pendingRequoteIsReadFromFirebase() {
+        Map<String, Object> pending = new HashMap<>();
+        pending.put("price", 130000L);
+        pending.put("reason_code", "otro");
+        pending.put("reason_text", "Había que cambiar el tubo");
+        pending.put("status", "pending");
+        pending.put("requested_at", 1792000000000L);
+        ServiceRequest request = request("status", "in_progress", "quoted_price", 95000L, "requote", pending);
+
+        assertTrue(request.hasPendingRequote());
+        assertEquals(130000L, request.getRequote().getPrice());
+        assertEquals("otro", request.getRequote().getReasonCode());
+        assertEquals("Había que cambiar el tubo", request.getRequote().getReasonText());
+        // El precio vigente no cambia hasta que el cliente acepta
+        assertEquals(95000L, request.getQuoted_price());
+        // Sin el nodo no hay re-cotización
+        assertNull(request("status", "in_progress").getRequote());
+    }
 }

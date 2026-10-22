@@ -188,6 +188,10 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnStartTrip.setOnClickListener(v -> confirmStatusChange("on_the_way"));
         mBtnStartWork.setOnClickListener(v -> confirmStatusChange("in_progress"));
         mBtnFinishWork.setOnClickListener(v -> confirmStatusChange("completed"));
+        findViewById(R.id.btn_requote).setOnClickListener(v -> {
+            if (mServiceRequest == null) return;
+            startActivity(RequoteActivity.intent(this, mRequestId, mServiceRequest.getQuoted_price()));
+        });
         findViewById(R.id.btn_register_cash).setOnClickListener(v -> {
             if (mServiceRequest == null) return;
             startActivity(CashReceivedActivity.intent(this, mRequestId,
@@ -320,7 +324,15 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         if ("accepted".equals(status)) {
             note = request.isQuoteAccepted() ? R.string.service_worker_note_accepted : R.string.service_worker_note_waiting;
         } else if ("on_the_way".equals(status) || "in_progress".equals(status)) {
-            note = R.string.service_worker_note_no_cancel;
+            if (request.hasPendingRequote()) {
+                note = R.string.requote_worker_waiting;
+            } else if (request.canRequote()) {
+                note = R.string.requote_worker_hint;
+            } else if (request.getRequote() != null && request.getRequote().isRejected()) {
+                note = R.string.requote_worker_rejected;
+            } else {
+                note = R.string.service_worker_note_no_cancel;
+            }
         }
         mTvStepNote.setVisibility(note != 0 ? View.VISIBLE : View.GONE);
         if (note != 0) mTvStepNote.setText(note);
@@ -333,6 +345,8 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnFinishWork.setVisibility(View.GONE);
         View registerCash = findViewById(R.id.btn_register_cash);
         registerCash.setVisibility(View.GONE);
+        View requote = findViewById(R.id.btn_requote);
+        requote.setVisibility(request.canRequote() ? View.VISIBLE : View.GONE);
 
         String status = request.getStatus();
         if (status != null) {
@@ -345,7 +359,8 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
                     mBtnStartWork.setVisibility(View.VISIBLE);
                     break;
                 case "in_progress":
-                    mBtnFinishWork.setVisibility(View.VISIBLE);
+                    // Con una re-cotización pendiente las reglas no dejan finalizar
+                    if (!request.hasPendingRequote()) mBtnFinishWork.setVisibility(View.VISIBLE);
                     break;
                 case "completed":
                     if (request.isCashPayment() && !request.isPaid()) registerCash.setVisibility(View.VISIBLE);
@@ -357,6 +372,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
                 || mBtnStartWork.getVisibility() == View.VISIBLE
                 || mBtnFinishWork.getVisibility() == View.VISIBLE
                 || registerCash.getVisibility() == View.VISIBLE
+                || requote.getVisibility() == View.VISIBLE
                 || mBtnCancelService.getVisibility() == View.VISIBLE;
         mCardActions.setVisibility(hasAction ? View.VISIBLE : View.GONE);
         // Sin botón principal, Cancelar no necesita separación arriba
