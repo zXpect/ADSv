@@ -308,6 +308,15 @@
                     android:text="@string/detail_cancel_service"
                     android:visibility="gone" />
 
+                <!-- En camino o en progreso: el problema se tramita como PQR (mockups 45 y 46) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_detail_create_pqr"
+                    style="@style/Widget.ADS.Button.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pqr_create"
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/tv_actions_note"
                     android:layout_width="match_parent"

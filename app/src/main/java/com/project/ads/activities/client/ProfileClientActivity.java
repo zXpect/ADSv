@@ -21,6 +21,7 @@ import com.project.ads.providers.ClientProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.project.ads.R;
 import com.project.ads.activities.NotificationsActivity;
+import com.project.ads.activities.PqrListActivity;
 import com.project.ads.activities.MyDataActivity;
 import com.project.ads.activities.TermsConditionsActivity;
 import com.project.ads.helpers.ClientNavHelper;
@@ -107,10 +108,14 @@ public class ProfileClientActivity extends AppCompatActivity {
             changePassword();
         });
 
-        View.OnClickListener comingSoon = v -> Toast.makeText(this, R.string.account_coming_soon, Toast.LENGTH_SHORT).show();
         findViewById(R.id.row_account_notifications).setOnClickListener(v ->
                 startActivity(new Intent(this, NotificationsActivity.class)));
-        findViewById(R.id.row_account_pqr).setOnClickListener(comingSoon);
+        findViewById(R.id.row_account_pqr).setOnClickListener(v -> {
+            Intent intent = new Intent(this, PqrListActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        });
         findViewById(R.id.row_account_history).setOnClickListener(v -> {
             Intent intent = new Intent(this, MyRequestsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);

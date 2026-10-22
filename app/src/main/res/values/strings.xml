@@ -707,4 +707,36 @@
 
     <!-- Aviso sin conexión (HU-35) -->
     <string name="offline_banner">Sin conexión. Algunas acciones no estarán disponibles hasta que vuelva internet.</string>
+    <!-- Rediseño: PQR (mockups 42, 43 y 54; D21) -->
+    <string name="pqr_title">PQR</string>
+    <string name="pqr_subtitle">Peticiones, quejas y reclamos sobre ADS o un servicio.</string>
+    <string name="pqr_deadline_notice">Respondemos en un plazo de <b>15 días hábiles</b>.</string>
+    <string name="pqr_deadline_create">Te responderemos en un plazo de 15 días hábiles.</string>
+    <string name="pqr_mine">Mis PQR</string>
+    <string name="pqr_create">Crear PQR</string>
+    <string name="pqr_send">Enviar PQR</string>
+    <string name="pqr_sent">PQR enviada</string>
+    <string name="pqr_empty_title">No tienes PQR</string>
+    <string name="pqr_empty_message">Si tienes un problema con un servicio o con ADS, crea una PQR.</string>
+    <string name="pqr_error_title">No pudimos cargar tus PQR</string>
+    <string name="pqr_type_label">Tipo</string>
+    <string name="pqr_type_petition">Petición</string>
+    <string name="pqr_type_complaint">Queja</string>
+    <string name="pqr_type_claim">Reclamo</string>
+    <string name="pqr_status_open">Abierta</string>
+    <string name="pqr_status_in_progress">En revisión</string>
+    <string name="pqr_status_closed">Respondida</string>
+    <string name="pqr_sent_on">Enviada el %1$s</string>
+    <string name="pqr_dates_open">%1$s · Responde antes del %2$s</string>
+    <string name="pqr_response_label">Respuesta de ADS</string>
+    <string name="pqr_request_label">Solicitud relacionada</string>
+    <string name="pqr_request_placeholder">Elige la solicitud</string>
+    <string name="pqr_request_none">No tienes solicitudes</string>
+    <string name="pqr_request_option">%1$s · %2$s</string>
+    <string name="pqr_description_label">Descripción</string>
+    <string name="pqr_description_hint">Cuéntanos qué pasó</string>
+    <string name="pqr_error_type">Elige el tipo de PQR</string>
+    <string name="pqr_error_request">Elige la solicitud de la PQR</string>
+    <string name="pqr_error_no_requests">Para crear una PQR necesitas una solicitud de servicio</string>
+    <string name="pqr_error_description">Escribe qué pasó para que podamos ayudarte</string>
 </resources>

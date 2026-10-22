@@ -105,18 +105,24 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
             case "new_request":
                 return R.drawable.ic_nav_inbox;
             case "quote_received":
+            case "requote_received":
                 return R.drawable.ic_notif_quote;
             case "request_accepted":
             case "quote_accepted":
+            case "requote_accepted":
                 return R.drawable.ic_notif_accepted;
             case "request_rejected":
             case "quote_rejected":
             case "request_cancelled":
+            case "requote_rejected":
                 return R.drawable.ic_notif_cancelled;
             case "request_rescheduled":
                 return R.drawable.ic_notif_schedule;
             case "payment_approved":
+            case "cash_received":
                 return R.drawable.ic_notif_payment;
+            case "pqr_answered":
+                return R.drawable.ic_nav_pqr;
             default:
                 return R.drawable.ic_ads_bell;
         }

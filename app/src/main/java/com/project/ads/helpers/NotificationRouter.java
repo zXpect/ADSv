@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.project.ads.providers.NotificationHistoryProvider;
 import com.project.ads.activities.MainActivity;
 import com.project.ads.activities.NotificationsActivity;
+import com.project.ads.activities.PqrListActivity;
 import com.project.ads.activities.client.HomeUserActivity;
 import com.project.ads.activities.client.ServiceRequestDetailActivity;
 import com.project.ads.activities.worker.HomeWorkerActivity;
@@ -47,13 +48,14 @@ public final class NotificationRouter {
 
     private static final Set<String> WORKER_SERVICE_TYPES = new HashSet<>(Arrays.asList(
             "quote_accepted", "quote_rejected", "request_cancelled", "payment_approved",
-            "requote_accepted", "requote_rejected", "pqr_answered"));
+            "requote_accepted", "requote_rejected"));
 
     private static final Set<String> CLIENT_SERVICE_TYPES = new HashSet<>(Arrays.asList(
             "request_accepted", "request_rejected", "quote_received", "request_rescheduled",
-            "status_change", "request_cancelled", "cash_received", "requote_received",
-            // Mientras no exista el detalle de la PQR se abre la solicitud
-            "pqr_answered"));
+            "status_change", "request_cancelled", "cash_received", "requote_received"));
+
+    // La respuesta se lee en la lista de PQR (no hay pantalla de detalle)
+    private static final String TYPE_PQR_ANSWERED = "pqr_answered";
 
     private NotificationRouter() {
     }
@@ -70,6 +72,7 @@ public final class NotificationRouter {
 
     /** Pantalla de destino del tipo para el rol; sin solicitud o tipo desconocido, Notificaciones. */
     public static Class<?> destination(String role, String type, String requestId) {
+        if (TYPE_PQR_ANSWERED.equals(type)) return PqrListActivity.class;
         if (requestId == null || requestId.isEmpty() || type == null) {
             return NotificationsActivity.class;
         }

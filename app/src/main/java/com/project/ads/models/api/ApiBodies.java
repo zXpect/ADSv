@@ -127,6 +127,18 @@ public final class ApiBodies {
         }
     }
 
+    public static class PqrBody {
+        final String service_request_id;
+        final String type;
+        final String description;
+
+        public PqrBody(String serviceRequestId, String type, String description) {
+            this.service_request_id = serviceRequestId;
+            this.type = type;
+            this.description = description;
+        }
+    }
+
     public static class NotificationBody {
         final String request_id;
         final String type;

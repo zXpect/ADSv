@@ -86,6 +86,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     private TextView mTvActionsNoteTop;
     private TextView mTvActionsNote;
     private Button mBtnCancelRequest;
+    private View mBtnCreatePqr;
     private Button mBtnRateService;
     private Button mBtnPayService;
     private Button mBtnAcceptQuote;
@@ -166,6 +167,9 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         mBtnCallWorker.setOnClickListener(v -> callWorker());
         mBtnCancelRequest.setOnClickListener(v -> cancelRequest());
+        mBtnCreatePqr = findViewById(R.id.btn_detail_create_pqr);
+        mBtnCreatePqr.setOnClickListener(v ->
+                startActivity(com.project.ads.activities.PqrCreateActivity.forRequest(this, mRequestId)));
         mBtnRateService.setOnClickListener(v -> openRatingActivity());
         mBtnPayService.setOnClickListener(v -> openPayment());
         mBtnAcceptQuote.setOnClickListener(v -> confirmAcceptQuote());
@@ -409,6 +413,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         mBtnPayService.setVisibility(View.GONE);
         mBtnRateService.setVisibility(View.GONE);
         mBtnCancelRequest.setVisibility(View.GONE);
+        mBtnCreatePqr.setVisibility(View.GONE);
         mTvActionsNoteTop.setVisibility(View.GONE);
         mTvActionsNote.setVisibility(View.GONE);
 
@@ -455,6 +460,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         } else if ("on_the_way".equals(status) || "in_progress".equals(status)) {
             // Después de «Iniciar viaje» ya no se cancela aquí (mockups 45 y 46)
             showNote(mTvActionsNoteTop, R.string.detail_cannot_cancel_note);
+            mBtnCreatePqr.setVisibility(View.VISIBLE);
             any = true;
         }
 

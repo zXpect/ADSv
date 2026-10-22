@@ -1,5 +1,6 @@
 package com.project.ads.retrofit;
 
+import com.project.ads.models.Pqr;
 import com.project.ads.models.api.ApiBodies;
 import com.project.ads.models.api.ApiResponse;
 import com.project.ads.models.api.CatalogData;
@@ -74,6 +75,14 @@ public interface IAdsApi {
     Call<ApiResponse<PaymentData>> getPayment(@Path("reference") String reference);
 
     // ---------- Notificaciones ----------
+
+    // ---------- PQR ----------
+
+    @GET("api/pqr/")
+    Call<ApiResponse<java.util.List<Pqr>>> getPqrs();
+
+    @POST("api/pqr/")
+    Call<ApiResponse<Pqr>> createPqr(@Body ApiBodies.PqrBody body);
 
     @POST("api/notifications/")
     Call<ApiResponse<NotificationResult>> notify(@Body ApiBodies.NotificationBody body);

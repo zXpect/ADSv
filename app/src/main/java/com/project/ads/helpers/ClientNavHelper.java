@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.project.ads.R;
+import com.project.ads.activities.PqrListActivity;
 import com.project.ads.activities.client.HomeUserActivity;
 import com.project.ads.activities.client.MyRequestsActivity;
 import com.project.ads.activities.client.ProfileClientActivity;
@@ -13,7 +14,7 @@ import com.project.ads.activities.client.ProfileClientActivity;
 /**
  * Barra inferior del cliente (mockups 06, 37, 41, 42): Inicio / Solicitudes / PQR / Mi cuenta.
  * Cada pestaña es una Activity; al cambiar se trae al frente sin animación para que
- * se sienta como una sola pantalla. PQR aún no existe (Fase 5).
+ * se sienta como una sola pantalla.
  */
 public final class ClientNavHelper {
 
@@ -46,6 +47,7 @@ public final class ClientNavHelper {
         if (itemId == R.id.nav_client_home) return HomeUserActivity.class;
         if (itemId == R.id.nav_client_requests) return MyRequestsActivity.class;
         if (itemId == R.id.nav_client_account) return ProfileClientActivity.class;
-        return null;   // nav_client_pqr: Fase 5
+        if (itemId == R.id.nav_client_pqr) return PqrListActivity.class;
+        return null;
     }
 }

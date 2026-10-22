@@ -158,6 +158,12 @@
             android:name="com.project.ads.activities.NotificationsActivity"
             android:exported="false" />
         <activity
+            android:name="com.project.ads.activities.PqrListActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.PqrCreateActivity"
+            android:exported="false" />
+        <activity
             android:name="com.project.ads.activities.RoleActivity"
             android:exported="false" />
         <activity

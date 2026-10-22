@@ -3,6 +3,7 @@ package com.project.ads;
 import static org.junit.Assert.assertEquals;
 
 import com.project.ads.activities.NotificationsActivity;
+import com.project.ads.activities.PqrListActivity;
 import com.project.ads.activities.client.ServiceRequestDetailActivity;
 import com.project.ads.activities.worker.RequestDetailActivity;
 import com.project.ads.activities.worker.ServiceDetailWorkerActivity;
@@ -27,7 +28,7 @@ public class NotificationRouterTest {
     public void workerTypes() {
         assertEquals(RequestDetailActivity.class, worker("new_request"));
         for (String type : new String[]{"quote_accepted", "quote_rejected", "request_cancelled", "payment_approved",
-                "requote_accepted", "requote_rejected", "pqr_answered"}) {
+                "requote_accepted", "requote_rejected"}) {
             assertEquals(type, ServiceDetailWorkerActivity.class, worker(type));
         }
     }
@@ -35,7 +36,7 @@ public class NotificationRouterTest {
     @Test
     public void clientTypes() {
         for (String type : new String[]{"request_accepted", "request_rejected", "quote_received", "request_rescheduled",
-                "status_change", "request_cancelled", "cash_received", "requote_received", "pqr_answered"}) {
+                "status_change", "request_cancelled", "cash_received", "requote_received"}) {
             assertEquals(type, ServiceRequestDetailActivity.class, client(type));
         }
     }
@@ -50,5 +51,12 @@ public class NotificationRouterTest {
         assertEquals(NotificationsActivity.class, client("new_request"));
         assertEquals(NotificationsActivity.class, worker("quote_received"));
         assertEquals(NotificationsActivity.class, NotificationRouter.destination("", "quote_received", REQ));
+    }
+
+    @Test
+    public void pqrAnsweredOpensPqrList() {
+        assertEquals(PqrListActivity.class, worker("pqr_answered"));
+        assertEquals(PqrListActivity.class, client("pqr_answered"));
+        assertEquals(PqrListActivity.class, NotificationRouter.destination("cliente", "pqr_answered", null));
     }
 }
