@@ -49,11 +49,15 @@ public final class NotificationRouter {
 
     private static final Set<String> WORKER_SERVICE_TYPES = new HashSet<>(Arrays.asList(
             "quote_accepted", "quote_rejected", "request_cancelled", "payment_approved",
-            "requote_accepted", "requote_rejected"));
+            "requote_accepted", "requote_rejected",
+            // Recordatorios (HU-17): el servicio es pronto o falta registrar el efectivo
+            "service_reminder", "payment_pending"));
 
     private static final Set<String> CLIENT_SERVICE_TYPES = new HashSet<>(Arrays.asList(
             "request_accepted", "request_rejected", "quote_received", "request_rescheduled",
-            "status_change", "request_cancelled", "cash_received", "requote_received"));
+            "status_change", "request_cancelled", "cash_received", "requote_received",
+            // Recordatorios (HU-17)
+            "service_reminder", "quote_pending", "payment_pending"));
 
     // Con pqrId abre el detalle de la PQR (destinationIntent); sin él, la lista
     private static final String TYPE_PQR_ANSWERED = "pqr_answered";

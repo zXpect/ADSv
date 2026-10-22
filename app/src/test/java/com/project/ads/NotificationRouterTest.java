@@ -69,4 +69,16 @@ public class NotificationRouterTest {
         // Los demás tipos no cambian
         assertEquals(ServiceRequestDetailActivity.class, NotificationRouter.destination("cliente", "quote_received", REQ, "12"));
     }
+
+    @Test
+    public void remindersOpenTheRequest() {
+        // HU-17: service_reminder a los dos; quote_pending al cliente; payment_pending a los dos
+        assertEquals(ServiceDetailWorkerActivity.class, worker("service_reminder"));
+        assertEquals(ServiceDetailWorkerActivity.class, worker("payment_pending"));
+        assertEquals(ServiceRequestDetailActivity.class, client("service_reminder"));
+        assertEquals(ServiceRequestDetailActivity.class, client("quote_pending"));
+        assertEquals(ServiceRequestDetailActivity.class, client("payment_pending"));
+        // quote_pending no le llega al trabajador
+        assertEquals(NotificationsActivity.class, worker("quote_pending"));
+    }
 }
