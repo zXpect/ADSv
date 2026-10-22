@@ -339,6 +339,7 @@
     <string name="profile_new">Nuevo</string>
     <string name="profile_rating_label">Calificación</string>
     <string name="profile_ratings_label">Calificaciones</string>
+    <string name="profile_jobs_label">Trabajos</string>
     <string name="profile_distance_label">De ti</string>
     <string name="profile_about">Sobre mí</string>
     <string name="profile_categories">Oficios</string>

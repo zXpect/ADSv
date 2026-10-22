@@ -15,6 +15,8 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.project.ads.R;
 import com.project.ads.helpers.SearchTimer;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.models.api.WorkerStats;
 import com.project.ads.models.Worker;
 import com.project.ads.providers.CatalogProvider;
 import com.project.ads.providers.WorkerProvider;
@@ -91,7 +93,7 @@ public class WorkerProfileActivity extends AppCompatActivity {
         findViewById(R.id.tv_profile_verified).setVisibility(
                 "approved".equals(worker.getVerificationStatusString()) ? View.VISIBLE : View.GONE);
 
-        // Calificación y número de calificaciones (no hay contador de trabajos)
+        // Calificación y, mientras llegan los trabajos realizados, el número de calificaciones
         TextView rating = findViewById(R.id.tv_profile_rating);
         TextView ratings = findViewById(R.id.tv_profile_ratings);
         if (worker.getTotalRatings() > 0) {
@@ -102,6 +104,7 @@ public class WorkerProfileActivity extends AppCompatActivity {
             rating.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             ratings.setText("0");
         }
+        loadCompletedJobs(ratings);
 
         String description = worker.getDescription();
         boolean hasDescription = !TextUtils.isEmpty(description) && !description.trim().isEmpty();
@@ -141,5 +144,22 @@ public class WorkerProfileActivity extends AppCompatActivity {
             if (!part.isEmpty() && initials.length() < 2) initials.append(Character.toUpperCase(part.charAt(0)));
         }
         return initials.toString();
+    }
+
+    /** «Trabajos» del mockup 09: solicitudes completadas, con o sin calificación (HU-11). */
+    private void loadCompletedJobs(TextView count) {
+        new WorkerProvider().getStats(mWorkerId, new ApiCallback<WorkerStats>() {
+            @Override
+            public void onSuccess(WorkerStats data) {
+                if (isFinishing() || data == null) return;
+                count.setText(String.valueOf(data.getCompletedJobs()));
+                ((TextView) findViewById(R.id.tv_profile_ratings_label)).setText(R.string.profile_jobs_label);
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                // Se queda el número de calificaciones
+            }
+        });
     }
 }

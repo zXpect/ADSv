@@ -12,6 +12,7 @@ import com.project.ads.models.api.QuoteLimits;
 import com.project.ads.models.api.QuoteReference;
 import com.project.ads.models.api.RatingData;
 import com.project.ads.models.api.RequestActionData;
+import com.project.ads.models.api.WorkerStats;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -104,6 +105,10 @@ public interface IAdsApi {
 
     @GET("api/pqr/{pqrId}/")
     Call<ApiResponse<Pqr>> getPqr(@Path("pqrId") String pqrId);
+    // ---------- Trabajador ----------
+
+    @GET("api/workers/{workerId}/stats/")
+    Call<ApiResponse<WorkerStats>> getWorkerStats(@Path("workerId") String workerId);
 
     @POST("api/notifications/")
     Call<ApiResponse<NotificationResult>> notify(@Body ApiBodies.NotificationBody body);

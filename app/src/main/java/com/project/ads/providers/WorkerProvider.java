@@ -212,4 +212,10 @@ public class WorkerProvider {
     public void removeWorkerListener(String workerId, ValueEventListener listener) {
         mDataBase.child(workerId).removeEventListener(listener);
     }
+
+    /** Trabajos realizados y calificación para el perfil (GET /api/workers/<id>/stats/, HU-11). */
+    public void getStats(String workerId, ApiCallback<com.project.ads.models.api.WorkerStats> callback) {
+        com.project.ads.retrofit.ApiCallAdapter.enqueue(
+                com.project.ads.retrofit.AdsApiClient.getApi().getWorkerStats(workerId), callback);
+    }
 }
