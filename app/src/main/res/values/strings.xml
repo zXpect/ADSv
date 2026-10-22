@@ -763,5 +763,21 @@
     <string name="payment_method_worker_cash">Pago: efectivo</string>
     <string name="payment_status_cash_client">Pagas en efectivo al técnico</string>
     <string name="payment_status_cash_worker">El cliente paga en efectivo</string>
+    <!-- Pago en efectivo (mockups 29 y 31, D10) -->
+    <string name="cash_register_action">Recibí el pago</string>
+    <string name="cash_status_finished">Finalizado</string>
+    <string name="cash_received_title">Cobra el servicio</string>
+    <string name="cash_received_subtitle">%1$s eligió pagar en efectivo.</string>
+    <string name="cash_received_subtitle_generic">El cliente eligió pagar en efectivo.</string>
+    <string name="cash_received_amount_label">Debes recibir</string>
+    <string name="cash_received_notice">Confirma solo cuando tengas el dinero en la mano. El cliente verá el pago registrado y podrá calificarte.</string>
+    <string name="cash_received_confirm">Recibí el pago</string>
+    <string name="cash_received_done">Pago registrado</string>
+    <string name="cash_paid_title">Pago en efectivo registrado</string>
+    <string name="cash_paid_message">%1$s registró que recibió el pago en efectivo.</string>
+    <string name="cash_paid_message_generic">El técnico registró que recibió el pago en efectivo.</string>
+    <string name="cash_paid_disagree">¿No estás de acuerdo? Puedes abrir una PQR y la revisamos. Respondemos en 15 días hábiles.</string>
+    <string name="cash_paid_open_pqr">Abrir una PQR</string>
+    <string name="cash_paid_home">Volver al inicio</string>
     <string name="detail_cash_note">Paga en efectivo al técnico. Él registrará el pago y después podrás calificar.</string>
 </resources>

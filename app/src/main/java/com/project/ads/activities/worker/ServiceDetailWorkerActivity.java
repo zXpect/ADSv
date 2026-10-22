@@ -188,6 +188,11 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnStartTrip.setOnClickListener(v -> confirmStatusChange("on_the_way"));
         mBtnStartWork.setOnClickListener(v -> confirmStatusChange("in_progress"));
         mBtnFinishWork.setOnClickListener(v -> confirmStatusChange("completed"));
+        findViewById(R.id.btn_register_cash).setOnClickListener(v -> {
+            if (mServiceRequest == null) return;
+            startActivity(CashReceivedActivity.intent(this, mRequestId,
+                    mServiceRequest.getFormattedQuotedPrice(), mServiceRequest.getClient_name()));
+        });
         mBtnCallClient.setOnClickListener(v -> callClient());
         mBtnViewMap.setOnClickListener(v -> openMaps());
     }
@@ -326,6 +331,8 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mBtnStartTrip.setVisibility(View.GONE);
         mBtnStartWork.setVisibility(View.GONE);
         mBtnFinishWork.setVisibility(View.GONE);
+        View registerCash = findViewById(R.id.btn_register_cash);
+        registerCash.setVisibility(View.GONE);
 
         String status = request.getStatus();
         if (status != null) {
@@ -340,12 +347,16 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
                 case "in_progress":
                     mBtnFinishWork.setVisibility(View.VISIBLE);
                     break;
+                case "completed":
+                    if (request.isCashPayment() && !request.isPaid()) registerCash.setVisibility(View.VISIBLE);
+                    break;
             }
         }
         // Cancelar vive en la barra de acción (visible antes de «Iniciar viaje»)
         boolean hasAction = mBtnStartTrip.getVisibility() == View.VISIBLE
                 || mBtnStartWork.getVisibility() == View.VISIBLE
                 || mBtnFinishWork.getVisibility() == View.VISIBLE
+                || registerCash.getVisibility() == View.VISIBLE
                 || mBtnCancelService.getVisibility() == View.VISIBLE;
         mCardActions.setVisibility(hasAction ? View.VISIBLE : View.GONE);
         // Sin botón principal, Cancelar no necesita separación arriba

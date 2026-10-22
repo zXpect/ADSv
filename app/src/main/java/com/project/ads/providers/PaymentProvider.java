@@ -38,6 +38,11 @@ public class PaymentProvider {
                 new ApiBodies.PaymentMethodBody(paymentMethod)), callback);
     }
 
+    /** Trabajador: «Recibí el pago» de un servicio en efectivo completado (D10). */
+    public void registerCash(String requestId, ApiCallback<PaymentMethodData> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().registerCash(requestId), callback);
+    }
+
     public void createPayment(String requestId, ApiCallback<PaymentData> callback) {
         ApiCallAdapter.enqueue(
                 AdsApiClient.getApi().createPayment(

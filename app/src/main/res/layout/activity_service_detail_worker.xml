@@ -402,6 +402,14 @@
                 android:text="@string/service_worker_finish"
                 android:visibility="gone" />
 
+            <!-- Completado y en efectivo: registrar el pago (mockup 31, D10) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_register_cash"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/cash_register_action"
+                android:visibility="gone" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_quote_cancel"
                 style="@style/Widget.ADS.Button.Secondary"

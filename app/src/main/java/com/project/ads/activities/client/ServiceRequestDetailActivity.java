@@ -263,6 +263,9 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         updateQuoteCard(request);
         updatePaymentMethodCard(request);
         updateActionButtons(request);
+        if (!isFinishing() && CashPaidActivity.shouldShow(this, request)) {
+            startActivity(CashPaidActivity.intent(this, request));
+        }
 
         boolean activeWithWorker = "accepted".equals(request.getStatus())
                 || "on_the_way".equals(request.getStatus()) || "in_progress".equals(request.getStatus());

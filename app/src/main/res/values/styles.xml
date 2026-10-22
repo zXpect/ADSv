@@ -32,6 +32,15 @@
     </style>
 
     <!-- Título grande de pantalla (p. ej. "Mis solicitudes"): 26/32, 800 -->
+    <!-- Monto grande (mockups 29 y 31): 40/46, 800, sin espaciado -->
+    <style name="TextAppearance.ADS.Amount">
+        <item name="android:fontFamily">@font/sora_extrabold</item>
+        <item name="fontFamily">@font/sora_extrabold</item>
+        <item name="android:textSize">40sp</item>
+        <item name="lineHeight">46sp</item>
+        <item name="android:textColor">@color/ads_text</item>
+    </style>
+
     <style name="TextAppearance.ADS.Headline">
         <item name="android:fontFamily">@font/sora_extrabold</item>
         <item name="fontFamily">@font/sora_extrabold</item>

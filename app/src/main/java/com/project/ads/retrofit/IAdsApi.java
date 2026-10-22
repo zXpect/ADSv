@@ -58,6 +58,9 @@ public interface IAdsApi {
     Call<ApiResponse<QuoteData>> acceptQuote(@Path("requestId") String requestId,
                                              @Body ApiBodies.PaymentMethodBody body);
 
+    @POST("api/requests/{requestId}/cash-received/")
+    Call<ApiResponse<PaymentMethodData>> registerCash(@Path("requestId") String requestId);
+
     @POST("api/requests/{requestId}/payment-method/")
     Call<ApiResponse<PaymentMethodData>> setPaymentMethod(@Path("requestId") String requestId,
                                                           @Body ApiBodies.PaymentMethodBody body);
