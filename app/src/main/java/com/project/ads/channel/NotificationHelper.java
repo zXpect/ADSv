@@ -12,6 +12,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import com.project.ads.R;
 
@@ -53,7 +54,9 @@ public class NotificationHelper extends ContextWrapper {
                 .setAutoCancel(true)
                 .setSound(soundUri)
                 .setContentIntent(intent)
-                .setSmallIcon(R.drawable.ic_worker_vector);
+                // Silueta del logo ADS en naranja de marca
+                .setSmallIcon(R.drawable.ic_stat_ads)
+                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.ads_brand));
     }
 
 
@@ -64,6 +67,8 @@ public class NotificationHelper extends ContextWrapper {
                 .setAutoCancel(true)
                 .setSound(soundUri)
                 .setContentIntent(intent)
-                .setSmallIcon(R.drawable.ic_worker_vector);
+                // Silueta del logo ADS en naranja de marca
+                .setSmallIcon(R.drawable.ic_stat_ads)
+                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.ads_brand));
     }
 }

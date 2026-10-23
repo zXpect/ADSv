@@ -194,6 +194,14 @@
             </intent-filter>
         </activity>
 
+        <!-- Ícono y color de las push que muestra el sistema con la app cerrada -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_ads" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/ads_brand" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
