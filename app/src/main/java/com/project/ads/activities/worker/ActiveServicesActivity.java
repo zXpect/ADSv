@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.helpers.WorkerNavHelper;
 import com.project.ads.models.ServiceRequest;
+import com.project.ads.helpers.DisplayNameHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -194,7 +195,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
                 title.setText(request.getService_type() != null
                         ? request.getService_type() : getString(R.string.history_service_default));
 
-                String client = request.getClient_name() != null ? request.getClient_name() : getString(R.string.inbox_client_default);
+                String client = request.getClient_name() != null ? DisplayNameHelper.format(request.getClient_name()) : getString(R.string.inbox_client_default);
                 meta.setText(client + " · " + formatDate(request, pending));
 
                 // Chip: naranja en curso, navy completado
@@ -209,9 +210,9 @@ public class ActiveServicesActivity extends AppCompatActivity {
                 status.setText(label);
                 boolean done = !pending;
                 ViewCompat.setBackgroundTintList(status, ColorStateList.valueOf(ContextCompat.getColor(
-                        ActiveServicesActivity.this, done ? R.color.ads_text : R.color.ads_chip_bg)));
+                        ActiveServicesActivity.this, done ? R.color.ads_chip_strong_bg : R.color.ads_chip_bg)));
                 status.setTextColor(ContextCompat.getColor(ActiveServicesActivity.this,
-                        done ? R.color.ads_surface : R.color.ads_chip_text));
+                        done ? R.color.ads_chip_strong_text : R.color.ads_chip_text));
 
                 // Precio (pendientes) o calificación (realizados)
                 detail.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);

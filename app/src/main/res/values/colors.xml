@@ -38,6 +38,10 @@
     <color name="ads_highlight_raised">#2A2647</color> <!-- ficha de ícono sobre la tarjeta destacada -->
     <color name="ads_highlight_track">#3A3658</color>  <!-- rieles (interruptor apagado, referencia de precio) -->
     <color name="ads_switch_disabled">#8C88A3</color>  <!-- botón del interruptor deshabilitado -->
+    <!-- Chip de estado fuerte (Completada, Aprobado): navy con texto crema.
+         En oscuro es una ficha tonal, no el bloque crema invertido. -->
+    <color name="ads_chip_strong_bg">#1B1830</color>
+    <color name="ads_chip_strong_text">#F6F3EE</color>
 
     <!-- ===================================================================
          COLORES HEREDADOS

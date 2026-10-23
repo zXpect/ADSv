@@ -37,6 +37,7 @@ import com.project.ads.models.api.QuoteData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.QuoteProvider;
 import com.project.ads.providers.RequestProvider;
+import com.project.ads.helpers.DisplayNameHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -250,7 +251,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
 
     private void populateUI(ServiceRequest request) {
         String workerName = !TextUtils.isEmpty(request.getWorker_name())
-                ? request.getWorker_name() : getString(R.string.request_the_worker);
+                ? DisplayNameHelper.format(request.getWorker_name()) : getString(R.string.request_the_worker);
         mTvWorkerName.setText(workerName);
         mTvWorkerInitials.setText(initialsOf(workerName));
         boolean hasPhone = !TextUtils.isEmpty(request.getWorker_phone());
@@ -353,8 +354,8 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         }
 
         mTvStatus.setText(chip);
-        int background = chipStyle == 1 ? R.color.ads_text : chipStyle == 2 ? R.color.ads_surface_alt : R.color.ads_chip_bg;
-        int text = chipStyle == 1 ? R.color.ads_surface : chipStyle == 2 ? R.color.ads_charcoal : R.color.ads_chip_text;
+        int background = chipStyle == 1 ? R.color.ads_chip_strong_bg : chipStyle == 2 ? R.color.ads_surface_alt : R.color.ads_chip_bg;
+        int text = chipStyle == 1 ? R.color.ads_chip_strong_text : chipStyle == 2 ? R.color.ads_charcoal : R.color.ads_chip_text;
         ViewCompat.setBackgroundTintList(mTvStatus, ColorStateList.valueOf(ContextCompat.getColor(this, background)));
         mTvStatus.setTextColor(ContextCompat.getColor(this, text));
         mTvTitle.setText(title);
@@ -538,11 +539,22 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             mTvQuoteStatus.setText(R.string.quote_status_answer_client);
         } else if (request.isQuoteRejected()) {
             mTvQuoteStatus.setText(R.string.quote_status_rejected_client);
-        } else {
+        } else if ("accepted".equals(status)) {
             mTvQuoteStatus.setText(R.string.quote_status_missing_client);
+        } else {
+            // En curso o terminada sin cotización (solicitudes de antes de la cotización):
+            // no hay cotización que esperar
+            mTvQuoteStatus.setVisibility(View.GONE);
         }
 
-        if ("completed".equals(status)) {
+        boolean hasPayment = request.hasQuote() || request.isPaid() || request.isPaymentPending();
+        if (!request.hasQuote() && !hasPayment && details == null
+                && mTvQuoteStatus.getVisibility() == View.GONE) {
+            mCardQuote.setVisibility(View.GONE);
+            return;
+        }
+
+        if ("completed".equals(status) && hasPayment) {
             mTvPaymentStatus.setVisibility(View.VISIBLE);
             if (request.isPaid()) {
                 mTvPaymentStatus.setText(R.string.payment_status_paid);

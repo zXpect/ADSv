@@ -20,6 +20,7 @@ import com.project.ads.models.api.WorkerStats;
 import com.project.ads.models.Worker;
 import com.project.ads.providers.CatalogProvider;
 import com.project.ads.providers.WorkerProvider;
+import com.project.ads.helpers.DisplayNameHelper;
 
 import java.util.Locale;
 
@@ -80,7 +81,7 @@ public class WorkerProfileActivity extends AppCompatActivity {
         String name = ((worker.getName() != null ? worker.getName() : "") + " "
                 + (worker.getLastName() != null ? worker.getLastName() : "")).trim();
         if (name.isEmpty()) name = getString(R.string.request_the_worker);
-        ((TextView) findViewById(R.id.tv_profile_name)).setText(name);
+        ((TextView) findViewById(R.id.tv_profile_name)).setText(DisplayNameHelper.format(name));
 
         // Foto si existe; si no, iniciales sobre navy
         ((TextView) findViewById(R.id.tv_profile_initials)).setText(initialsOf(name));

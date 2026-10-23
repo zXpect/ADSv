@@ -124,7 +124,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
     }
 
     private void setupApprovedStatus(DocumentViewHolder holder, WorkerDocument document) {
-        setChip(holder, R.string.mydocs_chip_approved, R.color.ads_text, R.color.ads_surface);
+        setChip(holder, R.string.mydocs_chip_approved, R.color.ads_chip_strong_bg, R.color.ads_chip_strong_text);
         holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.ads_line));
 
         // Mostrar fecha de revisión si está disponible

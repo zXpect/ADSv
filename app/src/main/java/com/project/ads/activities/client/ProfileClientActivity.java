@@ -26,6 +26,7 @@ import com.project.ads.activities.MyDataActivity;
 import com.project.ads.activities.TermsConditionsActivity;
 import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.NotificationPermissionHelper;
+import com.project.ads.helpers.DisplayNameHelper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -181,7 +182,7 @@ public class ProfileClientActivity extends AppCompatActivity {
     private void updateUI() {
         runOnUiThread(() -> {
             // Información básica
-            String fullName = currentClient.getName() + " " + currentClient.getLastName();
+            String fullName = DisplayNameHelper.format(currentClient.getName() + " " + currentClient.getLastName());
             tvClientName.setText(fullName);
             tvInitials.setText(initialsOf(fullName));
             tvClientEmail.setText(currentClient.getEmail());

@@ -14,6 +14,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.project.ads.R;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.api.QuoteReference;
+import com.project.ads.helpers.DisplayNameHelper;
 
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<PendingRequests
 
         public void bind(ServiceRequest request) {
             tvClientName.setText(!TextUtils.isEmpty(request.getClient_name())
-                    ? request.getClient_name() : itemView.getContext().getString(R.string.inbox_client_default));
+                    ? DisplayNameHelper.format(request.getClient_name()) : itemView.getContext().getString(R.string.inbox_client_default));
             tvTimestamp.setText(request.getTimeAgo());
 
             String service = request.getService_type() != null ? request.getService_type() : "";

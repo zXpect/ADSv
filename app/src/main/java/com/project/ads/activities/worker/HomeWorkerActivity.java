@@ -536,6 +536,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
         // Interruptor habilitado y apagado
         mButtonToggleConnection.setEnabled(true);
         mButtonToggleConnection.setAlpha(1.0f);
+        mButtonToggleConnection.setVisibility(View.VISIBLE);
         mButtonToggleConnection.setChecked(false);
 
         Log.d(TAG, "✅ UI configurada - Botón HABILITADO para conectar");
@@ -576,7 +577,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
         // Interruptor deshabilitado mientras no esté verificado
         mButtonToggleConnection.setEnabled(false);
-        mButtonToggleConnection.setAlpha(0.5f);
+        // Sin verificar no se puede conectar: se oculta el interruptor (el mensaje explica por qué)
+        mButtonToggleConnection.setVisibility(View.GONE);
         mButtonToggleConnection.setChecked(false);
 
         // Forzar desconexión si estaba conectado
@@ -1039,6 +1041,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
                 // Interruptor encendido
                 mButtonToggleConnection.setEnabled(true);
                 mButtonToggleConnection.setAlpha(1.0f);
+                mButtonToggleConnection.setVisibility(View.VISIBLE);
                 mButtonToggleConnection.setChecked(true);
             } else {
                 // MODO DESCONECTADO (pero verificado)

@@ -43,6 +43,7 @@ import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.models.Worker;
 import com.project.ads.providers.GeofireProvider;
 import com.project.ads.providers.WorkerProvider;
+import com.project.ads.helpers.DisplayNameHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -523,7 +524,7 @@ public class WorkersActivity extends AppCompatActivity {
                 Locale locale = new Locale("es", "CO");
                 String name = worker.getName() != null ? worker.getName() : "Trabajador";
                 if (worker.getLastName() != null) name = (name + " " + worker.getLastName()).trim();
-                workerName.setText(name);
+                workerName.setText(DisplayNameHelper.format(name));
                 String categories = worker.getCategoriesDisplay();
                 workerWork.setText(categories != null ? categories : "Servicio general");
                 workerDistance.setText(String.format(locale, "%.1f km", worker.getDistance()));

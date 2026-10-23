@@ -30,6 +30,7 @@ import com.project.ads.activities.PqrListActivity;
 import com.project.ads.activities.TermsConditionsActivity;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.WorkerNavHelper;
+import com.project.ads.helpers.DisplayNameHelper;
 
 // ===== AGREGAR ESTOS IMPORTS =====
 import com.bumptech.glide.Glide;
@@ -215,7 +216,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
     private void updateUI() {
         runOnUiThread(() -> {
             // Información básica
-            tvWorkerName.setText(currentWorker.getFullName());
+            tvWorkerName.setText(DisplayNameHelper.format(currentWorker.getFullName()));
             tvInitials.setText(initialsOf(currentWorker.getFullName()));
             String categories = currentWorker.getCategoriesDisplay();
             tvWorkerType.setText(categories != null ? categories : getString(R.string.no_specialty));

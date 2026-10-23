@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.firebase.database.Query;
 import com.project.ads.models.ServiceRequest;
+import com.project.ads.helpers.DisplayNameHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -551,7 +552,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
             mBtnConnect.setText(R.string.map_worker_connect);
         } else if (shown != null) {
             ServiceRequest request = shown.request;
-            String client = request.getClient_name() != null ? request.getClient_name() : getString(R.string.inbox_client_default);
+            String client = request.getClient_name() != null ? DisplayNameHelper.format(request.getClient_name()) : getString(R.string.inbox_client_default);
             String service = request.getService_type() != null ? request.getService_type() : getString(R.string.history_service_default);
             mRequestTitle.setText(client + " · " + service);
             mRequestMeta.setText(requestMeta(shown));

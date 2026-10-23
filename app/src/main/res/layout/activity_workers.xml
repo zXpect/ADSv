@@ -146,9 +146,18 @@
                 android:padding="32dp"
                 android:visibility="gone">
 
+                <!-- Mismo estado vacío que la bandeja de solicitudes -->
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_search"
+                    app:tint="@color/ads_muted" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_4"
                     android:gravity="center"
                     android:text="@string/workers_empty_title"
                     android:textAppearance="@style/TextAppearance.ADS.Subtitle" />

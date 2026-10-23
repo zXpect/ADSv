@@ -30,6 +30,7 @@ import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.CatalogProvider;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.providers.NotificationProvider;
+import com.project.ads.helpers.DisplayNameHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -247,7 +248,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     private void populateUI(ServiceRequest request) {
         String status = request.getStatus() != null ? request.getStatus().toLowerCase() : "";
         mTvClientName.setText(request.getClient_name() != null
-                ? request.getClient_name() : getString(R.string.inbox_client_default));
+                ? DisplayNameHelper.format(request.getClient_name()) : getString(R.string.inbox_client_default));
         mTvAddress.setText(request.getAddress() != null
                 ? request.getAddress() : getString(R.string.service_worker_no_address));
         String description = request.getDescription();
@@ -268,8 +269,8 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         if (label != 0) mTvStatus.setText(label); else mTvStatus.setText(request.getStatusDisplayText());
         boolean orange = "accepted".equals(status);
         ViewCompat.setBackgroundTintList(mTvStatus, ColorStateList.valueOf(ContextCompat.getColor(this,
-                orange ? R.color.ads_chip_bg : R.color.ads_text)));
-        mTvStatus.setTextColor(ContextCompat.getColor(this, orange ? R.color.ads_chip_text : R.color.ads_surface));
+                orange ? R.color.ads_chip_bg : R.color.ads_chip_strong_bg)));
+        mTvStatus.setTextColor(ContextCompat.getColor(this, orange ? R.color.ads_chip_text : R.color.ads_chip_strong_text));
 
         updateStatusFlow(status);
         updateStepNote(request, status);
@@ -315,7 +316,9 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
                     ? ColorStateList.valueOf(ContextCompat.getColor(this, R.color.ads_brand_text)) : null);
             androidx.core.widget.TextViewCompat.setTextAppearance(mStepLabels[i], now
                     ? R.style.TextAppearance_ADS_Label : R.style.TextAppearance_ADS_Caption);
-            mStepLabels[i].setTextColor(ContextCompat.getColor(this, now ? R.color.ads_text : R.color.ads_muted));
+            // Actual en fuerte, hechos en normal, pendientes apagados
+            mStepLabels[i].setTextColor(ContextCompat.getColor(this,
+                    now ? R.color.ads_text : done ? R.color.ads_charcoal : R.color.ads_muted));
         }
     }
 

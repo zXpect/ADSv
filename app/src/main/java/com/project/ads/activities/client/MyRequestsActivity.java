@@ -27,6 +27,7 @@ import com.project.ads.R;
 import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.ReasonHelper;
 import com.project.ads.models.ServiceRequest;
+import com.project.ads.helpers.DisplayNameHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -263,7 +264,7 @@ public class MyRequestsActivity extends AppCompatActivity {
 
                 // Técnico · fecha (la agendada si existe)
                 String worker = request.getWorker_name() != null
-                        ? request.getWorker_name() : getString(R.string.history_worker_pending);
+                        ? DisplayNameHelper.format(request.getWorker_name()) : getString(R.string.history_worker_pending);
                 tvWorkerName.setText(worker + " · " + formatDate(request, active));
 
                 bindStatus(request);
@@ -305,8 +306,8 @@ public class MyRequestsActivity extends AppCompatActivity {
                         break;
                     case "completed":
                         label = R.string.request_status_completed;
-                        background = R.color.ads_text;
-                        text = R.color.ads_surface;
+                        background = R.color.ads_chip_strong_bg;
+                        text = R.color.ads_chip_strong_text;
                         break;
                     case "rejected":
                         label = R.string.request_status_rejected;

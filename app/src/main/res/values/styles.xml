@@ -262,10 +262,10 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <!-- Completada, Verificado: navy (se invierte en oscuro) -->
+    <!-- Completada, Verificado: navy (en oscuro, ficha tonal) -->
     <style name="Widget.ADS.StatusChip.Strong">
-        <item name="android:backgroundTint">@color/ads_text</item>
-        <item name="android:textColor">@color/ads_surface</item>
+        <item name="android:backgroundTint">@color/ads_chip_strong_bg</item>
+        <item name="android:textColor">@color/ads_chip_strong_text</item>
     </style>
 
     <!-- Cancelada, Sin calificar: gris -->
