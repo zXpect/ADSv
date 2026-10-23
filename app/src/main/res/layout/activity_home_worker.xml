@@ -364,6 +364,50 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Próximo servicio sin servicios: estado vacío en lugar del hueco -->
+            <LinearLayout
+                android:id="@+id/card_next_service_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_ads_dashed_card"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/space_4"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_tile"
+                    android:layout_height="@dimen/icon_tile"
+                    android:background="@drawable/bg_ads_icon_tile"
+                    android:contentDescription="@null"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_clock"
+                    app:tint="@color/ads_chip_text" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/worker_home_next_empty_title"
+                        android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/worker_home_next_empty_message"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                </LinearLayout>
+            </LinearLayout>
+
             <!-- Desempeño del diseño anterior: el mockup no lo muestra -->
             <LinearLayout
                 android:id="@+id/cardPerformance"

@@ -390,6 +390,36 @@ public class ServiceRequest {
         return text.toString();
     }
 
+    /**
+     * Título corto para las tarjetas de las listas (mockups 41 y 52): la primera tarea,
+     * con la cantidad si es más de una ("Cambiar interruptor · 2 unidades") y "+N" si hay
+     * más tareas. null si no hay tareas o el catálogo no la tiene (se usa el oficio).
+     */
+    public String getTaskTitle(com.project.ads.models.api.CatalogData catalog) {
+        if (task_items == null || task_items.isEmpty()) return null;
+        Map<String, Object> first = task_items.get(0);
+        Object quantityValue = first.get("quantity");
+        double quantity = quantityValue instanceof Number ? ((Number) quantityValue).doubleValue() : 0;
+        StringBuilder title = new StringBuilder();
+        Object custom = first.get("custom_description");
+        if (custom != null) {
+            title.append(custom);
+        } else {
+            com.project.ads.models.api.CatalogData.Category category =
+                    catalog != null && service_category != null ? catalog.findCategory(service_category) : null;
+            com.project.ads.models.api.CatalogData.Task task =
+                    category != null ? category.findTask(String.valueOf(first.get("task"))) : null;
+            if (task == null) return null;
+            title.append(task.getName());
+            if (quantity > 1) {
+                title.append(" · ").append(RequestTaskItem.formatQuantity(quantity)).append(' ')
+                        .append(com.project.ads.models.api.CatalogData.unitLabel(task.getUnit(), quantity));
+            }
+        }
+        if (task_items.size() > 1) title.append(" +").append(task_items.size() - 1);
+        return title.toString();
+    }
+
     /** "mié 15/10 a las 14:30 · 1 h 30 min" */
     public String getScheduleDisplay() {
         if (!hasSchedule()) return null;

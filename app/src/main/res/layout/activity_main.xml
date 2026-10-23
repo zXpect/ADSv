@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Bienvenida · mockup 02 (docs/mockups/Bienvenida.dc.html) -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -59,6 +60,49 @@
                 android:text="@string/welcome_tagline"
                 android:textAppearance="@style/TextAppearance.ADS.Body"
                 android:textColor="@color/ads_on_navy_muted" />
+
+            <!-- Tres beneficios cortos (lo que ya hace la app; no está en el mockup 02) -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/space_3"
+                    android:gravity="center_vertical"
+                    android:text="@string/welcome_benefit_verified"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                    android:textColor="@color/ads_on_navy"
+                    app:drawableStartCompat="@drawable/ic_shield_check"
+                    app:drawableTint="@color/ads_brand" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:drawablePadding="@dimen/space_3"
+                    android:gravity="center_vertical"
+                    android:text="@string/welcome_benefit_price"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                    android:textColor="@color/ads_on_navy"
+                    app:drawableStartCompat="@drawable/ic_notif_quote"
+                    app:drawableTint="@color/ads_brand" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:drawablePadding="@dimen/space_3"
+                    android:gravity="center_vertical"
+                    android:text="@string/welcome_benefit_payment"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                    android:textColor="@color/ads_on_navy"
+                    app:drawableStartCompat="@drawable/ic_payment_cash"
+                    app:drawableTint="@color/ads_brand" />
+            </LinearLayout>
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton

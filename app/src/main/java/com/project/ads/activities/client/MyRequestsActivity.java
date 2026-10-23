@@ -27,6 +27,9 @@ import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.ReasonHelper;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.helpers.DisplayNameHelper;
+import com.project.ads.models.api.CatalogData;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.providers.CatalogProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,6 +62,7 @@ public class MyRequestsActivity extends AppCompatActivity {
     private String mClientId;
     private List<ServiceRequest> mRequests;
     private RequestsAdapter mAdapter;
+    private CatalogData mCatalog;
 
     // Firebase
     private DatabaseReference mDatabaseReference;
@@ -82,7 +86,26 @@ public class MyRequestsActivity extends AppCompatActivity {
         initViews();
         ClientNavHelper.setup(this, R.id.nav_client_requests);
         setupRecyclerView();
+        loadCatalogForTitles();
         loadMyRequests();
+    }
+
+    /** Nombres de las tareas para los títulos de las tarjetas; sin catálogo se usa el oficio. */
+    private void loadCatalogForTitles() {
+        mCatalog = CatalogProvider.cachedCatalog();
+        if (mCatalog != null) return;
+        new CatalogProvider().getCatalog(new ApiCallback<CatalogData>() {
+            @Override
+            public void onSuccess(CatalogData catalog) {
+                mCatalog = catalog;
+                if (!isFinishing() && mAdapter != null) mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                // Sin catálogo los títulos quedan con el nombre del oficio
+            }
+        });
     }
 
     private void initViews() {
@@ -258,8 +281,11 @@ public class MyRequestsActivity extends AppCompatActivity {
                 tvSection.setText(active ? R.string.history_section_active
                         : R.string.history_section_previous);
 
-                tvServiceType.setText(request.getService_type() != null
-                        ? request.getService_type() : getString(R.string.history_service_default));
+                // «Oficio · tarea» como el mockup 41; sin tareas o catálogo, solo el oficio
+                String service = request.getService_type() != null
+                        ? request.getService_type() : getString(R.string.history_service_default);
+                String task = request.getTaskTitle(mCatalog);
+                tvServiceType.setText(task != null ? service + " · " + task : service);
 
                 // Técnico · fecha (la agendada si existe)
                 String worker = request.getWorker_name() != null

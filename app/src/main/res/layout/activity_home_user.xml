@@ -47,6 +47,66 @@
                 android:text="@string/home_greeting_default"
                 android:textAppearance="@style/TextAppearance.ADS.Title" />
 
+            <!-- Servicio activo: va bajo el saludo para que se vea sin desplazar
+                 (con 7 oficios, debajo de la cuadrícula quedaba fuera de la pantalla) -->
+            <LinearLayout
+                android:id="@+id/card_active_service"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:background="@drawable/bg_ads_active_service"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/space_4"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_ads_icon_tile_dark"
+                    android:contentDescription="@null"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_nav_jobs"
+                    app:tint="@color/ads_brand" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_active_service_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/sora"
+                        android:textAppearance="@style/TextAppearance.ADS.Label"
+                        android:textColor="@color/ads_on_navy_muted"
+                        tools:text="Servicio activo · Plomería" />
+
+                    <TextView
+                        android:id="@+id/tv_active_service_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                        android:textColor="@color/ads_on_navy"
+                        tools:text="El técnico va en camino" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_arrow_forward"
+                    app:tint="@color/ads_on_navy" />
+            </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -174,64 +234,6 @@
                 tools:listitem="@layout/item_home_category"
                 tools:spanCount="2" />
 
-            <!-- Servicio activo -->
-            <LinearLayout
-                android:id="@+id/card_active_service"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_5"
-                android:background="@drawable/bg_ads_active_service"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="@dimen/space_4"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_ads_icon_tile_dark"
-                    android:contentDescription="@null"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_nav_jobs"
-                    app:tint="@color/ads_brand" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_active_service_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/sora"
-                        android:textAppearance="@style/TextAppearance.ADS.Label"
-                        android:textColor="@color/ads_on_navy_muted"
-                        tools:text="Servicio activo · Plomería" />
-
-                    <TextView
-                        android:id="@+id/tv_active_service_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textAppearance="@style/TextAppearance.ADS.Subtitle"
-                        android:textColor="@color/ads_on_navy"
-                        tools:text="El técnico va en camino" />
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_arrow_forward"
-                    app:tint="@color/ads_on_navy" />
-            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

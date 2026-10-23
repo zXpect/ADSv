@@ -435,6 +435,8 @@
     <string name="worker_home_new_requests">Solicitudes nuevas</string>
     <string name="worker_home_active_services">Servicios activos</string>
     <string name="worker_home_next_service">Próximo servicio</string>
+    <string name="worker_home_next_empty_title">Sin servicios programados</string>
+    <string name="worker_home_next_empty_message">Cuando un cliente acepte tu cotización, aparecerá aquí.</string>
 
     <!-- Rediseño: bandeja del trabajador (mockup 14) -->
     <string name="inbox_title">Solicitudes</string>
@@ -529,6 +531,9 @@
     <string name="welcome_logo_desc">Logotipo ADS</string>
     <string name="welcome_wordmark">ADS</string>
     <string name="welcome_tagline">Reparaciones del hogar, con técnicos de confianza en Ubaté.</string>
+    <string name="welcome_benefit_verified">Técnicos con documentos verificados</string>
+    <string name="welcome_benefit_price">Precio de referencia antes de pedir</string>
+    <string name="welcome_benefit_payment">Paga en línea o en efectivo</string>
     <string name="welcome_create_account">Crear cuenta</string>
     <string name="welcome_have_account">Ya tengo cuenta</string>
     <string name="role_title">¿Cómo quieres usar ADS?</string>

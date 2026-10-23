@@ -32,6 +32,7 @@ import com.project.ads.models.ServiceRequest;
 import com.project.ads.providers.NotificationProvider;
 import com.project.ads.helpers.DisplayNameHelper;
 import com.project.ads.helpers.AdsSnackbar;
+import com.project.ads.helpers.PaymentStatusChip;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -438,14 +439,11 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         if ("completed".equals(status)) {
             mTvPaymentStatus.setVisibility(View.VISIBLE);
             if (request.isPaid()) {
-                mTvPaymentStatus.setText(R.string.payment_status_paid);
-                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
+                PaymentStatusChip.showPaid(mTvPaymentStatus, R.string.payment_status_paid);
             } else if (request.isCashPayment()) {
-                mTvPaymentStatus.setText(R.string.payment_status_cash_worker);
-                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
+                PaymentStatusChip.showText(mTvPaymentStatus, R.string.payment_status_cash_worker, R.color.ads_brand_text);
             } else {
-                mTvPaymentStatus.setText(R.string.payment_status_waiting_client);
-                mTvPaymentStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
+                PaymentStatusChip.showText(mTvPaymentStatus, R.string.payment_status_waiting_client, R.color.ads_brand_text);
             }
         }
     }

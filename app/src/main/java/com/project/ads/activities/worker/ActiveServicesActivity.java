@@ -29,6 +29,9 @@ import com.project.ads.R;
 import com.project.ads.helpers.WorkerNavHelper;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.helpers.DisplayNameHelper;
+import com.project.ads.models.api.CatalogData;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.providers.CatalogProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,6 +59,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
     private String mWorkerId;
     private final List<ServiceRequest> mServices = new ArrayList<>();
     private JobsAdapter mAdapter;
+    private CatalogData mCatalog;
 
     private Query mServicesQuery;
     private ValueEventListener mServicesListener;
@@ -85,7 +89,26 @@ public class ActiveServicesActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         WorkerNavHelper.setup(this, R.id.nav_worker_jobs);
+        loadCatalogForTitles();
         loadServices();
+    }
+
+    /** Nombres de las tareas para los títulos de las tarjetas; sin catálogo se usa el oficio. */
+    private void loadCatalogForTitles() {
+        mCatalog = CatalogProvider.cachedCatalog();
+        if (mCatalog != null) return;
+        new CatalogProvider().getCatalog(new ApiCallback<CatalogData>() {
+            @Override
+            public void onSuccess(CatalogData catalog) {
+                mCatalog = catalog;
+                if (!isFinishing() && mAdapter != null) mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                // Sin catálogo los títulos quedan con el nombre del oficio
+            }
+        });
     }
 
     private void loadServices() {
@@ -191,7 +214,9 @@ public class ActiveServicesActivity extends AppCompatActivity {
                 section.setVisibility(firstOfGroup ? View.VISIBLE : View.GONE);
                 section.setText(pending ? R.string.jobs_section_pending : R.string.jobs_section_done);
 
-                title.setText(request.getService_type() != null
+                // La tarea, como el mockup 52; sin tareas o catálogo, el oficio
+                String task = request.getTaskTitle(mCatalog);
+                title.setText(task != null ? task : request.getService_type() != null
                         ? request.getService_type() : getString(R.string.history_service_default));
 
                 String client = request.getClient_name() != null ? DisplayNameHelper.format(request.getClient_name()) : getString(R.string.inbox_client_default);

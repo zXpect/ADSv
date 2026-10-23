@@ -1175,8 +1175,10 @@ public class HomeWorkerActivity extends AppCompatActivity {
         View title = findViewById(R.id.tv_next_service_title);
         View card = findViewById(R.id.card_next_service);
         mNextServiceId = request != null ? request.getRequest_id() : null;
-        title.setVisibility(request != null ? View.VISIBLE : View.GONE);
+        // Sin servicio, el título se queda con su estado vacío (no queda un hueco)
+        title.setVisibility(View.VISIBLE);
         card.setVisibility(request != null ? View.VISIBLE : View.GONE);
+        findViewById(R.id.card_next_service_empty).setVisibility(request != null ? View.GONE : View.VISIBLE);
         if (request == null) return;
 
         String service = request.getService_type() != null ? request.getService_type() : "Servicio";
