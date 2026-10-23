@@ -1,6 +1,8 @@
 # Reglas de R8 para el APK de release (MASVS M7: ofuscación; M4: sin logs).
-# AGP 8 usa R8 en modo completo. Después de cambiar estas reglas, probar el APK
-# de release en un teléfono: lo que se lee por reflexión falla solo en ejecución.
+# R8 corre en modo compatible (android.enableR8.fullMode=false en gradle.properties):
+# el modo completo de AGP 8 quitaba las firmas genéricas que leen GeoFire, Firebase,
+# Retrofit y Gson, y el mapa se cerraba. Después de cambiar estas reglas, probar el
+# APK de release en un teléfono: lo que se lee por reflexión falla solo en ejecución.
 
 # Trazas de Crashlytics legibles (el mapping se sube con el build)
 -keepattributes SourceFile,LineNumberTable
@@ -18,6 +20,7 @@
 # GenericTypeIndicator<Map<...>> se lee por la firma genérica de la subclase anónima;
 # en modo completo R8 la quita y GeoFire falla con «Got Datasnapshot without location»
 # (mapa y búsqueda de técnicos cercanos se cerraban en release).
+-keep class com.google.firebase.database.GenericTypeIndicator { *; }
 -keep class * extends com.google.firebase.database.GenericTypeIndicator { *; }
 -keep class com.firebase.geofire.** { *; }
 
