@@ -76,7 +76,7 @@
                     android:text="@string/welcome_benefit_verified"
                     android:textAppearance="@style/TextAppearance.ADS.BodySmall"
                     android:textColor="@color/ads_on_navy"
-                    app:drawableStartCompat="@drawable/ic_shield_check"
+                    app:drawableStartCompat="@drawable/ic_ads_shield_check"
                     app:drawableTint="@color/ads_brand" />
 
                 <TextView
