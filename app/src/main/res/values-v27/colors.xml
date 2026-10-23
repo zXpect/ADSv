@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Desde Android 8.1 la barra de navegación lleva íconos oscuros en modo claro:
+         se pinta como la barra inferior de la app (ads_bar cambia sola en oscuro) -->
+    <color name="ads_nav_bar">@color/ads_bar</color>
+</resources>

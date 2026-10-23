@@ -44,6 +44,9 @@
     <color name="ads_chip_strong_text">#F6F3EE</color>
     <!-- Snackbar ADS: misma ficha que el chip fuerte (navy en claro, tonal en oscuro) -->
     <color name="ads_snackbar_bg">@color/ads_chip_strong_bg</color>
+    <!-- Barra de navegación del sistema: negra antes de Android 8.1 (values-v27 la
+         iguala a ads_bar, cuando ya puede llevar íconos oscuros) -->
+    <color name="ads_nav_bar">#FF000000</color>
     <!-- Bloques de las tarjetas de relleno mientras carga una lista -->
     <color name="ads_skeleton">#E7E3DB</color>
 

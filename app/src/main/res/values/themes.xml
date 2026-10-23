@@ -35,6 +35,10 @@
         <item name="android:windowBackground">@color/ads_surface</item>
         <item name="android:statusBarColor">@color/ads_surface</item>
         <item name="android:windowLightStatusBar">@bool/ads_light_status_bar</item>
+        <!-- Barra de navegación del sistema del color de la barra inferior (sin franja
+             gris o negra debajo). Antes de Android 8.1 queda negra: no hay íconos oscuros. -->
+        <item name="android:navigationBarColor">@color/ads_nav_bar</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">@bool/ads_light_status_bar</item>
         <!-- Transición uniforme al abrir y cerrar pantallas (las pestañas siguen sin animación) -->
         <item name="android:windowAnimationStyle">@style/Animation.ADS.Activity</item>
 
