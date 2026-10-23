@@ -35,9 +35,12 @@
             android:id="@+id/tv_home_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+            app:autoSizeMaxTextSize="15sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform"
             tools:text="Electricidad" />
+        <!-- Autoajuste: con letra grande «Electricidad» se achica en vez de cortarse -->
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

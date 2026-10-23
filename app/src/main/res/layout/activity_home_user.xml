@@ -204,19 +204,22 @@
                 android:gravity="bottom"
                 android:orientation="horizontal">
 
+                <!-- El título no se parte: si falta espacio, cede el texto de ayuda -->
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:accessibilityHeading="true"
                     android:text="@string/home_categories_title"
                     android:textAppearance="@style/TextAppearance.ADS.Subtitle"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_3"
+                    android:layout_weight="1"
                     android:fontFamily="@font/sora"
+                    android:gravity="end"
                     android:text="@string/home_categories_hint"
                     android:textAppearance="@style/TextAppearance.ADS.Label" />
             </LinearLayout>
