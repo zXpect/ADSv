@@ -54,6 +54,8 @@ com.project.ads/
 - Build debug: `./gradlew assembleDebug`
 - Instalar en emulador/dispositivo: `./gradlew installDebug`
 - Tests unitarios: `./gradlew testDebugUnitTest` (35 pruebas JUnit al 20/10/2026 en `app/src/test/java/com/project/ads/`; corren en el PC, sin dispositivo, con el JBR 17 de Android Studio). Solo lógica que no depende de Android; si una clase la necesita, separar la lógica en un método estático. Registro en `../contexto/pruebas/`.
+- Build release: `./gradlew assembleRelease` (APK en `app/build/outputs/apk/release/`). Apunta a Render por defecto (`ADS_API_BASE_URL_RELEASE`). Usa R8 en **modo compatible** (`android.enableR8.fullMode=false` en `gradle.properties`): el modo completo de AGP 8 quitaba firmas genéricas y GeoFire cerraba el mapa (DEF-16). Las reglas están en `app/proguard-rules.pro` (modelos, GeoFire, Retrofit, Gson y quitar `Log`); **después de tocarlas, probar el APK de release en un teléfono**, porque lo que se lee por reflexión solo falla al ejecutar.
+- Firma del release: llave `app/app_key.jks` (ignorada por git; respaldo en `Documents/ADS/keystore-backup/`), alias `v1`. Las contraseñas van solo en `~/.gradle/gradle.properties`: `ADS_KEYSTORE_PASSWORD`, `ADS_KEY_ALIAS=v1`, `ADS_KEY_PASSWORD` (y `ADS_KEYSTORE_FILE` si la llave está en otra ruta). Sin ellas, el release se firma con la llave de depuración (solo para probar). Comprobar con `apksigner verify --print-certs`: debe decir `O=ADS`. Un teléfono con la APK de depuración instalada necesita desinstalarla antes (firmas distintas).
 - Tests instrumentados: no hay (se borró el de ejemplo); las pantallas se cubren con los casos funcionales de `../contexto/planes/PLAN_PRUEBAS.md`.
 
 ## Conexión con el backend
@@ -68,6 +70,7 @@ com.project.ads/
 - No hardcodear claves ni secretos en el código fuente: `local.properties`, `app/src/main/res/values/secret.xml` y `app/google-services.json` están en `.gitignore` y no se versionan; las API keys de Google/Places/Firebase se inyectan desde esos archivos locales (cada desarrollador debe crear los suyos, no están en el repo).
 - **Nunca** incluir una credencial de servicio (`serviceAccountKey.json`) en la app: todo lo que la requiera va al backend. El build la excluye de `assets/` por si quedara una copia local (`androidResources.ignoreAssetsPattern`).
 - Las reglas de seguridad de Firebase viven en `../ADS_AdminBack/backend/firebase/` (con pruebas). Un cambio en cómo la app lee o escribe Firebase debe revisarse contra esas reglas.
+- MASVS M1–M7 cumplidos el 22/10/2026 (`../contexto/planes/PLAN_PRUEBAS.md` §8): `allowBackup="false"` y reglas que excluyen todo de la copia (M6), nada de datos personales en `Log` y R8 quita todos los `Log` en release (M4), R8 en release (M7). Al agregar un `Log`, no incluir uid, correo, teléfono, ubicación ni el texto de los push.
 - Seguir las recomendaciones del OWASP Mobile Security Project relevantes al
   proyecto: almacenamiento seguro de datos sensibles, validación de
   certificados en llamadas HTTPS, no loguear información sensible en
