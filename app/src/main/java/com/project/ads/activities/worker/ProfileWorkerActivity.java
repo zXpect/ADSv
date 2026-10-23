@@ -27,7 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.activities.NotificationsActivity;
 import com.project.ads.activities.PqrListActivity;
-import com.project.ads.activities.TermsConditionsActivity;
+import com.project.ads.activities.LegalActivity;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.WorkerNavHelper;
 import com.project.ads.helpers.DisplayNameHelper;
@@ -45,7 +45,6 @@ import com.bumptech.glide.request.RequestOptions;
 public class ProfileWorkerActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileWorkerActivity";
-    private static final String TERMS_URL = "https://terminosycondicionesads.netlify.app";
 
     // UI Components
     private ImageView ivProfileImage;
@@ -170,11 +169,8 @@ public class ProfileWorkerActivity extends AppCompatActivity {
                 startActivity(new Intent(this, NotificationsActivity.class)));
         findViewById(R.id.row_account_pqr).setOnClickListener(v ->
                 startActivity(new Intent(this, PqrListActivity.class)));
-        findViewById(R.id.row_account_terms).setOnClickListener(v -> {
-            Intent intent = new Intent(this, TermsConditionsActivity.class);
-            intent.putExtra("terms_url", TERMS_URL);
-            startActivity(intent);
-        });
+        findViewById(R.id.row_account_terms).setOnClickListener(v ->
+                startActivity(LegalActivity.intent(this, LegalActivity.DOCUMENT_TERMS)));
 
         // ===== AGREGAR CLICK EN LA IMAGEN PARA CAMBIARLA =====
         ivProfileImage.setOnClickListener(v -> {

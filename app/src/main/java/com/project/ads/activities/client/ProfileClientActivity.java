@@ -23,7 +23,7 @@ import com.project.ads.R;
 import com.project.ads.activities.NotificationsActivity;
 import com.project.ads.activities.PqrListActivity;
 import com.project.ads.activities.MyDataActivity;
-import com.project.ads.activities.TermsConditionsActivity;
+import com.project.ads.activities.LegalActivity;
 import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.DisplayNameHelper;
@@ -39,7 +39,6 @@ import com.bumptech.glide.request.RequestOptions;
 public class ProfileClientActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileClientActivity";
-    private static final String TERMS_URL = "https://terminosycondicionesads.netlify.app";
 
     // UI Components
     private ImageView ivProfileImage;
@@ -123,11 +122,8 @@ public class ProfileClientActivity extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(0, 0);
         });
-        findViewById(R.id.row_account_terms).setOnClickListener(v -> {
-            Intent intent = new Intent(this, TermsConditionsActivity.class);
-            intent.putExtra("terms_url", TERMS_URL);
-            startActivity(intent);
-        });
+        findViewById(R.id.row_account_terms).setOnClickListener(v ->
+                startActivity(LegalActivity.intent(this, LegalActivity.DOCUMENT_TERMS)));
 
         ivProfileImage.setOnClickListener(v -> {
             animateClick(v);

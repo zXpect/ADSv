@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Términos y privacidad: los dos documentos legales dentro de la app (res/raw), en lugar
+     de la página externa. Encabezado y control segmentado como Técnicos disponibles. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ads_surface"
+    android:orientation="vertical"
+    tools:context="com.project.ads.activities.LegalActivity">
+
+    <!-- Encabezado -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingTop="@dimen/space_4"
+        android:paddingEnd="@dimen/screen_margin">
+
+        <ImageButton
+            android:id="@+id/btn_legal_back"
+            android:layout_width="@dimen/touch_min"
+            android:layout_height="@dimen/touch_min"
+            android:background="@drawable/bg_ads_circle_button"
+            android:contentDescription="@string/action_back"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/ads_text" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_3"
+            android:layout_weight="1"
+            android:accessibilityHeading="true"
+            android:text="@string/legal_title"
+            android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <!-- Términos / Privacidad -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/touch_min"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/space_4"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:background="@drawable/bg_ads_segmented"
+        android:orientation="horizontal"
+        android:padding="@dimen/space_1">
+
+        <TextView
+            android:id="@+id/tab_legal_terms"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="@string/legal_tab_terms"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+
+        <TextView
+            android:id="@+id/tab_legal_privacy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/space_1"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="@string/legal_tab_privacy"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_legal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="@dimen/space_5"
+            android:paddingEnd="@dimen/screen_margin"
+            android:paddingBottom="@dimen/space_6">
+
+            <TextView
+                android:id="@+id/tv_legal_document_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:accessibilityHeading="true"
+                android:textAppearance="@style/TextAppearance.ADS.Title"
+                tools:text="Términos y Condiciones de Uso" />
+
+            <TextView
+                android:id="@+id/tv_legal_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                tools:text="Versión 1.1 · Actualizada el 16 de octubre de 2026" />
+
+            <!-- Bloques del documento (LegalActivity los arma desde res/raw) -->
+            <LinearLayout
+                android:id="@+id/container_legal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

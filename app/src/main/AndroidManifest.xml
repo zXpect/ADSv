@@ -132,10 +132,10 @@
             android:name="com.project.ads.activities.client.RegisterActivity"
             android:exported="false"
             android:parentActivityName="com.project.ads.activities.LoginActivity" />
+        <!-- Términos y privacidad dentro de la app (antes, página externa en un WebView) -->
         <activity
-            android:name="com.project.ads.activities.TermsConditionsActivity"
-            android:exported="false"
-            android:parentActivityName="com.project.ads.activities.LoginActivity" />
+            android:name="com.project.ads.activities.LegalActivity"
+            android:exported="false" />
         <activity
             android:name="com.project.ads.activities.LoginActivity"
             android:exported="false"

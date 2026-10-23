@@ -1,0 +1,136 @@
+Estos Términos y Condiciones regulan el acceso y el uso de la aplicación móvil ADS (Aplicación móvil mediador Digital para Servicios de reparaciones locativas) y de su módulo administrativo web. Léalos con atención antes de registrarse; si no está de acuerdo con ellos, no debe usar la aplicación.
+
+## 1. Identificación y naturaleza de ADS
+1.1. ADS es un prototipo funcional de aplicación móvil para dispositivos Android, desarrollado como proyecto de grado del programa de Ingeniería de Sistemas de la Universidad de Cundinamarca, en el municipio de Ubaté, Cundinamarca. Los responsables de la aplicación y del tratamiento de los datos personales son Maikoll Fabián Ballesteros Pinilla y Breider Yesid López Valero, autores del proyecto, con domicilio para notificaciones en la Universidad de Cundinamarca, Seccional Ubaté, calle 6 N.º 9-80, Ubaté, Cundinamarca, correo electrónico adsteamsp@gmail.com y teléfonos 310 848 1366 (Breider Yesid López Valero) y 320 598 0873 (Maikoll Fabián Ballesteros Pinilla).
+1.2. ADS se concibe como una Plataforma Neutral de Intermediación Digital y, para efectos legales, actúa como portal de contacto en los términos del artículo 53 y del numeral 18 del artículo 5 de la Ley 1480 de 2011, este último adicionado por la Ley 2439 de 2024: pone en contacto a Usuarios Solicitantes con Usuarios Trabajadores para que acuerden directamente la prestación de servicios de reparaciones locativas.
+1.3. ADS no presta los servicios de reparación, no contrata a los Usuarios Trabajadores ni actúa como su empleador, y no vende ni suministra materiales. La relación de consumo y el acuerdo sobre el Servicio se concretan directamente entre el Usuario Solicitante y el Usuario Trabajador.
+1.4. Durante la etapa de prototipo, la aplicación opera únicamente en el municipio de Ubaté, se usa en pruebas con participantes voluntarios y no involucra transacciones con dinero real. Las Solicitudes realizadas en estas pruebas no generan obligaciones contractuales ni comerciales reales. Los participantes usan cuentas de prueba creadas por el equipo del proyecto, sin ingresar datos personales reales ni sensibles, y firman previamente un consentimiento informado. Durante esta etapa, las obligaciones previstas en estos Términos y Condiciones se aplican como reglas de uso de la aplicación en el escenario de prueba.
+
+## 2. Definiciones
+Para efectos de estos Términos y Condiciones, los siguientes términos tendrán el significado que se indica:
+2.1. Aplicación o ADS: aplicación móvil para Android y módulo administrativo web mediante los cuales se ponen en contacto Usuarios Solicitantes y Usuarios Trabajadores.
+2.2. Usuario: toda persona natural registrada en ADS, sea Usuario Solicitante o Usuario Trabajador.
+2.3. Usuario Solicitante: persona natural mayor de edad que solicita, a través de ADS, un servicio de reparación locativa para su vivienda o establecimiento.
+2.4. Usuario Trabajador: persona natural mayor de edad que, de forma independiente y autónoma, ofrece y presta servicios de reparación locativa a través de ADS, una vez superada la verificación documental.
+2.5. Administrador: persona autorizada por ADS para gestionar las cuentas, el catálogo de tareas, las tarifas de referencia, la verificación documental y las PQR desde el módulo administrativo web.
+2.6. Servicio: trabajo de reparación locativa (por ejemplo, electricidad, plomería, pintura, cerrajería, albañilería, jardinería o carpintería) acordado entre el Usuario Solicitante y el Usuario Trabajador.
+2.7. Solicitud: requerimiento de Servicio que el Usuario Solicitante registra en ADS, con las tareas del catálogo o la descripción libre del trabajo («Otro»).
+2.8. Cotización: valor propuesto para el Servicio a partir de las tareas del catálogo, su precio de referencia y, en su caso, el ajuste justificado por el Usuario Trabajador.
+2.9. PQR: petición, queja o reclamo presentado a través del módulo dispuesto en la aplicación.
+2.10. Datos personales, Titular y Tratamiento: tienen el significado previsto en el artículo 3 de la Ley 1581 de 2012.
+
+## 3. Aceptación, registro y cuentas
+3.1. Para usar ADS, el Usuario debe registrarse y aceptar, en dos casillas separadas, estos Términos y Condiciones y la autorización para el tratamiento de sus datos personales. ADS conserva la versión de cada documento aceptado y la fecha de aceptación. La aceptación por medios electrónicos tiene plena validez conforme a la Ley 527 de 1999.
+3.2. El Usuario Solicitante debe declarar, mediante la casilla dispuesta para ello, que es mayor de edad. La edad del Usuario Trabajador se verifica con su documento de identidad durante la verificación documental. ADS no permite el registro de menores de edad.
+3.3. Cada persona puede tener una sola cuenta, con información veraz, completa y actualizada. ADS podrá suspender o eliminar las cuentas duplicadas o creadas con datos falsos, previa comunicación al Usuario.
+3.4. El Usuario es responsable de custodiar sus credenciales y el dispositivo desde el cual accede, y debe informar a ADS de inmediato cualquier uso no autorizado de su cuenta. ADS no responderá por los accesos que se deban a la falta de custodia de las credenciales o del dispositivo por parte del Usuario.
+3.5. El Usuario puede consultar y actualizar su información desde la opción «Mis datos» y eliminar su cuenta en cualquier momento desde la opción «Eliminar mi cuenta», con lo cual sus datos personales se borrarán o anonimizarán de inmediato.
+
+## 4. Funcionamiento del servicio
+4.1. El Usuario Solicitante busca el Servicio por oficio y por tarea del catálogo. La aplicación muestra solo a los Usuarios Trabajadores verificados que realizan la tarea elegida, ordenados según su cercanía y su calificación. La elección del Usuario Trabajador corresponde siempre al Usuario Solicitante.
+4.2. Al responder la Solicitud, el Usuario Trabajador indica la fecha y la hora de llegada y la duración estimada del trabajo, que podrá reprogramar por imprevistos propios de la labor. Las Solicitudes, el agendamiento y cada reprogramación se informan a las partes mediante notificaciones de la aplicación.
+4.3. La ubicación del Usuario Trabajador se registra solo mientras mantenga el estado «disponible», y la del Usuario Solicitante solo al momento de crear la Solicitud. ADS no hace seguimiento permanente de la ubicación.
+
+## 5. Cotización y precios
+5.1. Las tareas del catálogo tienen un rango de precio de referencia (valor mínimo y máximo) y una unidad de cobro (visita, unidad, metro cuadrado o jornada), configurados por el Administrador. Antes de aceptar, el Usuario Solicitante conoce el rango estimado, con la advertencia de que el valor final puede variar según los materiales, el tiempo, la dificultad y las condiciones del lugar.
+5.2. El Usuario Trabajador puede confirmar el valor estimado o proponer otro, indicando el motivo del ajuste. Las tareas que no tienen precio de referencia y los trabajos descritos como «Otro» son cotizados directamente por el Usuario Trabajador, con el mismo registro del motivo.
+5.3. Todo Servicio tiene una tarifa mínima por visita, con un valor inicial de veinticinco mil quinientos pesos (COP 25.500), que actúa como valor mínimo del Servicio y no como un cobro adicional. La cotización se hace de forma remota, sin visita previa de diagnóstico.
+5.4. El Usuario Solicitante acepta o rechaza la Cotización conociendo el precio de referencia, el precio ajustado y su justificación. El valor aceptado se confirma en la aplicación antes de iniciar el Servicio y corresponde a su precio total.
+5.5. Si, una vez iniciado el Servicio, el valor debe modificarse, el Usuario Trabajador podrá enviar una única nueva cotización con su motivo. Si el Usuario Solicitante la rechaza, el trabajo se completará con el precio acordado inicialmente.
+5.6. Durante la etapa de prototipo, ADS no cobra comisión ni tarifa alguna por el uso de la aplicación. Cualquier cobro futuro solo podrá aplicarse mediante una nueva versión de estos Términos y Condiciones, conforme a la sección «Modificaciones», y con la aceptación previa del Usuario.
+
+## 6. Cancelación del servicio
+6.1. El Usuario Solicitante y el Usuario Trabajador pueden cancelar el Servicio antes de su inicio, entendido como el momento en que el Usuario Trabajador marca «Iniciar viaje». La cancelación no genera cobros ni penalizaciones y queda registrada en el historial de la Solicitud, con la parte que canceló y el motivo.
+6.2. Después de iniciado el Servicio, la cancelación se tramitará mediante una PQR.
+6.3. Cualquiera de las partes podrá retirarse del Servicio en cualquier momento si percibe un riesgo para su integridad o un comportamiento sospechoso de la otra parte, y deberá informarlo a ADS mediante una PQR.
+6.4. Lo previsto en esta sección se entiende sin perjuicio del derecho de retracto del artículo 47 de la Ley 1480 de 2011, modificado por la Ley 2439 de 2024, en los casos en que proceda. Cuando ADS opere con pagos reales, incorporará en estos Términos y Condiciones el procedimiento para ejercerlo.
+
+## 7. Pagos
+7.1. El Usuario Solicitante elige el método de pago al aceptar la Cotización y puede cambiarlo hasta que el Servicio termine. Los métodos disponibles son: (i) pago digital, que en la etapa de prototipo se simula en el entorno de pruebas (sandbox) de la pasarela Wompi, sin movimiento de dinero real; y (ii) pago en efectivo entregado directamente al Usuario Trabajador y registrado en la aplicación.
+7.2. Los datos de la tarjeta se capturan en el formulario de la pasarela de pagos. ADS no recibe ni almacena números de tarjeta ni accede a los movimientos de las cuentas bancarias de los Usuarios.
+7.3. En el pago en efectivo, el Usuario Trabajador marcará «Recibí el pago» y el Usuario Solicitante recibirá un aviso. Si no está de acuerdo con ese registro, podrá presentar una PQR. ADS no puede verificar la entrega del dinero en efectivo.
+7.4. Los pagos acordados por fuera de la aplicación, o por trabajos no registrados en ella, son responsabilidad exclusiva de las partes.
+7.5. La etapa de prototipo no contempla la reversión automática de pagos. Cuando ADS opere con pagos reales, incorporará en estos Términos y Condiciones el procedimiento de reversión del pago previsto en el artículo 51 de la Ley 1480 de 2011.
+
+## 8. Obligaciones del Usuario Solicitante
+El Usuario Solicitante se obliga a:
+8.1. Suministrar información veraz y actualizada, incluidas una dirección y una descripción del problema claras, y elegir las tareas que correspondan a la reparación requerida.
+8.2. Pagar el valor acordado en la aplicación una vez terminado el Servicio, por el método de pago elegido.
+8.3. Permitir al Usuario Trabajador el acceso al área donde se realizará el trabajo y verificar, antes de permitir su ingreso, que se trata de la misma persona que aparece en la aplicación.
+8.4. Tratar con respeto al Usuario Trabajador y abstenerse de cualquier conducta que atente contra su integridad física o psicológica.
+8.5. Abstenerse de suplantar a otras personas, de registrar medios de pago de terceros sin su autorización y de usar la aplicación con fines ilícitos.
+8.6. Presentar las PQR con información veraz y, cuando sea posible, con las pruebas que las sustenten.
+
+## 9. Obligaciones del Usuario Trabajador
+El Usuario Trabajador se obliga a:
+9.1. Suministrar información veraz y aportar los documentos solicitados para la verificación documental, como documento de identidad, antecedentes y certificaciones. Mientras su verificación no esté aprobada, no aparecerá en los resultados de búsqueda.
+9.2. Ofrecer solo los oficios, hasta un máximo de tres, y las tareas para los que tenga los conocimientos y la experiencia necesarios, y contar con las herramientas adecuadas para realizarlos.
+9.3. Prestar personalmente el Servicio aceptado, en la fecha y la hora informadas, con la calidad y la seguridad debidas. Si se apoya en ayudantes, responderá por sus actos.
+9.4. Permanecer en el área donde se realiza el trabajo y no ingresar a otras áreas del inmueble sin autorización del Usuario Solicitante.
+9.5. Cobrar únicamente el valor acordado en la aplicación, incluidos los materiales, e informar cualquier ajuste conforme a la sección «Cotización y precios».
+9.6. Responder ante el Usuario Solicitante por la calidad, la idoneidad y la seguridad del trabajo ejecutado y por la garantía legal que le corresponda conforme a la Ley 1480 de 2011.
+9.7. Mantener la confidencialidad de la información del Usuario Solicitante a la que acceda con ocasión del Servicio y usarla solo para prestarlo.
+9.8. Cumplir las obligaciones tributarias y de seguridad social que le correspondan como trabajador independiente.
+
+## 10. Obligaciones de ADS
+ADS se obliga a:
+10.1. Informar de manera clara, accesible y actualizada su identidad y sus datos de contacto, y mantener disponibles en la aplicación estos Términos y Condiciones y el Aviso de Privacidad.
+10.2. Exigir a los Usuarios Trabajadores la información que permita su identificación (nombre, documento de identidad, dirección física de notificaciones y teléfono) y ponerla a disposición del Usuario Solicitante que la requiera para presentar una queja o reclamo, así como de la autoridad competente que la solicite, conforme al artículo 53 de la Ley 1480 de 2011.
+10.3. Mostrar el precio total del Servicio antes de su aceptación y conservar el registro de cada Solicitud, con su fecha, el Servicio prestado, la Cotización aceptada y el estado del pago, para consulta de las partes.
+10.4. Atender las PQR por el módulo dispuesto para ello, dentro del plazo previsto en la sección «Peticiones, quejas y reclamos».
+10.5. Adoptar medidas de seguridad razonables para proteger la información de los Usuarios.
+10.6. Informar de forma inmediata a las partes cuando un Servicio solicitado no esté disponible.
+
+## 11. Calificaciones
+11.1. Una vez terminado el Servicio y aprobado o registrado el pago, el Usuario Solicitante podrá calificarlo mediante un sistema de estrellas. Cada Solicitud admite una sola calificación.
+11.2. La calificación es orientativa, refleja la percepción del Usuario Solicitante y se combina con la cercanía para ordenar los resultados de búsqueda. El Usuario Trabajador que aún no tenga calificaciones se mostrará como «Verificado – nuevo».
+11.3. Las calificaciones deben ser veraces y respetuosas. ADS podrá retirar las que sean ofensivas, falsas o ajenas al Servicio.
+
+## 12. Peticiones, quejas y reclamos
+12.1. Los Usuarios pueden presentar PQR desde el módulo de la aplicación, que permite consultar su estado. Cada PQR queda asociada a la Solicitud que la origina.
+12.2. ADS responderá las PQR dentro de los quince (15) días hábiles siguientes a su recepción. Las consultas y los reclamos sobre datos personales se atenderán en los plazos previstos en los artículos 14 y 15 de la Ley 1581 de 2012.
+12.3. Como portal de contacto, ADS tramita las PQR y facilita la información de las partes, pero no resuelve las controversias contractuales entre el Usuario Solicitante y el Usuario Trabajador. El Usuario Solicitante conserva el derecho de acudir ante la Superintendencia de Industria y Comercio o ante los jueces competentes.
+
+## 13. Garantía y responsabilidad
+13.1. La responsabilidad por la calidad, la idoneidad y la seguridad del trabajo ejecutado, así como por la garantía legal del Servicio, corresponde al Usuario Trabajador que lo presta. ADS no ofrece garantía propia sobre los Servicios.
+13.2. ADS responde por las obligaciones propias de su condición de portal de contacto, entre ellas la información clara sobre el Servicio y el precio, la protección de los datos personales y la atención de las PQR.
+13.3. ADS no responde por los daños derivados del uso indebido de la aplicación por parte de los Usuarios, de los acuerdos o pagos realizados por fuera de ella, ni de la conducta de las partes durante el Servicio, sin perjuicio de colaborar con las autoridades competentes cuando estas lo requieran.
+13.4. La verificación documental de los Usuarios Trabajadores es básica: se limita a la revisión, por parte del Administrador, de los documentos que estos aportan de manera voluntaria, sin consulta a bases de datos de entidades oficiales. Por tanto, no constituye una certificación ni una garantía de la idoneidad, la conducta o la calidad del trabajo del Usuario Trabajador.
+13.5. Nada de lo previsto en estos Términos y Condiciones limita los derechos que la ley reconoce al consumidor. Toda estipulación contraria a las normas de protección al consumidor se tendrá por no escrita, conforme a los artículos 4 y 43 de la Ley 1480 de 2011.
+
+## 14. Protección de datos personales
+14.1. ADS trata los datos personales conforme a la Ley 1581 de 2012, al Decreto 1377 de 2013, compilado en el Decreto 1074 de 2015, y a su Aviso de Privacidad, disponible en la aplicación.
+14.2. ADS recolecta el nombre, los datos de contacto, la dirección, la ubicación en los momentos indicados en la sección «Funcionamiento del servicio», los documentos de verificación del Usuario Trabajador y la información de las Solicitudes y de los pagos. Estos datos se usan exclusivamente para crear y administrar la cuenta, poner en contacto a las partes, gestionar las Solicitudes, los pagos y las PQR, verificar a los Usuarios Trabajadores y garantizar la seguridad de la aplicación.
+14.3. Al poner en contacto a las partes, ADS compartirá con cada una los datos de la otra que sean necesarios para prestar el Servicio, como el nombre, la dirección del Servicio y el teléfono.
+14.4. Para operar la aplicación, ADS se apoya en proveedores tecnológicos que actúan como encargados del tratamiento, como Firebase (Google) y Render, cuyos servidores pueden estar ubicados fuera de Colombia. Estos encargados solo podrán tratar los datos por cuenta de ADS y para las finalidades indicadas, conforme al artículo 26 de la Ley 1581 de 2012 y a los artículos 24 y 25 del Decreto 1377 de 2013. Los datos de pago son tratados directamente por la pasarela Wompi conforme a sus propias políticas.
+14.5. La fotografía del documento de identidad y los demás documentos de verificación que puedan contener datos sensibles se tratarán solo para la verificación documental. El Titular no está obligado a autorizar el tratamiento de datos sensibles; sin embargo, sin esos documentos no podrá completarse la verificación del Usuario Trabajador.
+14.6. ADS conservará los datos personales mientras la cuenta esté activa y los borrará o anonimizará de inmediato cuando el Titular elimine su cuenta.
+14.7. El Titular tiene derecho a conocer, actualizar, rectificar y suprimir sus datos, a solicitar prueba de la autorización otorgada, a revocarla y a presentar quejas ante la Superintendencia de Industria y Comercio. Puede ejercer estos derechos desde las opciones «Mis datos» y «Eliminar mi cuenta» o escribiendo a adsteamsp@gmail.com.
+14.8. ADS solo entregará datos personales a las autoridades cuando medie una orden de autoridad competente, conforme a la ley.
+
+## 15. Propiedad intelectual
+15.1. El nombre, los logotipos, el diseño, el código fuente y los demás elementos de ADS pertenecen a sus autores o a la Universidad de Cundinamarca, según lo dispuesto en el reglamento de propiedad intelectual de la institución, y están protegidos por las normas de derecho de autor y de propiedad industrial. El uso de la aplicación no confiere al Usuario ningún derecho sobre ellos.
+15.2. El Usuario no podrá copiar, modificar o descompilar la aplicación, ni acceder sin autorización a su código o a sus sistemas. Estas conductas pueden constituir delitos conforme a la Ley 1273 de 2009.
+15.3. Las fotografías y descripciones que el Usuario publique en la aplicación seguirán siendo suyas. El Usuario autoriza a ADS a mostrarlas dentro de la aplicación solo para los fines del Servicio.
+
+## 16. Suspensión y terminación de cuentas
+16.1. ADS podrá suspender o eliminar la cuenta de un Usuario que: (i) incumpla estos Términos y Condiciones o la ley colombiana; (ii) registre información falsa o suplante a otra persona; o (iii) incurra en conductas que atenten contra la integridad física o psicológica de otros Usuarios.
+16.2. La decisión se comunicará al Usuario con sus motivos, y este podrá controvertirla mediante una PQR. Cuando la conducta pueda constituir un delito, ADS colaborará con las autoridades competentes en los términos de la ley.
+16.3. El Usuario puede terminar su relación con ADS en cualquier momento, eliminando su cuenta.
+
+## 17. Disponibilidad de la plataforma
+17.1. ADS es un prototipo en etapa de pruebas y depende de servicios de terceros, como Firebase, Render y el entorno de pruebas de Wompi, así como de la conexión a internet y de la ubicación del dispositivo. ADS procurará mantener la aplicación disponible y corregir las fallas, pero no garantiza su funcionamiento continuo ni libre de errores.
+17.2. La disponibilidad de los Servicios depende de los Usuarios Trabajadores registrados y de sus horarios. ADS no garantiza que exista un Usuario Trabajador disponible para cada Solicitud.
+
+## 18. Modificaciones
+18.1. ADS podrá modificar estos Términos y Condiciones. Cada versión indicará su número y su fecha. Los cambios se informarán en la aplicación antes de su entrada en vigor y, cuando sean sustanciales, se solicitará una nueva aceptación.
+18.2. Si el Usuario no acepta la nueva versión, podrá eliminar su cuenta sin costo alguno.
+
+## 19. Legislación aplicable y jurisdicción
+19.1. Estos Términos y Condiciones se rigen por las leyes de la República de Colombia, en especial la Ley 1480 de 2011, la Ley 527 de 1999 y la Ley 1581 de 2012.
+19.2. Las controversias se intentarán resolver primero mediante PQR. Si no se resuelven, el Usuario podrá acudir a la Superintendencia de Industria y Comercio, en ejercicio de sus funciones jurisdiccionales, o a los jueces competentes de la República de Colombia.
+
+## 20. Disposiciones finales
+20.1. Si alguna disposición de estos Términos y Condiciones se declara nula o inaplicable, las demás conservarán su validez.
+20.2. La falta de ejercicio de un derecho por parte de ADS no implica su renuncia.
+20.3. Para cualquier consulta sobre estos Términos y Condiciones, el Usuario puede escribir a adsteamsp@gmail.com o usar el módulo de PQR.

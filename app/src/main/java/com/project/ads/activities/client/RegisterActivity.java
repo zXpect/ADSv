@@ -37,7 +37,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.project.ads.R;
-import com.project.ads.activities.TermsConditionsActivity;
+import com.project.ads.activities.LegalActivity;
 import com.project.ads.activities.LoginActivity;
 import com.project.ads.models.Client;
 import com.project.ads.providers.AuthProvider;
@@ -63,7 +63,6 @@ public class RegisterActivity extends AppCompatActivity {
     private static final int MAX_PHONE_LENGTH = 10; // ⭐ NUEVO
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]+$"); // ⭐ NUEVO
-    private static final String TERMS_URL = "https://terminosycondicionesads.netlify.app";
 
     private SharedPreferences mPref;
     private AuthProvider mAuthProvider;
@@ -370,15 +369,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupTermsAndConditionsLink() {
-        mTextViewTerms.setText(linkText(R.string.register_terms_text, R.string.register_terms_link));
+        mTextViewTerms.setText(linkText(R.string.register_terms_text, R.string.register_terms_link, LegalActivity.DOCUMENT_TERMS));
         mTextViewTerms.setMovementMethod(LinkMovementMethod.getInstance());
         TextView data = findViewById(R.id.textViewData);
-        data.setText(linkText(R.string.register_data_text, R.string.register_data_link));
+        data.setText(linkText(R.string.register_data_text, R.string.register_data_link, LegalActivity.DOCUMENT_PRIVACY));
         data.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     /** "Acepto los Términos y Condiciones" con el enlace en negrita sobre la parte indicada. */
-    private SpannableString linkText(int textRes, int linkRes) {
+    private SpannableString linkText(int textRes, int linkRes, String document) {
         String text = getString(textRes);
         String link = getString(linkRes);
         SpannableString spannable = new SpannableString(text);
@@ -386,7 +385,8 @@ public class RegisterActivity extends AppCompatActivity {
         spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                openTermsAndConditions();
+                // Términos o Aviso de privacidad, dentro de la app
+                startActivity(LegalActivity.intent(RegisterActivity.this, document));
             }
         }, start, Math.min(text.length(), start + link.length()), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannable.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
@@ -394,11 +394,6 @@ public class RegisterActivity extends AppCompatActivity {
         return spannable;
     }
 
-    private void openTermsAndConditions() {
-        Intent intent = new Intent(RegisterActivity.this, TermsConditionsActivity.class);
-        intent.putExtra("terms_url", TERMS_URL);
-        startActivity(intent);
-    }
 
     private void clickRegister() {
         clearErrors();

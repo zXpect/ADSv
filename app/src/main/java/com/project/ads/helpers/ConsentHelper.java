@@ -12,8 +12,9 @@ import java.util.Map;
  */
 public final class ConsentHelper {
 
-    // Subirlas cuando cambie el texto publicado de los T&C o del aviso de privacidad
-    public static final String TERMS_VERSION = "1.0";
+    // Subirlas cuando cambie el texto de res/raw/legal_terms.txt o legal_privacy.txt
+    // (la pantalla LegalActivity muestra estas versiones)
+    public static final String TERMS_VERSION = "1.1";
     public static final String PRIVACY_VERSION = "1.0";
 
     /** Extra con el momento de la aceptación, entre los pasos del registro del trabajador. */
