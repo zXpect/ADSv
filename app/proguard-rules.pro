@@ -14,6 +14,13 @@
 # necesitan el constructor vacío: no se renombran ni se quitan.
 -keep class com.project.ads.models.** { *; }
 
+# ---------- Firebase Realtime Database y GeoFire ----------
+# GenericTypeIndicator<Map<...>> se lee por la firma genérica de la subclase anónima;
+# en modo completo R8 la quita y GeoFire falla con «Got Datasnapshot without location»
+# (mapa y búsqueda de técnicos cercanos se cerraban en release).
+-keep class * extends com.google.firebase.database.GenericTypeIndicator { *; }
+-keep class com.firebase.geofire.** { *; }
+
 # ---------- Retrofit ----------
 # Las interfaces de la API se leen por reflexión (anotaciones y tipos genéricos
 # como Call<ApiResponse<List<Pqr>>>); en modo completo R8 quita la firma genérica
