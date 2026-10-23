@@ -37,6 +37,7 @@ import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.CatalogProvider;
 import com.project.ads.providers.ClientProvider;
 import com.project.ads.providers.TokenProvider;
+import com.project.ads.helpers.NotificationBellHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,11 +67,13 @@ public class HomeUserActivity extends AppCompatActivity {
     private ValueEventListener mActiveListener;
     private final List<CatalogData.Category> mCategories = new ArrayList<>();
     private CategoriesAdapter mCategoriesAdapter;
+    private NotificationBellHelper mNotificationBell;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_user);
+        mNotificationBell = new NotificationBellHelper(this);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         crashlytics = FirebaseCrashlytics.getInstance();
@@ -260,6 +263,18 @@ public class HomeUserActivity extends AppCompatActivity {
                 .setPositiveButton("Salir", (dialog, which) -> finish())
                 .setNegativeButton("Cancelar", null)
                 .show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mNotificationBell.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mNotificationBell.stop();
+        super.onStop();
     }
 
     @Override

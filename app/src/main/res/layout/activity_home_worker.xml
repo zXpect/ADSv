@@ -66,6 +66,8 @@
                     android:contentDescription="@null"
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
+
+                <include layout="@layout/view_notifications_bell" />
             </LinearLayout>
 
             <!-- Tu estado (tarjeta navy con interruptor) -->

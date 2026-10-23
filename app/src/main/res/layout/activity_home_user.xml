@@ -26,26 +26,43 @@
             android:paddingEnd="@dimen/screen_margin"
             android:paddingBottom="@dimen/space_6">
 
-            <!-- Ubicación y saludo -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/space_1"
-                android:gravity="center_vertical"
-                android:text="@string/home_location"
-                android:textAppearance="@style/TextAppearance.ADS.Caption"
-                app:drawableStartCompat="@drawable/ic_location_small"
-                app:drawableTint="@color/ads_muted" />
-
-            <TextView
-                android:id="@+id/user_greeting_text"
+            <!-- Ubicación y saludo, con la campana de notificaciones a la derecha -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:accessibilityHeading="true"
-                android:fontFamily="@font/sora_extrabold"
-                android:text="@string/home_greeting_default"
-                android:textAppearance="@style/TextAppearance.ADS.Title" />
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/space_1"
+                        android:gravity="center_vertical"
+                        android:text="@string/home_location"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption"
+                        app:drawableStartCompat="@drawable/ic_location_small"
+                        app:drawableTint="@color/ads_muted" />
+
+                    <TextView
+                        android:id="@+id/user_greeting_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:accessibilityHeading="true"
+                        android:fontFamily="@font/sora_extrabold"
+                        android:text="@string/home_greeting_default"
+                        android:textAppearance="@style/TextAppearance.ADS.Title" />
+                </LinearLayout>
+
+                <include layout="@layout/view_notifications_bell" />
+            </LinearLayout>
 
             <!-- Servicio activo: va bajo el saludo para que se vea sin desplazar
                  (con 7 oficios, debajo de la cuadrícula quedaba fuera de la pantalla) -->

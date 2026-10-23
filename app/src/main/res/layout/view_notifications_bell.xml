@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Campana de notificaciones de los inicios (mockups 06 y 13): botón redondo de 44 dp
+     con punto naranja cuando hay notificaciones sin leer. La conecta NotificationBellHelper.
+     Uso: <include layout="@layout/view_notifications_bell" /> al final de la fila del saludo. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/btn_home_notifications"
+    android:layout_width="@dimen/touch_min"
+    android:layout_height="@dimen/touch_min"
+    android:layout_marginStart="@dimen/space_3"
+    android:background="@drawable/bg_ads_circle_button"
+    android:clickable="true"
+    android:contentDescription="@string/home_notifications_desc"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+    <ImageView
+        android:layout_width="@dimen/icon_md"
+        android:layout_height="@dimen/icon_md"
+        android:layout_gravity="center"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_ads_bell"
+        app:tint="@color/ads_charcoal" />
+
+    <View
+        android:id="@+id/view_notifications_dot"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="9dp"
+        android:background="@drawable/bg_ads_notification_dot"
+        android:importantForAccessibility="no"
+        android:visibility="gone" />
+</FrameLayout>

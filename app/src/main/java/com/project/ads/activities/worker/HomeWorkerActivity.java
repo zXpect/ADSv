@@ -59,6 +59,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.helpers.AdsSnackbar;
 import com.project.ads.helpers.Haptics;
+import com.project.ads.helpers.NotificationBellHelper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -96,6 +97,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
     TokenProvider mTokenProvider;
     Toolbar mToolbar;
     private FusedLocationProviderClient mFusedLocation;
+    private NotificationBellHelper mNotificationBell;
     private GeofireProvider mGeofireProvider;
     private LocationCallback mLocationCallback;
     private LocationRequest mLocationRequest;
@@ -123,6 +125,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_worker);
+        mNotificationBell = new NotificationBellHelper(this);
 
         initProviders();
         initViews();
@@ -1375,6 +1378,18 @@ public class HomeWorkerActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         stopPulseAnimation();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mNotificationBell.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mNotificationBell.stop();
+        super.onStop();
     }
 
     @Override
