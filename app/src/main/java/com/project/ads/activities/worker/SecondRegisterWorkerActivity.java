@@ -532,7 +532,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         // ⭐ ASEGURAR QUE EL TELÉFONO SE GUARDE CORRECTAMENTE
         if (phone != null && !phone.isEmpty()) {
             worker.setPhone(phone);
-            Log.d(TAG, "Worker con teléfono: " + phone);
+            Log.d(TAG, "Worker con teléfono registrado");
         }
 
         worker.setConsentAcceptedAt(getIntent().getLongExtra(ConsentHelper.EXTRA_ACCEPTED_AT, 0));

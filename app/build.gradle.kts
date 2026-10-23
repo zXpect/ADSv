@@ -4,7 +4,17 @@
 val adsApiBaseUrlDebug = (project.findProperty("ADS_API_BASE_URL_DEBUG") as String?)
     ?: "http://10.0.2.2:8000/"  // emulador -> localhost del PC
 val adsApiBaseUrlRelease = (project.findProperty("ADS_API_BASE_URL_RELEASE") as String?)
-    ?: "https://configurar-url-del-backend.invalid/"
+    ?: "https://ads-api-4o89.onrender.com/"  // backend desplegado en Render
+
+// Firma del APK de release con app_key.jks (respaldo en Documents/ADS/keystore-backup/).
+// Las contraseñas van solo en ~/.gradle/gradle.properties, nunca en el repositorio:
+//   ADS_KEYSTORE_FILE=C:/ruta/app_key.jks   (opcional; por defecto app/app_key.jks)
+//   ADS_KEYSTORE_PASSWORD=...
+//   ADS_KEY_ALIAS=...
+//   ADS_KEY_PASSWORD=...
+// Sin ellas, el release se firma con la llave de depuración: sirve para probar R8
+// en un teléfono, pero no para entregar.
+val adsKeystorePassword = project.findProperty("ADS_KEYSTORE_PASSWORD") as String?
 
 plugins {
     id("com.android.application")
@@ -28,10 +38,23 @@ android {
         multiDexEnabled = true
     }
 
+    signingConfigs {
+        if (adsKeystorePassword != null) {
+            create("release") {
+                storeFile = file((project.findProperty("ADS_KEYSTORE_FILE") as String?) ?: "app_key.jks")
+                storePassword = adsKeystorePassword
+                keyAlias = project.findProperty("ADS_KEY_ALIAS") as String?
+                keyPassword = project.findProperty("ADS_KEY_PASSWORD") as String?
+            }
+        }
+    }
+
     buildTypes {
         release {
             buildConfigField("String", "ADS_API_BASE_URL", "\"$adsApiBaseUrlRelease\"")
-            isMinifyEnabled = false
+            // MASVS M7: R8 reduce y ofusca el código; M4: proguard-rules.pro quita los logs
+            isMinifyEnabled = true
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

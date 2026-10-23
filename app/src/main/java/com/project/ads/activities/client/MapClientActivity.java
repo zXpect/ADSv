@@ -337,7 +337,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
                 public void onPlaceSelected(@NonNull Place place) {
                     mOrigin = place.getName();
                     mOriginLatLng = place.getLatLng();
-                    Log.d(TAG, "Selected place: " + mOrigin + " at " + mOriginLatLng);
+                    Log.d(TAG, "Selected place");
                 }
 
                 @Override
@@ -466,7 +466,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
         }).addOnFailureListener(exception -> {
-            Log.e(TAG, "Failed to get worker data for ID: " + workerId, exception);
+            Log.e(TAG, "Failed to get worker data", exception);
         });
     }
 

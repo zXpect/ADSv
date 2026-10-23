@@ -70,7 +70,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
         workerId = getIntent().getStringExtra("worker_id");
         workerType = getIntent().getStringExtra("worker_type");
 
-        Log.d(TAG, "Worker ID: " + workerId + ", Worker Type: " + workerType);
+        Log.d(TAG, "Worker Type: " + workerType);
 
         if (workerId == null || workerId.isEmpty()) {
             Toast.makeText(this, "Error: ID de trabajador no válido", Toast.LENGTH_SHORT).show();
@@ -148,7 +148,6 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
 
                 Log.d(TAG, "DataSnapshot exists: " + dataSnapshot.exists());
                 Log.d(TAG, "Children count: " + dataSnapshot.getChildrenCount());
-                Log.d(TAG, "Current worker ID: " + workerId);
                 Log.d(TAG, "Current worker type: " + workerType);
 
                 if (dataSnapshot.exists()) {

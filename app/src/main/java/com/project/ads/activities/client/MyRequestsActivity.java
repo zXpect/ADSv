@@ -115,7 +115,7 @@ public class MyRequestsActivity extends AppCompatActivity {
 
     private void loadMyRequests() {
         showLoading(true);
-        Log.d(TAG, "Cargando solicitudes para cliente: " + mClientId);
+        Log.d(TAG, "Cargando solicitudes del cliente");
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 

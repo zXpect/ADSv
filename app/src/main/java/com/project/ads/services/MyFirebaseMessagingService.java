@@ -39,7 +39,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        Log.d(TAG, "Message received from: " + remoteMessage.getFrom());
+        Log.d(TAG, "Message received");
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         Map<String, String> data = remoteMessage.getData();
@@ -51,7 +51,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String pqrId = data.get("pqrId");
         String notificationId = data.get("notificationId");
 
-        Log.d(TAG, "Notification data - Title: " + title + ", Body: " + body + ", RequestId: " + requestId + ", Type: " + type);
+        Log.d(TAG, "Notification type: " + type);
 
         if (title != null) {
             // El destino al tocar lo decide NotificationRouter (igual que la pantalla de Notificaciones)

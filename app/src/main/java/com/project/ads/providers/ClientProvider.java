@@ -38,7 +38,7 @@ public class ClientProvider {
         // ⭐ Incluir teléfono si existe
         if (client.getPhone() != null && !client.getPhone().isEmpty()) {
             map.put("phone", client.getPhone());
-            Log.d(TAG, "Guardando cliente con teléfono: " + client.getPhone());
+            Log.d(TAG, "Guardando cliente");
         }
 
         // Incluir imagen si existe
@@ -152,7 +152,7 @@ public class ClientProvider {
     public Task<Void> updatePhone(String clientId, String phone) {
         Map<String, Object> map = new HashMap<>();
         map.put("phone", phone);
-        Log.d(TAG, "Actualizando teléfono del cliente " + clientId + ": " + phone);
+        Log.d(TAG, "Actualizando teléfono del cliente");
         return mDataBase.child(clientId).updateChildren(map);
     }
 

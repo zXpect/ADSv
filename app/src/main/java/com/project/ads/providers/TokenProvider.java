@@ -51,7 +51,7 @@ public class TokenProvider {
 
         mDatabase.child(userId).child("token").setValue(token)
                 .addOnSuccessListener(aVoid ->
-                        Log.d("TokenProvider", "Token guardado exitosamente para usuario: " + userId))
+                        Log.d("TokenProvider", "Token guardado"))
                 .addOnFailureListener(e ->
                         Log.e("TokenProvider", "Error al guardar token: " + e.getMessage()));
     }
