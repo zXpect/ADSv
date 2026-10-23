@@ -148,6 +148,10 @@ public class LoginActivity extends AppCompatActivity {
         // El toolbar va sobre la cabecera navy: título claro
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
+        // Subtítulo según el rol elegido
+        ((TextView) findViewById(R.id.welcome_subtitle)).setText(
+                "trabajador".equals(mPref.getString("user", ""))
+                        ? R.string.login_subtitle_worker : R.string.login_subtitle);
     }
 
     private void setupListeners() {
@@ -709,8 +713,14 @@ public class LoginActivity extends AppCompatActivity {
         // Cabecera navy (mockup 01): barra de estado navy con íconos claros
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_start_bg));
-        new WindowInsetsControllerCompat(window, window.getDecorView())
-                .setAppearanceLightStatusBars(false);
+        WindowInsetsControllerCompat insets = new WindowInsetsControllerCompat(window, window.getDecorView());
+        insets.setAppearanceLightStatusBars(false);
+        // Barra de navegación del color de la hoja (sin franja gris abajo). Los íconos
+        // oscuros de esa barra solo existen desde Android 8, así que antes se deja la del sistema.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.ads_sheet));
+            insets.setAppearanceLightNavigationBars(getResources().getBoolean(R.bool.ads_light_status_bar));
+        }
     }
 
     @Override

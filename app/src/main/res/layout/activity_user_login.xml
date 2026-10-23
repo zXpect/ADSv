@@ -17,44 +17,58 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Flecha de volver y rol elegido (lo pone MyToolbar) -->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <!-- Cabecera navy: techo decorativo, logo y marca; la barra de volver va encima
+             para que el formulario quepa sin desplazar en pantallas de 360 dp -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@android:color/transparent"
-            app:contentInsetStart="8dp"
-            app:titleTextAppearance="@style/TextAppearance.ADS.Subtitle"
-            app:titleTextColor="@color/ads_on_navy" />
-
-        <!-- Logo y marca -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/space_2"
-            android:paddingBottom="36dp">
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:contentDescription="@string/ads_logo_desc"
-                app:srcCompat="@drawable/ic_ads_logo_on_navy" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_ads_login_roof" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Logo y marca -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_3"
-                android:fontFamily="@font/sora_extrabold"
-                android:letterSpacing="0.25"
-                android:paddingStart="7dp"
-                android:text="@string/ads_wordmark"
-                android:textColor="@color/ads_on_navy"
-                android:textSize="28sp"
-                android:importantForAccessibility="no" />
-        </LinearLayout>
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="40dp"
+                android:paddingBottom="@dimen/space_6">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="84dp"
+                    android:layout_height="84dp"
+                    android:contentDescription="@string/ads_logo_desc"
+                    app:srcCompat="@drawable/ic_ads_logo_on_navy" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:fontFamily="@font/sora_extrabold"
+                    android:letterSpacing="0.25"
+                    android:paddingStart="7dp"
+                    android:text="@string/ads_wordmark"
+                    android:textColor="@color/ads_on_navy"
+                    android:textSize="28sp"
+                    android:importantForAccessibility="no" />
+            </LinearLayout>
+
+            <!-- Flecha de volver y rol elegido (lo pone MyToolbar) -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@android:color/transparent"
+                app:contentInsetStart="8dp"
+                app:titleTextAppearance="@style/TextAppearance.ADS.Subtitle"
+                app:titleTextColor="@color/ads_on_navy" />
+        </FrameLayout>
 
         <!-- Hoja con el formulario -->
         <LinearLayout
@@ -64,9 +78,9 @@
             android:background="@drawable/bg_ads_sheet_top"
             android:orientation="vertical"
             android:paddingStart="@dimen/screen_margin"
-            android:paddingTop="32dp"
+            android:paddingTop="28dp"
             android:paddingEnd="@dimen/screen_margin"
-            android:paddingBottom="28dp">
+            android:paddingBottom="@dimen/space_4">
 
             <TextView
                 android:id="@+id/welcome_title"
@@ -150,7 +164,7 @@
                 android:text="@string/login_forgot_password"
                 android:textAppearance="@style/TextAppearance.ADS.Caption"
                 android:fontFamily="@font/sora_semibold"
-                android:textColor="@color/ads_charcoal" />
+                android:textColor="@color/ads_brand_text" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/login"
@@ -164,7 +178,7 @@
                 android:id="@+id/separator_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -246,7 +260,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:minHeight="@dimen/space_6" />
+                android:minHeight="@dimen/space_2" />
 
             <LinearLayout
                 android:id="@+id/register_container"
@@ -277,7 +291,7 @@
                     android:text="@string/login_register"
                     android:textAppearance="@style/TextAppearance.ADS.BodySmall"
                     android:fontFamily="@font/sora_extrabold"
-                    android:textColor="@color/ads_charcoal" />
+                    android:textColor="@color/ads_brand_text" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

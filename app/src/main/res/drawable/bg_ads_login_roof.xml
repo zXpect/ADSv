@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Techo decorativo de la cabecera del login (mockup 01): continúa los techos de la Bienvenida.
+     Tamaño intrínseco a la mitad del viewport (lint VectorRaster); el ImageView lo escala. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="195dp"
+    android:height="130dp"
+    android:viewportWidth="390"
+    android:viewportHeight="260">
+    <path
+        android:pathData="M150,120L300,-10L450,120"
+        android:strokeAlpha="0.07"
+        android:strokeColor="#FFF6F3EE"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="28" />
+</vector>

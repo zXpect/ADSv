@@ -199,6 +199,7 @@
     <!-- Rediseño: inicio de sesión (mockup 01) -->
     <string name="login_title">Bienvenido de nuevo</string>
     <string name="login_subtitle">Encuentra técnicos de confianza en Ubaté.</string>
+    <string name="login_subtitle_worker">Recibe solicitudes de clientes cerca de ti.</string>
     <string name="login_email_placeholder">tucorreo@ejemplo.com</string>
     <string name="login_password_placeholder">Tu contraseña</string>
     <string name="login_forgot_password">¿Olvidaste tu contraseña?</string>

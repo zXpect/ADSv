@@ -217,6 +217,8 @@
     <style name="Widget.ADS.EditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">
         <item name="android:textAppearance">@style/TextAppearance.ADS.Body</item>
         <item name="android:textColor">@color/ads_text</item>
+        <!-- Texto de ejemplo como en los mockups (#5B606B, contraste AA) -->
+        <item name="android:textColorHint">@color/ads_muted</item>
         <item name="android:textSize">15sp</item>
         <item name="android:minHeight">@dimen/field_height</item>
     </style>
