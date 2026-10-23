@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +49,7 @@ public class MyRequestsActivity extends AppCompatActivity {
 
     // UI Components
     private RecyclerView mRecyclerView;
-    private ProgressBar mProgressBar;
+    private View mProgressBar;   // tarjetas de relleno (AdsSkeletonView)
     private LinearLayout mEmptyState;
     private SwipeRefreshLayout mSwipeRefresh;
     private ImageButton mBtnBack;

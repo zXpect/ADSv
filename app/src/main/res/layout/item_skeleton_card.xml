@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tarjeta de relleno mientras carga una lista (AdsSkeletonView): misma forma que
+     las tarjetas de las listas, con bloques en lugar de texto. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/space_3"
+    android:importantForAccessibility="no"
+    app:contentPadding="@dimen/space_4">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="@dimen/icon_tile"
+            android:layout_height="@dimen/icon_tile"
+            android:background="@drawable/bg_ads_skeleton_block" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_3"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="14dp"
+                android:layout_marginEnd="64dp"
+                android:background="@drawable/bg_ads_skeleton_block" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_marginTop="@dimen/space_2"
+                android:layout_marginEnd="120dp"
+                android:background="@drawable/bg_ads_skeleton_block" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

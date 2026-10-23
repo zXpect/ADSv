@@ -15,6 +15,7 @@ import com.project.ads.models.Requote;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.QuoteProvider;
+import com.project.ads.helpers.AdsSnackbar;
 
 /**
  * Re-cotización · mockup 22 (docs/mockups/ReCotizacionCliente.dc.html). El cliente
@@ -90,7 +91,7 @@ public class RequoteAnswerActivity extends AppCompatActivity {
             public void onError(String message, int httpStatus) {
                 findViewById(R.id.btn_requote_accept).setEnabled(true);
                 findViewById(R.id.btn_requote_reject).setEnabled(true);
-                Toast.makeText(RequoteAnswerActivity.this, message, Toast.LENGTH_LONG).show();
+                AdsSnackbar.showLong(RequoteAnswerActivity.this, message);
             }
         });
     }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bloque gris de las tarjetas de relleno (carga de listas) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ads_skeleton" />
+    <corners android:radius="@dimen/space_2" />
+</shape>

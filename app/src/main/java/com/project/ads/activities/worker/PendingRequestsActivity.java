@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
+import com.project.ads.helpers.AdsSnackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
 
     // UI Components
     private RecyclerView recyclerView;
-    private ProgressBar progressBar;
+    private View progressBar;   // tarjetas de relleno (AdsSkeletonView)
     private LinearLayout tvEmpty;
     private SwipeRefreshLayout swipeRefresh;
     private ImageButton btnBack;
@@ -283,7 +283,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
 
     private void showError(String message) {
         showLoading(false);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        AdsSnackbar.showLong(this, message);
     }
 
     @Override

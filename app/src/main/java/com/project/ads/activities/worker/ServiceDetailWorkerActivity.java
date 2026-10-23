@@ -31,6 +31,7 @@ import com.project.ads.providers.CatalogProvider;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.providers.NotificationProvider;
 import com.project.ads.helpers.DisplayNameHelper;
+import com.project.ads.helpers.AdsSnackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -535,7 +536,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error actualizando estado", e);
-                    Toast.makeText(this, "Error al actualizar el estado", Toast.LENGTH_SHORT).show();
+                    AdsSnackbar.show(this, R.string.error_update_status);
                     mProgressBar.setVisibility(View.GONE);
                     enableActionButtons();
                 });
@@ -560,7 +561,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     }
 
     private void showSuccess(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        AdsSnackbar.showLong(this, message);
     }
 
     private void callClient() {
@@ -580,7 +581,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
             if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
             } else {
-                Toast.makeText(this, "Google Maps no está instalado", Toast.LENGTH_SHORT).show();
+                AdsSnackbar.show(this, R.string.error_no_maps);
             }
         }
     }

@@ -57,6 +57,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
+import com.project.ads.helpers.AdsSnackbar;
+import com.project.ads.helpers.Haptics;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -203,6 +205,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
         // LISTENER DEL BOTÓN ÚNICO
         mButtonToggleConnection.setOnClickListener(v -> {
+            Haptics.confirm(v);
             toggleConnection();
             // El interruptor muestra el estado real (p. ej. si falta el permiso de ubicación)
             mButtonToggleConnection.setChecked(isConnected);
@@ -1325,19 +1328,19 @@ public class HomeWorkerActivity extends AppCompatActivity {
     }
 
     private void showSuccessToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        AdsSnackbar.show(this, message);
     }
 
     private void showErrorToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        AdsSnackbar.show(this, message);
     }
 
     private void showInfoToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        AdsSnackbar.show(this, message);
     }
 
     private void showSnackbar(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        AdsSnackbar.show(this, message);
     }
 
     @Override

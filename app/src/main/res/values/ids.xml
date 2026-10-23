@@ -18,4 +18,6 @@
          color, borrados en la Fase 6); ninguna pantalla los muestra. -->
     <item name="action_logout" type="id" />
     <item name="toolbar_color" type="id" />
+    <!-- Barra de acción fija de las pantallas: AdsSnackbar apoya los avisos encima -->
+    <item name="ads_action_bar" type="id" />
 </resources>

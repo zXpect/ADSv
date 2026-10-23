@@ -20,6 +20,8 @@ import com.project.ads.providers.RequestProvider;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.project.ads.R;
+import com.project.ads.helpers.AdsSnackbar;
+import com.project.ads.helpers.Haptics;
 
 /**
  * Calificar servicio · mockup 30 (docs/mockups/Calificar.dc.html).
@@ -135,7 +137,10 @@ public class RatingActivity extends AppCompatActivity {
         // Estrellas enteras de 1 a 5 (lo que acepta el backend)
         for (int i = 0; i < STAR_IDS.length; i++) {
             final int value = i + 1;
-            findViewById(STAR_IDS[i]).setOnClickListener(v -> setRating(value));
+            findViewById(STAR_IDS[i]).setOnClickListener(v -> {
+                Haptics.tick(v);
+                setRating(value);
+            });
         }
         setRating(0);
     }
@@ -193,11 +198,12 @@ public class RatingActivity extends AppCompatActivity {
                 mSubmitButton.setEnabled(true);
 
                 logInfo("Error al calificar (HTTP " + httpStatus + ")");
-                showError(message);
+                AdsSnackbar.show(RatingActivity.this, message);
             }
         });
     }
 
+    // Toast: algunos errores cierran la pantalla justo después
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }

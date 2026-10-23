@@ -33,6 +33,7 @@ import com.project.ads.models.api.QuoteReference;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.CatalogProvider;
 import com.project.ads.providers.WorkerProvider;
+import com.project.ads.helpers.AdsSnackbar;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -501,7 +502,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
     }
 
     private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        AdsSnackbar.show(this, message);
     }
 
     private void showProgressDialog(String message) {

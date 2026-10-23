@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +49,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
     private static final Locale LOCALE = new Locale("es", "CO");
 
     private RecyclerView mRecyclerView;
-    private ProgressBar mProgressBar;
+    private View mProgressBar;   // tarjetas de relleno (AdsSkeletonView)
     private LinearLayout mEmptyState;
     private SwipeRefreshLayout mSwipeRefresh;
 

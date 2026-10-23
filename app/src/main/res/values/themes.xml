@@ -35,6 +35,8 @@
         <item name="android:windowBackground">@color/ads_surface</item>
         <item name="android:statusBarColor">@color/ads_surface</item>
         <item name="android:windowLightStatusBar">@bool/ads_light_status_bar</item>
+        <!-- Transición uniforme al abrir y cerrar pantallas (las pestañas siguen sin animación) -->
+        <item name="android:windowAnimationStyle">@style/Animation.ADS.Activity</item>
 
         <!-- Tipografía Sora. No se pone fontFamily directo en el tema: anularía
              los pesos 600/800 de los TextAppearance. Va como apariencia base. -->
@@ -62,6 +64,9 @@
         <item name="materialCardViewStyle">@style/Widget.ADS.Card</item>
         <item name="bottomNavigationStyle">@style/Widget.ADS.BottomNav</item>
         <item name="chipStyle">@style/Widget.ADS.Chip.Filter</item>
+        <item name="snackbarStyle">@style/Widget.ADS.Snackbar</item>
+        <item name="snackbarTextViewStyle">@style/Widget.ADS.Snackbar.Text</item>
+        <item name="snackbarButtonStyle">@style/Widget.ADS.Snackbar.Action</item>
     </style>
 
     <!-- Diálogo a pantalla completa con el tema ADS (cancelar servicio) -->

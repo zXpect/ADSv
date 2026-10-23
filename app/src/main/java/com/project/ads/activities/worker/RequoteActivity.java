@@ -19,6 +19,7 @@ import com.project.ads.helpers.ReasonHelper;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.QuoteProvider;
+import com.project.ads.helpers.AdsSnackbar;
 
 import java.util.Map;
 
@@ -94,7 +95,7 @@ public class RequoteActivity extends AppCompatActivity {
                 : price == mCurrentPrice ? getString(R.string.requote_error_same) : null);
         if (mPriceLayout.getError() != null) return;
         if (reason == null) {
-            Toast.makeText(this, R.string.requote_error_reason, Toast.LENGTH_SHORT).show();
+            AdsSnackbar.show(this, R.string.requote_error_reason);
             return;
         }
         boolean other = ReasonHelper.OTHER.equals(reason);
@@ -113,7 +114,7 @@ public class RequoteActivity extends AppCompatActivity {
             public void onError(String message, int httpStatus) {
                 // 400: fuera de la tarifa mínima o del máximo; 409: ya hubo una o el estado no lo permite
                 findViewById(R.id.btn_requote_send).setEnabled(true);
-                Toast.makeText(RequoteActivity.this, message, Toast.LENGTH_LONG).show();
+                AdsSnackbar.showLong(RequoteActivity.this, message);
             }
         });
     }

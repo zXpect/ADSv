@@ -827,4 +827,9 @@
     <string name="account_suspended_message">El equipo de ADS suspendió tu cuenta, así que se cerrará la sesión. Si crees que es un error, escríbenos a soporte.</string>
     <string name="account_suspended_login">Esta cuenta está suspendida y no puede iniciar sesión. Si crees que es un error, escríbenos a soporte.</string>
     <string name="account_suspended_ok">Entendido</string>
+    <!-- Avisos (AdsSnackbar) -->
+    <string name="error_check_status">No se pudo verificar el estado. Inténtalo de nuevo.</string>
+    <string name="error_connection">Error de conexión. Revisa tu internet e inténtalo de nuevo.</string>
+    <string name="error_update_status">No se pudo actualizar el estado. Inténtalo de nuevo.</string>
+    <string name="error_no_maps">Google Maps no está instalado.</string>
 </resources>

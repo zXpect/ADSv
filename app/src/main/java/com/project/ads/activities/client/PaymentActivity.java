@@ -30,6 +30,7 @@ import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.api.PaymentData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.PaymentProvider;
+import com.project.ads.helpers.AdsSnackbar;
 
 import java.util.Map;
 
@@ -303,7 +304,7 @@ public class PaymentActivity extends AppCompatActivity {
             @Override
             public void onError(String message, int httpStatus) {
                 mCreatingPayment = false;
-                Toast.makeText(PaymentActivity.this, message, Toast.LENGTH_LONG).show();
+                AdsSnackbar.showLong(PaymentActivity.this, message);
                 if (mServiceRequest != null) render(mServiceRequest);
             }
         });
@@ -316,7 +317,7 @@ public class PaymentActivity extends AppCompatActivity {
                 || (BuildConfig.DEBUG && "http".equals(uri.getScheme())));
         if (!allowedScheme) {
             Log.e(TAG, "URL de checkout no permitida");
-            Toast.makeText(this, R.string.payment_error, Toast.LENGTH_LONG).show();
+            AdsSnackbar.showLong(this, R.string.payment_error);
             if (mServiceRequest != null) render(mServiceRequest);
             return;
         }
@@ -329,7 +330,7 @@ public class PaymentActivity extends AppCompatActivity {
                     .launchUrl(this, uri);
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "No hay navegador para abrir el checkout", e);
-            Toast.makeText(this, R.string.payment_error_no_browser, Toast.LENGTH_LONG).show();
+            AdsSnackbar.showLong(this, R.string.payment_error_no_browser);
         }
         if (mServiceRequest != null) render(mServiceRequest);
     }

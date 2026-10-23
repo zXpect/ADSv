@@ -37,6 +37,7 @@
     <color name="ads_switch_disabled">#6B7288</color>
     <color name="ads_chip_strong_bg">#2A3152</color>   <!-- (*) = ads_highlight_raised -->
     <color name="ads_chip_strong_text">#F6F3EE</color>
+    <color name="ads_skeleton">#2A2F45</color>        <!-- (*) = ads_line: se ve sobre la tarjeta -->
 
     <!-- ===================================================================
          HEREDADOS que NO apuntan a tokens: conservan su valor oscuro

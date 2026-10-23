@@ -102,12 +102,14 @@
                 android:paddingBottom="@dimen/space_6"
                 tools:listitem="@layout/item_pending_request" />
 
-            <ProgressBar
+            <!-- Tarjetas de relleno mientras carga la lista (antes, rueda de carga) -->
+            <com.project.ads.includes.AdsSkeletonView
                 android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminateTint="@color/ads_brand"
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingTop="@dimen/space_1"
+                android:paddingEnd="@dimen/screen_margin"
                 android:visibility="gone" />
 
             <LinearLayout

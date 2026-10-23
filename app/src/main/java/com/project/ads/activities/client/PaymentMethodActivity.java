@@ -17,6 +17,8 @@ import com.project.ads.models.api.QuoteData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.PaymentProvider;
 import com.project.ads.providers.QuoteProvider;
+import com.project.ads.helpers.AdsSnackbar;
+import com.project.ads.helpers.Haptics;
 
 /**
  * Método de pago · mockup 18 (docs/mockups/Pago.dc.html). El cliente elige
@@ -85,7 +87,10 @@ public class PaymentMethodActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         mCardDigital.setOnClickListener(v -> select(PaymentProvider.METHOD_DIGITAL));
         mCardCash.setOnClickListener(v -> select(PaymentProvider.METHOD_CASH));
-        mBtnConfirm.setOnClickListener(v -> confirm());
+        mBtnConfirm.setOnClickListener(v -> {
+            Haptics.confirm(v);
+            confirm();
+        });
 
         select(savedInstanceState != null
                 ? savedInstanceState.getString(EXTRA_METHOD, mInitialMethod) : mInitialMethod);
@@ -155,6 +160,6 @@ public class PaymentMethodActivity extends AppCompatActivity {
 
     private void failed(String message) {
         mBtnConfirm.setEnabled(true);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        AdsSnackbar.showLong(this, message);
     }
 }

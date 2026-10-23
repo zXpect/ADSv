@@ -42,6 +42,10 @@
          En oscuro es una ficha tonal, no el bloque crema invertido. -->
     <color name="ads_chip_strong_bg">#1B1830</color>
     <color name="ads_chip_strong_text">#F6F3EE</color>
+    <!-- Snackbar ADS: misma ficha que el chip fuerte (navy en claro, tonal en oscuro) -->
+    <color name="ads_snackbar_bg">@color/ads_chip_strong_bg</color>
+    <!-- Bloques de las tarjetas de relleno mientras carga una lista -->
+    <color name="ads_skeleton">#E7E3DB</color>
 
     <!-- ===================================================================
          COLORES HEREDADOS

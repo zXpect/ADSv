@@ -35,6 +35,7 @@ import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.CatalogProvider;
 import com.project.ads.providers.QuoteProvider;
 import com.project.ads.providers.RequestProvider;
+import com.project.ads.helpers.AdsSnackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,7 +217,7 @@ public class QuoteDialogHelper {
                 @Override
                 public void onSuccess(QuoteData quote) {
                     dialog.dismiss();
-                    Toast.makeText(mActivity, R.string.quote_sent, Toast.LENGTH_LONG).show();
+                    AdsSnackbar.showLong(mActivity, R.string.quote_sent);
                     if (listener != null) listener.onQuoteSent(quote);
                 }
 
@@ -273,7 +274,7 @@ public class QuoteDialogHelper {
                         @Override
                         public void onSuccess(RequestActionData data) {
                             dialog.dismiss();
-                            Toast.makeText(mActivity, R.string.reschedule_done, Toast.LENGTH_LONG).show();
+                            AdsSnackbar.showLong(mActivity, R.string.reschedule_done);
                             if (listener != null) listener.onRescheduled(data);
                         }
 

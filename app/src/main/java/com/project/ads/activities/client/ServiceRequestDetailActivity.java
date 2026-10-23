@@ -38,6 +38,7 @@ import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.QuoteProvider;
 import com.project.ads.providers.RequestProvider;
 import com.project.ads.helpers.DisplayNameHelper;
+import com.project.ads.helpers.AdsSnackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -674,13 +675,13 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             public void onSuccess(QuoteData data) {
                 // El listener de Firebase actualiza la pantalla con el nuevo estado
                 setQuoteButtonsEnabled(true);
-                Toast.makeText(ServiceRequestDetailActivity.this, successMessage, Toast.LENGTH_SHORT).show();
+                AdsSnackbar.show(ServiceRequestDetailActivity.this, successMessage);
             }
 
             @Override
             public void onError(String message, int httpStatus) {
                 setQuoteButtonsEnabled(true);
-                Toast.makeText(ServiceRequestDetailActivity.this, message, Toast.LENGTH_LONG).show();
+                AdsSnackbar.showLong(ServiceRequestDetailActivity.this, message);
             }
         };
     }
@@ -714,7 +715,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     private void openRatingActivity() {
         if (mServiceRequest == null) return;
         if (!mServiceRequest.isPaid()) {
-            Toast.makeText(this, R.string.rating_requires_payment, Toast.LENGTH_SHORT).show();
+            AdsSnackbar.show(this, R.string.rating_requires_payment);
             return;
         }
         checkIfAlreadyRated();
@@ -740,11 +741,11 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                     openRatingScreen();
                 }
             } else {
-                Toast.makeText(this, "Error al verificar estado", Toast.LENGTH_SHORT).show();
+                AdsSnackbar.show(this, R.string.error_check_status);
             }
         }).addOnFailureListener(e -> {
             mProgressBar.setVisibility(View.GONE);
-            Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show();
+            AdsSnackbar.show(this, R.string.error_connection);
             Log.e(TAG, "Error verificando calificación", e);
         });
     }

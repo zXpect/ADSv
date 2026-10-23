@@ -13,6 +13,7 @@ import com.project.ads.R;
 import com.project.ads.models.api.PaymentMethodData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.PaymentProvider;
+import com.project.ads.helpers.AdsSnackbar;
 
 /**
  * Recibí el pago · mockup 31 (docs/mockups/RegistrarEfectivo.dc.html). El trabajador
@@ -68,7 +69,7 @@ public class CashReceivedActivity extends AppCompatActivity {
             public void onError(String message, int httpStatus) {
                 // 409: no está completado, no es en efectivo o ya se registró; el mensaje viene del backend
                 findViewById(R.id.btn_cash_received_confirm).setEnabled(true);
-                Toast.makeText(CashReceivedActivity.this, message, Toast.LENGTH_LONG).show();
+                AdsSnackbar.showLong(CashReceivedActivity.this, message);
             }
         });
     }

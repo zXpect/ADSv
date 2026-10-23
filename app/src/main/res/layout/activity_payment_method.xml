@@ -207,6 +207,7 @@
 
     <!-- Barra de acción fija: total y confirmar -->
     <LinearLayout
+        android:id="@id/ads_action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ads_bar"

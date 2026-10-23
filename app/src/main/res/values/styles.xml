@@ -370,4 +370,39 @@
         <item name="android:src">@drawable/ic_ads_chevron</item>
         <item name="tint">@color/ads_muted</item>
     </style>
+
+    <!-- Transición entre pantallas (Theme.ADSv) -->
+    <style name="Animation.ADS.Activity" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/ads_open_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/ads_open_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/ads_close_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/ads_close_exit</item>
+    </style>
+
+    <!-- ===================================================================
+         SNACKBAR: avisos dentro de la pantalla (en lugar de Toast). Ficha
+         navy, texto crema y acción naranja; se apoya sobre la barra inferior
+         o la barra de acción fija (AdsSnackbar).
+         =================================================================== -->
+    <style name="Widget.ADS.Snackbar" parent="Widget.Material3.Snackbar">
+        <item name="backgroundTint">@color/ads_snackbar_bg</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.ADS.Snackbar</item>
+        <item name="android:layout_margin">@dimen/space_4</item>
+    </style>
+
+    <style name="ShapeAppearance.ADS.Snackbar" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_field</item>
+    </style>
+
+    <style name="Widget.ADS.Snackbar.Text" parent="Widget.Material3.Snackbar.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.ADS.BodySmall</item>
+        <item name="android:textColor">@color/ads_on_navy</item>
+        <item name="android:maxLines">3</item>
+    </style>
+
+    <style name="Widget.ADS.Snackbar.Action" parent="Widget.Material3.Button.TextButton.Snackbar">
+        <item name="android:textColor">@color/ads_brand</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Button.Secondary</item>
+    </style>
 </resources>
