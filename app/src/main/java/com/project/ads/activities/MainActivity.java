@@ -17,6 +17,7 @@ import com.project.ads.activities.worker.HomeWorkerActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.ads.R;
 import com.project.ads.helpers.NotificationRouter;
+import com.project.ads.helpers.SystemBarsHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_start_bg));
         new WindowInsetsControllerCompat(window, window.getDecorView()).setAppearanceLightStatusBars(false);
+        // Barra de navegación navy como el fondo (sin franja gris abajo)
+        SystemBarsHelper.matchNavigationBar(this, R.color.ads_start_bg, false);
     }
 
     private void openRole(String mode) {

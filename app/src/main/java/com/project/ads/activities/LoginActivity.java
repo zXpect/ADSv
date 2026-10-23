@@ -51,6 +51,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.project.ads.R;
+import com.project.ads.helpers.SystemBarsHelper;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -713,14 +714,11 @@ public class LoginActivity extends AppCompatActivity {
         // Cabecera navy (mockup 01): barra de estado navy con íconos claros
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_start_bg));
-        WindowInsetsControllerCompat insets = new WindowInsetsControllerCompat(window, window.getDecorView());
-        insets.setAppearanceLightStatusBars(false);
-        // Barra de navegación del color de la hoja (sin franja gris abajo). Los íconos
-        // oscuros de esa barra solo existen desde Android 8, así que antes se deja la del sistema.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.ads_sheet));
-            insets.setAppearanceLightNavigationBars(getResources().getBoolean(R.bool.ads_light_status_bar));
-        }
+        new WindowInsetsControllerCompat(window, window.getDecorView())
+                .setAppearanceLightStatusBars(false);
+        // Barra de navegación del color de la hoja (sin franja gris abajo)
+        SystemBarsHelper.matchNavigationBar(this, R.color.ads_sheet,
+                getResources().getBoolean(R.bool.ads_light_status_bar));
     }
 
     @Override

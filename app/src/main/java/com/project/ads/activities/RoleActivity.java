@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.project.ads.R;
 import com.project.ads.activities.client.RegisterActivity;
 import com.project.ads.activities.worker.FirtsRegisterWorkerActivity;
+import com.project.ads.helpers.SystemBarsHelper;
 
 /**
  * Elegir rol · mockup 03 (docs/mockups/Rol.dc.html).
@@ -28,6 +29,9 @@ public class RoleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_role);
+        // Barra de navegación del color del fondo (sin franja gris abajo)
+        SystemBarsHelper.matchNavigationBar(this, R.color.ads_surface,
+                getResources().getBoolean(R.bool.ads_light_status_bar));
 
         mLoginMode = MODE_LOGIN.equals(getIntent().getStringExtra(EXTRA_MODE));
 
