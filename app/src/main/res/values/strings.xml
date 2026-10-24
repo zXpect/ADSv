@@ -107,6 +107,7 @@
     <string name="quote_reject_reason_hint">Motivo (opcional)</string>
     <string name="quote_rejected_toast">Cotización rechazada</string>
     <string name="quote_status_agreed">Precio acordado</string>
+    <string name="quote_status_agreed_value">Precio acordado: %1$s</string>
     <string name="quote_status_waiting_client">Esperando que el cliente acepte la cotización</string>
     <string name="quote_status_answer_client">El trabajador cotizó tu servicio. Acepta el precio para que pueda iniciar.</string>
     <string name="quote_status_missing_worker">Envía una cotización para que el cliente la acepte</string>

@@ -536,7 +536,8 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         }
 
         if (request.isQuoteAccepted()) {
-            mTvQuoteStatus.setText(R.string.quote_status_agreed);
+            // Con el valor: sola, «Precio acordado» quedaba sin precio debajo de las tareas (DEF-25)
+            mTvQuoteStatus.setText(getString(R.string.quote_status_agreed_value, request.getFormattedQuotedPrice()));
         } else if (request.isQuotePendingAnswer()) {
             mTvQuoteStatus.setText(R.string.quote_status_answer_client);
         } else if (request.isQuoteRejected()) {
