@@ -468,11 +468,12 @@ public class WorkerDocumentProvider {
     }
 
     /**
-     * Genera un nombre de archivo único
+     * Genera un nombre de archivo único. No lleva el uid: la ruta de Storage
+     * ya es worker_documents/<uid>/ y el nombre lo ven el trabajador y el panel (DEF-21)
      */
-    public String generateFileName(String workerId, String documentType, String extension) {
+    public String generateFileName(String documentType, String extension) {
         long timestamp = System.currentTimeMillis();
-        return documentType + "_" + workerId + "_" + timestamp + "." + extension;
+        return documentType + "_" + timestamp + "." + extension;
     }
 
     /**

@@ -376,7 +376,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
 
     private String generateFileName() {
         long timestamp = System.currentTimeMillis();
-        return selectedDocumentType + "_" + workerId + "_" + timestamp + ".pdf";
+        return selectedDocumentType + "_" + timestamp + ".pdf";
     }
 
     private void showUploadConfirmationDialog() {

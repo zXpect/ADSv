@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="58dp"
             android:layout_marginTop="@dimen/space_2"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvUploadDate"
@@ -96,7 +96,7 @@
                 android:id="@+id/tvReviewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_3"
+                android:layout_marginTop="2dp"
                 android:textAppearance="@style/TextAppearance.ADS.Caption"
                 android:visibility="gone"
                 tools:text="Revisado: 13/10/2026" />

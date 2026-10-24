@@ -284,7 +284,7 @@ public class WorkerDocumentsActivity extends AppCompatActivity {
         showProgress(true);
 
         String documentId = mDocumentProvider.generateDocumentId();
-        String fileName = mDocumentProvider.generateFileName(mWorkerId, documentType, "pdf");
+        String fileName = mDocumentProvider.generateFileName(documentType, "pdf");
 
         WorkerDocument document = new WorkerDocument(documentId, mWorkerId, documentType, category);
         document.setSubcategory(subcategory);
