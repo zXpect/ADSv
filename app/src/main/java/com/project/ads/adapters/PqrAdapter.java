@@ -67,7 +67,7 @@ public class PqrAdapter extends RecyclerView.Adapter<PqrAdapter.Holder> {
             type.setText(Pqr.typeLabel(pqr.getType()));
             status.setText(Pqr.statusLabel(pqr.getStatus()));
             status.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,
-                    pqr.isClosed() ? R.color.ads_surface_alt : R.color.ads_chip_bg)));
+                    pqr.isClosed() ? R.color.ads_chip_neutral_bg : R.color.ads_chip_bg)));
             status.setTextColor(ContextCompat.getColor(context,
                     pqr.isClosed() ? R.color.ads_charcoal : R.color.ads_chip_text));
 

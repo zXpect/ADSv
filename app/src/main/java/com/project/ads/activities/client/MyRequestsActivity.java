@@ -340,12 +340,12 @@ public class MyRequestsActivity extends AppCompatActivity {
                         break;
                     case "rejected":
                         label = R.string.request_status_rejected;
-                        background = R.color.ads_surface_alt;
+                        background = R.color.ads_chip_neutral_bg;
                         text = R.color.ads_charcoal;
                         break;
                     default:
                         label = R.string.request_status_cancelled;
-                        background = R.color.ads_surface_alt;
+                        background = R.color.ads_chip_neutral_bg;
                         text = R.color.ads_charcoal;
                 }
                 tvStatus.setText(label);

@@ -91,7 +91,7 @@ public class PqrDetailActivity extends AppCompatActivity {
         TextView status = findViewById(R.id.tv_pqr_detail_status);
         status.setText(Pqr.statusLabel(pqr.getStatus()));
         status.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this,
-                pqr.isClosed() ? R.color.ads_surface_alt : R.color.ads_chip_bg)));
+                pqr.isClosed() ? R.color.ads_chip_neutral_bg : R.color.ads_chip_bg)));
         status.setTextColor(ContextCompat.getColor(this, pqr.isClosed() ? R.color.ads_charcoal : R.color.ads_chip_text));
 
         ((TextView) findViewById(R.id.tv_pqr_detail_title)).setText(getString(R.string.pqr_detail_title, pqr.getId()));

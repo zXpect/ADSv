@@ -356,7 +356,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         }
 
         mTvStatus.setText(chip);
-        int background = chipStyle == 1 ? R.color.ads_chip_strong_bg : chipStyle == 2 ? R.color.ads_surface_alt : R.color.ads_chip_bg;
+        int background = chipStyle == 1 ? R.color.ads_chip_strong_bg : chipStyle == 2 ? R.color.ads_chip_neutral_bg : R.color.ads_chip_bg;
         int text = chipStyle == 1 ? R.color.ads_chip_strong_text : chipStyle == 2 ? R.color.ads_charcoal : R.color.ads_chip_text;
         ViewCompat.setBackgroundTintList(mTvStatus, ColorStateList.valueOf(ContextCompat.getColor(this, background)));
         mTvStatus.setTextColor(ContextCompat.getColor(this, text));

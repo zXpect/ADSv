@@ -350,7 +350,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
             tvVerificationBadge.setTextColor(ContextCompat.getColor(this,
                     approved ? R.color.ads_chip_text : R.color.ads_text));
             cardVerificationBadge.setCardBackgroundColor(ContextCompat.getColor(this,
-                    approved ? R.color.ads_chip_bg : R.color.ads_surface_alt));
+                    approved ? R.color.ads_chip_bg : R.color.ads_chip_neutral_bg));
         });
     }
 

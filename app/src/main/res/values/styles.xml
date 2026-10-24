@@ -272,7 +272,7 @@
 
     <!-- Cancelada, Sin calificar: gris -->
     <style name="Widget.ADS.StatusChip.Neutral">
-        <item name="android:backgroundTint">@color/ads_surface_alt</item>
+        <item name="android:backgroundTint">@color/ads_chip_neutral_bg</item>
         <item name="android:textColor">@color/ads_charcoal</item>
     </style>
 
