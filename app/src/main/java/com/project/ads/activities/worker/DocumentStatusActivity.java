@@ -75,6 +75,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
     private Uri selectedFileUri;
     private String selectedFileName;
     private String selectedFileHash;
+    private String selectedOriginalName;
 
     // Documentos cargados, para numerar y no repetir archivos (DEF-23)
     private final List<WorkerDocument> currentDocuments = new ArrayList<>();
@@ -155,8 +156,13 @@ public class DocumentStatusActivity extends AppCompatActivity {
                 uri -> {
                     if (uri != null) {
                         selectedFileHash = FileHashHelper.sha256(getContentResolver(), uri);
+                        selectedOriginalName = FileHashHelper.displayName(getContentResolver(), uri);
                         if (DocumentOrderHelper.findSameFile(currentDocuments, selectedFileHash) != null) {
                             showError(getString(R.string.mydocs_same_file));
+                            return;
+                        }
+                        if (DocumentOrderHelper.findSameName(currentDocuments, selectedOriginalName) != null) {
+                            showError(getString(R.string.mydocs_same_name, selectedOriginalName));
                             return;
                         }
                         selectedFileUri = uri;
@@ -408,6 +414,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
                     selectedFileUri = null;
                     selectedFileName = null;
         selectedFileHash = null;
+        selectedOriginalName = null;
                 })
                 .show();
     }
@@ -494,6 +501,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
         document.setFileName(selectedFileName);
         document.setFileType("application/pdf");
         document.setFileHash(selectedFileHash);
+        document.setOriginalFileName(selectedOriginalName);
         document.setDescription(getDocumentTypeName(selectedDocumentType));
 
         // Determinar orden para cartas y títulos
@@ -557,6 +565,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
         selectedFileUri = null;
         selectedFileName = null;
         selectedFileHash = null;
+        selectedOriginalName = null;
         selectedDocumentType = null;
         selectedCategory = null;
         selectedSubcategory = null;

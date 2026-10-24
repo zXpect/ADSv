@@ -69,4 +69,14 @@ public class DocumentOrderHelperTest {
         assertNull(DocumentOrderHelper.findSameFile(docs, "otro"));
         assertNull(DocumentOrderHelper.findSameFile(docs, null));
     }
+
+    @Test
+    public void sameNameIsFoundIgnoringCase() {
+        WorkerDocument named = doc(WorkerDocument.SUBCATEGORY_CARTAS, 1, 1, null);
+        named.setOriginalFileName("Carta_Juan.pdf");
+        List<WorkerDocument> docs = Arrays.asList(doc(WorkerDocument.SUBCATEGORY_CARTAS, 2, 2, null), named);
+        assertSame(named, DocumentOrderHelper.findSameName(docs, " carta_juan.PDF "));
+        assertNull(DocumentOrderHelper.findSameName(docs, "carta_pedro.pdf"));
+        assertNull(DocumentOrderHelper.findSameName(docs, null));
+    }
 }

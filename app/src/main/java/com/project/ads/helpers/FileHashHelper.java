@@ -1,12 +1,14 @@
 package com.project.ads.helpers;
 
 import android.content.ContentResolver;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.OpenableColumns;
 
 import java.io.InputStream;
 import java.security.MessageDigest;
 
-/** SHA-256 de un archivo elegido, para no subir dos veces el mismo PDF (DEF-23). */
+/** SHA-256 y nombre de un archivo elegido, para no subir dos veces el mismo PDF (DEF-23). */
 public final class FileHashHelper {
 
     private FileHashHelper() {
@@ -35,5 +37,20 @@ public final class FileHashHelper {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /** Nombre con que el archivo aparece en el teléfono, o null si no se conoce. */
+    public static String displayName(ContentResolver resolver, Uri uri) {
+        if (uri == null) {
+            return null;
+        }
+        try (Cursor cursor = resolver.query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                return cursor.getString(0);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
     }
 }

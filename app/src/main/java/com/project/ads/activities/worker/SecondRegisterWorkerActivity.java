@@ -338,18 +338,23 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         );
     }
 
-    /** El mismo PDF ya está elegido en otra casilla: se avisa y no se usa (DEF-23). */
+    /** El mismo PDF, o uno con el mismo nombre, ya está en otra casilla: se avisa y no se usa (DEF-23). */
     private boolean isRepeatedFile(Uri uri, Uri currentSlot) {
         String hash = FileHashHelper.sha256(getContentResolver(), uri);
-        if (hash == null) {
-            return false;
-        }
+        String name = FileHashHelper.displayName(getContentResolver(), uri);
         Uri[] slots = {hojaVidaUri, antecedentesUri, carta1Uri, carta2Uri, carta3Uri,
                 titulo1Uri, titulo2Uri, titulo3Uri};
         for (Uri other : slots) {
-            if (other != null && other != currentSlot
-                    && hash.equals(FileHashHelper.sha256(getContentResolver(), other))) {
+            if (other == null || other == currentSlot) {
+                continue;
+            }
+            if (hash != null && hash.equals(FileHashHelper.sha256(getContentResolver(), other))) {
                 Toast.makeText(this, R.string.mydocs_same_file, Toast.LENGTH_LONG).show();
+                return true;
+            }
+            String otherName = FileHashHelper.displayName(getContentResolver(), other);
+            if (name != null && otherName != null && name.trim().equalsIgnoreCase(otherName.trim())) {
+                Toast.makeText(this, getString(R.string.mydocs_same_name, name), Toast.LENGTH_LONG).show();
                 return true;
             }
         }
@@ -650,6 +655,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         document.setFileType("application/pdf");
         document.setOrden(orden);
         document.setFileHash(FileHashHelper.sha256(getContentResolver(), fileUri));
+        document.setOriginalFileName(FileHashHelper.displayName(getContentResolver(), fileUri));
         document.setDescription(description);
 
         documentProvider.uploadDocument(document, fileUri)

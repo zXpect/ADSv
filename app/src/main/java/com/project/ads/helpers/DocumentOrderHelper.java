@@ -63,4 +63,18 @@ public final class DocumentOrderHelper {
         }
         return null;
     }
+
+    /** Documento ya subido con el mismo nombre de archivo (sin distinguir mayúsculas), o null. */
+    public static WorkerDocument findSameName(List<WorkerDocument> documents, String originalFileName) {
+        if (originalFileName == null || originalFileName.trim().isEmpty()) {
+            return null;
+        }
+        String name = originalFileName.trim();
+        for (WorkerDocument doc : documents) {
+            if (doc.getOriginalFileName() != null && name.equalsIgnoreCase(doc.getOriginalFileName().trim())) {
+                return doc;
+            }
+        }
+        return null;
+    }
 }

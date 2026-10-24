@@ -687,6 +687,7 @@
     <string name="mydocs_type_degree_desc">Diplomas o certificaciones</string>
     <string name="mydocs_letter_n">Carta de recomendación %1$d</string>
     <string name="mydocs_same_file">Ya subiste este mismo archivo. Elige otro PDF.</string>
+    <string name="mydocs_same_name">Ya subiste un archivo llamado %1$s. Elige otro PDF.</string>
     <string name="mydocs_degree_n">Título o certificado %1$d</string>
 
     <!-- Rediseño: pie de la lista de técnicos -->

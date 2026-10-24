@@ -42,6 +42,7 @@ public class WorkerDocument {
     private int orden; // Para cartas de recomendación (1, 2, 3)
     private String verificationUrl; // Para antecedentes judiciales
     private String fileHash; // SHA-256 del PDF, para no subir el mismo archivo dos veces (DEF-23)
+    private String originalFileName; // Nombre del archivo elegido en el teléfono (DEF-23)
 
     // Constructores
     public WorkerDocument() {
@@ -194,6 +195,14 @@ public class WorkerDocument {
 
     public void setFileHash(String fileHash) {
         this.fileHash = fileHash;
+    }
+
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
     }
 
     public String getVerificationUrl() {
@@ -413,6 +422,7 @@ public class WorkerDocument {
         map.put("orden", orden);
         map.put("verificationUrl", verificationUrl);
         map.put("fileHash", fileHash);
+        map.put("originalFileName", originalFileName);
 
         return map;
     }
