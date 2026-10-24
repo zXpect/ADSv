@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.project.ads.helpers.UnreadNotificationsWatcher;
-import com.project.ads.helpers.WorkerRequestsBadge;
+import com.project.ads.helpers.RequestsNavBadge;
 import com.project.ads.models.ServiceRequest;
 
 import org.junit.Test;
@@ -13,7 +13,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Insignia de solicitudes nuevas del trabajador y texto de los conteos. */
+/** Insignias de solicitudes (trabajador y cliente) y texto de los conteos. */
 public class BadgeRulesTest {
 
     private static ServiceRequest request(Object... keyValues) {
@@ -24,18 +24,29 @@ public class BadgeRulesTest {
 
     @Test
     public void pendingAndAcceptedWithoutQuoteAreNew() {
-        assertTrue(WorkerRequestsBadge.isNew(request("status", "pending")));
-        assertTrue(WorkerRequestsBadge.isNew(request("status", "accepted")));
+        assertTrue(RequestsNavBadge.isNewForWorker(request("status", "pending")));
+        assertTrue(RequestsNavBadge.isNewForWorker(request("status", "accepted")));
     }
 
     @Test
     public void quotedOrStartedAreNotNew() {
-        assertFalse(WorkerRequestsBadge.isNew(request("status", "accepted",
+        assertFalse(RequestsNavBadge.isNewForWorker(request("status", "accepted",
                 "quoted_price", 90000L, "quote_status", "pending")));
         for (String status : new String[]{"on_the_way", "in_progress", "completed", "cancelled"}) {
-            assertFalse(status, WorkerRequestsBadge.isNew(request("status", status)));
+            assertFalse(status, RequestsNavBadge.isNewForWorker(request("status", status)));
         }
-        assertFalse(WorkerRequestsBadge.isNew(request()));
+        assertFalse(RequestsNavBadge.isNewForWorker(request()));
+    }
+
+    @Test
+    public void clientCountsRequestsInProgress() {
+        for (String status : new String[]{"pending", "accepted", "on_the_way", "in_progress"}) {
+            assertTrue(status, RequestsNavBadge.isActiveForClient(request("status", status)));
+        }
+        for (String status : new String[]{"completed", "cancelled", "rejected", "COMPLETED"}) {
+            assertFalse(status, RequestsNavBadge.isActiveForClient(request("status", status)));
+        }
+        assertFalse(RequestsNavBadge.isActiveForClient(request()));
     }
 
     @Test

@@ -32,7 +32,7 @@ import com.project.ads.helpers.DisplayNameHelper;
 import com.project.ads.models.api.CatalogData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.CatalogProvider;
-import com.project.ads.helpers.WorkerRequestsBadge;
+import com.project.ads.helpers.RequestsNavBadge;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ import java.util.Map;
  */
 public class ActiveServicesActivity extends AppCompatActivity {
 
-    private WorkerRequestsBadge mRequestsBadge;
+    private RequestsNavBadge mRequestsBadge;
 
     private static final String TAG = "ActiveServicesActivity";
     private static final Locale LOCALE = new Locale("es", "CO");
@@ -92,7 +92,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         WorkerNavHelper.setup(this, R.id.nav_worker_jobs);
-        mRequestsBadge = new WorkerRequestsBadge(this);
+        mRequestsBadge = RequestsNavBadge.forWorker(this);
         loadCatalogForTitles();
         loadServices();
     }

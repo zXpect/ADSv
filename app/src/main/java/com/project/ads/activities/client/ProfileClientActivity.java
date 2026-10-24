@@ -28,6 +28,7 @@ import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.DisplayNameHelper;
 import com.project.ads.helpers.UnreadNotificationsWatcher;
+import com.project.ads.helpers.RequestsNavBadge;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -41,6 +42,7 @@ public class ProfileClientActivity extends AppCompatActivity {
 
     private final UnreadNotificationsWatcher mUnreadWatcher =
             new UnreadNotificationsWatcher(this::showUnreadCount);
+    private RequestsNavBadge mRequestsBadge;
 
     private static final String TAG = "ProfileClientActivity";
 
@@ -77,6 +79,7 @@ public class ProfileClientActivity extends AppCompatActivity {
         initViews();
         setupClickListeners();
         ClientNavHelper.setup(this, R.id.nav_client_account);
+        mRequestsBadge = RequestsNavBadge.forClient(this);
         loadClientData();
     }
 
@@ -284,11 +287,13 @@ public class ProfileClientActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mUnreadWatcher.start();
+        mRequestsBadge.start();
     }
 
     @Override
     protected void onStop() {
         mUnreadWatcher.stop();
+        mRequestsBadge.stop();
         super.onStop();
     }
 

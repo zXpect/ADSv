@@ -30,6 +30,7 @@ import com.project.ads.helpers.DisplayNameHelper;
 import com.project.ads.models.api.CatalogData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.CatalogProvider;
+import com.project.ads.helpers.RequestsNavBadge;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +48,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MyRequestsActivity extends AppCompatActivity {
+
+    private RequestsNavBadge mRequestsBadge;
 
     private static final String TAG = "MyRequestsActivity";
 
@@ -85,6 +88,7 @@ public class MyRequestsActivity extends AppCompatActivity {
 
         initViews();
         ClientNavHelper.setup(this, R.id.nav_client_requests);
+        mRequestsBadge = RequestsNavBadge.forClient(this);
         setupRecyclerView();
         loadCatalogForTitles();
         loadMyRequests();
@@ -386,6 +390,18 @@ public class MyRequestsActivity extends AppCompatActivity {
                         : request.getTimeAgo();
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mRequestsBadge != null) mRequestsBadge.start();
+    }
+
+    @Override
+    protected void onStop() {
+        if (mRequestsBadge != null) mRequestsBadge.stop();
+        super.onStop();
     }
 
     @Override

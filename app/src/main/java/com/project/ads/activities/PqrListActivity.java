@@ -17,6 +17,7 @@ import com.project.ads.helpers.NotificationRouter;
 import com.project.ads.models.Pqr;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.PqrProvider;
+import com.project.ads.helpers.RequestsNavBadge;
 
 import java.util.List;
 
@@ -26,6 +27,9 @@ import java.util.List;
  * GET /api/pqr/ y abre Crear PQR (mockup 43).
  */
 public class PqrListActivity extends AppCompatActivity {
+
+    // Solo el cliente: el trabajador abre PQR sin barra inferior
+    private RequestsNavBadge mRequestsBadge;
 
     private static final String ROLE_WORKER = "trabajador";
 
@@ -50,6 +54,7 @@ public class PqrListActivity extends AppCompatActivity {
             back.setOnClickListener(v -> finish());
         } else {
             ClientNavHelper.setup(this, R.id.nav_client_pqr);
+            mRequestsBadge = RequestsNavBadge.forClient(this);
         }
 
         mSwipe = findViewById(R.id.swipe_pqr);
@@ -74,6 +79,18 @@ public class PqrListActivity extends AppCompatActivity {
         });
         findViewById(R.id.btn_pqr_create).setOnClickListener(v ->
                 startActivity(new Intent(this, PqrCreateActivity.class)));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mRequestsBadge != null) mRequestsBadge.start();
+    }
+
+    @Override
+    protected void onStop() {
+        if (mRequestsBadge != null) mRequestsBadge.stop();
+        super.onStop();
     }
 
     @Override

@@ -31,7 +31,7 @@ import com.project.ads.activities.LegalActivity;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.WorkerNavHelper;
 import com.project.ads.helpers.DisplayNameHelper;
-import com.project.ads.helpers.WorkerRequestsBadge;
+import com.project.ads.helpers.RequestsNavBadge;
 import com.project.ads.helpers.UnreadNotificationsWatcher;
 
 // ===== AGREGAR ESTOS IMPORTS =====
@@ -46,7 +46,7 @@ import com.bumptech.glide.request.RequestOptions;
  */
 public class ProfileWorkerActivity extends AppCompatActivity {
 
-    private WorkerRequestsBadge mRequestsBadge;
+    private RequestsNavBadge mRequestsBadge;
     private final UnreadNotificationsWatcher mUnreadWatcher =
             new UnreadNotificationsWatcher(this::showUnreadCount);
 
@@ -93,7 +93,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
         initViews();
         setupClickListeners();
         WorkerNavHelper.setup(this, R.id.nav_worker_account);
-        mRequestsBadge = new WorkerRequestsBadge(this);
+        mRequestsBadge = RequestsNavBadge.forWorker(this);
         loadWorkerData();
     }
 

@@ -38,6 +38,7 @@ import com.project.ads.providers.CatalogProvider;
 import com.project.ads.providers.ClientProvider;
 import com.project.ads.providers.TokenProvider;
 import com.project.ads.helpers.NotificationBellHelper;
+import com.project.ads.helpers.RequestsNavBadge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public class HomeUserActivity extends AppCompatActivity {
     private final List<CatalogData.Category> mCategories = new ArrayList<>();
     private CategoriesAdapter mCategoriesAdapter;
     private NotificationBellHelper mNotificationBell;
+    private RequestsNavBadge mRequestsBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,7 @@ public class HomeUserActivity extends AppCompatActivity {
         loadCategories();
         listenActiveService();
         ClientNavHelper.setup(this, R.id.nav_client_home);
+        mRequestsBadge = RequestsNavBadge.forClient(this);
         NotificationPermissionHelper.askOnce(this);
         NotificationRouter.openPendingIfAny(this);
 
@@ -269,11 +272,13 @@ public class HomeUserActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mNotificationBell.start();
+        mRequestsBadge.start();
     }
 
     @Override
     protected void onStop() {
         mNotificationBell.stop();
+        mRequestsBadge.stop();
         super.onStop();
     }
 

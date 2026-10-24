@@ -26,7 +26,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.helpers.AdsSnackbar;
-import com.project.ads.helpers.WorkerRequestsBadge;
+import com.project.ads.helpers.RequestsNavBadge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class PendingRequestsActivity extends AppCompatActivity implements PendingRequestsAdapter.OnRequestClickListener {
 
-    private WorkerRequestsBadge mRequestsBadge;
+    private RequestsNavBadge mRequestsBadge;
 
     private static final String TAG = "PendingRequestsActivity";
 
@@ -84,7 +84,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
         initializeViews();
         setupRecyclerView();
         WorkerNavHelper.setup(this, R.id.nav_worker_requests);
-        mRequestsBadge = new WorkerRequestsBadge(this);
+        mRequestsBadge = RequestsNavBadge.forWorker(this);
         loadPendingRequests();
     }
 
