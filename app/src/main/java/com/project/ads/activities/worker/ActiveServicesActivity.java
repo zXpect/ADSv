@@ -32,6 +32,7 @@ import com.project.ads.helpers.DisplayNameHelper;
 import com.project.ads.models.api.CatalogData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.CatalogProvider;
+import com.project.ads.helpers.WorkerRequestsBadge;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ import java.util.Map;
  * con la misma tarjeta del historial del cliente. Lee requests filtrado por su uid.
  */
 public class ActiveServicesActivity extends AppCompatActivity {
+
+    private WorkerRequestsBadge mRequestsBadge;
 
     private static final String TAG = "ActiveServicesActivity";
     private static final Locale LOCALE = new Locale("es", "CO");
@@ -89,6 +92,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         WorkerNavHelper.setup(this, R.id.nav_worker_jobs);
+        mRequestsBadge = new WorkerRequestsBadge(this);
         loadCatalogForTitles();
         loadServices();
     }
@@ -164,6 +168,18 @@ public class ActiveServicesActivity extends AppCompatActivity {
     private static boolean isPending(ServiceRequest request) {
         String status = request.getStatus();
         return "accepted".equals(status) || "on_the_way".equals(status) || "in_progress".equals(status);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mRequestsBadge.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mRequestsBadge.stop();
+        super.onStop();
     }
 
     @Override

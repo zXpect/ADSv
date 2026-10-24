@@ -26,6 +26,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.helpers.AdsSnackbar;
+import com.project.ads.helpers.WorkerRequestsBadge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,8 @@ import java.util.Map;
  * Activas (aceptadas, en camino o en progreso). Lee requests filtrado por su uid.
  */
 public class PendingRequestsActivity extends AppCompatActivity implements PendingRequestsAdapter.OnRequestClickListener {
+
+    private WorkerRequestsBadge mRequestsBadge;
 
     private static final String TAG = "PendingRequestsActivity";
 
@@ -81,6 +84,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
         initializeViews();
         setupRecyclerView();
         WorkerNavHelper.setup(this, R.id.nav_worker_requests);
+        mRequestsBadge = new WorkerRequestsBadge(this);
         loadPendingRequests();
     }
 
@@ -297,6 +301,18 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
         } else {
             Toast.makeText(this, "Error: Datos de solicitud no válidos", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mRequestsBadge.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mRequestsBadge.stop();
+        super.onStop();
     }
 
     @Override

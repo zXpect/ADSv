@@ -60,6 +60,7 @@ import com.project.ads.R;
 import com.project.ads.helpers.AdsSnackbar;
 import com.project.ads.helpers.Haptics;
 import com.project.ads.helpers.NotificationBellHelper;
+import com.project.ads.helpers.WorkerRequestsBadge;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -98,6 +99,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
     Toolbar mToolbar;
     private FusedLocationProviderClient mFusedLocation;
     private NotificationBellHelper mNotificationBell;
+    private WorkerRequestsBadge mRequestsBadge;
     private GeofireProvider mGeofireProvider;
     private LocationCallback mLocationCallback;
     private LocationRequest mLocationRequest;
@@ -132,6 +134,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
         setupClickListeners();
         setupLocationCallback();
         WorkerNavHelper.setup(this, R.id.nav_worker_home);
+        mRequestsBadge = new WorkerRequestsBadge(this);
         NotificationPermissionHelper.askOnce(this);
         NotificationRouter.openPendingIfAny(this);
         generateToken();
@@ -1384,11 +1387,13 @@ public class HomeWorkerActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mNotificationBell.start();
+        mRequestsBadge.start();
     }
 
     @Override
     protected void onStop() {
         mNotificationBell.stop();
+        mRequestsBadge.stop();
         super.onStop();
     }
 

@@ -138,6 +138,13 @@
                                 style="@style/Widget.ADS.AccountRow.Text"
                                 android:text="@string/account_notifications" />
 
+                            <!-- Notificaciones sin leer (UnreadNotificationsWatcher) -->
+                            <TextView
+                                android:id="@+id/tv_account_notifications_count"
+                                style="@style/Widget.ADS.AccountRow.Count"
+                                tools:text="2"
+                                tools:visibility="visible" />
+
                             <ImageView
                                 style="@style/Widget.ADS.AccountRow.Chevron"
                                 android:contentDescription="@null" />

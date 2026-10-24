@@ -27,6 +27,7 @@ import com.project.ads.activities.LegalActivity;
 import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.DisplayNameHelper;
+import com.project.ads.helpers.UnreadNotificationsWatcher;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -37,6 +38,9 @@ import com.bumptech.glide.request.RequestOptions;
  * Pestaña de la barra inferior. PQR espera su backend.
  */
 public class ProfileClientActivity extends AppCompatActivity {
+
+    private final UnreadNotificationsWatcher mUnreadWatcher =
+            new UnreadNotificationsWatcher(this::showUnreadCount);
 
     private static final String TAG = "ProfileClientActivity";
 
@@ -276,6 +280,27 @@ public class ProfileClientActivity extends AppCompatActivity {
         super.onBackPressed();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mUnreadWatcher.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mUnreadWatcher.stop();
+        super.onStop();
+    }
+
+    /** Conteo de notificaciones sin leer en la fila «Notificaciones» (mockups 37 y 51). */
+    private void showUnreadCount(int count) {
+        android.widget.TextView badge = findViewById(R.id.tv_account_notifications_count);
+        badge.setText(UnreadNotificationsWatcher.badgeLabel(count));
+        badge.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+        badge.setContentDescription(getResources().getQuantityString(
+                R.plurals.account_notifications_unread, count, count));
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

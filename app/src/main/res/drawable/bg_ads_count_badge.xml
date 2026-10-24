@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Píldora naranja del conteo de notificaciones sin leer (mockups 37 y 51) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ads_brand" />
+    <corners android:radius="11dp" />
+</shape>
