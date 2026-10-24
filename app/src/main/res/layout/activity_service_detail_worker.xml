@@ -428,6 +428,16 @@
                 android:text="@string/requote_action"
                 android:visibility="gone" />
 
+            <!-- En camino o en progreso: el problema se tramita como PQR, como el cliente (MEJ-01) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_create_pqr"
+                style="@style/Widget.ADS.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/pqr_create"
+                android:visibility="gone" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_quote_cancel"
                 style="@style/Widget.ADS.Button.Secondary"

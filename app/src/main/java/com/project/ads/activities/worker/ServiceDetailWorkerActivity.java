@@ -196,6 +196,8 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
             if (mServiceRequest == null) return;
             startActivity(RequoteActivity.intent(this, mRequestId, mServiceRequest.getQuoted_price()));
         });
+        findViewById(R.id.btn_create_pqr).setOnClickListener(v ->
+                startActivity(com.project.ads.activities.PqrCreateActivity.forRequest(this, mRequestId)));
         findViewById(R.id.btn_register_cash).setOnClickListener(v -> {
             if (mServiceRequest == null) return;
             startActivity(CashReceivedActivity.intent(this, mRequestId,
@@ -359,6 +361,10 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         requote.setVisibility(request.canRequote() ? View.VISIBLE : View.GONE);
 
         String status = request.getStatus();
+        // Ya no puede cancelar: el problema se tramita como PQR (MEJ-01)
+        View createPqr = findViewById(R.id.btn_create_pqr);
+        createPqr.setVisibility("on_the_way".equals(status) || "in_progress".equals(status)
+                ? View.VISIBLE : View.GONE);
         if (status != null) {
             switch (status.toLowerCase()) {
                 case "accepted":
@@ -383,8 +389,15 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
                 || mBtnFinishWork.getVisibility() == View.VISIBLE
                 || registerCash.getVisibility() == View.VISIBLE
                 || requote.getVisibility() == View.VISIBLE
+                || createPqr.getVisibility() == View.VISIBLE
                 || mBtnCancelService.getVisibility() == View.VISIBLE;
         mCardActions.setVisibility(hasAction ? View.VISIBLE : View.GONE);
+        // En progreso con una re-cotización pendiente, PQR queda arriba sin separación
+        boolean pqrFirst = mBtnStartWork.getVisibility() == View.GONE
+                && mBtnFinishWork.getVisibility() == View.GONE
+                && requote.getVisibility() == View.GONE;
+        ((android.view.ViewGroup.MarginLayoutParams) createPqr.getLayoutParams()).topMargin =
+                pqrFirst ? 0 : Math.round(10 * getResources().getDisplayMetrics().density);
         // Sin botón principal, Cancelar no necesita separación arriba
         ((android.view.ViewGroup.MarginLayoutParams) mBtnCancelService.getLayoutParams()).topMargin =
                 hasAction && mBtnCancelService.getVisibility() == View.VISIBLE
