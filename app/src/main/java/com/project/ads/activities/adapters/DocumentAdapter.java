@@ -188,6 +188,12 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
     }
 
     private String getDocumentDisplayName(WorkerDocument document) {
+        // Cartas y títulos con su número: la descripción guardada no lo trae (DEF-23)
+        if ((document.isTitulo() || document.isCartaRecomendacion()) && document.getOrden() > 0) {
+            return context.getString(document.isTitulo() ? R.string.mydocs_degree_n : R.string.mydocs_letter_n,
+                    document.getOrden());
+        }
+
         // Si tiene descripción personalizada, usarla
         if (document.getDescription() != null && !document.getDescription().isEmpty()) {
             return document.getDescription();

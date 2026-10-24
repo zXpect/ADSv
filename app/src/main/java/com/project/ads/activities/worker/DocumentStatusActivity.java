@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.activities.adapters.DocumentAdapter;
+import com.project.ads.helpers.DocumentOrderHelper;
+import com.project.ads.helpers.FileHashHelper;
 import com.project.ads.models.WorkerDocument;
 import com.project.ads.providers.AuthProvider;
 import com.project.ads.providers.WorkerDocumentProvider;
@@ -71,6 +73,10 @@ public class DocumentStatusActivity extends AppCompatActivity {
     // File URIs
     private Uri selectedFileUri;
     private String selectedFileName;
+    private String selectedFileHash;
+
+    // Documentos cargados, para numerar y no repetir archivos (DEF-23)
+    private final List<WorkerDocument> currentDocuments = new ArrayList<>();
 
     // File picker launcher
     private ActivityResultLauncher<String> documentLauncher;
@@ -147,6 +153,11 @@ public class DocumentStatusActivity extends AppCompatActivity {
                 new ActivityResultContracts.GetContent(),
                 uri -> {
                     if (uri != null) {
+                        selectedFileHash = FileHashHelper.sha256(getContentResolver(), uri);
+                        if (DocumentOrderHelper.findSameFile(currentDocuments, selectedFileHash) != null) {
+                            showError(getString(R.string.mydocs_same_file));
+                            return;
+                        }
                         selectedFileUri = uri;
                         selectedFileName = generateFileName();
                         showUploadConfirmationDialog();
@@ -198,6 +209,8 @@ public class DocumentStatusActivity extends AppCompatActivity {
                                 }
                             }
 
+                            DocumentOrderHelper.renumber(documentsList);
+
                             // Ordenar documentos por fecha de subida (más recientes primero)
                             Collections.sort(documentsList, (d1, d2) -> {
                                 Long t1 = d1.getUploadedAt() != 0 ? d1.getUploadedAt() : 0L;
@@ -206,6 +219,8 @@ public class DocumentStatusActivity extends AppCompatActivity {
                             });
                         }
 
+                        currentDocuments.clear();
+                        currentDocuments.addAll(documentsList);
                         updateVerificationStatusCard(documentsList);
                         updateUI(documentsList);
                         showLoading(false);
@@ -391,6 +406,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
                 .setNegativeButton("Cancelar", (dialog, which) -> {
                     selectedFileUri = null;
                     selectedFileName = null;
+        selectedFileHash = null;
                 })
                 .show();
     }
@@ -476,6 +492,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
 
         document.setFileName(selectedFileName);
         document.setFileType("application/pdf");
+        document.setFileHash(selectedFileHash);
         document.setDescription(getDocumentTypeName(selectedDocumentType));
 
         // Determinar orden para cartas y títulos
@@ -502,10 +519,16 @@ public class DocumentStatusActivity extends AppCompatActivity {
                 });
     }
 
+    /** Al reemplazar se conserva el número; uno nuevo va después del último (DEF-23). */
     private int calculateDocumentOrder() {
-        // Este método debería contar los documentos existentes del mismo tipo
-        // Por ahora retornamos 1, pero idealmente deberías contar desde Firebase
-        return 1;
+        if (currentDocumentId != null) {
+            for (WorkerDocument doc : currentDocuments) {
+                if (currentDocumentId.equals(doc.getId()) && doc.getOrden() > 0) {
+                    return doc.getOrden();
+                }
+            }
+        }
+        return DocumentOrderHelper.nextOrder(currentDocuments, selectedSubcategory);
     }
 
     private void onUploadComplete() {
@@ -532,6 +555,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
     private void cleanupUploadState() {
         selectedFileUri = null;
         selectedFileName = null;
+        selectedFileHash = null;
         selectedDocumentType = null;
         selectedCategory = null;
         selectedSubcategory = null;

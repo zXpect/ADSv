@@ -28,6 +28,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.ads.R;
 import com.project.ads.helpers.ConsentHelper;
+import com.project.ads.helpers.FileHashHelper;
 import com.project.ads.models.Worker;
 import com.project.ads.models.WorkerDocument;
 import com.project.ads.providers.AuthProvider;
@@ -240,7 +241,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         hojaVidaLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
-                    if (uri != null) {
+                    if (uri != null && !isRepeatedFile(uri, hojaVidaUri)) {
                         hojaVidaUri = uri;
                         hojaVidaFileName = "hoja_vida_" + System.currentTimeMillis() + ".pdf";
                         updateDocumentStatus(tvHojaVidaStatus, ivHojaVidaCheck, getString(R.string.docs_selected), true);
@@ -252,7 +253,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         antecedentesLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
-                    if (uri != null) {
+                    if (uri != null && !isRepeatedFile(uri, antecedentesUri)) {
                         antecedentesUri = uri;
                         antecedentesFileName = "antecedentes_" + System.currentTimeMillis() + ".pdf";
                         updateDocumentStatus(tvAntecedentesStatus, ivAntecedentesCheck, getString(R.string.docs_selected), true);
@@ -265,7 +266,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         carta1Launcher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
-                    if (uri != null) {
+                    if (uri != null && !isRepeatedFile(uri, carta1Uri)) {
                         carta1Uri = uri;
                         carta1FileName = "carta_recomendacion_1_" + System.currentTimeMillis() + ".pdf";
                         updateDocumentStatus(tvCarta1Status, ivCarta1Check, getString(R.string.docs_selected), true);
@@ -277,7 +278,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         carta2Launcher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
-                    if (uri != null) {
+                    if (uri != null && !isRepeatedFile(uri, carta2Uri)) {
                         carta2Uri = uri;
                         carta2FileName = "carta_recomendacion_2_" + System.currentTimeMillis() + ".pdf";
                         updateDocumentStatus(tvCarta2Status, ivCarta2Check, getString(R.string.docs_selected), true);
@@ -289,7 +290,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         carta3Launcher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
-                    if (uri != null) {
+                    if (uri != null && !isRepeatedFile(uri, carta3Uri)) {
                         carta3Uri = uri;
                         carta3FileName = "carta_recomendacion_3_" + System.currentTimeMillis() + ".pdf";
                         updateDocumentStatus(tvCarta3Status, ivCarta3Check, getString(R.string.docs_selected), true);
@@ -302,7 +303,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         titulo1Launcher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
-                    if (uri != null) {
+                    if (uri != null && !isRepeatedFile(uri, titulo1Uri)) {
                         titulo1Uri = uri;
                         titulo1FileName = "titulo_certificado_1_" + System.currentTimeMillis() + ".pdf";
                         updateDocumentStatus(tvTitulo1Status, ivTitulo1Check, getString(R.string.docs_selected), true);
@@ -314,7 +315,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         titulo2Launcher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
-                    if (uri != null) {
+                    if (uri != null && !isRepeatedFile(uri, titulo2Uri)) {
                         titulo2Uri = uri;
                         titulo2FileName = "titulo_certificado_2_" + System.currentTimeMillis() + ".pdf";
                         updateDocumentStatus(tvTitulo2Status, ivTitulo2Check, getString(R.string.docs_selected), true);
@@ -326,7 +327,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         titulo3Launcher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 uri -> {
-                    if (uri != null) {
+                    if (uri != null && !isRepeatedFile(uri, titulo3Uri)) {
                         titulo3Uri = uri;
                         titulo3FileName = "titulo_certificado_3_" + System.currentTimeMillis() + ".pdf";
                         updateDocumentStatus(tvTitulo3Status, ivTitulo3Check, getString(R.string.docs_selected), true);
@@ -334,6 +335,24 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    /** El mismo PDF ya está elegido en otra casilla: se avisa y no se usa (DEF-23). */
+    private boolean isRepeatedFile(Uri uri, Uri currentSlot) {
+        String hash = FileHashHelper.sha256(getContentResolver(), uri);
+        if (hash == null) {
+            return false;
+        }
+        Uri[] slots = {hojaVidaUri, antecedentesUri, carta1Uri, carta2Uri, carta3Uri,
+                titulo1Uri, titulo2Uri, titulo3Uri};
+        for (Uri other : slots) {
+            if (other != null && other != currentSlot
+                    && hash.equals(FileHashHelper.sha256(getContentResolver(), other))) {
+                Toast.makeText(this, R.string.mydocs_same_file, Toast.LENGTH_LONG).show();
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setupListeners() {
@@ -629,6 +648,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         document.setFileName(fileName);
         document.setFileType("application/pdf");
         document.setOrden(orden);
+        document.setFileHash(FileHashHelper.sha256(getContentResolver(), fileUri));
         document.setDescription(description);
 
         documentProvider.uploadDocument(document, fileUri)
