@@ -259,9 +259,13 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         mTvDescription.setText(description);
         mTvTimestamp.setText(timeLine(request, status));
 
-        // Chip: naranja mientras está aceptada; navy en camino, en progreso o completada
+        // Chip: naranja mientras está aceptada o cotizada; navy en camino, en progreso o completada.
+        // Sin cotización aceptada no dice «Aceptada» (DEF-24)
+        String displayStatus = request.getDisplayStatus();
         int label;
-        switch (status) {
+        switch (displayStatus) {
+            case "quoted": label = R.string.request_status_quoted; break;
+            case ServiceRequest.DISPLAY_QUOTE_REJECTED: label = R.string.request_status_quote_rejected; break;
             case "accepted": label = R.string.request_status_accepted; break;
             case "on_the_way": label = R.string.request_status_on_the_way; break;
             case "in_progress": label = R.string.request_status_in_progress; break;
@@ -417,8 +421,10 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         } else {
             mTvQuoteAmount.setVisibility(View.GONE);
         }
-        // El bloque navy del precio solo se muestra cuando hay precio
+        // El bloque navy del precio solo se muestra cuando hay precio; «acordado» solo si el cliente lo aceptó (DEF-24)
         findViewById(R.id.layout_quote_price).setVisibility(request.hasQuote() ? View.VISIBLE : View.GONE);
+        ((TextView) findViewById(R.id.tv_quote_price_label)).setText(request.isQuoteAccepted()
+                ? R.string.service_worker_agreed_price : R.string.detail_quote_proposed);
 
         // Con precio acordado el bloque navy ya lo dice
         mTvQuoteStatus.setVisibility(request.isQuoteAccepted() ? View.GONE : View.VISIBLE);

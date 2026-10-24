@@ -458,6 +458,22 @@ public class ServiceRequest {
         return "rejected".equals(quote_status);
     }
 
+    /** Estado que se muestra cuando la cotización fue rechazada y aún no hay otra. */
+    public static final String DISPLAY_QUOTE_REJECTED = "quote_rejected";
+
+    /**
+     * Estado para mostrar. En «accepted» (aceptar es cotizar) manda la cotización mientras el
+     * cliente no la acepte: «quoted» si espera respuesta y «quote_rejected» si la rechazó (DEF-24).
+     */
+    public String getDisplayStatus() {
+        String s = status != null ? status.toLowerCase() : "";
+        if ("accepted".equals(s)) {
+            if (isQuoteRejected()) return DISPLAY_QUOTE_REJECTED;
+            if (isQuotePendingAnswer()) return "quoted";
+        }
+        return s;
+    }
+
     public boolean isPaid() {
         return "approved".equals(payment_status);
     }

@@ -223,6 +223,7 @@
     <string name="request_status_pending">Pendiente</string>
     <string name="request_status_quoted">Cotizada</string>
     <string name="request_status_accepted">Aceptada</string>
+    <string name="request_status_quote_rejected">Cotización rechazada</string>
     <string name="request_status_on_the_way">En camino</string>
     <string name="request_status_in_progress">En progreso</string>
     <string name="request_status_completed">Completada</string>
@@ -262,6 +263,7 @@
     <string name="home_active_service">Servicio activo · %1$s</string>
     <string name="home_active_pending">Esperando la cotización del técnico</string>
     <string name="home_active_quoted">Tienes una cotización por revisar</string>
+    <string name="home_active_new_quote">Esperando una nueva cotización del técnico</string>
     <string name="home_active_accepted">Servicio aceptado</string>
     <string name="home_active_on_the_way">El técnico va en camino</string>
     <string name="home_active_in_progress">El técnico está trabajando</string>

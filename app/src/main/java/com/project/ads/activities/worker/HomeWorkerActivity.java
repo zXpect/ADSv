@@ -1197,6 +1197,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
         String state = request.getStatus() != null ? request.getStatus() : "";
         status.setText("on_the_way".equals(state) ? R.string.request_status_on_the_way
                 : "in_progress".equals(state) ? R.string.request_status_in_progress
+                : request.isQuoteRejected() ? R.string.request_status_quote_rejected
+                : request.isQuotePendingAnswer() ? R.string.request_status_quoted
                 : R.string.request_status_accepted);
 
         TextView time = findViewById(R.id.tv_next_service_time);

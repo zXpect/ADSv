@@ -244,8 +244,9 @@ public class ActiveServicesActivity extends AppCompatActivity {
                     case "on_the_way": label = R.string.request_status_on_the_way; break;
                     case "in_progress": label = R.string.request_status_in_progress; break;
                     case "completed": label = R.string.jobs_status_completed; break;
-                    default: label = request.isQuoteAccepted()
-                            ? R.string.request_status_accepted : R.string.request_status_quoted;
+                    default: label = request.isQuoteAccepted() ? R.string.request_status_accepted
+                            : request.isQuoteRejected() ? R.string.request_status_quote_rejected
+                            : R.string.request_status_quoted;
                 }
                 status.setText(label);
                 boolean done = !pending;

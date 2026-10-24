@@ -197,4 +197,14 @@ public class ServiceRequestTest {
         // Sin el nodo no hay re-cotización
         assertNull(request("status", "in_progress").getRequote());
     }
+
+    @Test
+    public void displayStatusFollowsTheQuoteWhileNotAccepted() {
+        assertEquals(ServiceRequest.DISPLAY_QUOTE_REJECTED,
+                request("status", "accepted", "quote_status", "rejected", "quoted_price", 300000L).getDisplayStatus());
+        assertEquals("quoted", request("status", "accepted", "quote_status", "quoted").getDisplayStatus());
+        assertEquals("accepted", request("status", "accepted", "quote_status", "accepted").getDisplayStatus());
+        assertEquals("in_progress", request("status", "in_progress", "quote_status", "accepted").getDisplayStatus());
+        assertEquals("", request().getDisplayStatus());
+    }
 }

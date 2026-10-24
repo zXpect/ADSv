@@ -325,7 +325,10 @@ public class MyRequestsActivity extends AppCompatActivity {
                                 ? R.string.request_status_quoted : R.string.request_status_pending;
                         break;
                     case "accepted":
-                        label = R.string.request_status_accepted;
+                        // Aceptar es cotizar: sin cotización aceptada no dice «Aceptada» (DEF-24)
+                        label = request.isQuoteAccepted() ? R.string.request_status_accepted
+                                : request.isQuoteRejected() ? R.string.request_status_quote_rejected
+                                : R.string.request_status_quoted;
                         break;
                     case "on_the_way":
                         label = R.string.request_status_on_the_way;

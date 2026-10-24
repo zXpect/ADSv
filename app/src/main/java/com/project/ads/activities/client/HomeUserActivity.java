@@ -238,10 +238,15 @@ public class HomeUserActivity extends AppCompatActivity {
     }
 
     private int activeStatusText(ServiceRequest request) {
-        switch (request.getStatus()) {
+        // En «accepted» manda la cotización mientras el cliente no la acepte (DEF-24)
+        switch (request.getDisplayStatus()) {
             case "pending":
                 return "quoted".equals(request.getQuote_status())
                         ? R.string.home_active_quoted : R.string.home_active_pending;
+            case "quoted":
+                return R.string.home_active_quoted;
+            case ServiceRequest.DISPLAY_QUOTE_REJECTED:
+                return R.string.home_active_new_quote;
             case "on_the_way":
                 return R.string.home_active_on_the_way;
             case "in_progress":
