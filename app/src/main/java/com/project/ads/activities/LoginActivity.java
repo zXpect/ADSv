@@ -1,6 +1,6 @@
 package com.project.ads.activities;
 
-import android.app.ProgressDialog;
+import com.project.ads.helpers.LoadingDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
     private SharedPreferences mPref;
-    private ProgressDialog progressDialog;
+    private LoadingDialog progressDialog;
     private TextInputLayout tilEmail;
     private TextInputLayout tilPassword;
     private TextInputEditText mTextInputEmail;
@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInImageButton = findViewById(R.id.google_sign_in_image_button);
         mForgotPasswordTextView = findViewById(R.id.forgot_password);
 
-        progressDialog = new ProgressDialog(this);
+        progressDialog = new LoadingDialog(this);
         progressDialog.setMessage("Iniciando sesión...");
         progressDialog.setCancelable(false);
     }

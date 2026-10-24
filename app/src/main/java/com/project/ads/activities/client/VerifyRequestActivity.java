@@ -1,6 +1,6 @@
 package com.project.ads.activities.client;
 
-import android.app.ProgressDialog;
+import com.project.ads.helpers.LoadingDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -47,7 +47,7 @@ public class VerifyRequestActivity extends AppCompatActivity {
     private static final String TAG = "VerifyRequestActivity";
 
     private Button mConfirmButton;
-    private ProgressDialog mProgressDialog;
+    private LoadingDialog mProgressDialog;
     private RequestProvider mRequestProvider;
     private TextInputEditText mAddressInput;
     private TextInputLayout mAddressLayout;
@@ -292,8 +292,7 @@ public class VerifyRequestActivity extends AppCompatActivity {
 
     private void showProgressDialog(String message) {
         if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setIndeterminate(true);
+            mProgressDialog = new LoadingDialog(this);
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.setMessage(message);

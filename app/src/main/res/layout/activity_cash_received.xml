@@ -48,7 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/ads_navy"
-                    android:text="@string/cash_status_finished"
+                    android:text="@string/request_status_completed"
                     android:textColor="@color/ads_on_navy" />
             </LinearLayout>
 

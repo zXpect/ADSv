@@ -1,25 +1,34 @@
 package com.project.ads.helpers;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.content.Context;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.CompositeDateValidator;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 import com.project.ads.R;
 import com.project.ads.models.ServiceRequest;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Campos de agenda (layout view_schedule_fields): fecha y hora de llegada y
  * duración estimada (D9). Valida lo mismo que el backend: la llegada es futura
  * y dentro de los próximos 30 días, y la duración está entre 15 y 720 minutos.
+ * Fecha y hora con los selectores de Material, que toman el tema ADS (DEF-29).
  */
 public class ScheduleFields {
 
@@ -27,7 +36,7 @@ public class ScheduleFields {
     private static final int[] DURATIONS_MIN = {15, 30, 45, 60, 90, 120, 180, 240, 300, 360, 480, 600, 720};
     private static final int DEFAULT_DURATION_INDEX = 3;   // 1 h
 
-    private final Context mContext;
+    private final FragmentActivity mActivity;
     private final Button mDateButton;
     private final Button mTimeButton;
     private final Spinner mDurationSpinner;
@@ -37,8 +46,8 @@ public class ScheduleFields {
     private int mHour = -1;
     private int mMinute;
 
-    public ScheduleFields(Context context, View root) {
-        mContext = context;
+    public ScheduleFields(FragmentActivity activity, View root) {
+        mActivity = activity;
         mDateButton = root.findViewById(R.id.btn_schedule_date);
         mTimeButton = root.findViewById(R.id.btn_schedule_time);
         mDurationSpinner = root.findViewById(R.id.sp_duration);
@@ -46,7 +55,7 @@ public class ScheduleFields {
 
         String[] labels = new String[DURATIONS_MIN.length];
         for (int i = 0; i < DURATIONS_MIN.length; i++) labels[i] = ServiceRequest.formatDuration(DURATIONS_MIN[i]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, labels);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, labels);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDurationSpinner.setAdapter(adapter);
         mDurationSpinner.setSelection(DEFAULT_DURATION_INDEX);
@@ -73,26 +82,56 @@ public class ScheduleFields {
     }
 
     private void pickDate() {
-        Calendar now = Calendar.getInstance();
-        Calendar initial = mDate != null ? mDate : now;
-        DatePickerDialog dialog = new DatePickerDialog(mContext, (view, year, month, day) -> {
+        // MaterialDatePicker trabaja con la medianoche UTC del día elegido
+        Calendar today = Calendar.getInstance();
+        long first = utcMidnight(today);
+        today.add(Calendar.DAY_OF_YEAR, MAX_DAYS_AHEAD);
+        long last = utcMidnight(today);
+        CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setStart(first)
+                .setEnd(last)
+                .setOpenAt(mDate != null ? utcMidnight(mDate) : first)
+                .setValidator(CompositeDateValidator.allOf(Arrays.asList(
+                        DateValidatorPointForward.from(first), DateValidatorPointBackward.before(last + 1))))
+                .build();
+        MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(R.string.schedule_picker_date_title)
+                .setSelection(mDate != null ? utcMidnight(mDate) : first)
+                .setCalendarConstraints(constraints)
+                .build();
+        picker.addOnPositiveButtonClickListener(selection -> {
+            Calendar utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            utc.setTimeInMillis(selection);
             mDate = Calendar.getInstance();
             mDate.clear();
-            mDate.set(year, month, day);
+            mDate.set(utc.get(Calendar.YEAR), utc.get(Calendar.MONTH), utc.get(Calendar.DAY_OF_MONTH));
             refreshButtons();
-        }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH));
-        dialog.getDatePicker().setMinDate(now.getTimeInMillis() - 1000);
-        dialog.getDatePicker().setMaxDate(now.getTimeInMillis() + MAX_DAYS_AHEAD * 24L * 60 * 60 * 1000);
-        dialog.show();
+        });
+        picker.show(mActivity.getSupportFragmentManager(), "schedule_date");
+    }
+
+    /** Medianoche UTC del mismo día (año, mes y día locales). */
+    public static long utcMidnight(Calendar local) {
+        Calendar utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        utc.clear();
+        utc.set(local.get(Calendar.YEAR), local.get(Calendar.MONTH), local.get(Calendar.DAY_OF_MONTH));
+        return utc.getTimeInMillis();
     }
 
     private void pickTime() {
-        int hour = mHour >= 0 ? mHour : 8;
-        new TimePickerDialog(mContext, (view, h, m) -> {
-            mHour = h;
-            mMinute = m;
+        MaterialTimePicker picker = new MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_24H)
+                .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
+                .setHour(mHour >= 0 ? mHour : 8)
+                .setMinute(mHour >= 0 ? mMinute : 0)
+                .setTitleText(R.string.schedule_picker_time_title)
+                .build();
+        picker.addOnPositiveButtonClickListener(v -> {
+            mHour = picker.getHour();
+            mMinute = picker.getMinute();
             refreshButtons();
-        }, hour, mHour >= 0 ? mMinute : 0, true).show();
+        });
+        picker.show(mActivity.getSupportFragmentManager(), "schedule_time");
     }
 
     private void refreshButtons() {
@@ -137,6 +176,6 @@ public class ScheduleFields {
     }
 
     private void showError(int messageRes) {
-        showError(mContext.getString(messageRes, MAX_DAYS_AHEAD));
+        showError(mActivity.getString(messageRes, MAX_DAYS_AHEAD));
     }
 }

@@ -264,17 +264,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         // Chip: naranja mientras está aceptada o cotizada; navy en camino, en progreso o completada.
         // Sin cotización aceptada no dice «Aceptada» (DEF-24)
         String displayStatus = request.getDisplayStatus();
-        int label;
-        switch (displayStatus) {
-            case "quoted": label = R.string.request_status_quoted; break;
-            case ServiceRequest.DISPLAY_QUOTE_REJECTED: label = R.string.request_status_quote_rejected; break;
-            case "accepted": label = R.string.request_status_accepted; break;
-            case "on_the_way": label = R.string.request_status_on_the_way; break;
-            case "in_progress": label = R.string.request_status_in_progress; break;
-            case "completed": label = R.string.request_status_completed; break;
-            case "cancelled": label = R.string.request_status_cancelled; break;
-            default: label = 0;
-        }
+        int label = RequestDetailsHelper.statusLabel(displayStatus);
         if (label != 0) mTvStatus.setText(label); else mTvStatus.setText(request.getStatusDisplayText());
         boolean orange = "accepted".equals(status);
         ViewCompat.setBackgroundTintList(mTvStatus, ColorStateList.valueOf(ContextCompat.getColor(this,
@@ -494,29 +484,30 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     }
 
     private void confirmStatusChange(String newStatus) {
-        String title = "";
-        String message = "";
-
+        int title;
+        int message;
         switch (newStatus) {
             case "on_the_way":
-                title = "Iniciar Viaje";
-                message = "¿Estás en camino hacia el cliente?";
+                title = R.string.service_worker_start_trip;
+                message = R.string.service_worker_confirm_trip;
                 break;
             case "in_progress":
-                title = "Iniciar Trabajo";
-                message = "¿Has llegado y vas a comenzar el trabajo?";
+                title = R.string.service_worker_start_work;
+                message = R.string.service_worker_confirm_work;
                 break;
             case "completed":
-                title = "Finalizar Trabajo";
-                message = "¿Has completado el servicio? El cliente podrá pagar y calificarte.";
+                title = R.string.service_worker_finish_title;
+                message = R.string.service_worker_confirm_finish;
                 break;
+            default:
+                return;
         }
 
         new MaterialAlertDialogBuilder(this)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton("Sí, continuar", (dialog, which) -> updateStatus(newStatus))
-                .setNegativeButton("Cancelar", null)
+                .setPositiveButton(R.string.service_worker_confirm_yes, (dialog, which) -> updateStatus(newStatus))
+                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 

@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
-import android.app.ProgressDialog;
+import com.project.ads.helpers.LoadingDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -74,7 +74,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     private AuthProvider mAuthProvider;
     private WorkerProvider mWorkerProvider;
     private WorkerDocumentProvider documentProvider;
-    private ProgressDialog mProgressDialog;
+    private LoadingDialog mProgressDialog;
 
     // Datos del usuario
     private String name, lastName, email, password, work, phone, workerId; // ⭐ AGREGADO phone
@@ -224,7 +224,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         tvProgress = findViewById(R.id.tvProgress);
 
-        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog = new LoadingDialog(this);
 
         // Mostrar cartas por defecto
         layoutCartasSection.setVisibility(View.VISIBLE);

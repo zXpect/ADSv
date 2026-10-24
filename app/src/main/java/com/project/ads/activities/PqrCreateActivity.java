@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.project.ads.R;
 import com.project.ads.helpers.NotificationRouter;
+import com.project.ads.helpers.RequestDetailsHelper;
 import com.project.ads.models.Pqr;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.providers.ApiCallback;
@@ -128,7 +129,7 @@ public class PqrCreateActivity extends AppCompatActivity {
         if (selected == null) mSelectedRequestId = null;
         mBtnRequest.setEnabled(!mRequests.isEmpty());
         if (selected != null) {
-            mBtnRequest.setText(label(selected));
+            mBtnRequest.setText(label(selected).replace("\n", " · "));
         } else {
             mBtnRequest.setText(mRequests.isEmpty() ? R.string.pqr_request_none : R.string.pqr_request_placeholder);
         }
@@ -142,13 +143,29 @@ public class PqrCreateActivity extends AppCompatActivity {
         return null;
     }
 
-    /** «Electricidad · 17 oct», como el mockup 43. */
+    /**
+     * «Electricidad · 17 oct, 2:06 p. m.» y debajo «Completada · $50.000»: con varias
+     * solicitudes del mismo oficio el mismo día, la hora, el estado y el precio las
+     * distinguen (MEJ-02). En el botón va en una sola línea.
+     */
     private String label(ServiceRequest request) {
         String service = !TextUtils.isEmpty(request.getService_type())
                 ? request.getService_type() : getString(R.string.history_service_default);
-        if (request.getTimestamp() <= 0) return service;
-        String date = new SimpleDateFormat("d MMM", LOCALE).format(new Date(request.getTimestamp())).replace(".", "");
-        return getString(R.string.pqr_request_option, service, date);
+        String first = service;
+        if (request.getTimestamp() > 0) {
+            Date created = new Date(request.getTimestamp());
+            String date = new SimpleDateFormat("d MMM", LOCALE).format(created).replace(".", "")
+                    + ", " + new SimpleDateFormat("h:mm a", LOCALE).format(created);
+            first = getString(R.string.pqr_request_option, service, date);
+        }
+        StringBuilder second = new StringBuilder();
+        int status = RequestDetailsHelper.statusLabel(request.getDisplayStatus());
+        if (status != 0) second.append(getString(status));
+        if (request.hasQuote()) {
+            if (second.length() > 0) second.append(" · ");
+            second.append(request.getFormattedQuotedPrice());
+        }
+        return second.length() > 0 ? first + "\n" + second : first;
     }
 
     private void chooseRequest() {

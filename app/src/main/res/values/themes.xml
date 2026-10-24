@@ -73,6 +73,20 @@
         <item name="snackbarButtonStyle">@style/Widget.ADS.Snackbar.Action</item>
         <!-- Diálogos de confirmación con el diseño ADS (DEF-22) -->
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.ADS.Dialog</item>
+        <!-- Selectores de fecha y hora de la agenda con el mismo fondo (DEF-29) -->
+        <item name="materialCalendarTheme">@style/ThemeOverlay.ADS.Calendar</item>
+        <item name="materialTimePickerTheme">@style/ThemeOverlay.ADS.TimePicker</item>
+    </style>
+
+    <!-- Fondo de tarjeta ADS, sin el tinte que Material 3 suma por la elevación -->
+    <style name="ThemeOverlay.ADS.Calendar" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="colorSurface">@color/ads_card</item>
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+
+    <style name="ThemeOverlay.ADS.TimePicker" parent="ThemeOverlay.Material3.MaterialTimePicker">
+        <item name="colorSurface">@color/ads_card</item>
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <!-- Diálogo ADS: tarjeta con radio 22, título y texto en Sora, botón principal

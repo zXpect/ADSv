@@ -170,6 +170,8 @@
     <string name="schedule_arrival_label">Fecha y hora de llegada</string>
     <string name="schedule_pick_date">Fecha</string>
     <string name="schedule_pick_time">Hora</string>
+    <string name="schedule_picker_date_title">Fecha de llegada</string>
+    <string name="schedule_picker_time_title">Hora de llegada</string>
     <string name="schedule_duration_label">Duración estimada</string>
     <string name="schedule_error_missing">Elige la fecha y la hora de llegada</string>
     <string name="schedule_error_past">La hora de llegada debe ser futura</string>
@@ -474,7 +476,6 @@
     <!-- Rediseño: Mis trabajos y Mi cuenta del trabajador (mockups 51 y 52) -->
     <string name="jobs_section_pending">Pendientes</string>
     <string name="jobs_section_done">Realizados</string>
-    <string name="jobs_status_completed">Completado</string>
     <string name="jobs_not_rated">Sin calificar</string>
     <string name="jobs_empty">Aún no tienes trabajos aceptados.</string>
     <string name="account_my_data">Mis datos</string>
@@ -529,6 +530,12 @@
     <string name="service_worker_note_accepted">Puedes cancelar o reprogramar antes de iniciar el viaje.</string>
     <string name="service_worker_note_waiting">Podrás iniciar el viaje cuando el cliente acepte tu cotización.</string>
     <string name="service_worker_note_no_cancel">Ya no puedes cancelar. Si hay un problema, crea una PQR.</string>
+    <!-- Confirmar el cambio de estado (DEF-29: títulos con mayúscula solo al inicio) -->
+    <string name="service_worker_finish_title">Finalizar trabajo</string>
+    <string name="service_worker_confirm_trip">¿Estás en camino hacia el cliente?</string>
+    <string name="service_worker_confirm_work">¿Has llegado y vas a comenzar el trabajo?</string>
+    <string name="service_worker_confirm_finish">¿Has completado el servicio? El cliente podrá pagar y calificarte.</string>
+    <string name="service_worker_confirm_yes">Sí, continuar</string>
 
     <!-- Rediseño: Bienvenida y Elegir rol (mockups 02 y 03) -->
     <string name="welcome_logo_desc">Logotipo ADS</string>
@@ -778,7 +785,6 @@
     <string name="payment_status_cash_worker">El cliente paga en efectivo</string>
     <!-- Pago en efectivo (mockups 29 y 31, D10) -->
     <string name="cash_register_action">Recibí el pago</string>
-    <string name="cash_status_finished">Finalizado</string>
     <string name="cash_received_title">Cobra el servicio</string>
     <string name="cash_received_subtitle">%1$s eligió pagar en efectivo.</string>
     <string name="cash_received_subtitle_generic">El cliente eligió pagar en efectivo.</string>

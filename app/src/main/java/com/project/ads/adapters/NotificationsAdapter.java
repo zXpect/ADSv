@@ -126,6 +126,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
                 return R.drawable.ic_notif_payment;
             case "pqr_answered":
                 return R.drawable.ic_nav_pqr;
+            case "status_change":   // en camino, en progreso, completado (DEF-30)
+                return R.drawable.ic_nav_jobs;
             default:
                 return R.drawable.ic_ads_bell;
         }

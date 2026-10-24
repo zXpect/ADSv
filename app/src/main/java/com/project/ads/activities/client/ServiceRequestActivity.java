@@ -1,7 +1,7 @@
 package com.project.ads.activities.client;
 
 import android.Manifest;
-import android.app.ProgressDialog;
+import com.project.ads.helpers.LoadingDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -67,7 +67,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
     private TextView selectedCountText;
     private LinearLayout taskItemsLayout;
     private MaterialButton continueButton;
-    private ProgressDialog progressDialog;
+    private LoadingDialog progressDialog;
 
     private String mWorkerId;
     private String mWorkerName;
@@ -508,8 +508,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
 
     private void showProgressDialog(String message) {
         if (progressDialog == null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setIndeterminate(true);
+            progressDialog = new LoadingDialog(this);
             progressDialog.setCancelable(false);
         }
         progressDialog.setMessage(message);
