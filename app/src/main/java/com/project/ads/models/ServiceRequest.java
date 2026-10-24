@@ -384,7 +384,7 @@ public class ServiceRequest {
             com.project.ads.models.api.CatalogData.Task task = category != null ? category.findTask(slug) : null;
             text.append("• ").append(task != null ? task.getName() : slug).append(" · ").append(quantityText);
             if (task != null) {
-                text.append(' ').append(com.project.ads.models.api.CatalogData.unitLabel(task.getUnit()));
+                text.append(' ').append(com.project.ads.models.api.CatalogData.unitLabel(task.getUnit(), quantity));
             }
         }
         return text.toString();

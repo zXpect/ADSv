@@ -76,7 +76,7 @@ public class RequestTaskItem {
         if (isCustom()) {
             return "Otro: " + customDescription + " · " + quantityText;
         }
-        return name + " · " + quantityText + " " + CatalogData.unitLabel(unit);
+        return name + " · " + quantityText + " " + CatalogData.unitLabel(unit, quantity);
     }
 
     public static String formatQuantity(double value) {

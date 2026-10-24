@@ -108,6 +108,13 @@ public class QuoteTest {
         assertEquals("Pintar muro · 12,5 m²", item.getDisplayText());
         assertEquals("{\"task\":\"pintar_muro\",\"quantity\":12.5}", new com.google.gson.Gson().toJson(item.toBody()));
 
+        // Plural de la unidad también en la línea completa (DEF-25: decía «2 unidad»)
+        CatalogData.Task outlet = new com.google.gson.Gson().fromJson(
+                "{\"slug\":\"tomacorriente\",\"name\":\"Instalar tomacorriente\",\"unit\":\"unidad\"}",
+                CatalogData.Task.class);
+        assertEquals("Instalar tomacorriente · 2 unidades", RequestTaskItem.fromTask(outlet, 2).getDisplayText());
+        assertEquals("Instalar tomacorriente · 1 unidad", RequestTaskItem.fromTask(outlet, 1).getDisplayText());
+
         RequestTaskItem custom = RequestTaskItem.custom("Revisar humedad", 1);
         assertTrue(custom.isCustom());
         assertEquals("1", custom.getQuantityLabel());
