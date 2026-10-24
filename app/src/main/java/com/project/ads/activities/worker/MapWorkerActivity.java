@@ -2,6 +2,7 @@ package com.project.ads.activities.worker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -684,7 +685,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void requestLocationPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Permisos de ubicación requeridos")
                     .setMessage("Esta aplicación necesita acceso a tu ubicación para mostrarte en el mapa")
                     .setPositiveButton("Conceder", (dialog, which) ->
@@ -717,7 +718,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     private void showVerificationDialog() {
         String message = getVerificationMessage();
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Verificación de Documentos Pendiente")
                 .setMessage(message + "\n\n¿Deseas revisar el estado de tus documentos?")
                 .setPositiveButton("Ver Documentos", (dialog, which) -> {
@@ -827,7 +828,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     public void onBackPressed() {
         if (isConnected) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Atención")
                     .setMessage("Estás conectado. ¿Deseas salir? Permanecerás conectado.")
                     .setPositiveButton("Salir", (dialog, which) -> {

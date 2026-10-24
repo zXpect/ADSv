@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -184,7 +185,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
             public void onError(String message, int httpStatus) {
                 hideProgressDialog();
                 // Sin catálogo no se pueden elegir tareas ni calcular el estimado
-                new AlertDialog.Builder(ServiceRequestActivity.this)
+                new MaterialAlertDialogBuilder(ServiceRequestActivity.this)
                         .setTitle(R.string.request_catalog_error_title)
                         .setMessage(message)
                         .setPositiveButton(R.string.retry, (d, w) -> {
@@ -217,7 +218,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
         for (int i = 0; i < names.length; i++) names[i] = mWorkerCategories.get(i).getName();
         int checked = mWorkerCategories.indexOf(mCategory);
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.request_choose_category)
                 .setSingleChoiceItems(names, checked, (dialog, which) -> {
                     dialog.dismiss();
@@ -227,7 +228,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
                         selectCategory(chosen);
                     } else {
                         // Las tareas son del oficio: al cambiarlo se quitan
-                        new AlertDialog.Builder(this)
+                        new MaterialAlertDialogBuilder(this)
                                 .setMessage(R.string.request_category_change_confirm)
                                 .setPositiveButton(R.string.accept, (d, w) -> selectCategory(chosen))
                                 .setNegativeButton(R.string.cancel, null)
@@ -394,7 +395,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
         container.addView(input, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.request_quantity_label)
                 .setView(container)
                 .setPositiveButton(R.string.accept, null)

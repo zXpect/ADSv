@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Task;
@@ -157,14 +158,14 @@ public class MyDataActivity extends AppCompatActivity {
             if ("password".equals(info.getProviderId())) hasPassword = true;
         }
         if (!hasPassword) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setMessage(R.string.data_password_google)
                     .setPositiveButton(R.string.verify_ok, null)
                     .show();
             return;
         }
         String email = user.getEmail();
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.data_change_password)
                 .setMessage(getString(R.string.data_password_confirm, email))
                 .setPositiveButton(R.string.data_password_send, (d, w) ->
@@ -178,7 +179,7 @@ public class MyDataActivity extends AppCompatActivity {
     /** Eliminar cuenta (mockup 39, D18): DELETE /api/me/ y, con 204, se cierra la sesión. */
     private void confirmDeleteAccount() {
         android.view.View view = getLayoutInflater().inflate(R.layout.dialog_delete_account, null);
-        AlertDialog dialog = new AlertDialog.Builder(this).setView(view).create();
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this).setView(view).create();
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }

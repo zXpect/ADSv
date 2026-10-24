@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -94,7 +95,7 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
     private void notifySuspended(Activity activity) {
         if (activity.isFinishing() || mShowing) return;
         mShowing = true;
-        new AlertDialog.Builder(activity)
+        new MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.account_suspended_title)
                 .setMessage(R.string.account_suspended_message)
                 .setCancelable(false)

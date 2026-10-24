@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -368,7 +369,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         btnSubmitDocuments.setOnClickListener(v -> showConfirmationDialog());
 
         btnSkip.setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Omitir documentos")
                     .setMessage("Podrás subir tus documentos más tarde desde tu perfil. ¿Deseas continuar?")
                     .setPositiveButton("Sí, continuar", (dialog, which) -> registerUserAndFinish())
@@ -415,7 +416,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
             }
         }
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Confirmar registro")
                 .setMessage(message)
                 .setPositiveButton("Registrar y subir", (dialog, which) -> startRegistrationProcess())
@@ -654,7 +655,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     setUIUploading(false);
 
-                    new AlertDialog.Builder(this)
+                    new MaterialAlertDialogBuilder(this)
                             .setTitle("¡Registro completado!")
                             .setMessage("Tu cuenta ha sido creada y tus documentos han sido enviados exitosamente. Serán revisados por nuestro equipo.")
                             .setPositiveButton("Continuar", (dialog, which) -> finishRegistration())
@@ -784,7 +785,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (isUploading) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Subida en progreso")
                     .setMessage("¿Deseas cancelar el registro?")
                     .setPositiveButton("Sí, cancelar", (dialog, which) -> {
@@ -793,7 +794,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     .setNegativeButton("No", null)
                     .show();
         } else if (isRegistered) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Registro completado")
                     .setMessage("Tu cuenta ya ha sido creada. Por favor continúa al inicio.")
                     .setPositiveButton("Ir al inicio", (dialog, which) -> finishRegistration())

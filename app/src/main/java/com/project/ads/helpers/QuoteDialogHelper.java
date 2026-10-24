@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -257,7 +258,7 @@ public class QuoteDialogHelper {
         ScheduleFields schedule = new ScheduleFields(mActivity, view);
         schedule.setInitial(request.getScheduledAt(), request.getEstimatedDurationMin());
 
-        AlertDialog dialog = new AlertDialog.Builder(mActivity)
+        AlertDialog dialog = new MaterialAlertDialogBuilder(mActivity)
                 .setTitle(R.string.reschedule_title)
                 .setMessage(R.string.reschedule_message)
                 .setView(view)

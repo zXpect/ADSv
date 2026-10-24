@@ -653,7 +653,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
 
         String worker = !TextUtils.isEmpty(mServiceRequest.getWorker_name())
                 ? mServiceRequest.getWorker_name() : getString(R.string.request_the_worker);
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.detail_reject_title)
                 .setMessage(getString(R.string.detail_reject_message, worker, mServiceRequest.getFormattedQuotedPrice()))
                 .setView(container)
@@ -764,7 +764,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             message += "\n\nTu comentario:\n\"" + comment + "\"";
         }
 
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("Ya calificado")
                 .setMessage(message)
                 .setPositiveButton("Aceptar", null)

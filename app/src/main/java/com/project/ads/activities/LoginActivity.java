@@ -19,6 +19,7 @@ import android.Manifest;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -283,7 +284,7 @@ public class LoginActivity extends AppCompatActivity {
     private void showUserExistsAsOtherTypeDialog(String existingUserType) {
         String currentType = mPref.getString("user", "");
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Tipo de usuario incorrecto")
                 .setMessage("Esta cuenta de Google ya está registrada como " + existingUserType +
                         ", no como " + currentType + ".\n\n" +
@@ -362,7 +363,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showConfirmationToSendEmail(String email) {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.forgot_password_title)
                 .setMessage(getString(R.string.forgot_password_confirm_message, email))
                 .setPositiveButton(R.string.forgot_password_confirm_yes,
@@ -404,7 +405,7 @@ public class LoginActivity extends AppCompatActivity {
             errorMessage = getString(R.string.forgot_password_send_error);
         }
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.forgot_password_error_title)
                 .setMessage(errorMessage)
                 .setPositiveButton("Entendido", null)
@@ -414,7 +415,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showResetPasswordSuccess(String email) {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.forgot_password_success_title)
                 .setMessage(getString(R.string.forgot_password_neutral_message, email))
                 .setPositiveButton("Entendido", null)
@@ -441,7 +442,7 @@ public class LoginActivity extends AppCompatActivity {
                 ? "Demasiados intentos fallidos. Por favor, espere " + minutesRemaining + " minuto(s) y " + secondsRemaining + " segundo(s)."
                 : "Demasiados intentos fallidos. Por favor, espere " + secondsRemaining + " segundo(s).";
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Cuenta bloqueada temporalmente")
                 .setMessage(message)
                 .setPositiveButton("Entendido", null)
@@ -551,7 +552,7 @@ public class LoginActivity extends AppCompatActivity {
                     showLoginWrongTypeDialog(currentUserType, oppositeUserType);
                 } else {
                     mAuth.signOut();
-                    new AlertDialog.Builder(this)
+                    new MaterialAlertDialogBuilder(this)
                             .setTitle("Registro incompleto")
                             .setMessage("Tu cuenta existe pero no has completado el registro. Por favor, regístrate como " + currentUserType + ".")
                             .setPositiveButton("Registrarme", (dialog, which) -> register())
@@ -566,7 +567,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showLoginWrongTypeDialog(String currentType, String correctType) {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Tipo de usuario incorrecto")
                 .setMessage(
                         "Este correo está registrado como " + correctType + ", no como " + currentType + ".\n\n" +
@@ -626,7 +627,7 @@ public class LoginActivity extends AppCompatActivity {
         if (exception instanceof FirebaseAuthInvalidUserException
                 && "ERROR_USER_DISABLED".equals(((FirebaseAuthInvalidUserException) exception).getErrorCode())) {
             // Cuenta suspendida desde el panel (HU-32)
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.account_suspended_title)
                     .setMessage(R.string.account_suspended_login)
                     .setPositiveButton(R.string.account_suspended_ok, null)
@@ -637,7 +638,7 @@ public class LoginActivity extends AppCompatActivity {
             tilEmail.setError("No existe una cuenta con este correo");
             tilEmail.setErrorEnabled(true);
 
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Correo no registrado")
                     .setMessage("No existe una cuenta con este correo electrónico.\n\n" +
                             "¿Deseas crear una cuenta nueva?")
@@ -670,7 +671,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
 
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Error")
                     .setMessage(errorMessage)
                     .setPositiveButton("Entendido", null)
@@ -683,7 +684,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showPasswordRecoveryHint() {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("¿Olvidaste tu contraseña?")
                 .setMessage("Has tenido " + loginAttempts + " intentos fallidos.\n\n" +
                         "¿Deseas recuperar tu contraseña?")

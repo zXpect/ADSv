@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
@@ -158,7 +159,7 @@ public class PqrCreateActivity extends AppCompatActivity {
             options[i] = label(mRequests.get(i));
             if (mRequests.get(i).getRequest_id().equals(mSelectedRequestId)) checked = i;
         }
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.pqr_request_label)
                 .setSingleChoiceItems(options, checked, (dialog, which) -> {
                     mSelectedRequestId = mRequests.get(which).getRequest_id();

@@ -2,6 +2,7 @@ package com.project.ads.activities.worker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
@@ -492,7 +493,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
                 break;
         }
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Sí, continuar", (dialog, which) -> updateStatus(newStatus))

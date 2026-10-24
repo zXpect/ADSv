@@ -7,6 +7,7 @@ import com.project.ads.providers.CatalogProvider;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -571,7 +572,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.location_permission_title)
                     .setMessage(R.string.location_permission_message)
                     .setPositiveButton(R.string.ok, (dialogInterface, i) -> {

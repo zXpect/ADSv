@@ -425,4 +425,48 @@
         <item name="android:textColor">@color/ads_brand</item>
         <item name="android:textAppearance">@style/TextAppearance.ADS.Button.Secondary</item>
     </style>
+    <!-- ===================================================================
+         DIÁLOGOS (DEF-22). Tema en themes.xml (ThemeOverlay.ADS.Dialog).
+         =================================================================== -->
+    <style name="MaterialAlertDialog.ADS" parent="MaterialAlertDialog.Material3">
+        <item name="backgroundTint">@color/ads_card</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.ADS.Dialog</item>
+        <item name="backgroundInsetStart">@dimen/space_6</item>
+        <item name="backgroundInsetEnd">@dimen/space_6</item>
+    </style>
+
+    <style name="ShapeAppearance.ADS.Dialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_lg</item>
+    </style>
+
+    <style name="MaterialAlertDialog.ADS.Title" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Dialog.Title</item>
+        <item name="android:textColor">@color/ads_text</item>
+    </style>
+
+    <style name="MaterialAlertDialog.ADS.Body" parent="MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textAppearance">@style/TextAppearance.ADS.Body</item>
+        <item name="android:textColor">@color/ads_muted</item>
+    </style>
+
+    <!-- Título del diálogo: 20/26, 600 -->
+    <style name="TextAppearance.ADS.Dialog.Title" parent="TextAppearance.ADS.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="lineHeight">26sp</item>
+    </style>
+
+    <!-- Botón principal del diálogo: naranja con texto navy, 44 dp -->
+    <style name="Widget.ADS.Button.Dialog">
+        <item name="android:minHeight">@dimen/touch_min</item>
+        <item name="android:paddingStart">@dimen/space_5</item>
+        <item name="android:paddingEnd">@dimen/space_5</item>
+        <item name="android:layout_marginStart">@dimen/space_2</item>
+    </style>
+
+    <!-- Acción secundaria del diálogo (Cancelar): texto -->
+    <style name="Widget.ADS.Button.Dialog.Text" parent="Widget.ADS.Button.Text">
+        <item name="android:textColor">@color/ads_text</item>
+    </style>
+
 </resources>

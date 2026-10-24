@@ -71,6 +71,23 @@
         <item name="snackbarStyle">@style/Widget.ADS.Snackbar</item>
         <item name="snackbarTextViewStyle">@style/Widget.ADS.Snackbar.Text</item>
         <item name="snackbarButtonStyle">@style/Widget.ADS.Snackbar.Action</item>
+        <!-- Diálogos de confirmación con el diseño ADS (DEF-22) -->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ADS.Dialog</item>
+    </style>
+
+    <!-- Diálogo ADS: tarjeta con radio 22, título y texto en Sora, botón principal
+         naranja con texto navy y secundario de texto (DEF-22). Lo usa
+         MaterialAlertDialogBuilder en toda la app. -->
+    <style name="ThemeOverlay.ADS.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/MaterialAlertDialog.ADS</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.ADS.Title</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/MaterialAlertDialog.ADS.Body</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.ADS.Button.Dialog</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.ADS.Button.Dialog.Text</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.ADS.Button.Dialog.Text</item>
+        <item name="android:backgroundDimAmount">0.55</item>
+        <!-- Sin el tinte naranja que Material 3 suma por la elevación: fondo de tarjeta ADS -->
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <!-- Diálogo a pantalla completa con el tema ADS (cancelar servicio) -->

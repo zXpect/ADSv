@@ -2,6 +2,7 @@ package com.project.ads.activities.worker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -538,7 +539,7 @@ public class WorkerDocumentsActivity extends AppCompatActivity {
             return;
         }
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Enviar documentos")
                 .setMessage("¿Estás seguro de que deseas enviar tus documentos para revisión?")
                 .setPositiveButton("Enviar", (dialog, which) -> {

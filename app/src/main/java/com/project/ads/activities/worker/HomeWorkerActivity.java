@@ -3,6 +3,7 @@ package com.project.ads.activities.worker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -997,7 +998,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
     private void requestLocationPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Permisos de ubicación requeridos")
                     .setMessage("Esta aplicación necesita acceso a tu ubicación para conectarte con clientes cercanos")
                     .setPositiveButton("Conceder", (dialog, which) ->
@@ -1300,7 +1301,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
     private void logout() {
         try {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new MaterialAlertDialogBuilder(this);
             builder.setTitle("Cerrar Sesión")
                     .setMessage("¿Estás seguro que deseas cerrar sesión?")
                     .setCancelable(false);
@@ -1427,7 +1428,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Salir de la aplicación")
                     .setMessage("¿Deseas salir?" + (isConnected ? " Te desconectarás automáticamente." : ""))
                     .setPositiveButton("Salir", (dialog, which) -> {

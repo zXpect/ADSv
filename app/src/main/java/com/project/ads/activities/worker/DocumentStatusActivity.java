@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -294,7 +295,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
             message += "\n\nMotivo del rechazo:\n" + document.getRejectionReason();
         }
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Actualizar Documento")
                 .setMessage(message)
                 .setPositiveButton("Actualizar", (dialog, which) -> {
@@ -318,7 +319,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
         }
 
         // Crear el diálogo personalizado
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new MaterialAlertDialogBuilder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_document_type, null);
         builder.setView(dialogView);
 
@@ -383,7 +384,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
         String documentName = getDocumentTypeName(selectedDocumentType);
         String action = currentDocumentId != null ? "actualizar" : "subir";
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Confirmar " + action)
                 .setMessage("¿Deseas " + action + " el documento: " + documentName + "?")
                 .setPositiveButton(action.substring(0, 1).toUpperCase() + action.substring(1),
@@ -588,7 +589,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (isUploading) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Subida en progreso")
                     .setMessage("¿Deseas cancelar la subida?")
                     .setPositiveButton("Sí, cancelar", (dialog, which) -> {

@@ -2,6 +2,7 @@ package com.project.ads.activities.worker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -145,7 +146,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        findViewById(R.id.btnLogout).setOnClickListener(v -> new androidx.appcompat.app.AlertDialog.Builder(this)
+        findViewById(R.id.btnLogout).setOnClickListener(v -> new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.profile_logout)
                 .setMessage("¿Estás seguro que deseas cerrar sesión?")
                 .setPositiveButton("Sí", (dialog, which) -> logoutWorker())
@@ -287,7 +288,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
 
     // ===== AGREGAR ESTE MÉTODO PARA CAMBIAR LA IMAGEN =====
     private void changeProfileImage() {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Cambiar foto de perfil")
                 .setMessage("Esta función estará disponible próximamente en la edición de perfil.")
                 .setPositiveButton("Entendido", null)

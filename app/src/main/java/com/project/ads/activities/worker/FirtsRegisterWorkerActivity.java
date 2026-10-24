@@ -29,6 +29,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -144,7 +145,7 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (isFromGoogleSignIn) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Cancelar registro")
                     .setMessage("Si cancelas ahora, no se tendrá en cuenta el registro. ¿Estás seguro?")
                     .setPositiveButton("Sí, cancelar", (dialog, which) -> {
@@ -265,7 +266,7 @@ public class FirtsRegisterWorkerActivity extends AppCompatActivity {
     private void showImagePickerDialog() {
         String[] options = {"Tomar foto", "Seleccionar de galería", "Cancelar"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle("Seleccionar foto de perfil");
         builder.setItems(options, (dialog, which) -> {
             switch (which) {

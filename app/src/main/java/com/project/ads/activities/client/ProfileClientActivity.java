@@ -1,6 +1,7 @@
 package com.project.ads.activities.client;
 
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
@@ -137,7 +138,7 @@ public class ProfileClientActivity extends AppCompatActivity {
             changeProfileImage();
         });
 
-        findViewById(R.id.btnLogout).setOnClickListener(v -> new androidx.appcompat.app.AlertDialog.Builder(this)
+        findViewById(R.id.btnLogout).setOnClickListener(v -> new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.profile_logout)
                 .setMessage("¿Estás seguro que deseas cerrar sesión?")
                 .setPositiveButton("Sí", (dialog, which) ->
@@ -147,7 +148,7 @@ public class ProfileClientActivity extends AppCompatActivity {
     }
 
     private void changeProfileImage() {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Cambiar foto de perfil")
                 .setMessage("Esta función estará disponible próximamente en la edición de perfil.")
                 .setPositiveButton("Entendido", null)

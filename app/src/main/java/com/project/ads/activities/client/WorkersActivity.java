@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -199,7 +200,7 @@ public class WorkersActivity extends AppCompatActivity {
     }
 
     private void showLocationSettingsDialog() {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Ubicación desactivada")
                 .setMessage("Para ver trabajadores cercanos, necesitas activar la ubicación de tu dispositivo.")
                 .setPositiveButton("Activar", (dialog, which) -> startActivityForResult(
@@ -229,7 +230,7 @@ public class WorkersActivity extends AppCompatActivity {
 
     private void requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Permiso de ubicación requerido")
                     .setMessage("Esta aplicación necesita acceso a la ubicación para mostrar trabajadores cercanos.")
                     .setPositiveButton("Conceder", (d, i) -> ActivityCompat.requestPermissions(this,

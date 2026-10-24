@@ -105,7 +105,7 @@ public class RatingActivity extends AppCompatActivity {
     }
 
     private void showAlreadyRatedDialog() {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("Servicio Ya Calificado")
                 .setMessage("Ya calificaste este servicio con " +
                         String.format("%.1f", mExistingRating) + " estrellas.")
