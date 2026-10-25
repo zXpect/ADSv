@@ -39,7 +39,7 @@
              gris o negra debajo). Antes de Android 8.1 queda negra: no hay íconos oscuros. -->
         <item name="android:navigationBarColor">@color/ads_nav_bar</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">@bool/ads_light_status_bar</item>
-        <!-- Transición uniforme al abrir y cerrar pantallas (las pestañas siguen sin animación) -->
+        <!-- Transición uniforme al abrir y cerrar pantallas (las pestañas usan TabTransition) -->
         <item name="android:windowAnimationStyle">@style/Animation.ADS.Activity</item>
 
         <!-- Tipografía Sora. No se pone fontFamily directo en el tema: anularía

@@ -13,8 +13,7 @@ import com.project.ads.activities.client.ProfileClientActivity;
 
 /**
  * Barra inferior del cliente (mockups 06, 37, 41, 42): Inicio / Solicitudes / PQR / Mi cuenta.
- * Cada pestaña es una Activity; al cambiar se trae al frente sin animación para que
- * se sienta como una sola pantalla.
+ * Cada pestaña es una Activity; al cambiar se trae al frente con TabTransition.
  */
 public final class ClientNavHelper {
 
@@ -34,13 +33,22 @@ public final class ClientNavHelper {
                 Toast.makeText(activity, R.string.nav_coming_soon, Toast.LENGTH_SHORT).show();
                 return false;
             }
-            Intent intent = new Intent(activity, target);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            activity.startActivity(intent);
-            activity.overridePendingTransition(0, 0);
+            TabTransition.start(activity, new Intent(activity, target),
+                    isAfter(nav, id, selectedItemId));
             return false;   // la pestaña se marca en la pantalla de destino
         });
         nav.setOnItemReselectedListener(item -> { });
+    }
+
+    /** true si la pestaña de destino está a la derecha de la actual en la barra. */
+    static boolean isAfter(BottomNavigationView nav, int targetId, int currentId) {
+        int target = -1, current = -1;
+        for (int i = 0; i < nav.getMenu().size(); i++) {
+            int id = nav.getMenu().getItem(i).getItemId();
+            if (id == targetId) target = i;
+            if (id == currentId) current = i;
+        }
+        return target > current;
     }
 
     private static Class<? extends Activity> targetFor(int itemId) {

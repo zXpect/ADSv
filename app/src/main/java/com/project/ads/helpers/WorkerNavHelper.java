@@ -32,12 +32,10 @@ public final class WorkerNavHelper {
             Class<? extends Activity> target = targetFor(id);
             if (target == null) return false;
             Intent intent = new Intent(activity, target);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             // Las listas del trabajador leen su id del intent
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) intent.putExtra("worker_id", user.getUid());
-            activity.startActivity(intent);
-            activity.overridePendingTransition(0, 0);
+            TabTransition.start(activity, intent, ClientNavHelper.isAfter(nav, id, selectedItemId));
             return false;   // la pestaña se marca en la pantalla de destino
         });
         nav.setOnItemReselectedListener(item -> { });
