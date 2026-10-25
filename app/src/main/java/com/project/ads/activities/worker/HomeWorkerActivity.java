@@ -15,6 +15,7 @@ import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -114,6 +115,9 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private ValueEventListener mWorkerDataListener;
     private LinearLayout mLayoutPendingRequests;
     private ValueAnimator mPulseAnimator;
+    // Punto de estado de la tarjeta (naranja disponible, gris no disponible) y su anillo
+    private View mStatusDot, mStatusPulse, mCardConnectionStatus;
+    private Integer mStatusColor;   // color que muestra hoy el punto (null: aún nada)
     private LinearLayout mLayoutActiveServices;
 
     private String mVerificationStatus = null;
@@ -169,6 +173,9 @@ public class HomeWorkerActivity extends AppCompatActivity {
         mConnectionIndicatorGlow = findViewById(R.id.connectionIndicatorGlow);
         mTextConnectionStatus = findViewById(R.id.textConnectionStatus);
         mTextConnectionMessage = findViewById(R.id.textConnectionMessage);
+        mStatusDot = findViewById(R.id.viewStatusDot);
+        mStatusPulse = findViewById(R.id.viewStatusPulse);
+        mCardConnectionStatus = findViewById(R.id.cardConnectionStatus);
 
         mTextWorkerName = findViewById(R.id.textWorkerName);
         mTextWorkerType = findViewById(R.id.textWorkerType);
@@ -566,6 +573,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
             mConnectionIndicatorGlow.setBackgroundResource(R.drawable.circle_glow_red);
         }
 
+        showStatusLook(false);
+
         // Interruptor habilitado y apagado
         mButtonToggleConnection.setEnabled(true);
         mButtonToggleConnection.setAlpha(1.0f);
@@ -607,6 +616,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
         if (mConnectionIndicatorGlow != null) {
             mConnectionIndicatorGlow.setBackgroundResource(indicatorGlow);
         }
+
+        showStatusLook(false);
 
         // Interruptor deshabilitado mientras no esté verificado
         mButtonToggleConnection.setEnabled(false);
@@ -934,25 +945,36 @@ public class HomeWorkerActivity extends AppCompatActivity {
             mPulseAnimator.cancel();
         }
 
-        mPulseAnimator = ValueAnimator.ofFloat(0.3f, 0.8f);
-        mPulseAnimator.setDuration(1500);
-        mPulseAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        mPulseAnimator.setRepeatMode(ValueAnimator.REVERSE);
-        mPulseAnimator.addUpdateListener(animation -> {
-            float alpha = (float) animation.getAnimatedValue();
-            if (mConnectionIndicatorGlow != null) {
-                mConnectionIndicatorGlow.setAlpha(alpha);
-            }
-        });
-        mPulseAnimator.start();
+        // Anillo naranja que late alrededor del punto mientras está disponible
+        mStatusPulse.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.ads_brand)));
+        mPulseAnimator = Motion.ring(mStatusPulse);
     }
 
     private void stopPulseAnimation() {
         if (mPulseAnimator != null && mPulseAnimator.isRunning()) {
             mPulseAnimator.cancel();
         }
-        if (mConnectionIndicatorGlow != null) {
-            mConnectionIndicatorGlow.setAlpha(0.3f);
+        if (mStatusPulse != null) mStatusPulse.setAlpha(0f);
+    }
+
+    /**
+     * Color del estado: el punto y la palabra pasan a naranja al conectarse y a gris al
+     * desconectarse, con un cambio de color animado y un pulso de la tarjeta. La primera
+     * vez (al abrir la pantalla) se pinta directo, sin animar.
+     */
+    private void showStatusLook(boolean online) {
+        int dot = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_on_navy_muted);
+        int text = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_on_navy);
+        boolean animate = mStatusColor != null && mStatusColor != dot;
+        int fromDot = mStatusColor != null ? mStatusColor : dot;
+        int fromText = mTextConnectionStatus.getCurrentTextColor();
+        mStatusColor = dot;
+        Motion.colorTo(mStatusDot, fromDot, dot, animate,
+                c -> mStatusDot.setBackgroundTintList(ColorStateList.valueOf(c)));
+        Motion.colorTo(mTextConnectionStatus, fromText, text, animate, mTextConnectionStatus::setTextColor);
+        if (animate) {
+            Motion.bump(mStatusDot);
+            Motion.pulse(mCardConnectionStatus);
         }
     }
 
@@ -1076,6 +1098,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
                 mTextConnectionMessage.setCompoundDrawablesRelative(null, null, null, null);
                 mConnectionIndicator.setBackgroundResource(R.drawable.circle_green);
                 mConnectionIndicatorGlow.setBackgroundResource(R.drawable.circle_glow_green);
+                showStatusLook(true);
 
                 // Interruptor encendido
                 mButtonToggleConnection.setEnabled(true);

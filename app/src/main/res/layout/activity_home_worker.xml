@@ -100,14 +100,46 @@
                             android:textAppearance="@style/TextAppearance.ADS.Label"
                             android:textColor="@color/ads_on_navy_muted" />
 
-                        <TextView
-                            android:id="@+id/textConnectionStatus"
+                        <!-- Punto de estado: naranja con un anillo que late si está disponible,
+                             gris si no; el cambio se anima (HomeWorkerActivity.showStatusLook) -->
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/sora_extrabold"
-                            android:textColor="@color/ads_on_navy"
-                            android:textSize="22sp"
-                            tools:text="Disponible" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <FrameLayout
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:importantForAccessibility="no">
+
+                                <View
+                                    android:id="@+id/viewStatusPulse"
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:layout_gravity="center"
+                                    android:alpha="0"
+                                    android:background="@drawable/bg_ads_status_dot" />
+
+                                <View
+                                    android:id="@+id/viewStatusDot"
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/bg_ads_status_dot"
+                                    android:backgroundTint="@color/ads_on_navy_muted" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:id="@+id/textConnectionStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/space_2"
+                                android:fontFamily="@font/sora_extrabold"
+                                android:textColor="@color/ads_on_navy"
+                                android:textSize="22sp"
+                                tools:text="Disponible" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <com.google.android.material.materialswitch.MaterialSwitch

@@ -28,6 +28,11 @@ public final class Motion {
     private Motion() {
     }
 
+    /** Aplica un color en cada cuadro de colorTo (IntConsumer exige API 24; minSdk es 23). */
+    public interface ColorSetter {
+        void set(int color);
+    }
+
     /** false si el usuario quitó las animaciones en los ajustes del teléfono. */
     public static boolean enabled(Context context) {
         return Settings.Global.getFloat(context.getContentResolver(),
@@ -66,6 +71,52 @@ public final class Motion {
                 .setDuration(220)
                 .setInterpolator(new OvershootInterpolator(3f))
                 .start();
+    }
+
+    /**
+     * Cambio de color animado (300 ms): de from a to, aplicado en cada cuadro.
+     * Sin animaciones (o con animate en false) aplica el color final directo.
+     */
+    public static ValueAnimator colorTo(View view, int from, int to, boolean animate, ColorSetter apply) {
+        if (!animate || from == to || !enabled(view.getContext())) {
+            apply.set(to);
+            return null;
+        }
+        ValueAnimator animator = ValueAnimator.ofArgb(from, to);
+        animator.setDuration(300);
+        animator.addUpdateListener(a -> apply.set((int) a.getAnimatedValue()));
+        animator.start();
+        return animator;
+    }
+
+    /** Pulso suave de una tarjeta (se encoge un poco y vuelve) al cambiar su estado. */
+    public static void pulse(View view) {
+        if (!enabled(view.getContext())) return;
+        view.animate().cancel();
+        view.animate().scaleX(0.97f).scaleY(0.97f).setDuration(110)
+                .withEndAction(() -> view.animate().scaleX(1f).scaleY(1f).setDuration(260)
+                        .setInterpolator(new OvershootInterpolator(2f)).start())
+                .start();
+    }
+
+    /**
+     * Anillo que late alrededor de un punto de estado: crece y se desvanece en bucle
+     * (1,4 s). Devuelve el animador para detenerlo; null si las animaciones están quitadas.
+     */
+    public static ValueAnimator ring(View ring) {
+        if (!enabled(ring.getContext())) return null;
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(1400);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        animator.addUpdateListener(a -> {
+            float t = (float) a.getAnimatedValue();
+            ring.setScaleX(1f + 1.4f * t);
+            ring.setScaleY(1f + 1.4f * t);
+            ring.setAlpha(0.6f * (1f - t));
+        });
+        animator.start();
+        return animator;
     }
 
     /** Fundido corto de un texto que acaba de cambiar. */
