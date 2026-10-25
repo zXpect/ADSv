@@ -91,6 +91,8 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
 
     private void initializeViews() {
         recyclerView = findViewById(R.id.recyclerViewRequests);
+        // Encabezado que se eleva al desplazar la lista
+        com.project.ads.helpers.Motion.liftOnScroll(findViewById(R.id.layout_list_header), recyclerView);
         progressBar = findViewById(R.id.progressBar);
         tvEmpty = findViewById(R.id.tvEmpty);
         swipeRefresh = findViewById(R.id.swipeRefresh);

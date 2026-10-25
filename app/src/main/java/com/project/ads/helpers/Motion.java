@@ -161,6 +161,40 @@ public final class Motion {
         animator.start();
     }
 
+    /**
+     * Encabezado fijo sobre una lista: al desplazarla gana una sombra suave (modo claro)
+     * y una línea inferior (modo oscuro, donde la sombra casi no se ve); al volver arriba
+     * las pierde. El encabezado necesita fondo propio para que la sombra se dibuje.
+     */
+    public static void liftOnScroll(View header, RecyclerView list) {
+        android.graphics.drawable.Drawable divider = ContextCompat.getDrawable(
+                header.getContext(), R.drawable.bg_ads_header_divider).mutate();
+        divider.setAlpha(0);
+        header.setForeground(divider);
+        float lift = header.getResources().getDimension(R.dimen.ads_card_elevation);
+        boolean animate = enabled(header.getContext());
+        list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private boolean mLifted;
+
+            @Override
+            public void onScrolled(RecyclerView rv, int dx, int dy) {
+                boolean lifted = rv.canScrollVertically(-1);
+                if (lifted == mLifted) return;
+                mLifted = lifted;
+                if (!animate) {
+                    header.setTranslationZ(lifted ? lift : 0f);
+                    divider.setAlpha(lifted ? 255 : 0);
+                    return;
+                }
+                header.animate().translationZ(lifted ? lift : 0f).setDuration(150).start();
+                ValueAnimator fade = ValueAnimator.ofInt(divider.getAlpha(), lifted ? 255 : 0);
+                fade.setDuration(150);
+                fade.addUpdateListener(a -> divider.setAlpha((int) a.getAnimatedValue()));
+                fade.start();
+            }
+        });
+    }
+
     /** Fundido corto de un texto que acaba de cambiar. */
     public static void fadeIn(View view) {
         view.setAlpha(0f);

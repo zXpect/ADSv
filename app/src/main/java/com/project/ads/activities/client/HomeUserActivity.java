@@ -59,6 +59,9 @@ public class HomeUserActivity extends AppCompatActivity {
     private TextView mUserGreetingText;
     private EditText mSearchBar;
     private View mActiveServiceCard;
+    // Reflejo que recorre la tarjeta mientras el técnico va en camino o trabaja
+    private final com.project.ads.helpers.SheenDrawable mActiveSheen = new com.project.ads.helpers.SheenDrawable();
+    private boolean mActiveLive;
     private TextView mActiveServiceLabel;
     private TextView mActiveServiceStatus;
 
@@ -117,6 +120,8 @@ public class HomeUserActivity extends AppCompatActivity {
         mUserGreetingText = findViewById(R.id.user_greeting_text);
         mSearchBar = findViewById(R.id.search_bar);
         mActiveServiceCard = findViewById(R.id.card_active_service);
+        mActiveServiceCard.setForeground(mActiveSheen);
+        mActiveServiceCard.setClipToOutline(true);
         mActiveServiceLabel = findViewById(R.id.tv_active_service_label);
         mActiveServiceStatus = findViewById(R.id.tv_active_service_status);
 
@@ -239,8 +244,11 @@ public class HomeUserActivity extends AppCompatActivity {
     private void showActiveService(ServiceRequest request) {
         if (request == null) {
             mActiveServiceCard.setVisibility(View.GONE);
+            setActiveLive(false);
             return;
         }
+        String status = request.getStatus();
+        setActiveLive("on_the_way".equals(status) || "in_progress".equals(status));
         String service = request.getService_type() != null
                 ? request.getService_type() : getString(R.string.history_service_default);
         mActiveServiceLabel.setText(getString(R.string.home_active_service, service));
@@ -251,6 +259,13 @@ public class HomeUserActivity extends AppCompatActivity {
             startActivity(intent);
         });
         mActiveServiceCard.setVisibility(View.VISIBLE);
+    }
+
+    /** Enciende o apaga el reflejo de la tarjeta (solo con la pantalla visible y animaciones). */
+    private void setActiveLive(boolean live) {
+        mActiveLive = live;
+        if (live && com.project.ads.helpers.Motion.enabled(this)) mActiveSheen.start();
+        else mActiveSheen.stop();
     }
 
     private int activeStatusText(ServiceRequest request) {
@@ -295,12 +310,14 @@ public class HomeUserActivity extends AppCompatActivity {
         super.onStart();
         mNotificationBell.start();
         mRequestsBadge.start();
+        setActiveLive(mActiveLive);
     }
 
     @Override
     protected void onStop() {
         mNotificationBell.stop();
         mRequestsBadge.stop();
+        mActiveSheen.stop();   // no anima con la pantalla oculta; onStart lo retoma
         super.onStop();
     }
 

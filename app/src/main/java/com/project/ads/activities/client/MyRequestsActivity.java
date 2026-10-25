@@ -115,6 +115,8 @@ public class MyRequestsActivity extends AppCompatActivity {
 
     private void initViews() {
         mRecyclerView = findViewById(R.id.recycler_my_requests);
+        // Encabezado que se eleva al desplazar la lista
+        com.project.ads.helpers.Motion.liftOnScroll(findViewById(R.id.layout_list_header), mRecyclerView);
         mProgressBar = findViewById(R.id.progress_bar);
         mEmptyState = findViewById(R.id.empty_state);
         mSwipeRefresh = findViewById(R.id.swipe_refresh);

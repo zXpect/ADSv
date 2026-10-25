@@ -63,6 +63,8 @@ public class NotificationsActivity extends AppCompatActivity {
         NotificationRouter.markOpened(this, null);
 
         mRecycler = findViewById(R.id.recycler_notifications);
+        // Encabezado que se eleva al desplazar la lista
+        com.project.ads.helpers.Motion.liftOnScroll(findViewById(R.id.layout_list_header), mRecycler);
         mProgress = findViewById(R.id.progress_notifications);
         mEmpty = findViewById(R.id.layout_notifications_empty);
         mEmptyTitle = findViewById(R.id.tv_notifications_empty_title);

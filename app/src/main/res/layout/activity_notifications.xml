@@ -12,8 +12,10 @@
 
     <!-- Volver y "Marcar como leídas" -->
     <LinearLayout
+        android:id="@+id/layout_list_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/ads_surface"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/screen_margin"
