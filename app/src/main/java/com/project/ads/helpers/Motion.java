@@ -119,6 +119,20 @@ public final class Motion {
         return animator;
     }
 
+    /**
+     * Campana que suena: se balancea desde la argolla (arriba al centro), cada vez
+     * menos, en 700 ms. Sin animaciones no hace nada.
+     */
+    public static void ringBell(android.widget.ImageView bell) {
+        if (!enabled(bell.getContext())) return;
+        bell.setPivotX(bell.getWidth() / 2f);
+        bell.setPivotY(bell.getHeight() * 0.1f);
+        android.animation.ObjectAnimator swing = android.animation.ObjectAnimator.ofFloat(
+                bell, View.ROTATION, 0f, -16f, 14f, -10f, 8f, -4f, 2f, 0f);
+        swing.setDuration(700);
+        swing.start();
+    }
+
     /** Fundido corto de un texto que acaba de cambiar. */
     public static void fadeIn(View view) {
         view.setAlpha(0f);
