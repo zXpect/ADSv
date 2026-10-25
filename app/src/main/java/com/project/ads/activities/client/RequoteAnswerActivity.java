@@ -39,7 +39,7 @@ public class RequoteAnswerActivity extends AppCompatActivity {
                 .putExtra(EXTRA_REQUEST_ID, request.getRequest_id())
                 .putExtra(EXTRA_CURRENT, request.getQuoted_price())
                 .putExtra(EXTRA_NEW, requote.getPrice())
-                .putExtra(EXTRA_REASON, ReasonHelper.label(ReasonHelper.ADJUSTMENT,
+                .putExtra(EXTRA_REASON, ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT,
                         requote.getReasonCode(), requote.getReasonText()))
                 .putExtra(EXTRA_WORKER, request.getWorker_name())
                 .putExtra(EXTRA_STATUS, request.getStatus());

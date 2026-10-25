@@ -42,7 +42,7 @@ public final class RequestDetailsHelper {
 
         if (includeQuoteParts && request.hasQuote() && request.isQuoteAdjusted()
                 && request.getQuoteAdjustmentReasonCode() != null) {
-            append(text, context.getString(R.string.quote_detail_reason, ReasonHelper.label(
+            append(text, context.getString(R.string.quote_detail_reason, ReasonHelper.labelWithComment(
                     ReasonHelper.ADJUSTMENT, request.getQuoteAdjustmentReasonCode(),
                     request.getQuoteAdjustmentReasonText())));
         }

@@ -134,7 +134,8 @@ public class QuoteDialogHelper {
                     ServiceRequest.formatCop(limits.getMinPrice())));
         }
 
-        // Motivos como chips (mockup 16); «Otro» ya viene en ADJUSTMENT y pide escribirlo (DEF-13)
+        // Motivos como chips (mockup 16); «Otro» ya viene en ADJUSTMENT y pide escribirlo (DEF-13).
+        // Con los demás el texto es un comentario opcional para el cliente (D5, MEJ-01)
         for (Map.Entry<String, String> entry : ReasonHelper.ADJUSTMENT.entrySet()) {
             Chip chip = new Chip(mActivity);
             chip.setId(View.generateViewId());
@@ -145,7 +146,10 @@ public class QuoteDialogHelper {
         }
         reasonChips.setOnCheckedStateChangeListener((group, ids) -> {
             String code = selectedReason(group);
-            tilReasonText.setVisibility(ReasonHelper.OTHER.equals(code) ? View.VISIBLE : View.GONE);
+            tilReasonText.setVisibility(code != null ? View.VISIBLE : View.GONE);
+            tilReasonText.setError(null);
+            etReasonText.setHint(ReasonHelper.OTHER.equals(code)
+                    ? R.string.cancel_reason_text_hint : R.string.quote_reason_comment_hint);
         });
 
         // El motivo aparece cuando el precio necesita ajuste (mismo criterio que el backend)
@@ -199,13 +203,12 @@ public class QuoteDialogHelper {
                     Toast.makeText(mActivity, R.string.quote_reason_required, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (ReasonHelper.OTHER.equals(reasonCode)) {
-                    reasonText = etReasonText.getText() != null ? etReasonText.getText().toString().trim() : "";
-                    if (TextUtils.isEmpty(reasonText)) {
-                        tilReasonText.setError(mActivity.getString(R.string.reason_text_required));
-                        return;
-                    }
+                reasonText = etReasonText.getText() != null ? etReasonText.getText().toString().trim() : "";
+                if (ReasonHelper.OTHER.equals(reasonCode) && TextUtils.isEmpty(reasonText)) {
+                    tilReasonText.setError(mActivity.getString(R.string.reason_text_required));
+                    return;
                 }
+                if (TextUtils.isEmpty(reasonText)) reasonText = null;
             }
 
             Long scheduledAt = schedule.getScheduledAt();

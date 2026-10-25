@@ -54,6 +54,17 @@ public final class ReasonHelper {
         return label != null ? label : code;
     }
 
+    /**
+     * Motivo del ajuste para el cliente: con «Otro», el texto; con los demás, la
+     * etiqueta y, si el trabajador lo escribió, su comentario
+     * («Materiales: Hace falta cable adicional») (MEJ-01).
+     */
+    public static String labelWithComment(Map<String, String> reasons, String code, String text) {
+        String label = label(reasons, code, text);
+        if (label == null || OTHER.equals(code) || text == null || text.trim().isEmpty()) return label;
+        return label + ": " + text.trim();
+    }
+
     public static String cancellationLabel(String code, String text) {
         String label = label(CANCELLATION_CLIENT, code, text);
         return label != null && label.equals(code) ? label(CANCELLATION_WORKER, code, text) : label;
