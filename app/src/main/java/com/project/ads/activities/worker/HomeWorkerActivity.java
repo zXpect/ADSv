@@ -16,6 +16,8 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.Color;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -118,6 +120,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
     // Punto de estado de la tarjeta (naranja disponible, gris no disponible) y su anillo
     private View mStatusDot, mStatusPulse, mCardConnectionStatus;
     private Integer mStatusColor;   // color que muestra hoy el punto (null: aún nada)
+    private GradientDrawable mStatusCardBg;   // fondo de la tarjeta: contorno naranja si está disponible
+    private int mStatusBorderColor = Color.TRANSPARENT;
     private LinearLayout mLayoutActiveServices;
 
     private String mVerificationStatus = null;
@@ -176,6 +180,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
         mStatusDot = findViewById(R.id.viewStatusDot);
         mStatusPulse = findViewById(R.id.viewStatusPulse);
         mCardConnectionStatus = findViewById(R.id.cardConnectionStatus);
+        // mutate: el contorno se cambia solo en esta tarjeta, no en el recurso compartido
+        mStatusCardBg = (GradientDrawable) mCardConnectionStatus.getBackground().mutate();
 
         mTextWorkerName = findViewById(R.id.textWorkerName);
         mTextWorkerType = findViewById(R.id.textWorkerType);
@@ -958,8 +964,9 @@ public class HomeWorkerActivity extends AppCompatActivity {
     }
 
     /**
-     * Color del estado: el punto y la palabra pasan a naranja al conectarse y a gris al
-     * desconectarse, con un cambio de color animado y un pulso de la tarjeta. La primera
+     * Color del estado: el punto, la palabra y el contorno de la tarjeta pasan a naranja al
+     * conectarse y vuelven a gris (sin contorno) al desconectarse, con un cambio de color
+     * animado y un pulso de la tarjeta. La primera
      * vez (al abrir la pantalla) se pinta directo, sin animar.
      */
     private void showStatusLook(boolean online) {
@@ -972,6 +979,12 @@ public class HomeWorkerActivity extends AppCompatActivity {
         Motion.colorTo(mStatusDot, fromDot, dot, animate,
                 c -> mStatusDot.setBackgroundTintList(ColorStateList.valueOf(c)));
         Motion.colorTo(mTextConnectionStatus, fromText, text, animate, mTextConnectionStatus::setTextColor);
+        // Contorno naranja de la tarjeta mientras está disponible (aparece y se va con el mismo fundido)
+        int border = online ? ContextCompat.getColor(this, R.color.ads_brand) : Color.TRANSPARENT;
+        int borderWidth = getResources().getDimensionPixelSize(R.dimen.stroke_focus);
+        Motion.colorTo(mCardConnectionStatus, mStatusBorderColor, border, animate,
+                c -> mStatusCardBg.setStroke(borderWidth, c));
+        mStatusBorderColor = border;
         if (animate) {
             Motion.bump(mStatusDot);
             Motion.pulse(mCardConnectionStatus);
