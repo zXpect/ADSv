@@ -136,8 +136,15 @@ public final class Motion {
     /** Chip de estado que acaba de cambiar (p. ej. «Cotizada» → «Aceptada»): pulso y fundido. */
     public static void chipChanged(View chip) {
         if (!enabled(chip.getContext())) return;
-        fadeIn(chip);
-        bump(chip);
+        // Una sola animación: fadeIn + bump por separado se cancelaban y el chip quedaba invisible
+        chip.animate().cancel();
+        chip.setAlpha(0f);
+        chip.setScaleX(1.25f);
+        chip.setScaleY(1.25f);
+        chip.animate().alpha(1f).scaleX(1f).scaleY(1f)
+                .setDuration(260)
+                .setInterpolator(new OvershootInterpolator(3f))
+                .start();
     }
 
     /** Número que cuenta desde from hasta to (400 ms) en lugar de cambiar de golpe. */
