@@ -167,6 +167,19 @@ public final class Motion {
         view.animate().alpha(1f).setDuration(200).start();
     }
 
+    /** Latido sin fin de un esqueleto de carga. null si las animaciones están quitadas. */
+    public static ValueAnimator skeletonPulse(View view) {
+        if (!enabled(view.getContext())) return null;
+        ValueAnimator animator = ValueAnimator.ofFloat(1f, 0.6f);
+        animator.setDuration(900);
+        animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.addUpdateListener(a -> view.setAlpha((float) a.getAnimatedValue()));
+        animator.start();
+        return animator;
+    }
+
     /** Muestra una tarjeta oculta subiendo con un fundido; si ya se ve, no hace nada. */
     public static void reveal(View view) {
         if (view.getVisibility() == View.VISIBLE) return;

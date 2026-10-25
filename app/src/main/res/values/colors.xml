@@ -59,6 +59,7 @@
     <color name="ads_nav_bar">#FF000000</color>
     <!-- Bloques de las tarjetas de relleno mientras carga una lista -->
     <color name="ads_skeleton">#E7E3DB</color>
+    <color name="ads_skeleton_on_navy">#2EFFFFFF</color>  <!-- bloque de relleno sobre la tarjeta navy -->
 
     <!-- ===================================================================
          COLORES HEREDADOS

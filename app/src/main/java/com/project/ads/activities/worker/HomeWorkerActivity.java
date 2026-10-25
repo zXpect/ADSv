@@ -110,6 +110,12 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private LocationRequest mLocationRequest;
 
     private boolean isConnected = false;
+    // Esqueleto del inicio hasta el primer dato del trabajador
+    private static final long SKELETON_TIMEOUT_MS = 10000;
+    private View mHomeSkeleton;
+    private View mHomeContent;
+    private ValueAnimator mSkeletonPulse;
+    private boolean mHomeLoaded = false;
     private Boolean mShownConnected;   // estado que muestra la tarjeta (null: aún nada)
     private Worker mCurrentWorker;
     private LatLng mCurrentLatLng;
@@ -155,7 +161,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
         mUIUpdateHandler = new Handler(Looper.getMainLooper());
         startPeriodicUIUpdates();
 
-        new Handler(Looper.getMainLooper()).postDelayed(this::animateEntranceEffects, 300);
+        // Sin respuesta de Firebase (p. ej. sin internet) el esqueleto no se queda para siempre
+        mUIUpdateHandler.postDelayed(this::hideHomeSkeleton, SKELETON_TIMEOUT_MS);
     }
 
     private void initProviders() {
@@ -172,6 +179,11 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
         // BOTÓN ÚNICO
         mButtonToggleConnection = findViewById(R.id.buttonToggleConnection);
+        mHomeSkeleton = findViewById(R.id.home_skeleton);
+        mHomeContent = findViewById(R.id.scroll_home_worker);
+        // El inicio real no se ve detrás del esqueleto; solo laten los bloques, no el fondo
+        mHomeContent.setVisibility(View.INVISIBLE);
+        mSkeletonPulse = Motion.skeletonPulse(findViewById(R.id.home_skeleton_blocks));
 
         mConnectionIndicator = findViewById(R.id.connectionIndicator);
         mConnectionIndicatorGlow = findViewById(R.id.connectionIndicatorGlow);
@@ -279,6 +291,22 @@ public class HomeWorkerActivity extends AppCompatActivity {
                 .start();
     }
 
+    /** Quita el esqueleto con un fundido y hace entrar las tarjetas (una sola vez). */
+    private void hideHomeSkeleton() {
+        if (mHomeLoaded || mHomeSkeleton == null) return;
+        mHomeLoaded = true;
+        if (mSkeletonPulse != null) mSkeletonPulse.cancel();
+        // Fundido cruzado: el esqueleto sale mientras el inicio entra
+        mHomeContent.setAlpha(0f);
+        mHomeContent.setVisibility(View.VISIBLE);
+        mHomeContent.animate().alpha(1f).setDuration(250).start();
+        mHomeSkeleton.animate().cancel();
+        mHomeSkeleton.animate().alpha(0f).setDuration(250)
+                .withEndAction(() -> mHomeSkeleton.setVisibility(View.GONE))
+                .start();
+        animateEntranceEffects();
+    }
+
     private void animateEntranceEffects() {
         View[] views = {
                 findViewById(R.id.cardConnectionStatus),
@@ -374,11 +402,13 @@ public class HomeWorkerActivity extends AppCompatActivity {
                     } else {
                         Log.e(TAG, "❌ Snapshot del worker no existe");
                     }
+                    runOnUiThread(() -> hideHomeSkeleton());
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.e(TAG, "Error al cargar datos del trabajador", error.toException());
+                    hideHomeSkeleton();
                     showSnackbar("Error al cargar datos del perfil");
                 }
             };
@@ -1433,7 +1463,12 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
         Log.d(TAG, "📱 onResume - isVerified: " + isVerified + ", status: " + mVerificationStatus);
 
-        if (isVerified) {
+        // Antes del primer dato isVerified es false y el estado null: pintaría
+        // «Perfil incompleto» aunque la cuenta esté verificada. Mientras tanto se ve el
+        // esqueleto y el primer dato de loadWorkerData pinta la tarjeta.
+        if (!isVerificationChecked) {
+            Log.d(TAG, "onResume sin datos del trabajador todavía");
+        } else if (isVerified) {
             setWorkerOnlineStatus(true);
             if (isConnected) {
                 updateConnectionStatus();
