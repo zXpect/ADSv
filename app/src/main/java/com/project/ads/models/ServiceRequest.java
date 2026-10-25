@@ -96,8 +96,12 @@ public class ServiceRequest {
         request.started_work_at = getLongValue(map, "started_work_at");
         request.completed_at = getLongValue(map, "completed_at");
         request.cancelled_at = getLongValue(map, "cancelled_at");
-        request.rating = getDoubleValue(map, "rating");
-        request.rating_comment = getStringValue(map, "rating_comment");
+        // El backend guarda la calificación en client_rating y client_comment;
+        // rating y rating_comment quedan como respaldo de datos viejos (DEF-32)
+        request.rating = map.containsKey("client_rating")
+                ? getDoubleValue(map, "client_rating") : getDoubleValue(map, "rating");
+        request.rating_comment = map.containsKey("client_comment")
+                ? getStringValue(map, "client_comment") : getStringValue(map, "rating_comment");
         request.is_rated = getBooleanValue(map, "is_rated");
         request.quoted_price = getLongValue(map, "quoted_price");
         request.quote_status = getStringValue(map, "quote_status");

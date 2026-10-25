@@ -113,6 +113,19 @@ public class ServiceRequestTest {
     }
 
     @Test
+    public void ratingComesFromClientRatingWithTheOldFieldAsFallback() {
+        // Lo que escribe el backend al calificar (DEF-32)
+        ServiceRequest rated = request("is_rated", true, "client_rating", 4L, "client_comment", "Muy puntual");
+        assertEquals(4.0, rated.getRating(), 0.001);
+        assertEquals("Muy puntual", rated.getRating_comment());
+        // Datos anteriores al backend
+        ServiceRequest old = request("rating", 5.0, "rating_comment", "Bien");
+        assertEquals(5.0, old.getRating(), 0.001);
+        assertEquals("Bien", old.getRating_comment());
+        assertEquals(0.0, request().getRating(), 0.001);
+    }
+
+    @Test
     public void taskItemsWithGapsArriveAsAMap() {
         Map<String, Object> item = new HashMap<>();
         item.put("custom_description", "Revisar humedad");
