@@ -258,6 +258,61 @@
                 tools:listitem="@layout/item_home_category"
                 tools:spanCount="2" />
 
+            <!-- Oficios de relleno mientras llegan del catálogo; se quita al llegar
+                 (HomeUserActivity.showCategories). Mismas medidas que la cuadrícula real. -->
+            <GridLayout
+                android:id="@+id/grid_home_categories_skeleton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-6dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="-6dp"
+                android:columnCount="2"
+                android:importantForAccessibility="noHideDescendants">
+
+                <include
+                    layout="@layout/item_home_category_skeleton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+
+                <include
+                    layout="@layout/item_home_category_skeleton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+
+                <include
+                    layout="@layout/item_home_category_skeleton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+
+                <include
+                    layout="@layout/item_home_category_skeleton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+
+                <include
+                    layout="@layout/item_home_category_skeleton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+
+                <include
+                    layout="@layout/item_home_category_skeleton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+
+                <include
+                    layout="@layout/item_home_category_skeleton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+            </GridLayout>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

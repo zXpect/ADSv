@@ -1,5 +1,6 @@
 package com.project.ads.activities.client;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.project.ads.R;
 import com.project.ads.helpers.SearchTimer;
 import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.helpers.ClientNavHelper;
+import com.project.ads.helpers.Motion;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.NotificationRouter;
 import com.project.ads.models.ServiceRequest;
@@ -69,6 +71,10 @@ public class HomeUserActivity extends AppCompatActivity {
     private ValueEventListener mActiveListener;
     private final List<CatalogData.Category> mCategories = new ArrayList<>();
     private CategoriesAdapter mCategoriesAdapter;
+    private RecyclerView mCategoriesList;
+    // Oficios de relleno que laten mientras llega el catálogo
+    private View mCategoriesSkeleton;
+    private ValueAnimator mCategoriesPulse;
     private NotificationBellHelper mNotificationBell;
     private RequestsNavBadge mRequestsBadge;
 
@@ -131,10 +137,12 @@ public class HomeUserActivity extends AppCompatActivity {
             return true;
         });
 
-        RecyclerView categories = findViewById(R.id.recycler_home_categories);
-        categories.setLayoutManager(new GridLayoutManager(this, 2));
+        mCategoriesList = findViewById(R.id.recycler_home_categories);
+        mCategoriesList.setLayoutManager(new GridLayoutManager(this, 2));
         mCategoriesAdapter = new CategoriesAdapter();
-        categories.setAdapter(mCategoriesAdapter);
+        mCategoriesList.setAdapter(mCategoriesAdapter);
+        mCategoriesSkeleton = findViewById(R.id.grid_home_categories_skeleton);
+        mCategoriesPulse = Motion.skeletonPulse(mCategoriesSkeleton);
     }
 
     private void loadUserName() {
@@ -156,9 +164,7 @@ public class HomeUserActivity extends AppCompatActivity {
             @Override
             public void onSuccess(CatalogData catalog) {
                 if (isFinishing()) return;
-                mCategories.clear();
-                mCategories.addAll(catalog.getCategories());
-                mCategoriesAdapter.notifyDataSetChanged();
+                showCategories(catalog.getCategories());
             }
 
             @Override
@@ -166,6 +172,16 @@ public class HomeUserActivity extends AppCompatActivity {
                 // getCategoriesWithFallback no falla
             }
         });
+    }
+
+    /** Cambia los oficios de relleno por los reales, que entran escalonados. */
+    private void showCategories(List<CatalogData.Category> categories) {
+        if (mCategoriesPulse != null) mCategoriesPulse.cancel();
+        mCategoriesSkeleton.setVisibility(View.GONE);
+        mCategories.clear();
+        mCategories.addAll(categories);
+        mCategoriesAdapter.notifyDataSetChanged();
+        Motion.animateListOnce(mCategoriesList);
     }
 
     /** Oficio → Problemas del oficio (mockup 07) → Técnicos (mockup 08). */
@@ -290,6 +306,7 @@ public class HomeUserActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (mCategoriesPulse != null) mCategoriesPulse.cancel();
         super.onDestroy();
         if (mActiveQuery != null && mActiveListener != null) {
             mActiveQuery.removeEventListener(mActiveListener);
