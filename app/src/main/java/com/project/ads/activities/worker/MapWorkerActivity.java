@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -52,6 +53,7 @@ import com.google.firebase.database.Query;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.helpers.DisplayNameHelper;
 import com.project.ads.helpers.MapPinHelper;
+import com.project.ads.helpers.Motion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +91,11 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     private final List<Marker> mMarkers = new ArrayList<>();
     private PendingPin mSelected;
     private BitmapDescriptor mClientPin;
+    // Ubicación propia (en lugar del punto azul de Google): halo que respira conectado
+    private Marker mSelfMarker;
+    private BitmapDescriptor[] mSelfFrames;
+    private ValueAnimator mSelfBreath;
+    private ValueAnimator mSelfGlide;
     private Query mRequestsQuery;
     private ValueEventListener mRequestsListener;
 
@@ -218,6 +225,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
                     Location location = locationResult.getLastLocation();
                     if (location != null) {
                         mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        updateSelfMarker(mCurrentLatLng);
 
                         // Actualizar ubicación solo si está conectado
                         if (isConnected) {
@@ -469,10 +477,6 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
                 == PackageManager.PERMISSION_GRANTED) {
 
             try {
-                if (mMap != null) {
-                    mMap.setMyLocationEnabled(true);
-                }
-
                 mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                 Log.d(TAG, "Actualizaciones de ubicación iniciadas");
             } catch (SecurityException e) {
@@ -546,6 +550,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     private void renderState() {
         if (!isVerificationChecked) return;
         boolean on = isVerified && isConnected;
+        updateSelfBreath(on);
 
         mToggle.setEnabled(true);
         mToggle.setBackgroundResource(on ? R.drawable.bg_ads_pill_on : R.drawable.bg_ads_pill_off);
@@ -680,17 +685,47 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
         mRequestsQuery.addValueEventListener(mRequestsListener);
     }
 
+    /**
+     * Marcador propio de la ubicación del trabajador (MapPinHelper.workerFrames):
+     * la capa «Mi ubicación» de Google no se puede rediseñar, así que no se activa.
+     * Debajo de las solicitudes (zIndex -1); se desliza entre lecturas.
+     */
+    private void updateSelfMarker(LatLng position) {
+        if (mMap == null) return;
+        if (mSelfMarker == null) {
+            mSelfFrames = MapPinHelper.workerFrames(this);
+            mSelfMarker = mMap.addMarker(new MarkerOptions()
+                    .position(position)
+                    .anchor(0.5f, 0.5f)
+                    .zIndex(-1f)
+                    .icon(mSelfFrames[MapPinHelper.CLIENT_FRAMES / 2]));
+            updateSelfBreath(isVerified && isConnected);
+            return;
+        }
+        if (mSelfGlide != null) mSelfGlide.cancel();
+        mSelfGlide = Motion.glide(mSelfMarker, position);
+    }
+
+    /** Conectado, el halo respira; desconectado queda quieto. */
+    private void updateSelfBreath(boolean connected) {
+        if (mSelfMarker == null) return;
+        if (connected && mSelfBreath == null && Motion.enabled(this)) {
+            mSelfBreath = Motion.breathe(mSelfMarker, mSelfFrames);
+        } else if (!connected && mSelfBreath != null) {
+            mSelfBreath.cancel();
+            mSelfBreath = null;
+            mSelfMarker.setIcon(mSelfFrames[MapPinHelper.CLIENT_FRAMES / 2]);
+        }
+    }
+
     private void startLocationIfPermitted() {
         if (checkLocationPermissions()) {
             try {
-                if (mMap != null) {
-                    mMap.setMyLocationEnabled(true);
-                }
-
                 // Obtener ubicación inicial
                 mFusedLocation.getLastLocation().addOnSuccessListener(location -> {
                     if (location != null) {
                         mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        updateSelfMarker(mCurrentLatLng);
                         moveCamera(mCurrentLatLng);
                     }
                 });
@@ -804,6 +839,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onResume() {
         super.onResume();
+        if (mSelfBreath != null) mSelfBreath.resume();
 
         // Actualizar estado online si está verificado
         if (isVerified) {
@@ -813,6 +849,8 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     protected void onPause() {
+        // El halo no se anima con la pantalla tapada
+        if (mSelfBreath != null) mSelfBreath.pause();
         super.onPause();
         // No desconectar automáticamente al pausar
     }
@@ -820,6 +858,8 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mSelfBreath != null) mSelfBreath.cancel();
+        if (mSelfGlide != null) mSelfGlide.cancel();
 
         if (mRequestsQuery != null && mRequestsListener != null) {
             mRequestsQuery.removeEventListener(mRequestsListener);

@@ -114,6 +114,11 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private ValueAnimator mPinPop;
     private ValueAnimator mPinShrink;
     private final Map<Integer, BitmapDescriptor[]> mPopFrames = new HashMap<>();
+    // Ubicación del cliente (en lugar del punto azul de Google): halo que respira
+    private Marker mClientMarker;
+    private BitmapDescriptor[] mClientFrames;
+    private ValueAnimator mClientBreath;
+    private ValueAnimator mClientGlide;
     private boolean mIsFirstTime = true;
 
     private PlacesClient mPlaces;
@@ -368,17 +373,16 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.setOnMapClickListener(latLng -> hideWorkerCard());
 
-        if (isDarkModeEnabled()) {
-            try {
-                boolean success = mMap.setMapStyle(
-                        MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark)
-                );
-                if (!success) {
-                    Log.e(TAG, "Style parsing failed.");
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Can't find style. Error: ", e);
+        // Estilo ADS: en claro, crema con calles blancas y sin negocios de Google
+        // (mockup 56), para que resalten los pines; en oscuro, el estilo oscuro
+        try {
+            boolean success = mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,
+                    isDarkModeEnabled() ? R.raw.map_style_dark : R.raw.map_style_light));
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
         }
 
         mLocationRequest = LocationRequest.create()
@@ -407,6 +411,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
             public void onLocationResult(LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
                     mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    updateClientMarker(mCurrentLatLng);
 
                     if (mIsFirstTime) {
                         mIsFirstTime = false;
@@ -644,13 +649,46 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void startLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-            // El botón de Google se duplica con fab_my_location del diseño
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
         } else {
             requestLocationPermission();
         }
+    }
+
+    /**
+     * Marcador propio de la ubicación del cliente (pin_cliente con el halo que
+     * respira): la capa «Mi ubicación» de Google no se puede rediseñar, así que no
+     * se activa. Debajo de los técnicos (zIndex -1); se desliza entre lecturas.
+     */
+    private void updateClientMarker(LatLng position) {
+        if (mMap == null) return;
+        if (mClientMarker == null) {
+            mClientFrames = MapPinHelper.clientFrames(this);
+            mClientMarker = mMap.addMarker(new MarkerOptions()
+                    .position(position)
+                    .anchor(0.5f, 0.5f)
+                    .zIndex(-1f)
+                    .icon(mClientFrames[MapPinHelper.CLIENT_FRAMES / 2]));
+            if (mClientMarker != null && Motion.enabled(this)) {
+                mClientBreath = Motion.breathe(mClientMarker, mClientFrames);
+            }
+            return;
+        }
+        if (mClientGlide != null) mClientGlide.cancel();
+        mClientGlide = Motion.glide(mClientMarker, position);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mClientBreath != null) mClientBreath.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        // El halo no se anima con la pantalla tapada
+        if (mClientBreath != null) mClientBreath.pause();
+        super.onPause();
     }
 
     private void requestLocationPermission() {
@@ -770,6 +808,8 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         super.onDestroy();
         if (mPinPop != null) mPinPop.cancel();
         if (mPinShrink != null) mPinShrink.cancel();
+        if (mClientBreath != null) mClientBreath.cancel();
+        if (mClientGlide != null) mClientGlide.cancel();
         if (mFusedLocation != null && mLocationCallback != null) {
             mFusedLocation.removeLocationUpdates(mLocationCallback);
         }

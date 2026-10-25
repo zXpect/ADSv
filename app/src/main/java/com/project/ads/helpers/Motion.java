@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.project.ads.R;
 
@@ -265,6 +266,49 @@ public final class Motion {
             @Override
             public void onAnimationEnd(android.animation.Animator animation) {
                 onEnd.run();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+
+    /**
+     * Halo del cliente que respira sin fin (crece y se encoge en 1,3 s). Pausarlo
+     * en onPause y cancelarlo en onDestroy; sin animaciones no se llama.
+     */
+    public static ValueAnimator breathe(Marker marker, BitmapDescriptor[] frames) {
+        ValueAnimator animator = ValueAnimator.ofInt(0, frames.length - 1);
+        animator.setDuration(1300);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        int[] shown = {-1};
+        animator.addUpdateListener(a -> {
+            int frame = (int) a.getAnimatedValue();
+            if (frame == shown[0]) return;   // solo se cambia el ícono cuando cambia el cuadro
+            shown[0] = frame;
+            try {
+                marker.setIcon(frames[frame]);
+            } catch (IllegalArgumentException e) {
+                a.cancel();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+
+    /** Desliza el marcador a su nueva posición en lugar de saltar. */
+    public static ValueAnimator glide(Marker marker, LatLng to) {
+        LatLng from = marker.getPosition();
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(600);
+        animator.addUpdateListener(a -> {
+            float f = a.getAnimatedFraction();
+            try {
+                marker.setPosition(new LatLng(from.latitude + (to.latitude - from.latitude) * f,
+                        from.longitude + (to.longitude - from.longitude) * f));
+            } catch (IllegalArgumentException e) {
+                a.cancel();
             }
         });
         animator.start();
