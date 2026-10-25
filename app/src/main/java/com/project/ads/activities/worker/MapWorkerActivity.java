@@ -270,6 +270,8 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
                                     forceDisconnectAndDisable();
                                 }
                             });
+                        } else {
+                            runOnUiThread(() -> syncAvailability(snapshot));
                         }
                     }
                 }
@@ -325,13 +327,31 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    /**
+     * isAvailable en Firebase es el estado único de conexión: si el inicio u otra
+     * pantalla lo cambia, el interruptor del mapa lo sigue sin volver a escribirlo.
+     */
+    private void syncAvailability(DataSnapshot snapshot) {
+        if (!isVerified) return;
+        boolean available = Boolean.TRUE.equals(snapshot.child("isAvailable").getValue(Boolean.class));
+        if (available == isConnected) return;
+        if (available && !checkLocationPermissions()) return;
+        isConnected = available;
+        if (available) {
+            startLocationUpdates();
+        } else if (mFusedLocation != null && mLocationCallback != null) {
+            // Quien desconectó ya quitó la ubicación de active_workers
+            mFusedLocation.removeLocationUpdates(mLocationCallback);
+        }
+        renderState();
+    }
+
     private void reconnectWorker() {
-        // Reconectar automáticamente si estaba conectado
+        // Ya estaba conectado (desde el inicio o una visita anterior al mapa): mostrarlo así
         if (checkLocationPermissions()) {
             isConnected = true;
             startLocationUpdates();
             updateButtonState(true);
-            showInfoToast("Reconectado automáticamente");
             Log.d(TAG, "Worker reconectado automáticamente");
         } else {
             // Si no hay permisos, desconectar
@@ -811,22 +831,11 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
             mWorkerProvider.removeWorkerListener(mAuthProvider.getId(), mWorkerDataListener);
         }
 
-        // Solo desconectar si la actividad se está finalizando permanentemente
-        if (isFinishing()) {
-            setWorkerOnlineStatus(false);
-
-            try {
-                stopLocationUpdates();
-
-                // Si estaba conectado, desconectar
-                if (isConnected) {
-                    updateWorkerAvailabilityStatus(false);
-                }
-
-                isConnected = false;
-            } catch (Exception e) {
-                Log.e(TAG, "Error durante destrucción", e);
-            }
+        // Salir del mapa no desconecta: el inicio queda debajo, sigue la misma
+        // conexión (isAvailable) y publica la ubicación. Solo se sueltan las
+        // actualizaciones de ubicación de esta pantalla.
+        if (mFusedLocation != null && mLocationCallback != null) {
+            mFusedLocation.removeLocationUpdates(mLocationCallback);
         }
     }
 

@@ -338,7 +338,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
                                 if (isVerified) {
                                     Log.d(TAG, "✅ Worker VERIFICADO - Habilitando conexión");
                                     setWorkerOnlineStatus(true);
-                                    updateConnectionStatusForVerified();
+                                    syncAvailability(snapshot);
+                                    updateConnectionStatus();
                                 } else {
                                     Log.d(TAG, "⚠️ Worker NO VERIFICADO - Estado: " + mVerificationStatus);
                                     updateWorkerAvailabilityStatus(false);
@@ -349,6 +350,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
                             // Si ya se verificó antes, actualizar UI en tiempo real según estado ACTUAL
                             runOnUiThread(() -> {
                                 if (isVerified) {
+                                    syncAvailability(snapshot);
                                     updateConnectionStatus();
                                 } else {
                                     updateConnectionStatusForUnverified();
@@ -372,6 +374,26 @@ public class HomeWorkerActivity extends AppCompatActivity {
             Log.e(TAG, "❌ AuthProvider ID es null");
         }
     }
+    /**
+     * isAvailable en Firebase es el estado único de conexión: si se conecta o
+     * desconecta desde el mapa, el interruptor del inicio lo sigue sin volver a
+     * escribirlo. Conectado, el inicio publica la ubicación aunque se cierre el mapa.
+     */
+    private void syncAvailability(DataSnapshot snapshot) {
+        boolean available = Boolean.TRUE.equals(snapshot.child("isAvailable").getValue(Boolean.class));
+        if (available == isConnected) return;
+        if (available && !checkLocationPermissions()) return;
+        isConnected = available;
+        if (available) {
+            startLocationUpdates();
+            startPulseAnimation();
+        } else {
+            // Quien desconectó ya quitó la ubicación de active_workers
+            mFusedLocation.removeLocationUpdates(mLocationCallback);
+            stopPulseAnimation();
+        }
+    }
+
     private void updateWorkerInfoUI() {
         if (mCurrentWorker != null) {
             runOnUiThread(() -> {
