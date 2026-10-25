@@ -195,6 +195,7 @@ public class MyDataActivity extends AppCompatActivity {
             confirm.setEnabled(false);
             progress.setVisibility(View.VISIBLE);
             dialog.setCancelable(false);
+            com.project.ads.helpers.AccountStatusWatcher.setSelfDeletion(true);
             new AccountProvider().deleteAccount(new com.project.ads.providers.ApiCallback<Void>() {
                 @Override
                 public void onSuccess(Void data) {
@@ -208,6 +209,7 @@ public class MyDataActivity extends AppCompatActivity {
                 @Override
                 public void onError(String message, int httpStatus) {
                     // 409: hay un servicio en camino o en progreso; el mensaje viene del backend
+                    com.project.ads.helpers.AccountStatusWatcher.setSelfDeletion(false);
                     progress.setVisibility(View.GONE);
                     keep.setEnabled(true);
                     confirm.setEnabled(true);

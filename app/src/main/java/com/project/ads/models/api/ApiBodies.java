@@ -170,4 +170,12 @@ public final class ApiBodies {
             this.type = type;
         }
     }
+
+    public static class EmailBody {
+        final String email;
+
+        public EmailBody(String email) {
+            this.email = email;
+        }
+    }
 }

@@ -22,10 +22,11 @@ import com.project.ads.R;
 import com.project.ads.activities.MainActivity;
 
 /**
- * Cuenta suspendida desde el panel (HU-32). El backend deshabilita al usuario en
- * Firebase Auth y pone isActive = false, pero la sesión del teléfono sigue viva
- * hasta que vence el token. Este vigilante escucha isActive de la cuenta abierta
- * y, si pasa a false, avisa al usuario y cierra la sesión, en cualquier pantalla.
+ * Cuenta suspendida (HU-32) o eliminada desde el panel. El backend deshabilita o
+ * borra al usuario en Firebase Auth, pero la sesión del teléfono sigue viva hasta
+ * que vence el token. Este vigilante escucha el perfil de la cuenta abierta y, si
+ * isActive pasa a false o el perfil desaparece después de haber existido, avisa
+ * al usuario y cierra la sesión, en cualquier pantalla.
  */
 public final class AccountStatusWatcher implements Application.ActivityLifecycleCallbacks {
 
@@ -39,7 +40,11 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
     private ValueEventListener mListener;
     private String mWatchedUid;
     private boolean mSuspended;
+    private boolean mDeleted;
+    private boolean mProfileSeen;   // en el registro el perfil todavía no existe
     private boolean mShowing;
+    // «Eliminar mi cuenta» también borra el perfil: ahí no se avisa
+    private static boolean sSelfDeletion;
 
     private AccountStatusWatcher(Context app) {
         mApp = app;
@@ -49,6 +54,11 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
         AccountStatusWatcher watcher = new AccountStatusWatcher(app.getApplicationContext());
         app.registerActivityLifecycleCallbacks(watcher);
         FirebaseAuth.getInstance().addAuthStateListener(auth -> watcher.watch(auth.getCurrentUser()));
+    }
+
+    /** Llamar antes de DELETE /api/me/; con false si la eliminación falla. */
+    public static void setSelfDeletion(boolean deleting) {
+        sSelfDeletion = deleting;
     }
 
     /** true solo cuando el campo existe y es false: sin el campo, la cuenta está activa. */
@@ -65,13 +75,23 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
         stop();
         if (uid == null || node == null) return;
         mWatchedUid = uid;
+        sSelfDeletion = false;
         mSuspended = false;
-        mRef = FirebaseDatabase.getInstance().getReference("User").child(node).child(uid).child("isActive");
+        mDeleted = false;
+        mProfileSeen = false;
+        mRef = FirebaseDatabase.getInstance().getReference("User").child(node).child(uid);
         mListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (isSuspended(snapshot.getValue(Boolean.class)) && !mSuspended) {
-                    mSuspended = true;
+                if (snapshot.exists()) {
+                    mProfileSeen = true;
+                    if (isSuspended(snapshot.child("isActive").getValue(Boolean.class)) && !mSuspended) {
+                        mSuspended = true;
+                        if (mResumed != null) notifySuspended(mResumed);
+                    }
+                } else if (mProfileSeen && !sSelfDeletion && !mDeleted) {
+                    // Eliminada desde el panel (DEF-34)
+                    mDeleted = true;
                     if (mResumed != null) notifySuspended(mResumed);
                 }
             }
@@ -91,17 +111,26 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
         mWatchedUid = null;
     }
 
-    /** Aviso que no se puede descartar; al aceptar se cierra la sesión y se vuelve a la bienvenida. */
+    /**
+     * Aviso de cuenta suspendida o eliminada que no se puede descartar; al aceptar se
+     * cierra la sesión y se vuelve a la bienvenida.
+     */
     private void notifySuspended(Activity activity) {
         if (activity.isFinishing() || mShowing) return;
         mShowing = true;
+        boolean deleted = mDeleted;
         new MaterialAlertDialogBuilder(activity)
-                .setTitle(R.string.account_suspended_title)
-                .setMessage(R.string.account_suspended_message)
+                .setTitle(deleted ? R.string.account_deleted_title : R.string.account_suspended_title)
+                .setMessage(deleted ? R.string.account_deleted_message : R.string.account_suspended_message)
                 .setCancelable(false)
                 .setPositiveButton(R.string.account_suspended_ok, (dialog, which) -> {
                     mShowing = false;
                     mSuspended = false;
+                    mDeleted = false;
+                    if (deleted) {
+                        // El rol y las preferencias de esa cuenta ya no sirven
+                        mApp.getSharedPreferences(ROLE_PREFS, Context.MODE_PRIVATE).edit().clear().apply();
+                    }
                     stop();
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(activity, MainActivity.class);
@@ -118,8 +147,8 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         // El rol puede guardarse después del login: se empieza a vigilar al volver a una pantalla
         if (mRef == null && user != null) watch(user);
-        // Si la suspensión llegó con la app en segundo plano, se avisa al volver
-        if (mSuspended && user != null) notifySuspended(activity);
+        // Si la suspensión o la eliminación llegó con la app en segundo plano, se avisa al volver
+        if ((mSuspended || mDeleted) && user != null) notifySuspended(activity);
     }
 
     @Override

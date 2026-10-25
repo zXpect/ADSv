@@ -52,6 +52,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.project.ads.R;
+import com.project.ads.models.api.DeletedStatus;
+import com.project.ads.providers.AccountProvider;
+import com.project.ads.providers.ApiCallback;
 import com.project.ads.helpers.SystemBarsHelper;
 
 public class LoginActivity extends AppCompatActivity {
@@ -502,6 +505,9 @@ public class LoginActivity extends AppCompatActivity {
                         if (user != null) {
                             verifyUserTypeAfterLogin(user.getUid(), email);
                         }
+                    } else if (isCredentialError(task.getException())) {
+                        // Puede ser una cuenta eliminada: Firebase la responde como credencial errada
+                        checkDeletedAccount(email, task.getException());
                     } else {
                         progressDialog.dismiss();
                         handleFailedLogin(task.getException());
@@ -618,6 +624,49 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * ⭐ MANEJO MEJORADO DE ERRORES DE LOGIN
      */
+    /** Correo o contraseña errados (no una cuenta suspendida ni un fallo de red). */
+    private static boolean isCredentialError(Exception exception) {
+        if (exception instanceof FirebaseAuthInvalidUserException) {
+            return !"ERROR_USER_DISABLED".equals(((FirebaseAuthInvalidUserException) exception).getErrorCode());
+        }
+        return exception instanceof FirebaseAuthInvalidCredentialsException;
+    }
+
+    /**
+     * Si la cuenta de ese correo fue eliminada, lo dice en vez de «contraseña incorrecta»;
+     * si no, o si el backend no responde, sigue el manejo normal del error.
+     */
+    private void checkDeletedAccount(String email, Exception loginError) {
+        new AccountProvider().getDeletedStatus(email, new ApiCallback<DeletedStatus>() {
+            @Override
+            public void onSuccess(DeletedStatus status) {
+                if (isFinishing()) return;
+                progressDialog.dismiss();
+                if (status != null && status.isDeleted()) {
+                    showDeletedAccountDialog(status.isDeletedByAdmin());
+                } else {
+                    handleFailedLogin(loginError);
+                }
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                if (isFinishing()) return;
+                progressDialog.dismiss();
+                handleFailedLogin(loginError);
+            }
+        });
+    }
+
+    private void showDeletedAccountDialog(boolean byAdmin) {
+        tilPassword.setError(null);
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.account_deleted_login_title)
+                .setMessage(byAdmin ? R.string.account_deleted_login_admin : R.string.account_deleted_login_user)
+                .setPositiveButton(R.string.account_suspended_ok, null)
+                .show();
+    }
+
     private void handleFailedLogin(Exception exception) {
         loginAttempts++;
         lastLoginAttemptTime = System.currentTimeMillis();

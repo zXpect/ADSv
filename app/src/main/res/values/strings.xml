@@ -844,6 +844,12 @@
     <string name="account_suspended_message">El equipo de ADS suspendió tu cuenta, así que se cerrará la sesión. Si crees que es un error, escríbenos a soporte.</string>
     <string name="account_suspended_login">Esta cuenta está suspendida y no puede iniciar sesión. Si crees que es un error, escríbenos a soporte.</string>
     <string name="account_suspended_ok">Entendido</string>
+    <!-- Cuenta eliminada desde el panel o por el propio usuario -->
+    <string name="account_deleted_title">Tu cuenta fue eliminada</string>
+    <string name="account_deleted_message">El equipo de desarrollo de ADS eliminó tu cuenta, así que se cerrará la sesión. Si crees que es un error, escríbenos a soporte.</string>
+    <string name="account_deleted_login_title">Esta cuenta ya no existe</string>
+    <string name="account_deleted_login_admin">El equipo de desarrollo de ADS eliminó esta cuenta, así que ya no puedes iniciar sesión con ella. Si crees que es un error, escríbenos a soporte.</string>
+    <string name="account_deleted_login_user">Eliminaste esta cuenta, así que ya no puedes iniciar sesión con ella. Si quieres volver a usar ADS, crea una cuenta nueva.</string>
     <!-- Términos y privacidad (LegalActivity; los textos están en res/raw) -->
     <string name="legal_title">Términos y privacidad</string>
     <string name="legal_tab_terms">Términos</string>

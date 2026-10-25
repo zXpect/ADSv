@@ -5,8 +5,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.project.ads.models.api.ApiBodies;
 import com.project.ads.models.api.ApiResponse;
+import com.project.ads.models.api.DeletedStatus;
 import com.project.ads.retrofit.AdsApiClient;
+import com.project.ads.retrofit.ApiCallAdapter;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,6 +26,14 @@ public class AccountProvider {
     private static final String TAG = "AccountProvider";
     private static final String GENERIC_ERROR = "No se pudo eliminar la cuenta. Intenta de nuevo.";
     private static final String NETWORK_ERROR = "Sin conexión. Revisa tu internet e intenta de nuevo.";
+
+    /**
+     * Si la cuenta de este correo fue eliminada (desde el panel o por el usuario).
+     * Firebase responde igual a una cuenta borrada que a una contraseña errada.
+     */
+    public void getDeletedStatus(String email, ApiCallback<DeletedStatus> callback) {
+        ApiCallAdapter.enqueue(AdsApiClient.getApi().getDeletedStatus(new ApiBodies.EmailBody(email)), callback);
+    }
 
     public void deleteAccount(ApiCallback<Void> callback) {
         AdsApiClient.getApi().deleteAccount().enqueue(new Callback<Void>() {

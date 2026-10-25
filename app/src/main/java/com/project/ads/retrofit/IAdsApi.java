@@ -4,6 +4,7 @@ import com.project.ads.models.Pqr;
 import com.project.ads.models.api.ApiBodies;
 import com.project.ads.models.api.ApiResponse;
 import com.project.ads.models.api.CatalogData;
+import com.project.ads.models.api.DeletedStatus;
 import com.project.ads.models.api.NotificationResult;
 import com.project.ads.models.api.PaymentData;
 import com.project.ads.models.api.PaymentMethodData;
@@ -114,6 +115,10 @@ public interface IAdsApi {
     /** 204 sin cuerpo; ver AccountProvider. */
     @retrofit2.http.DELETE("api/me/")
     Call<Void> deleteAccount();
+
+    /** Pública: ¿la cuenta de este correo fue eliminada? Solo se consulta cuando falla el login. */
+    @POST("api/accounts/deleted-status/")
+    Call<ApiResponse<DeletedStatus>> getDeletedStatus(@Body ApiBodies.EmailBody body);
 
     @POST("api/notifications/")
     Call<ApiResponse<NotificationResult>> notify(@Body ApiBodies.NotificationBody body);
