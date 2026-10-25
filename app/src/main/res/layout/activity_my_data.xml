@@ -127,11 +127,15 @@
                 android:textAppearance="@style/TextAppearance.ADS.Label"
                 android:textColor="@color/ads_charcoal" />
 
+            <!-- Solo lectura: se ve distinto de los editables y dice por qué (DEF-31) -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_data_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:enabled="false"
+                app:boxBackgroundColor="@color/ads_surface_alt"
+                app:helperText="@string/data_email_locked"
                 app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -141,7 +145,8 @@
                     android:autofillHints="emailAddress"
                     android:hint="@string/login_email_placeholder"
                     android:enabled="false"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/ads_muted" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Teléfono -->

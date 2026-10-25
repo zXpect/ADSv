@@ -657,6 +657,7 @@
     <string name="data_delete_action">Eliminar cuenta</string>
     <string name="data_save">Guardar cambios</string>
     <string name="data_saved">Datos actualizados</string>
+    <string name="data_email_locked">El correo no se puede cambiar: es con el que inicias sesión.</string>
     <string name="data_save_error">No pudimos guardar los cambios. Intenta de nuevo.</string>
     <string name="data_load_error">No pudimos cargar tus datos</string>
     <string name="data_error_name">Solo letras, máximo 50 caracteres</string>

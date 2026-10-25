@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.project.ads.R;
+import com.project.ads.helpers.AdsSnackbar;
 import com.project.ads.helpers.LogoutHelper;
 import com.project.ads.providers.AccountProvider;
 import com.project.ads.providers.AuthProvider;
@@ -94,7 +95,7 @@ public class MyDataActivity extends AppCompatActivity {
             mOriginal = snapshotKey();
             showContent();
         }).addOnFailureListener(e -> {
-            Toast.makeText(this, R.string.data_load_error, Toast.LENGTH_SHORT).show();
+            AdsSnackbar.show(this, R.string.data_load_error);
             showContent();
         });
     }
@@ -140,11 +141,13 @@ public class MyDataActivity extends AppCompatActivity {
         Task<Void> task = mIsWorker
                 ? new WorkerProvider().updateWorkerFields(mUid, updates)
                 : new ClientProvider().updateClient(mUid, updates);
+        // Se queda en la pantalla con el aviso de ADS; al cerrar, el aviso no se alcanzaba a ver (DEF-31)
         task.addOnSuccessListener(v -> {
-            Toast.makeText(this, R.string.data_saved, Toast.LENGTH_SHORT).show();
-            finish();
+            mOriginal = snapshotKey();
+            updateSaveButton();
+            AdsSnackbar.show(this, R.string.data_saved);
         }).addOnFailureListener(e -> {
-            Toast.makeText(this, R.string.data_save_error, Toast.LENGTH_SHORT).show();
+            AdsSnackbar.show(this, R.string.data_save_error);
             updateSaveButton();
         });
     }
@@ -170,8 +173,8 @@ public class MyDataActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.data_password_confirm, email))
                 .setPositiveButton(R.string.data_password_send, (d, w) ->
                         FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-                                .addOnSuccessListener(x -> Toast.makeText(this, R.string.data_password_sent, Toast.LENGTH_LONG).show())
-                                .addOnFailureListener(e -> Toast.makeText(this, R.string.data_password_error, Toast.LENGTH_SHORT).show()))
+                                .addOnSuccessListener(x -> AdsSnackbar.showLong(this, R.string.data_password_sent))
+                                .addOnFailureListener(e -> AdsSnackbar.show(this, R.string.data_password_error)))
                 .setNegativeButton(R.string.cancel, null)
                 .show();
     }
