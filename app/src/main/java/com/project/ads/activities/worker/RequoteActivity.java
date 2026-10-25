@@ -73,8 +73,14 @@ public class RequoteActivity extends AppCompatActivity {
             chip.setText(entry.getValue());
             mReasons.addView(chip);
         }
-        mReasons.setOnCheckedStateChangeListener((group, ids) ->
-                mReasonTextLayout.setVisibility(ReasonHelper.OTHER.equals(selectedReason()) ? View.VISIBLE : View.GONE));
+        // Con «Otro» el texto es obligatorio; con los demás, un comentario opcional (MEJ-01)
+        mReasons.setOnCheckedStateChangeListener((group, ids) -> {
+            String reason = selectedReason();
+            mReasonTextLayout.setVisibility(reason != null ? View.VISIBLE : View.GONE);
+            mReasonTextLayout.setError(null);
+            mReasonText.setHint(ReasonHelper.OTHER.equals(reason)
+                    ? R.string.requote_reason_text_hint : R.string.requote_reason_comment_hint);
+        });
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         findViewById(R.id.btn_requote_send).setOnClickListener(v -> send());
@@ -103,7 +109,7 @@ public class RequoteActivity extends AppCompatActivity {
         if (mReasonTextLayout.getError() != null) return;
 
         findViewById(R.id.btn_requote_send).setEnabled(false);
-        new QuoteProvider().requote(mRequestId, price, reason, other ? reasonText : "", new ApiCallback<Object>() {
+        new QuoteProvider().requote(mRequestId, price, reason, reasonText, new ApiCallback<Object>() {
             @Override
             public void onSuccess(Object data) {
                 Toast.makeText(RequoteActivity.this, R.string.requote_sent, Toast.LENGTH_SHORT).show();

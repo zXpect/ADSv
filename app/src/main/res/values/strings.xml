@@ -808,6 +808,8 @@
     <string name="requote_price_label">Nuevo precio (COP)</string>
     <string name="requote_reason_label">Motivo</string>
     <string name="requote_reason_text_hint">Cuéntale al cliente qué cambió</string>
+    <string name="requote_reason_comment_hint">Cuéntale al cliente qué cambió (opcional)</string>
+    <string name="quote_reason_comment_hint">Comentario para el cliente (opcional)</string>
     <string name="requote_send">Enviar nueva cotización</string>
     <string name="requote_sent">Nueva cotización enviada al cliente</string>
     <string name="requote_error_price">Escribe el nuevo precio</string>

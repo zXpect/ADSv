@@ -596,7 +596,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
                 && request.getQuoteAdjustmentReasonCode() != null;
         findViewById(R.id.layout_quote_reason).setVisibility(showReason ? View.VISIBLE : View.GONE);
         if (showReason) {
-            ((TextView) findViewById(R.id.tv_quote_reason)).setText(ReasonHelper.label(ReasonHelper.ADJUSTMENT,
+            ((TextView) findViewById(R.id.tv_quote_reason)).setText(ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT,
                     request.getQuoteAdjustmentReasonCode(), request.getQuoteAdjustmentReasonText()));
         }
 

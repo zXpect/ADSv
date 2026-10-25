@@ -38,6 +38,18 @@ public class ReasonHelperTest {
     }
 
     @Test
+    public void adjustmentLabelAddsTheOptionalComment() {
+        // MEJ-01: el cliente ve el detalle además de la etiqueta
+        assertEquals("Materiales: Hace falta cable adicional",
+                ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, "materiales", " Hace falta cable adicional "));
+        assertEquals("Materiales", ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, "materiales", "  "));
+        assertEquals("Materiales", ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, "materiales", null));
+        // Con «Otro» el texto ya es el motivo: no se repite
+        assertEquals("Revisar humedad", ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, "otro", "Revisar humedad"));
+        assertNull(ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, null, "texto"));
+    }
+
+    @Test
     public void cancellationLabelSearchesBothRoles() {
         assertEquals("Por el precio", ReasonHelper.cancellationLabel("precio", null));
         assertEquals("Está fuera de mi zona", ReasonHelper.cancellationLabel("fuera_de_zona", null));
