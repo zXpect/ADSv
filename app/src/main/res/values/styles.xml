@@ -392,6 +392,20 @@
     </style>
 
     <!-- Transición entre pantallas (Theme.ADSv) -->
+    <!-- Carga: una tuerca que gira (en lugar del círculo de Android). La usan todos los
+         ProgressBar indeterminados por el tema; las barras horizontales de avance no cambian. -->
+    <style name="Widget.ADS.ProgressBar" parent="@android:style/Widget.Material.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/ads_loading_nut</item>
+        <item name="android:indeterminateDuration">1400</item>
+        <item name="android:indeterminateTint">@color/ads_brand</item>
+    </style>
+
+    <style name="Widget.ADS.ProgressBar.Small" parent="@android:style/Widget.Material.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">@drawable/ads_loading_nut</item>
+        <item name="android:indeterminateDuration">1400</item>
+        <item name="android:indeterminateTint">@color/ads_brand</item>
+    </style>
+
     <style name="Animation.ADS.Activity" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/ads_open_enter</item>
         <item name="android:activityOpenExitAnimation">@anim/ads_open_exit</item>

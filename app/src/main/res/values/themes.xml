@@ -73,6 +73,9 @@
         <item name="snackbarButtonStyle">@style/Widget.ADS.Snackbar.Action</item>
         <!-- Diálogos de confirmación con el diseño ADS (DEF-22) -->
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.ADS.Dialog</item>
+        <!-- Indicador de carga: tuerca que gira -->
+        <item name="android:progressBarStyle">@style/Widget.ADS.ProgressBar</item>
+        <item name="android:progressBarStyleSmall">@style/Widget.ADS.ProgressBar.Small</item>
         <!-- Selectores de fecha y hora de la agenda con el mismo fondo (DEF-29) -->
         <item name="materialCalendarTheme">@style/ThemeOverlay.ADS.Calendar</item>
         <item name="materialTimePickerTheme">@style/ThemeOverlay.ADS.TimePicker</item>

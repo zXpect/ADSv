@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Indicador de carga de ADS: la tuerca gira una vuelta completa. El ProgressBar
+     anima el nivel de 0 a 10000 en indeterminateDuration (Widget.ADS.ProgressBar). -->
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_ads_nut"
+    android:fromDegrees="0"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:toDegrees="360" />
