@@ -239,6 +239,12 @@
         <item name="android:outlineAmbientShadowColor" tools:targetApi="28">@color/ads_shadow</item>
         <item name="android:stateListAnimator">@animator/ads_card_press</item>
         <item name="contentPadding">@dimen/space_4</item>
+        <!-- Sin el tinte naranja que Material 3 suma por la elevación: fondo ads_card_raised -->
+        <item name="materialThemeOverlay">@style/ThemeOverlay.ADS.Card</item>
+    </style>
+
+    <style name="ThemeOverlay.ADS.Card" parent="">
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <!-- Tarjeta destacada (servicio activo): borde naranja 2 dp -->
