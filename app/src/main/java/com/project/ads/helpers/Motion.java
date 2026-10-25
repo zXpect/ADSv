@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.Marker;
 import com.project.ads.R;
 
@@ -127,6 +128,51 @@ public final class Motion {
             } catch (IllegalArgumentException e) {
                 // El marcador se quitó del mapa mientras se animaba
                 a.cancel();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+
+    /**
+     * Pin seleccionado: crece desde el tamaño normal hasta pasarse un poco y se
+     * asienta (0,8 → 1,12 → 0,96 → 1), mientras da un saltito sobre su punta.
+     */
+    public static ValueAnimator popPin(Marker marker, BitmapDescriptor[] frames, float anchorV) {
+        ValueAnimator animator = ValueAnimator.ofFloat(MapPinHelper.POP_FROM, 1.12f, 0.96f, 1f);
+        animator.setDuration(340);
+        animator.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        animator.addUpdateListener(a -> {
+            try {
+                marker.setIcon(MapPinHelper.frameFor(frames, (float) a.getAnimatedValue()));
+                // Salto: sube hasta 0,12 del alto y vuelve, en media sinusoide
+                float hop = 0.12f * (float) Math.sin(Math.PI * a.getAnimatedFraction());
+                marker.setAnchor(0.5f, anchorV + hop);
+            } catch (IllegalArgumentException e) {
+                a.cancel();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+
+    /** Pin que deja de estar seleccionado: se encoge al tamaño normal y luego llama a onEnd. */
+    public static ValueAnimator shrinkPin(Marker marker, BitmapDescriptor[] frames, float anchorV,
+                                          Runnable onEnd) {
+        ValueAnimator animator = ValueAnimator.ofFloat(1f, MapPinHelper.POP_FROM);
+        animator.setDuration(160);
+        animator.addUpdateListener(a -> {
+            try {
+                marker.setIcon(MapPinHelper.frameFor(frames, (float) a.getAnimatedValue()));
+                marker.setAnchor(0.5f, anchorV);
+            } catch (IllegalArgumentException e) {
+                a.cancel();
+            }
+        });
+        animator.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                onEnd.run();
             }
         });
         animator.start();

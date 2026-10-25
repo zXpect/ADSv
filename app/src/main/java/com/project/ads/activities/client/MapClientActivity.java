@@ -1,6 +1,7 @@
 package com.project.ads.activities.client;
 
 import com.project.ads.helpers.CategoryHelper;
+import com.project.ads.helpers.Haptics;
 import com.project.ads.helpers.MapPinHelper;
 import com.project.ads.helpers.Motion;
 import com.project.ads.models.api.CatalogData;
@@ -109,7 +110,10 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     // Bitmaps de los pines ya dibujados, por drawable
     private final Map<Integer, BitmapDescriptor> mPinCache = new HashMap<>();
     private String mSelectedWorkerId;
-    private ValueAnimator mPinDrop;
+    // Pin seleccionado que crece y pin que se encoge al soltarlo
+    private ValueAnimator mPinPop;
+    private ValueAnimator mPinShrink;
+    private final Map<Integer, BitmapDescriptor[]> mPopFrames = new HashMap<>();
     private boolean mIsFirstTime = true;
 
     private PlacesClient mPlaces;
@@ -388,6 +392,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
         mMap.setOnMarkerClickListener(marker -> {
             if (marker.getTag() != null) {
+                Haptics.tick(getWindow().getDecorView());
                 showWorkerCard((String) marker.getTag(), marker.getPosition());
             }
             return false;
@@ -561,21 +566,42 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         marker.setZIndex(selected ? 1f : 0f);
     }
 
-    /** Cambia el pin seleccionado (null: ninguno) y redibuja el anterior y el nuevo. */
+    /** Cambia el pin seleccionado (null: ninguno): el nuevo crece y salta, el anterior se encoge. */
     private void selectWorkerMarker(String workerId) {
         if (workerId == null ? mSelectedWorkerId == null : workerId.equals(mSelectedWorkerId)) return;
-        // Un rebote a medias dejaría el ancla corrida al redibujar
-        if (mPinDrop != null) mPinDrop.cancel();
+        // Una animación a medias dejaría el ícono o el ancla corridos; al cancelar
+        // el encogido, su fin redibuja ese pin en su estado
+        if (mPinPop != null) mPinPop.cancel();
+        if (mPinShrink != null) mPinShrink.cancel();
         String previous = mSelectedWorkerId;
         mSelectedWorkerId = workerId;
-        refreshWorkerPin(previous);
-        refreshWorkerPin(workerId);
+        animatePinChange(previous, false);
+        animatePinChange(workerId, true);
+    }
 
-        Marker marker = workerId != null ? mWorkersMarkers.get(workerId) : null;
-        Worker worker = workerId != null ? mWorkers.get(workerId) : null;
-        if (marker != null && worker != null) {
-            mPinDrop = Motion.drop(marker, CategoryHelper.pinFor(worker, true) != 0
-                    ? MapPinHelper.ANCHOR_V_SELECTED : 1f);
+    private void animatePinChange(String workerId, boolean selected) {
+        if (workerId == null) return;
+        Marker marker = mWorkersMarkers.get(workerId);
+        Worker worker = mWorkers.get(workerId);
+        if (marker == null || worker == null) return;
+        int pin = CategoryHelper.pinFor(worker, true);
+        if (pin == 0 || !Motion.enabled(this)) {
+            // Pin genérico (sin cuadros de tamaño) o animaciones quitadas
+            applyWorkerPin(marker, worker, selected);
+            if (selected && pin == 0 && Motion.enabled(this)) mPinPop = Motion.drop(marker, 1f);
+            return;
+        }
+        BitmapDescriptor[] frames = mPopFrames.get(pin);
+        if (frames == null) {
+            frames = MapPinHelper.popFrames(this, pin);
+            mPopFrames.put(pin, frames);
+        }
+        if (selected) {
+            marker.setZIndex(1f);
+            mPinPop = Motion.popPin(marker, frames, MapPinHelper.ANCHOR_V_SELECTED);
+        } else {
+            mPinShrink = Motion.shrinkPin(marker, frames, MapPinHelper.ANCHOR_V_SELECTED,
+                    () -> refreshWorkerPin(workerId));
         }
     }
 
@@ -742,7 +768,8 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPinDrop != null) mPinDrop.cancel();
+        if (mPinPop != null) mPinPop.cancel();
+        if (mPinShrink != null) mPinShrink.cancel();
         if (mFusedLocation != null && mLocationCallback != null) {
             mFusedLocation.removeLocationUpdates(mLocationCallback);
         }
