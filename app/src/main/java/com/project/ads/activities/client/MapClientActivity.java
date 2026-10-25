@@ -1,6 +1,7 @@
 package com.project.ads.activities.client;
 
 import com.project.ads.helpers.CategoryHelper;
+import com.project.ads.helpers.MapPinHelper;
 import com.project.ads.models.api.CatalogData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.CatalogProvider;
@@ -103,6 +104,9 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private LatLng mCurrentLatLng;
     private Map<String, Marker> mWorkersMarkers = new HashMap<>();
     private final Map<String, Worker> mWorkers = new HashMap<>();
+    // Bitmaps de los pines ya dibujados, por drawable
+    private final Map<Integer, BitmapDescriptor> mPinCache = new HashMap<>();
+    private String mSelectedWorkerId;
     private boolean mIsFirstTime = true;
 
     private PlacesClient mPlaces;
@@ -458,9 +462,9 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
                         Marker marker = mMap.addMarker(new MarkerOptions()
                                 .position(location)
-                                .title(worker.getName() != null ? worker.getName() : "Unknown Worker")
-                                .icon(workerMarkerIcon(CategoryHelper.iconFor(worker))));
+                                .title(worker.getName() != null ? worker.getName() : "Unknown Worker"));
                         marker.setTag(workerId);
+                        applyWorkerPin(marker, worker, workerId.equals(mSelectedWorkerId));
                         mWorkersMarkers.put(workerId, marker);
                         mWorkers.put(workerId, worker);
                     }
@@ -532,7 +536,47 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     /**
-     * Pin del trabajador: marker_worker_base con el ícono vectorial del oficio
+     * Pin del oficio (docs/branding/pines), normal o seleccionado con la punta como
+     * ancla. Un oficio sin pin propio usa el pin genérico con su ícono.
+     */
+    private void applyWorkerPin(Marker marker, Worker worker, boolean selected) {
+        int pin = CategoryHelper.pinFor(worker, selected);
+        if (pin != 0) {
+            BitmapDescriptor icon = mPinCache.get(pin);
+            if (icon == null) {
+                icon = MapPinHelper.fromVector(this, pin);
+                mPinCache.put(pin, icon);
+            }
+            marker.setIcon(icon);
+            marker.setAnchor(0.5f, selected ? MapPinHelper.ANCHOR_V_SELECTED : MapPinHelper.ANCHOR_V);
+        } else {
+            marker.setIcon(workerMarkerIcon(CategoryHelper.iconFor(worker)));
+            marker.setAnchor(0.5f, 1f);
+        }
+        // El seleccionado queda encima de los vecinos
+        marker.setZIndex(selected ? 1f : 0f);
+    }
+
+    /** Cambia el pin seleccionado (null: ninguno) y redibuja el anterior y el nuevo. */
+    private void selectWorkerMarker(String workerId) {
+        if (workerId == null ? mSelectedWorkerId == null : workerId.equals(mSelectedWorkerId)) return;
+        String previous = mSelectedWorkerId;
+        mSelectedWorkerId = workerId;
+        refreshWorkerPin(previous);
+        refreshWorkerPin(workerId);
+    }
+
+    private void refreshWorkerPin(String workerId) {
+        if (workerId == null) return;
+        Marker marker = mWorkersMarkers.get(workerId);
+        Worker worker = mWorkers.get(workerId);
+        if (marker != null && worker != null) {
+            applyWorkerPin(marker, worker, workerId.equals(mSelectedWorkerId));
+        }
+    }
+
+    /**
+     * Pin genérico: marker_worker_base con el ícono vectorial del oficio
      * centrado en la cabeza del pin. Los íconos son vectores, así que se
      * dibujan en un Canvas (BitmapFactory.decodeResource no los lee).
      */
@@ -602,6 +646,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     /** Hoja inferior con el técnico del marcador (mockup 56). */
     private void showWorkerCard(String workerId, LatLng position) {
         Worker worker = mWorkers.get(workerId);
+        selectWorkerMarker(workerId);
         View card = findViewById(R.id.card_map_worker);
         String name = worker != null && worker.getName() != null ? worker.getName() : "";
         if (worker != null && worker.getLastName() != null) name = (name + " " + worker.getLastName()).trim();
@@ -649,6 +694,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void hideWorkerCard() {
         findViewById(R.id.card_map_worker).setVisibility(View.GONE);
+        selectWorkerMarker(null);
     }
 
     private static String initialsOf(String name) {

@@ -44,13 +44,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.firebase.database.Query;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.helpers.DisplayNameHelper;
+import com.project.ads.helpers.MapPinHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +88,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     private final List<PendingPin> mPending = new ArrayList<>();
     private final List<Marker> mMarkers = new ArrayList<>();
     private PendingPin mSelected;
+    private BitmapDescriptor mClientPin;
     private Query mRequestsQuery;
     private ValueEventListener mRequestsListener;
 
@@ -601,10 +603,13 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
         if (!isVerified || !isConnected) return;
         for (PendingPin pin : mPending) {
             if (pin.position == null) continue;
+            if (mClientPin == null) mClientPin = MapPinHelper.fromVector(this, R.drawable.pin_cliente);
+            // Ubicación del cliente: punto con halo, centrado en la coordenada
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(pin.position)
                     .title(pin.request.getService_type())
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                    .anchor(0.5f, 0.5f)
+                    .icon(mClientPin));
             if (marker != null) {
                 marker.setTag(pin);
                 mMarkers.add(marker);

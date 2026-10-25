@@ -41,6 +41,38 @@ public final class CategoryHelper {
         }
     }
 
+    /**
+     * Pin del mapa para el oficio (docs/branding/pines): normal o seleccionado.
+     * Devuelve 0 si el oficio no tiene pin propio.
+     */
+    public static int pinFor(String slug, boolean selected) {
+        if (slug == null) return 0;
+        switch (slug) {
+            case "carpinteria":
+                return selected ? R.drawable.pin_sel_carpinteria : R.drawable.pin_carpinteria;
+            case "pintura":
+                return selected ? R.drawable.pin_sel_pintura : R.drawable.pin_pintura;
+            case "electricidad":
+                return selected ? R.drawable.pin_sel_electricidad : R.drawable.pin_electricidad;
+            case "plomeria":
+                return selected ? R.drawable.pin_sel_plomeria : R.drawable.pin_plomeria;
+            case "jardineria":
+                return selected ? R.drawable.pin_sel_jardineria : R.drawable.pin_jardineria;
+            case "albanileria":
+                return selected ? R.drawable.pin_sel_albanileria : R.drawable.pin_albanileria;
+            case "cerrajeria":
+                return selected ? R.drawable.pin_sel_cerrajeria : R.drawable.pin_cerrajeria;
+            default:
+                return 0;
+        }
+    }
+
+    /** Pin del primer oficio del trabajador. */
+    public static int pinFor(Worker worker, boolean selected) {
+        List<String> slugs = worker.getCategorySlugs();
+        return pinFor(slugs.isEmpty() ? null : slugs.get(0), selected);
+    }
+
     /** Icono del primer oficio del trabajador. */
     public static int iconFor(Worker worker) {
         List<String> slugs = worker.getCategorySlugs();
