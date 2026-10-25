@@ -35,7 +35,7 @@ public final class WorkerNavHelper {
             // Las listas del trabajador leen su id del intent
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) intent.putExtra("worker_id", user.getUid());
-            TabTransition.start(activity, intent, ClientNavHelper.isAfter(nav, id, selectedItemId));
+            TabTransition.start(activity, intent, ClientNavHelper.isAfter(nav, id, selectedItemId), selectedItemId);
             return false;   // la pestaña se marca en la pantalla de destino
         });
         nav.setOnItemReselectedListener(item -> { });

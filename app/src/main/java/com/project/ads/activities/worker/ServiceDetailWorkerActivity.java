@@ -104,6 +104,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
 
     // Data
     private String mRequestId;
+    private String mShownChip;   // texto del chip que se muestra (para animar cuando cambia)
     private ServiceRequest mServiceRequest;
 
     @Override
@@ -270,6 +271,9 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
         String displayStatus = request.getDisplayStatus();
         int label = RequestDetailsHelper.statusLabel(displayStatus);
         if (label != 0) mTvStatus.setText(label); else mTvStatus.setText(request.getStatusDisplayText());
+        String chip = mTvStatus.getText().toString();
+        if (mShownChip != null && !mShownChip.equals(chip)) com.project.ads.helpers.Motion.chipChanged(mTvStatus);
+        mShownChip = chip;
         boolean orange = "accepted".equals(status);
         ViewCompat.setBackgroundTintList(mTvStatus, ColorStateList.valueOf(ContextCompat.getColor(this,
                 orange ? R.color.ads_chip_bg : R.color.ads_chip_strong_bg)));

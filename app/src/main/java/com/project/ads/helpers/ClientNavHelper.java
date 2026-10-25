@@ -34,7 +34,7 @@ public final class ClientNavHelper {
                 return false;
             }
             TabTransition.start(activity, new Intent(activity, target),
-                    isAfter(nav, id, selectedItemId));
+                    isAfter(nav, id, selectedItemId), selectedItemId);
             return false;   // la pestaña se marca en la pantalla de destino
         });
         nav.setOnItemReselectedListener(item -> { });

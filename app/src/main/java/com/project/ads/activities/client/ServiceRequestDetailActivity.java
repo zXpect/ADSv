@@ -73,6 +73,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
 
     // Encabezado y técnico
     private TextView mTvStatus;
+    private String mShownChip;   // texto del chip que se muestra (para animar cuando cambia)
     private TextView mTvEyebrow;
     private TextView mTvTitle;
     private TextView mTvServiceType;
@@ -360,6 +361,8 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         }
 
         mTvStatus.setText(chip);
+        if (mShownChip != null && !mShownChip.equals(chip)) com.project.ads.helpers.Motion.chipChanged(mTvStatus);
+        mShownChip = chip;
         int background = chipStyle == 1 ? R.color.ads_chip_strong_bg : chipStyle == 2 ? R.color.ads_chip_neutral_bg : R.color.ads_chip_bg;
         int text = chipStyle == 1 ? R.color.ads_chip_strong_text : chipStyle == 2 ? R.color.ads_charcoal : R.color.ads_chip_text;
         ViewCompat.setBackgroundTintList(mTvStatus, ColorStateList.valueOf(ContextCompat.getColor(this, background)));

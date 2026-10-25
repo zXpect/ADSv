@@ -1160,6 +1160,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
     }
 
     private String mNextServiceId;
+    private int mShownPending = -1, mShownActive = -1;   // contadores que se muestran (-1: aún nada)
 
     private void updateServicesStatus() {
         if (mAuthProvider == null || mAuthProvider.getId() == null) {
@@ -1231,15 +1232,21 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
     /** Contadores del mockup 13: solicitudes nuevas y servicios activos. */
     private void updateServicesUI(int pendingCount, int activeCount) {
-        mTextPendingRequests.setText(String.valueOf(pendingCount));
-        mTextActiveServicesCount.setText(String.valueOf(activeCount));
+        // Los números cuentan hasta el valor nuevo; la primera vez se pintan directo
+        boolean firstTime = mShownPending < 0;
+        Motion.countTo(mTextPendingRequests, firstTime ? pendingCount : mShownPending, pendingCount);
+        Motion.countTo(mTextActiveServicesCount, firstTime ? activeCount : mShownActive, activeCount);
+        boolean newArrived = !firstTime && pendingCount > mShownPending;
+        mShownPending = pendingCount;
+        mShownActive = activeCount;
         com.google.android.material.card.MaterialCardView newRequests = findViewById(R.id.card_new_requests);
         // Borde naranja cuando hay solicitudes nuevas por responder
         newRequests.setStrokeColor(ContextCompat.getColor(this,
-                pendingCount > 0 ? R.color.ads_brand_text : R.color.ads_line));
+                pendingCount > 0 ? R.color.ads_brand_text : R.color.ads_card_edge));
         newRequests.setStrokeWidth(getResources().getDimensionPixelSize(
-                pendingCount > 0 ? R.dimen.stroke_focus : R.dimen.stroke_control));
-        if (pendingCount > 0) animateAttention(mLayoutPendingRequests);
+                pendingCount > 0 ? R.dimen.stroke_focus : R.dimen.stroke_line));
+        // Llama la atención cuando llega una solicitud nueva (no en cada actualización)
+        if (newArrived || (firstTime && pendingCount > 0)) animateAttention(mLayoutPendingRequests);
     }
 
     /** Tarjeta «Próximo servicio» (mockup 13). */

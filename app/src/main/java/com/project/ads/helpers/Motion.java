@@ -133,6 +133,26 @@ public final class Motion {
         swing.start();
     }
 
+    /** Chip de estado que acaba de cambiar (p. ej. «Cotizada» → «Aceptada»): pulso y fundido. */
+    public static void chipChanged(View chip) {
+        if (!enabled(chip.getContext())) return;
+        fadeIn(chip);
+        bump(chip);
+    }
+
+    /** Número que cuenta desde from hasta to (400 ms) en lugar de cambiar de golpe. */
+    public static void countTo(android.widget.TextView view, int from, int to) {
+        if (from == to || !enabled(view.getContext())) {
+            view.setText(String.valueOf(to));
+            return;
+        }
+        ValueAnimator animator = ValueAnimator.ofInt(from, to);
+        animator.setDuration(400);
+        animator.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        animator.addUpdateListener(a -> view.setText(String.valueOf((int) a.getAnimatedValue())));
+        animator.start();
+    }
+
     /** Fundido corto de un texto que acaba de cambiar. */
     public static void fadeIn(View view) {
         view.setAlpha(0f);
