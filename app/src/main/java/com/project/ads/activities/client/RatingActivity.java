@@ -22,6 +22,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.project.ads.R;
 import com.project.ads.helpers.AdsSnackbar;
 import com.project.ads.helpers.Haptics;
+import com.project.ads.helpers.Motion;
 
 /**
  * Calificar servicio · mockup 30 (docs/mockups/Calificar.dc.html).
@@ -139,6 +140,7 @@ public class RatingActivity extends AppCompatActivity {
             final int value = i + 1;
             findViewById(STAR_IDS[i]).setOnClickListener(v -> {
                 Haptics.tick(v);
+                Motion.bump(v);
                 setRating(value);
             });
         }

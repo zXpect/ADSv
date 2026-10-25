@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.project.ads.R;
+import com.project.ads.helpers.Motion;
 
 /**
  * Solicitud enviada · mockup 12 (docs/mockups/SolicitudEnviada.dc.html).
@@ -24,6 +25,7 @@ public class RequestSentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_sent);
+        Motion.showResultIcon(findViewById(R.id.iv_request_sent_icon), R.drawable.ic_ads_check);
 
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         String workerName = getIntent().getStringExtra(EXTRA_WORKER_NAME);

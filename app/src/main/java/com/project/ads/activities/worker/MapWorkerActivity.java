@@ -774,7 +774,6 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
             Intent intent = new Intent(MapWorkerActivity.this, DocumentStatusActivity.class);
             intent.putExtra("worker_id", mAuthProvider.getId());
             startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } catch (Exception e) {
             Log.e(TAG, "Error al abrir documentos", e);
             showErrorToast("Error al abrir pantalla de documentos");
@@ -847,13 +846,11 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
                     .setMessage("Estás conectado. ¿Deseas salir? Permanecerás conectado.")
                     .setPositiveButton("Salir", (dialog, which) -> {
                         finish();
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     })
                     .setNegativeButton("Cancelar", null)
                     .show();
         } else {
             finish();
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
     }
 }

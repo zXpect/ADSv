@@ -627,13 +627,11 @@ public class DocumentStatusActivity extends AppCompatActivity {
                     .setMessage("¿Deseas cancelar la subida?")
                     .setPositiveButton("Sí, cancelar", (dialog, which) -> {
                         super.onBackPressed();
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     })
                     .setNegativeButton("No", null)
                     .show();
         } else {
             super.onBackPressed();
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
     }
 

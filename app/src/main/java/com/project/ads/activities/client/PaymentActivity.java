@@ -31,6 +31,7 @@ import com.project.ads.models.api.PaymentData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.PaymentProvider;
 import com.project.ads.helpers.AdsSnackbar;
+import com.project.ads.helpers.Motion;
 
 import java.util.Map;
 
@@ -57,6 +58,8 @@ public class PaymentActivity extends AppCompatActivity {
     private TextView mTvMessage;
     private ProgressBar mProgress;
     private Button mBtnAction;
+    // Ícono del resultado que se está mostrando (0: ninguno)
+    private int mShownResultIcon = 0;
 
     private PaymentProvider mPaymentProvider;
     private DatabaseReference mRequestRef;
@@ -249,7 +252,11 @@ public class PaymentActivity extends AppCompatActivity {
         findViewById(R.id.layout_payment_result).setVisibility(View.VISIBLE);
         ImageView iconView = findViewById(R.id.iv_result_icon);
         iconView.setVisibility(View.VISIBLE);
-        iconView.setImageResource(icon);
+        // El listener de payment_status repite el mismo resultado: animar solo si cambia
+        if (icon != mShownResultIcon) {
+            mShownResultIcon = icon;
+            Motion.showResultIcon(iconView, icon);
+        }
         ((TextView) findViewById(R.id.tv_result_title)).setText(title);
         TextView amountView = findViewById(R.id.tv_result_amount);
         amountView.setText(amount);
@@ -269,6 +276,7 @@ public class PaymentActivity extends AppCompatActivity {
         findViewById(R.id.layout_payment_checkout).setVisibility(View.GONE);
         findViewById(R.id.layout_payment_result).setVisibility(View.VISIBLE);
         findViewById(R.id.iv_result_icon).setVisibility(View.GONE);
+        mShownResultIcon = 0;
         ((TextView) findViewById(R.id.tv_result_title)).setText("");
         findViewById(R.id.tv_result_amount).setVisibility(View.GONE);
         ((TextView) findViewById(R.id.tv_result_message)).setText(message);

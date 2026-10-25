@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.project.ads.R;
+import com.project.ads.helpers.Motion;
 import com.project.ads.activities.PqrCreateActivity;
 import com.project.ads.models.ServiceRequest;
 
@@ -54,6 +55,7 @@ public class CashPaidActivity extends AppCompatActivity {
             finish();
             return;
         }
+        Motion.popIn(findViewById(R.id.frame_cash_paid_icon));
         String worker = getIntent().getStringExtra(EXTRA_WORKER_NAME);
         ((TextView) findViewById(R.id.tv_cash_paid_amount)).setText(getIntent().getStringExtra(EXTRA_PRICE));
         ((TextView) findViewById(R.id.tv_cash_paid_message)).setText(TextUtils.isEmpty(worker)

@@ -245,7 +245,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeWorkerActivity.this, ActiveServicesActivity.class);
             intent.putExtra("worker_id", mAuthProvider.getId());
             startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } catch (Exception e) {
             Log.e(TAG, "Error al abrir servicios activos", e);
             showErrorToast("Error al abrir servicios activos");
@@ -902,7 +901,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeWorkerActivity.this, DocumentStatusActivity.class);
             intent.putExtra("worker_id", mAuthProvider.getId());
             startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } catch (Exception e) {
             Log.e(TAG, "Error al abrir documentos", e);
             showErrorToast("Error al abrir pantalla de documentos");
@@ -1278,7 +1276,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
             intent.putExtra("worker_id", mAuthProvider.getId());
             intent.putExtra("worker_type", mCurrentWorker != null ? mCurrentWorker.getCategoriesDisplay() : "");
             startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } catch (Exception e) {
             Log.e(TAG, "Error al abrir solicitudes pendientes", e);
             showErrorToast("Error al abrir solicitudes");
@@ -1289,7 +1286,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
         try {
             Intent intent = new Intent(this, ProfileWorkerActivity.class);
             startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } catch (Exception e) {
             Log.e(TAG, "Error al abrir perfil", e);
             showErrorToast("Error al abrir perfil");
@@ -1303,7 +1299,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private void viewMap() {
         Intent intent = new Intent(HomeWorkerActivity.this, MapWorkerActivity.class);
         startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void generateToken() {
@@ -1460,7 +1455,6 @@ public class HomeWorkerActivity extends AppCompatActivity {
                             disconnectWorker();
                         }
                         finish();
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     })
                     .setNegativeButton("Cancelar", null)
                     .show();

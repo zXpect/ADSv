@@ -2,6 +2,7 @@ package com.project.ads.activities.client;
 
 import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.helpers.MapPinHelper;
+import com.project.ads.helpers.Motion;
 import com.project.ads.models.api.CatalogData;
 import com.project.ads.providers.ApiCallback;
 import com.project.ads.providers.CatalogProvider;
@@ -16,6 +17,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.ValueAnimator;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -107,6 +109,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     // Bitmaps de los pines ya dibujados, por drawable
     private final Map<Integer, BitmapDescriptor> mPinCache = new HashMap<>();
     private String mSelectedWorkerId;
+    private ValueAnimator mPinDrop;
     private boolean mIsFirstTime = true;
 
     private PlacesClient mPlaces;
@@ -465,6 +468,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
                                 .title(worker.getName() != null ? worker.getName() : "Unknown Worker"));
                         marker.setTag(workerId);
                         applyWorkerPin(marker, worker, workerId.equals(mSelectedWorkerId));
+                        Motion.fadeIn(marker);
                         mWorkersMarkers.put(workerId, marker);
                         mWorkers.put(workerId, worker);
                     }
@@ -560,10 +564,19 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     /** Cambia el pin seleccionado (null: ninguno) y redibuja el anterior y el nuevo. */
     private void selectWorkerMarker(String workerId) {
         if (workerId == null ? mSelectedWorkerId == null : workerId.equals(mSelectedWorkerId)) return;
+        // Un rebote a medias dejaría el ancla corrida al redibujar
+        if (mPinDrop != null) mPinDrop.cancel();
         String previous = mSelectedWorkerId;
         mSelectedWorkerId = workerId;
         refreshWorkerPin(previous);
         refreshWorkerPin(workerId);
+
+        Marker marker = workerId != null ? mWorkersMarkers.get(workerId) : null;
+        Worker worker = workerId != null ? mWorkers.get(workerId) : null;
+        if (marker != null && worker != null) {
+            mPinDrop = Motion.drop(marker, CategoryHelper.pinFor(worker, true) != 0
+                    ? MapPinHelper.ANCHOR_V_SELECTED : 1f);
+        }
     }
 
     private void refreshWorkerPin(String workerId) {
@@ -729,6 +742,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mPinDrop != null) mPinDrop.cancel();
         if (mFusedLocation != null && mLocationCallback != null) {
             mFusedLocation.removeLocationUpdates(mLocationCallback);
         }

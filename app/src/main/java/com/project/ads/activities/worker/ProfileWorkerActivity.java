@@ -373,7 +373,6 @@ public class ProfileWorkerActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DocumentStatusActivity.class);
             intent.putExtra("worker_id", workerId);
             startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } catch (Exception e) {
             Log.e(TAG, "Error al abrir documentos", e);
             showError("Error al abrir pantalla de documentos");
@@ -415,7 +414,6 @@ public class ProfileWorkerActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override

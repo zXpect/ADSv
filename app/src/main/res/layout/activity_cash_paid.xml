@@ -27,6 +27,7 @@
             android:paddingBottom="@dimen/space_4">
 
             <FrameLayout
+                android:id="@+id/frame_cash_paid_icon"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:background="@drawable/bg_ads_icon_circle">
