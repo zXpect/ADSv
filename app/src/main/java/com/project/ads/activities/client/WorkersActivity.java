@@ -38,6 +38,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseError;
+import com.project.ads.helpers.Motion;
 import com.project.ads.R;
 import com.project.ads.helpers.RankingHelper;
 import com.project.ads.helpers.CategoryHelper;
@@ -354,6 +355,7 @@ public class WorkersActivity extends AppCompatActivity {
         int total = mFilteredWorkersList.size();
         int end = Math.min(mDisplayedWorkersCount, total);
         mWorkersAdapter.updateWorkers(new ArrayList<>(mFilteredWorkersList.subList(0, Math.max(end, 0))));
+        Motion.animateListOnce(mWorkersRecyclerView);
         updatePaginationUI(total);
     }
 

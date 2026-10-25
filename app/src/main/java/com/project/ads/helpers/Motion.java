@@ -6,11 +6,13 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.Marker;
 import com.project.ads.R;
@@ -63,6 +65,55 @@ public final class Motion {
                 .setDuration(220)
                 .setInterpolator(new OvershootInterpolator(3f))
                 .start();
+    }
+
+    /** Fundido corto de un texto que acaba de cambiar. */
+    public static void fadeIn(View view) {
+        view.setAlpha(0f);
+        view.animate().alpha(1f).setDuration(200).start();
+    }
+
+    /** Muestra una tarjeta oculta subiendo con un fundido; si ya se ve, no hace nada. */
+    public static void reveal(View view) {
+        if (view.getVisibility() == View.VISIBLE) return;
+        view.setVisibility(View.VISIBLE);
+        view.setAlpha(0f);
+        view.setTranslationY(24 * view.getResources().getDisplayMetrics().density);
+        view.animate().alpha(1f).translationY(0f)
+                .setDuration(240)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
+    }
+
+    /** Se llena desde el borde inicial: barras (horizontal) o líneas (vertical) de avance. */
+    public static void fill(View view, boolean horizontal) {
+        view.setPivotX(0f);
+        view.setPivotY(0f);
+        if (horizontal) view.setScaleX(0f); else view.setScaleY(0f);
+        view.animate().scaleX(1f).scaleY(1f)
+                .setDuration(320)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
+    }
+
+    /**
+     * Entrada escalonada de las filas la primera vez que la lista tiene datos.
+     * Llamar después de notificar al adapter; las actualizaciones siguientes
+     * (Firebase, paginación) no se vuelven a animar.
+     */
+    public static void animateListOnce(RecyclerView list) {
+        if (list.getTag(R.id.tag_list_animated) != null) return;
+        RecyclerView.Adapter<?> adapter = list.getAdapter();
+        if (adapter == null || adapter.getItemCount() == 0) return;
+        list.setTag(R.id.tag_list_animated, Boolean.TRUE);
+        animateList(list);
+    }
+
+    /** Entrada escalonada de las filas en el próximo layout (p. ej. al cambiar de pestaña). */
+    public static void animateList(RecyclerView list) {
+        if (!enabled(list.getContext())) return;
+        list.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(list.getContext(), R.anim.ads_list_layout));
+        list.scheduleLayoutAnimation();
     }
 
     /** Fundido de entrada de un marcador nuevo del mapa. */

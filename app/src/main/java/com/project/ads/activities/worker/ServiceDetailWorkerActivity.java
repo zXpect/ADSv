@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.R;
+import com.project.ads.helpers.Motion;
 import com.project.ads.helpers.NotificationRouter;
 import com.project.ads.helpers.CancelDialogHelper;
 import com.project.ads.helpers.QuoteDialogHelper;
@@ -79,6 +80,9 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     // Pasos: Viaje · Trabajo · Finalizar
     private View[] mStepBars;
     private TextView[] mStepLabels;
+    // Paso ya dibujado (NO_STEP: todavía nada)
+    private static final int NO_STEP = -2;
+    private int mShownStep = NO_STEP;
 
     // Quote and Payment Card
     private View mCardQuote;
@@ -307,6 +311,11 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
             default: current = -1;
         }
         findViewById(R.id.layout_status_flow).setVisibility(current >= 0 ? View.VISIBLE : View.GONE);
+        // Solo se anima el avance mientras se mira la pantalla, no al abrirla
+        if (mShownStep != NO_STEP && current > mShownStep && current < mStepBars.length) {
+            Motion.fill(mStepBars[current], true);
+        }
+        mShownStep = current;
         for (int i = 0; i < mStepBars.length; i++) {
             boolean done = i < current;
             boolean now = i == current;

@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.R;
+import com.project.ads.helpers.Motion;
 import com.project.ads.helpers.NotificationRouter;
 import com.project.ads.helpers.CancelDialogHelper;
 import com.project.ads.helpers.ReasonHelper;
@@ -83,6 +84,9 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     private ImageButton mBtnCallWorker;
     private View mStatusFlow;
     private LinearLayout mTimeline;
+    // Paso de la línea de tiempo ya dibujado (NO_TIMELINE: todavía nada)
+    private static final int NO_TIMELINE = -2;
+    private int mShownTimelineStep = NO_TIMELINE;
 
     // Barra de acciones
     private View mCardActions;
@@ -387,7 +391,11 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             default: current = -1;
         }
         mStatusFlow.setVisibility(current >= 0 ? View.VISIBLE : View.GONE);
+        // Solo se anima el avance mientras se mira la pantalla, no al abrirla
+        boolean advanced = mShownTimelineStep != NO_TIMELINE && current > mShownTimelineStep;
+        mShownTimelineStep = current;
         if (current < 0) return;
+        int reached = current == 4 ? 3 : current;
 
         int[] titles = {R.string.request_status_accepted, R.string.request_status_on_the_way,
                 R.string.request_status_in_progress, R.string.request_status_completed};
@@ -421,6 +429,11 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             description.setText(descriptions[i]);
             description.setVisibility(latest ? View.VISIBLE : View.GONE);
             mTimeline.addView(row);
+            if (advanced && i == reached) {
+                Motion.popIn(dot);
+            } else if (advanced && i == reached - 1) {
+                Motion.fill(line, false);
+            }
         }
     }
 

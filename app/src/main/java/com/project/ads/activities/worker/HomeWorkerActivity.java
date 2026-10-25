@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.project.ads.helpers.Motion;
 import com.project.ads.helpers.LogoutHelper;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.NotificationRouter;
@@ -106,6 +107,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private LocationRequest mLocationRequest;
 
     private boolean isConnected = false;
+    private Boolean mShownConnected;   // estado que muestra la tarjeta (null: aún nada)
     private Worker mCurrentWorker;
     private LatLng mCurrentLatLng;
     private Handler mUIUpdateHandler;
@@ -1057,6 +1059,13 @@ public class HomeWorkerActivity extends AppCompatActivity {
                 return;
             }
 
+            // Al pasar de conectado a desconectado (o al revés) el texto entra con un fundido
+            if (mShownConnected != null && mShownConnected != isConnected) {
+                Motion.fadeIn(mTextConnectionStatus);
+                Motion.fadeIn(mTextConnectionMessage);
+            }
+            mShownConnected = isConnected;
+
             if (isConnected) {
                 // MODO CONECTADO
                 Log.d(TAG, "🟢 Actualizando UI - CONECTADO");
@@ -1204,7 +1213,11 @@ public class HomeWorkerActivity extends AppCompatActivity {
         mNextServiceId = request != null ? request.getRequest_id() : null;
         // Sin servicio, el título se queda con su estado vacío (no queda un hueco)
         title.setVisibility(View.VISIBLE);
-        card.setVisibility(request != null ? View.VISIBLE : View.GONE);
+        if (request != null) {
+            Motion.reveal(card);
+        } else {
+            card.setVisibility(View.GONE);
+        }
         findViewById(R.id.card_next_service_empty).setVisibility(request != null ? View.GONE : View.VISIBLE);
         if (request == null) return;
 

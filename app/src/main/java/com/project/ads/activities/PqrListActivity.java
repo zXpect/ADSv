@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.project.ads.helpers.Motion;
 import com.project.ads.R;
 import com.project.ads.adapters.PqrAdapter;
 import com.project.ads.helpers.ClientNavHelper;
@@ -107,6 +108,7 @@ public class PqrListActivity extends AppCompatActivity {
                 if (isFinishing()) return;
                 done();
                 mAdapter.setItems(data);
+                Motion.animateListOnce(mRecycler);
                 boolean empty = data == null || data.isEmpty();
                 mSection.setVisibility(empty ? View.GONE : View.VISIBLE);
                 mRecycler.setVisibility(empty ? View.GONE : View.VISIBLE);

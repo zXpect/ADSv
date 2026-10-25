@@ -702,7 +702,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
             HomeUserActivity.putClientLocation(intent, mCurrentLatLng);
             startActivity(intent);
         });
-        card.setVisibility(View.VISIBLE);
+        Motion.reveal(card);
     }
 
     private void hideWorkerCard() {

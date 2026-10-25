@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.card.MaterialCardView;
+import com.project.ads.helpers.Motion;
 import com.project.ads.R;
 import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.ReasonHelper;
@@ -212,6 +213,7 @@ public class MyRequestsActivity extends AppCompatActivity {
             mRequests.clear();
             mRequests.addAll(requests);
             mAdapter.notifyDataSetChanged();
+            Motion.animateListOnce(mRecyclerView);
 
             showLoading(false);
             mSwipeRefresh.setRefreshing(false);

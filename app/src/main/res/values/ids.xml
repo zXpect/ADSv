@@ -20,4 +20,6 @@
     <item name="toolbar_color" type="id" />
     <!-- Barra de acción fija de las pantallas: AdsSnackbar apoya los avisos encima -->
     <item name="ads_action_bar" type="id" />
+    <!-- Marca de Motion.animateListOnce: la lista ya hizo su entrada -->
+    <item name="tag_list_animated" type="id" />
 </resources>

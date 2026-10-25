@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.project.ads.helpers.Motion;
 import com.project.ads.R;
 import com.project.ads.adapters.NotificationsAdapter;
 import com.project.ads.helpers.NotificationRouter;
@@ -117,6 +118,7 @@ public class NotificationsActivity extends AppCompatActivity {
     private void showList() {
         mProgress.setVisibility(View.GONE);
         mAdapter.setNotifications(this, mNotifications);
+        Motion.animateListOnce(mRecycler);
         boolean empty = mNotifications.isEmpty();
         mRecycler.setVisibility(empty ? View.GONE : View.VISIBLE);
         mEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);

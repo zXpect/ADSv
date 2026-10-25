@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.project.ads.helpers.Motion;
 import com.project.ads.adapters.PendingRequestsAdapter;
 import com.project.ads.helpers.WorkerNavHelper;
 import com.project.ads.models.ServiceRequest;
@@ -108,6 +109,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
         tabs.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (checkedIds.isEmpty()) return;
             currentTab = checkedIds.get(0);
+            Motion.animateList(recyclerView);
             applyTab();
         });
 
@@ -240,6 +242,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
             if (tab == currentTab) pendingRequests.add(request);
         }
         adapter.notifyDataSetChanged();
+        Motion.animateListOnce(recyclerView);
 
         ((com.google.android.material.chip.Chip) findViewById(R.id.chip_inbox_new)).setText(newCount > 0
                 ? getString(R.string.inbox_tab_new_count, newCount) : getString(R.string.inbox_tab_new));

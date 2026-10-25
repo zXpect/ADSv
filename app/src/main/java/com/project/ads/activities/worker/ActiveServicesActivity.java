@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.project.ads.helpers.Motion;
 import com.project.ads.R;
 import com.project.ads.helpers.WorkerNavHelper;
 import com.project.ads.models.ServiceRequest;
@@ -147,6 +148,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
                 mServices.clear();
                 mServices.addAll(services);
                 mAdapter.notifyDataSetChanged();
+                Motion.animateListOnce(mRecyclerView);
                 mProgressBar.setVisibility(View.GONE);
                 mSwipeRefresh.setRefreshing(false);
                 mEmptyState.setVisibility(services.isEmpty() ? View.VISIBLE : View.GONE);
