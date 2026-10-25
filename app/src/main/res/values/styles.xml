@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- ===================================================================
          TIPOGRAFÍA ADS (Sora). Tamaños de tokens.json y de los mockups.
@@ -226,12 +226,18 @@
     <!-- ===================================================================
          TARJETAS. Blanca con borde fino, radio 20, sin sombra.
          =================================================================== -->
+    <!-- Tarjeta con relieve según el modo: en claro, sombra suave azul noche y borde
+         tenue; en oscuro, tarjeta más clara que el fondo y borde con brillo. Al
+         tocarla se hunde un poco (ads_card_press). -->
     <style name="Widget.ADS.Card" parent="Widget.Material3.CardView.Outlined">
-        <item name="cardBackgroundColor">@color/ads_card</item>
-        <item name="strokeColor">@color/ads_line</item>
-        <item name="strokeWidth">@dimen/stroke_control</item>
+        <item name="cardBackgroundColor">@color/ads_card_raised</item>
+        <item name="strokeColor">@color/ads_card_edge</item>
+        <item name="strokeWidth">@dimen/stroke_line</item>
         <item name="cardCornerRadius">@dimen/radius_card</item>
-        <item name="cardElevation">0dp</item>
+        <item name="cardElevation">@dimen/ads_card_elevation</item>
+        <item name="android:outlineSpotShadowColor" tools:targetApi="28">@color/ads_shadow</item>
+        <item name="android:outlineAmbientShadowColor" tools:targetApi="28">@color/ads_shadow</item>
+        <item name="android:stateListAnimator">@animator/ads_card_press</item>
         <item name="contentPadding">@dimen/space_4</item>
     </style>
 
@@ -245,6 +251,9 @@
     <style name="Widget.ADS.Card.Notice">
         <item name="cardBackgroundColor">@color/ads_surface_alt</item>
         <item name="strokeWidth">0dp</item>
+        <!-- Los avisos van planos: no son tarjetas que se toquen -->
+        <item name="cardElevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
         <item name="cardCornerRadius">@dimen/radius_md</item>
     </style>
 

@@ -68,6 +68,10 @@
                  (con 7 oficios, debajo de la cuadrícula quedaba fuera de la pantalla) -->
             <LinearLayout
                 android:id="@+id/card_active_service"
+                android:elevation="@dimen/ads_card_elevation"
+                android:outlineSpotShadowColor="@color/ads_shadow"
+                android:outlineAmbientShadowColor="@color/ads_shadow"
+                android:stateListAnimator="@animator/ads_card_press"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_4"

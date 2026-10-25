@@ -22,6 +22,10 @@
     <color name="ads_card">#171B2B</color>
     <color name="ads_bar">#171B2B</color>            <!-- barra inferior = tarjetas -->
     <color name="ads_line">#2A2F45</color>
+    <!-- Relieve: tarjeta más clara que el fondo y borde con un poco de brillo -->
+    <color name="ads_card_raised">#1B2035</color>
+    <color name="ads_card_edge">#343A56</color>
+    <color name="ads_shadow">#000000</color>
     <color name="ads_control">#6B7288</color>
     <color name="ads_chip_bg">#3A2616</color>
     <color name="ads_chip_text">#F28A2E</color>

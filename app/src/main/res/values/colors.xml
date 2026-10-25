@@ -17,6 +17,10 @@
     <color name="ads_card">#FFFFFF</color>           <!-- tarjetas y campos -->
     <color name="ads_bar">#FFFFFF</color>            <!-- barra inferior y barra de acción fija -->
     <color name="ads_line">#CFCAC0</color>           <!-- bordes finos y divisores -->
+    <!-- Relieve de las tarjetas: fondo, borde y sombra (en oscuro cambian, ver values-night) -->
+    <color name="ads_card_raised">#FFFFFF</color>
+    <color name="ads_card_edge">#E4DED3</color>
+    <color name="ads_shadow">#1B1830</color>
     <color name="ads_control">#858A93</color>        <!-- borde de campos y botones secundarios -->
     <color name="ads_chip_bg">#FBE7D3</color>        <!-- chip naranja claro, indicador activo -->
     <color name="ads_chip_text">#8F3F06</color>      <!-- texto de chip naranja -->

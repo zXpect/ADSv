@@ -73,6 +73,9 @@
             <!-- Tu estado (tarjeta navy con interruptor) -->
             <LinearLayout
                 android:id="@+id/cardConnectionStatus"
+                android:elevation="@dimen/ads_card_elevation"
+                android:outlineSpotShadowColor="@color/ads_shadow"
+                android:outlineAmbientShadowColor="@color/ads_shadow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_5"

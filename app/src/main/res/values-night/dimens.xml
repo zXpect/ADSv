@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Modo oscuro: las sombras casi no se ven; el relieve lo dan la tarjeta más clara
+     que el fondo y su borde (ads_card_raised, ads_card_edge) -->
+<resources>
+    <dimen name="ads_card_elevation">1dp</dimen>
+</resources>

@@ -18,6 +18,8 @@
     <dimen name="radius_field">14dp</dimen>
     <dimen name="radius_md">16dp</dimen>
     <dimen name="radius_card">20dp</dimen>
+    <!-- Elevación de las tarjetas: sombra suave en claro (1 dp en oscuro, values-night) -->
+    <dimen name="ads_card_elevation">3dp</dimen>
     <dimen name="radius_lg">22dp</dimen>
     <dimen name="radius_sheet">28dp</dimen>
 
