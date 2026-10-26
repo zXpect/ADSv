@@ -124,6 +124,7 @@ public class WorkersActivity extends AppCompatActivity {
     private void setupViews() {
         mWorkersRecyclerView = findViewById(R.id.workers_recycler_view);
         mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        com.project.ads.helpers.RefreshNut.install(mSwipeRefreshLayout);   // tuerca en lugar del círculo
         mEmptyStateLayout = findViewById(R.id.empty_state_text);
         mWorkersCountText = findViewById(R.id.workers_count_text);
 

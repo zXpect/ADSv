@@ -86,6 +86,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progress_bar);
         mEmptyState = findViewById(R.id.empty_state);
         mSwipeRefresh = findViewById(R.id.swipe_refresh);
+        com.project.ads.helpers.RefreshNut.install(mSwipeRefresh);   // tuerca en lugar del círculo
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         mSwipeRefresh.setColorSchemeResources(R.color.ads_brand);
         mSwipeRefresh.setOnRefreshListener(this::loadServices);

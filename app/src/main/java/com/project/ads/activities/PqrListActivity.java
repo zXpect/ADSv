@@ -59,6 +59,7 @@ public class PqrListActivity extends AppCompatActivity {
         }
 
         mSwipe = findViewById(R.id.swipe_pqr);
+        com.project.ads.helpers.RefreshNut.install(mSwipe);   // tuerca en lugar del círculo
         mProgress = findViewById(R.id.progress_pqr);
         mEmpty = findViewById(R.id.layout_pqr_empty);
         mEmptyTitle = findViewById(R.id.tv_pqr_empty_title);

@@ -96,6 +96,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
         progressBar = findViewById(R.id.progressBar);
         tvEmpty = findViewById(R.id.tvEmpty);
         swipeRefresh = findViewById(R.id.swipeRefresh);
+        com.project.ads.helpers.RefreshNut.install(swipeRefresh);   // tuerca en lugar del círculo
         btnBack = findViewById(R.id.btnBack);
         tvTitle = findViewById(R.id.tvTitle);
 
