@@ -140,7 +140,7 @@ public class RatingActivity extends AppCompatActivity {
             final int value = i + 1;
             findViewById(STAR_IDS[i]).setOnClickListener(v -> {
                 Haptics.tick(v);
-                Motion.bump(v);
+                if (value <= mRating) Motion.bump(v);   // al subir, setRating las anima una a una
                 setRating(value);
             });
         }
@@ -148,11 +148,23 @@ public class RatingActivity extends AppCompatActivity {
     }
 
     private void setRating(int rating) {
+        int previous = mRating;
         mRating = rating;
+        boolean animate = rating > previous && Motion.enabled(this);
         for (int i = 0; i < STAR_IDS.length; i++) {
             ImageButton star = findViewById(STAR_IDS[i]);
-            star.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this,
-                    i < rating ? R.color.ads_brand : R.color.ads_line)));
+            star.removeCallbacks(null);
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(this,
+                    i < rating ? R.color.ads_brand : R.color.ads_line));
+            if (animate && i >= previous && i < rating) {
+                // Las que se encienden lo hacen una tras otra, de izquierda a derecha
+                star.postDelayed(() -> {
+                    star.setImageTintList(tint);
+                    Motion.bump(star);
+                }, (long) (i - previous) * 60);
+            } else {
+                star.setImageTintList(tint);
+            }
         }
         mRatingLabel.setText(rating > 0 ? getString(RATING_LABELS[rating - 1]) : "");
         mSubmitButton.setEnabled(rating > 0);

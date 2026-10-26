@@ -273,7 +273,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
                 progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
             }
             if (swipeRefresh != null) {
-                swipeRefresh.setRefreshing(false);
+                com.project.ads.helpers.Motion.refreshDone(swipeRefresh, recyclerView);
             }
         });
     }

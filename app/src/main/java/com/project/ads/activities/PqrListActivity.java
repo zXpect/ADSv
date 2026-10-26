@@ -131,7 +131,7 @@ public class PqrListActivity extends AppCompatActivity {
 
     private void done() {
         mProgress.setVisibility(View.GONE);
-        mSwipe.setRefreshing(false);
+        com.project.ads.helpers.Motion.refreshDone(mSwipe, mRecycler);
     }
 
     private void showEmpty(boolean show, int title, int message, boolean retry) {

@@ -358,6 +358,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             tilEmail.setError("Ingrese un correo electrónico válido");
+            com.project.ads.helpers.Motion.shake(tilEmail);
             mTextInputEmail.requestFocus();
             return;
         }
@@ -469,11 +470,13 @@ public class LoginActivity extends AppCompatActivity {
     private boolean validateEmail(String email) {
         if (TextUtils.isEmpty(email)) {
             tilEmail.setError("El correo electrónico es requerido");
+            com.project.ads.helpers.Motion.shake(tilEmail);
             mTextInputEmail.requestFocus();
             return false;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             tilEmail.setError("Ingrese un correo electrónico válido");
+            com.project.ads.helpers.Motion.shake(tilEmail);
             mTextInputEmail.requestFocus();
             return false;
         }
@@ -483,11 +486,13 @@ public class LoginActivity extends AppCompatActivity {
     private boolean validatePassword(String password) {
         if (TextUtils.isEmpty(password)) {
             tilPassword.setError("La contraseña es requerida");
+            com.project.ads.helpers.Motion.shake(tilPassword);
             mTextInputPassword.requestFocus();
             return false;
         }
         if (password.length() < 6) {
             tilPassword.setError("La contraseña debe tener al menos 6 caracteres");
+            com.project.ads.helpers.Motion.shake(tilPassword);
             mTextInputPassword.requestFocus();
             return false;
         }
@@ -685,6 +690,7 @@ public class LoginActivity extends AppCompatActivity {
         } else if (exception instanceof FirebaseAuthInvalidUserException) {
             // Usuario no existe
             tilEmail.setError("No existe una cuenta con este correo");
+            com.project.ads.helpers.Motion.shake(tilEmail);
             tilEmail.setErrorEnabled(true);
 
             new MaterialAlertDialogBuilder(this)
@@ -698,6 +704,7 @@ public class LoginActivity extends AppCompatActivity {
         } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
             // Contraseña incorrecta
             tilPassword.setError("Contraseña incorrecta");
+            com.project.ads.helpers.Motion.shake(tilPassword);
             tilPassword.setErrorEnabled(true);
 
             if (loginAttempts >= 2) {

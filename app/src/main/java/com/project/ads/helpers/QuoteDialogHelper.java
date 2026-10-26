@@ -183,15 +183,18 @@ public class QuoteDialogHelper {
 
             if (price == null || price <= 0) {
                 tilPrice.setError(mActivity.getString(R.string.quote_error_invalid));
+                Motion.shake(tilPrice);
                 return;
             }
             if (limits != null && price < limits.getMinPrice()) {
                 tilPrice.setError(mActivity.getString(R.string.quote_dialog_min_fee,
                         ServiceRequest.formatCop(limits.getMinPrice())));
+                Motion.shake(tilPrice);
                 return;
             }
             if (limits != null && price > limits.getMaxPrice()) {
                 tilPrice.setError(mActivity.getString(R.string.quote_error_too_high));
+                Motion.shake(tilPrice);
                 return;
             }
 
@@ -206,6 +209,7 @@ public class QuoteDialogHelper {
                 reasonText = etReasonText.getText() != null ? etReasonText.getText().toString().trim() : "";
                 if (ReasonHelper.OTHER.equals(reasonCode) && TextUtils.isEmpty(reasonText)) {
                     tilReasonText.setError(mActivity.getString(R.string.reason_text_required));
+                    Motion.shake(tilReasonText);
                     return;
                 }
                 if (TextUtils.isEmpty(reasonText)) reasonText = null;

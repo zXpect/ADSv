@@ -275,7 +275,7 @@ public class WorkersActivity extends AppCompatActivity {
 
                     @Override
                     public void onGeoQueryReady() {
-                        mSwipeRefreshLayout.setRefreshing(false);
+                        com.project.ads.helpers.Motion.refreshDone(mSwipeRefreshLayout, mWorkersRecyclerView);
                         updateWorkersList();
                     }
 

@@ -3,6 +3,7 @@ package com.project.ads.activities.client;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,13 @@ public class RequestSentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_sent);
         Motion.showResultIcon(findViewById(R.id.iv_request_sent_icon), R.drawable.ic_ads_check);
+        // Primer paso («Pendiente») marcado: aparece después del check
+        View step = findViewById(R.id.iv_request_sent_step1);
+        if (Motion.enabled(this)) {
+            step.setScaleX(0f);
+            step.setScaleY(0f);
+            step.postDelayed(() -> Motion.popIn(step), 450);
+        }
 
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         String workerName = getIntent().getStringExtra(EXTRA_WORKER_NAME);

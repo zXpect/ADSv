@@ -218,7 +218,7 @@ public class MyRequestsActivity extends AppCompatActivity {
             Motion.animateListOnce(mRecyclerView);
 
             showLoading(false);
-            mSwipeRefresh.setRefreshing(false);
+            Motion.refreshDone(mSwipeRefresh, mRecyclerView);
 
             if (requests.isEmpty()) {
                 mRecyclerView.setVisibility(View.GONE);

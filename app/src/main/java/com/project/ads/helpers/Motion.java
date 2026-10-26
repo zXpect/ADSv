@@ -57,10 +57,73 @@ public final class Motion {
             Drawable check = ContextCompat.getDrawable(view.getContext(), R.drawable.avd_ads_check);
             view.setImageDrawable(check);
             if (check instanceof Animatable) ((Animatable) check).start();
+            // Un anillo naranja se expande una vez desde el check (pago aprobado, solicitud enviada)
+            view.postDelayed(() -> ringOnce(view), 220);
         } else {
             view.setImageResource(iconRes);
         }
         popIn(view);
+    }
+
+    /**
+     * Anillo naranja que sale una vez desde el borde de la vista y se desvanece (600 ms).
+     * Se dibuja en el overlay del padre para poder salir de los límites de la vista.
+     */
+    public static void ringOnce(View anchor) {
+        if (!enabled(anchor.getContext()) || !(anchor.getParent() instanceof android.view.ViewGroup)) return;
+        android.view.ViewGroup parent = (android.view.ViewGroup) anchor.getParent();
+        android.graphics.drawable.GradientDrawable ring = new android.graphics.drawable.GradientDrawable();
+        ring.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+        int stroke = Math.round(3 * anchor.getResources().getDisplayMetrics().density);
+        ring.setStroke(stroke, ContextCompat.getColor(anchor.getContext(), R.color.ads_brand));
+        parent.getOverlay().add(ring);
+        int cx = anchor.getLeft() + anchor.getWidth() / 2;
+        int cy = anchor.getTop() + anchor.getHeight() / 2;
+        float start = anchor.getWidth() / 2f;
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(600);
+        animator.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        animator.addUpdateListener(a -> {
+            float t = (float) a.getAnimatedValue();
+            int r = Math.round(start * (1f + 0.6f * t));
+            ring.setBounds(cx - r, cy - r, cx + r, cy + r);
+            ring.setAlpha(Math.round(200 * (1f - t)));
+        });
+        animator.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                parent.getOverlay().remove(ring);
+            }
+        });
+        animator.start();
+    }
+
+    /** Campo con error: tiembla de lado a lado (300 ms), además del texto rojo. */
+    public static void shake(View view) {
+        if (view == null || !enabled(view.getContext())) return;
+        float d = view.getResources().getDisplayMetrics().density;
+        android.animation.ObjectAnimator shake = android.animation.ObjectAnimator.ofFloat(
+                view, View.TRANSLATION_X, 0f, -10 * d, 10 * d, -6 * d, 6 * d, -2 * d, 0f);
+        shake.setDuration(300);
+        shake.start();
+    }
+
+    /**
+     * Fin de «deslizar para actualizar»: si el usuario lo pidió, la lista da un pulso
+     * (fundido corto y leve ascenso) para que se note que llegó lo nuevo.
+     */
+    public static void refreshDone(androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipe,
+                                   RecyclerView list) {
+        boolean byUser = swipe.isRefreshing();
+        swipe.setRefreshing(false);
+        if (!byUser || list == null || !enabled(list.getContext())) return;
+        list.animate().cancel();
+        list.setAlpha(0.35f);
+        list.setTranslationY(16 * list.getResources().getDisplayMetrics().density);
+        list.animate().alpha(1f).translationY(0f)
+                .setDuration(280)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
     }
 
     /** Pulso breve al elegir un valor (estrellas). */

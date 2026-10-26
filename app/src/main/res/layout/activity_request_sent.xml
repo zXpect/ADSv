@@ -70,6 +70,7 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/iv_request_sent_step1"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:background="@drawable/bg_ads_check_on"

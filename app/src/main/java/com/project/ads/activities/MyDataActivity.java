@@ -20,6 +20,7 @@ import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.project.ads.R;
 import com.project.ads.helpers.AdsSnackbar;
+import com.project.ads.helpers.Motion;
 import com.project.ads.helpers.LogoutHelper;
 import com.project.ads.providers.AccountProvider;
 import com.project.ads.providers.AuthProvider;
@@ -130,6 +131,9 @@ public class MyDataActivity extends AppCompatActivity {
         mLastNamesLayout.setError(validName(lastName) ? null : getString(R.string.data_error_last_name));
         mPhoneLayout.setError(PHONE_PATTERN.matcher(phone).matches() ? null : getString(R.string.data_error_phone));
         if (mNamesLayout.getError() != null || mLastNamesLayout.getError() != null || mPhoneLayout.getError() != null) {
+            if (mNamesLayout.getError() != null) Motion.shake(mNamesLayout);
+            if (mLastNamesLayout.getError() != null) Motion.shake(mLastNamesLayout);
+            if (mPhoneLayout.getError() != null) Motion.shake(mPhoneLayout);
             return;
         }
 

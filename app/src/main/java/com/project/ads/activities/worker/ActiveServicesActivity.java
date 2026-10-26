@@ -152,7 +152,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
                 mAdapter.notifyDataSetChanged();
                 Motion.animateListOnce(mRecyclerView);
                 mProgressBar.setVisibility(View.GONE);
-                mSwipeRefresh.setRefreshing(false);
+                Motion.refreshDone(mSwipeRefresh, mRecyclerView);
                 mEmptyState.setVisibility(services.isEmpty() ? View.VISIBLE : View.GONE);
                 mRecyclerView.setVisibility(services.isEmpty() ? View.GONE : View.VISIBLE);
             }
