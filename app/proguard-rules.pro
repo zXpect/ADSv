@@ -66,5 +66,5 @@
 
 # «Deslizar para actualizar» con la tuerca de ADS: RefreshNut lee este campo por reflexión
 -keepclassmembers class androidx.swiperefreshlayout.widget.SwipeRefreshLayout {
-    android.widget.ImageView mCircleView;
+    *** mCircleView;
 }
