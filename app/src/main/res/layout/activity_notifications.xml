@@ -94,8 +94,7 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_ads_bell"
-                app:tint="@color/ads_muted" />
+                android:src="@drawable/ic_empty_notifications" />
 
             <TextView
                 android:id="@+id/tv_notifications_empty_title"

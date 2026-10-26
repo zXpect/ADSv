@@ -146,13 +146,12 @@
                 android:padding="32dp"
                 android:visibility="gone">
 
-                <!-- Mismo estado vacío que la bandeja de solicitudes -->
+                <!-- Sin técnicos cerca: pin con una tuerca (ic_empty_no_workers) -->
                 <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_search"
-                    app:tint="@color/ads_muted" />
+                    android:src="@drawable/ic_empty_no_workers" />
 
                 <TextView
                     android:layout_width="wrap_content"

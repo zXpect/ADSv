@@ -249,8 +249,8 @@ public class ProfileWorkerActivity extends AppCompatActivity {
 
         try {
             RequestOptions options = new RequestOptions()
-                    .placeholder(R.drawable.ic_person)
-                    .error(R.drawable.ic_person)
+                    .placeholder(R.drawable.ic_avatar_worker)
+                    .error(R.drawable.ic_avatar_worker)
                     .circleCrop()
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
 
@@ -281,7 +281,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error al cargar imagen del perfil", e);
-            ivProfileImage.setImageResource(R.drawable.ic_person);
+            ivProfileImage.setImageResource(R.drawable.ic_avatar_worker);
         }
     }
     // =====================================

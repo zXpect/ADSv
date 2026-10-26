@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sin técnicos cerca: pin de ubicación con una tuerca (reparación) sobre el suelo -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="56dp"
+    android:height="56dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M12,19.5c0,0 -5.8,-5.1 -5.8,-10a5.8,5.8 0 1,1 11.6,0c0,4.9 -5.8,10 -5.8,10z"
+        android:strokeWidth="1.6"
+        android:strokeColor="@color/ads_muted"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M15.10,9.40L13.55,12.08L10.45,12.08L8.90,9.40L10.45,6.72L13.55,6.72Z"
+        android:strokeWidth="1.3"
+        android:strokeColor="@color/ads_brand"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M12.00,8.20a1.20,1.20 0,1 1,0 2.40a1.20,1.20 0,1 1,0 -2.40z"
+        android:strokeWidth="1.2"
+        android:strokeColor="@color/ads_brand"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M5,21.5h3.5M10.25,21.5h3.5M16,21.5h3"
+        android:strokeWidth="1.6"
+        android:strokeColor="@color/ads_muted"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

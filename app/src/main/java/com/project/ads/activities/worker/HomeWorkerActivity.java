@@ -470,8 +470,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
             if (mNavHeaderProfileImage != null) {
                 RequestOptions options = new RequestOptions()
-                        .placeholder(R.drawable.ic_person)
-                        .error(R.drawable.ic_person)
+                        .placeholder(R.drawable.ic_avatar_worker)
+                        .error(R.drawable.ic_avatar_worker)
                         .circleCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL);
 
@@ -487,10 +487,10 @@ public class HomeWorkerActivity extends AppCompatActivity {
                                 .apply(options)
                                 .into(mNavHeaderProfileImage);
                     } else {
-                        mNavHeaderProfileImage.setImageResource(R.drawable.ic_person);
+                        mNavHeaderProfileImage.setImageResource(R.drawable.ic_avatar_worker);
                     }
                 } else {
-                    mNavHeaderProfileImage.setImageResource(R.drawable.ic_person);
+                    mNavHeaderProfileImage.setImageResource(R.drawable.ic_avatar_worker);
                 }
             }
         } catch (Exception e) {
@@ -505,8 +505,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
         try {
             RequestOptions options = new RequestOptions()
-                    .placeholder(R.drawable.ic_person)
-                    .error(R.drawable.ic_person)
+                    .placeholder(R.drawable.ic_avatar_worker)
+                    .error(R.drawable.ic_avatar_worker)
                     .circleCrop()
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
 
@@ -525,15 +525,15 @@ public class HomeWorkerActivity extends AppCompatActivity {
                             .into(mImageWorkerProfile);
                 } else {
                     Log.d(TAG, "URL de imagen no válida, usando imagen por defecto");
-                    mImageWorkerProfile.setImageResource(R.drawable.ic_person);
+                    mImageWorkerProfile.setImageResource(R.drawable.ic_avatar_worker);
                 }
             } else {
                 Log.d(TAG, "Worker sin imagen, usando imagen por defecto");
-                mImageWorkerProfile.setImageResource(R.drawable.ic_person);
+                mImageWorkerProfile.setImageResource(R.drawable.ic_avatar_worker);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error al cargar imagen del worker", e);
-            mImageWorkerProfile.setImageResource(R.drawable.ic_person);
+            mImageWorkerProfile.setImageResource(R.drawable.ic_avatar_worker);
         }
     }
 

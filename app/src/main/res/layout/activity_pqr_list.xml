@@ -124,8 +124,7 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:contentDescription="@null"
-                        android:src="@drawable/ic_nav_pqr"
-                        app:tint="@color/ads_muted" />
+                        android:src="@drawable/ic_empty_pqr" />
 
                     <TextView
                         android:id="@+id/tv_pqr_empty_title"
