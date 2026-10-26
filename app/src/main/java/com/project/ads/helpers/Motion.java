@@ -1,0 +1,443 @@
+package com.project.ads.helpers;
+
+import android.animation.ValueAnimator;
+import android.content.Context;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
+import android.provider.Settings;
+import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.widget.ImageView;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.project.ads.R;
+
+/**
+ * Animaciones cortas de la app (150-350 ms). Los animadores respetan la escala
+ * de animación del sistema; con «Quitar animaciones» activo se muestra directo
+ * el estado final.
+ */
+public final class Motion {
+
+    private Motion() {
+    }
+
+    /** Aplica un color en cada cuadro de colorTo (IntConsumer exige API 24; minSdk es 23). */
+    public interface ColorSetter {
+        void set(int color);
+    }
+
+    /** false si el usuario quitó las animaciones en los ajustes del teléfono. */
+    public static boolean enabled(Context context) {
+        return Settings.Global.getFloat(context.getContentResolver(),
+                Settings.Global.ANIMATOR_DURATION_SCALE, 1f) != 0f;
+    }
+
+    /** Entrada de un ícono de resultado: crece desde 0,6 con un leve sobrepaso. */
+    public static void popIn(View view) {
+        view.setScaleX(0.6f);
+        view.setScaleY(0.6f);
+        view.setAlpha(0f);
+        view.animate().scaleX(1f).scaleY(1f).alpha(1f)
+                .setDuration(280)
+                .setInterpolator(new OvershootInterpolator(2f))
+                .start();
+    }
+
+    /** Ícono de resultado; si es el check, se dibuja el trazo (avd_ads_check). */
+    public static void showResultIcon(ImageView view, int iconRes) {
+        if (iconRes == R.drawable.ic_ads_check && enabled(view.getContext())) {
+            Drawable check = ContextCompat.getDrawable(view.getContext(), R.drawable.avd_ads_check);
+            view.setImageDrawable(check);
+            if (check instanceof Animatable) ((Animatable) check).start();
+            // Un anillo naranja se expande una vez desde el check (pago aprobado, solicitud enviada)
+            view.postDelayed(() -> ringOnce(view), 220);
+        } else {
+            view.setImageResource(iconRes);
+        }
+        popIn(view);
+    }
+
+    /**
+     * Anillo naranja que sale una vez desde el borde de la vista y se desvanece (600 ms).
+     * Se dibuja en el overlay del padre para poder salir de los límites de la vista.
+     */
+    public static void ringOnce(View anchor) {
+        if (!enabled(anchor.getContext()) || !(anchor.getParent() instanceof android.view.ViewGroup)) return;
+        android.view.ViewGroup parent = (android.view.ViewGroup) anchor.getParent();
+        android.graphics.drawable.GradientDrawable ring = new android.graphics.drawable.GradientDrawable();
+        ring.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+        int stroke = Math.round(3 * anchor.getResources().getDisplayMetrics().density);
+        ring.setStroke(stroke, ContextCompat.getColor(anchor.getContext(), R.color.ads_brand));
+        parent.getOverlay().add(ring);
+        int cx = anchor.getLeft() + anchor.getWidth() / 2;
+        int cy = anchor.getTop() + anchor.getHeight() / 2;
+        float start = anchor.getWidth() / 2f;
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(600);
+        animator.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        animator.addUpdateListener(a -> {
+            float t = (float) a.getAnimatedValue();
+            int r = Math.round(start * (1f + 0.6f * t));
+            ring.setBounds(cx - r, cy - r, cx + r, cy + r);
+            ring.setAlpha(Math.round(200 * (1f - t)));
+        });
+        animator.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                parent.getOverlay().remove(ring);
+            }
+        });
+        animator.start();
+    }
+
+    /** Campo con error: tiembla de lado a lado (300 ms), además del texto rojo. */
+    public static void shake(View view) {
+        if (view == null || !enabled(view.getContext())) return;
+        float d = view.getResources().getDisplayMetrics().density;
+        android.animation.ObjectAnimator shake = android.animation.ObjectAnimator.ofFloat(
+                view, View.TRANSLATION_X, 0f, -10 * d, 10 * d, -6 * d, 6 * d, -2 * d, 0f);
+        shake.setDuration(300);
+        shake.start();
+    }
+
+    /**
+     * Fin de «deslizar para actualizar»: si el usuario lo pidió, la lista da un pulso
+     * (fundido corto y leve ascenso) para que se note que llegó lo nuevo.
+     */
+    public static void refreshDone(androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipe,
+                                   RecyclerView list) {
+        boolean byUser = swipe.isRefreshing();
+        swipe.setRefreshing(false);
+        if (!byUser || list == null || !enabled(list.getContext())) return;
+        list.animate().cancel();
+        list.setAlpha(0.35f);
+        list.setTranslationY(16 * list.getResources().getDisplayMetrics().density);
+        list.animate().alpha(1f).translationY(0f)
+                .setDuration(280)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
+    }
+
+    /** Pulso breve al elegir un valor (estrellas). */
+    public static void bump(View view) {
+        view.animate().cancel();
+        view.setScaleX(1.25f);
+        view.setScaleY(1.25f);
+        view.animate().scaleX(1f).scaleY(1f)
+                .setDuration(220)
+                .setInterpolator(new OvershootInterpolator(3f))
+                .start();
+    }
+
+    /**
+     * Cambio de color animado (300 ms): de from a to, aplicado en cada cuadro.
+     * Sin animaciones (o con animate en false) aplica el color final directo.
+     */
+    public static ValueAnimator colorTo(View view, int from, int to, boolean animate, ColorSetter apply) {
+        if (!animate || from == to || !enabled(view.getContext())) {
+            apply.set(to);
+            return null;
+        }
+        ValueAnimator animator = ValueAnimator.ofArgb(from, to);
+        animator.setDuration(300);
+        animator.addUpdateListener(a -> apply.set((int) a.getAnimatedValue()));
+        animator.start();
+        return animator;
+    }
+
+    /** Pulso suave de una tarjeta (se encoge un poco y vuelve) al cambiar su estado. */
+    public static void pulse(View view) {
+        if (!enabled(view.getContext())) return;
+        view.animate().cancel();
+        view.animate().scaleX(0.97f).scaleY(0.97f).setDuration(110)
+                .withEndAction(() -> view.animate().scaleX(1f).scaleY(1f).setDuration(260)
+                        .setInterpolator(new OvershootInterpolator(2f)).start())
+                .start();
+    }
+
+    /**
+     * Anillo que late alrededor de un punto de estado: crece y se desvanece en bucle
+     * (1,4 s). Devuelve el animador para detenerlo; null si las animaciones están quitadas.
+     */
+    public static ValueAnimator ring(View ring) {
+        if (!enabled(ring.getContext())) return null;
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(1400);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        animator.addUpdateListener(a -> {
+            float t = (float) a.getAnimatedValue();
+            ring.setScaleX(1f + 1.4f * t);
+            ring.setScaleY(1f + 1.4f * t);
+            ring.setAlpha(0.6f * (1f - t));
+        });
+        animator.start();
+        return animator;
+    }
+
+    /**
+     * Campana que suena: se balancea desde la argolla (arriba al centro), cada vez
+     * menos, en 700 ms. Sin animaciones no hace nada.
+     */
+    public static void ringBell(android.widget.ImageView bell) {
+        if (!enabled(bell.getContext())) return;
+        bell.setPivotX(bell.getWidth() / 2f);
+        bell.setPivotY(bell.getHeight() * 0.1f);
+        android.animation.ObjectAnimator swing = android.animation.ObjectAnimator.ofFloat(
+                bell, View.ROTATION, 0f, -16f, 14f, -10f, 8f, -4f, 2f, 0f);
+        swing.setDuration(700);
+        swing.start();
+    }
+
+    /** Chip de estado que acaba de cambiar (p. ej. «Cotizada» → «Aceptada»): pulso y fundido. */
+    public static void chipChanged(View chip) {
+        if (!enabled(chip.getContext())) return;
+        // Una sola animación: fadeIn + bump por separado se cancelaban y el chip quedaba invisible
+        chip.animate().cancel();
+        chip.setAlpha(0f);
+        chip.setScaleX(1.25f);
+        chip.setScaleY(1.25f);
+        chip.animate().alpha(1f).scaleX(1f).scaleY(1f)
+                .setDuration(260)
+                .setInterpolator(new OvershootInterpolator(3f))
+                .start();
+    }
+
+    /** Número que cuenta desde from hasta to (400 ms) en lugar de cambiar de golpe. */
+    public static void countTo(android.widget.TextView view, int from, int to) {
+        if (from == to || !enabled(view.getContext())) {
+            view.setText(String.valueOf(to));
+            return;
+        }
+        ValueAnimator animator = ValueAnimator.ofInt(from, to);
+        animator.setDuration(400);
+        animator.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        animator.addUpdateListener(a -> view.setText(String.valueOf((int) a.getAnimatedValue())));
+        animator.start();
+    }
+
+    /**
+     * Encabezado fijo sobre una lista: al desplazarla gana una sombra suave (modo claro)
+     * y una línea inferior (modo oscuro, donde la sombra casi no se ve); al volver arriba
+     * las pierde. El encabezado necesita fondo propio para que la sombra se dibuje.
+     */
+    public static void liftOnScroll(View header, RecyclerView list) {
+        android.graphics.drawable.Drawable divider = ContextCompat.getDrawable(
+                header.getContext(), R.drawable.bg_ads_header_divider).mutate();
+        divider.setAlpha(0);
+        header.setForeground(divider);
+        float lift = header.getResources().getDimension(R.dimen.ads_card_elevation);
+        boolean animate = enabled(header.getContext());
+        list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private boolean mLifted;
+
+            @Override
+            public void onScrolled(RecyclerView rv, int dx, int dy) {
+                boolean lifted = rv.canScrollVertically(-1);
+                if (lifted == mLifted) return;
+                mLifted = lifted;
+                if (!animate) {
+                    header.setTranslationZ(lifted ? lift : 0f);
+                    divider.setAlpha(lifted ? 255 : 0);
+                    return;
+                }
+                header.animate().translationZ(lifted ? lift : 0f).setDuration(150).start();
+                ValueAnimator fade = ValueAnimator.ofInt(divider.getAlpha(), lifted ? 255 : 0);
+                fade.setDuration(150);
+                fade.addUpdateListener(a -> divider.setAlpha((int) a.getAnimatedValue()));
+                fade.start();
+            }
+        });
+    }
+
+    /** Fundido corto de un texto que acaba de cambiar. */
+    public static void fadeIn(View view) {
+        view.setAlpha(0f);
+        view.animate().alpha(1f).setDuration(200).start();
+    }
+
+    /** Latido sin fin de un esqueleto de carga. null si las animaciones están quitadas. */
+    public static ValueAnimator skeletonPulse(View view) {
+        if (!enabled(view.getContext())) return null;
+        ValueAnimator animator = ValueAnimator.ofFloat(1f, 0.6f);
+        animator.setDuration(900);
+        animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.addUpdateListener(a -> view.setAlpha((float) a.getAnimatedValue()));
+        animator.start();
+        return animator;
+    }
+
+    /** Muestra una tarjeta oculta subiendo con un fundido; si ya se ve, no hace nada. */
+    public static void reveal(View view) {
+        if (view.getVisibility() == View.VISIBLE) return;
+        view.setVisibility(View.VISIBLE);
+        view.setAlpha(0f);
+        view.setTranslationY(24 * view.getResources().getDisplayMetrics().density);
+        view.animate().alpha(1f).translationY(0f)
+                .setDuration(240)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
+    }
+
+    /** Se llena desde el borde inicial: barras (horizontal) o líneas (vertical) de avance. */
+    public static void fill(View view, boolean horizontal) {
+        view.setPivotX(0f);
+        view.setPivotY(0f);
+        if (horizontal) view.setScaleX(0f); else view.setScaleY(0f);
+        view.animate().scaleX(1f).scaleY(1f)
+                .setDuration(320)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
+    }
+
+    /**
+     * Entrada escalonada de las filas la primera vez que la lista tiene datos.
+     * Llamar después de notificar al adapter; las actualizaciones siguientes
+     * (Firebase, paginación) no se vuelven a animar.
+     */
+    public static void animateListOnce(RecyclerView list) {
+        if (list.getTag(R.id.tag_list_animated) != null) return;
+        RecyclerView.Adapter<?> adapter = list.getAdapter();
+        if (adapter == null || adapter.getItemCount() == 0) return;
+        list.setTag(R.id.tag_list_animated, Boolean.TRUE);
+        animateList(list);
+    }
+
+    /** Entrada escalonada de las filas en el próximo layout (p. ej. al cambiar de pestaña). */
+    public static void animateList(RecyclerView list) {
+        if (!enabled(list.getContext())) return;
+        list.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(list.getContext(), R.anim.ads_list_layout));
+        list.scheduleLayoutAnimation();
+    }
+
+    /** Fundido de entrada de un marcador nuevo del mapa. */
+    public static ValueAnimator fadeIn(Marker marker) {
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(250);
+        marker.setAlpha(0f);
+        animator.addUpdateListener(a -> {
+            try {
+                marker.setAlpha((float) a.getAnimatedValue());
+            } catch (IllegalArgumentException e) {
+                // El marcador se quitó del mapa mientras se animaba
+                a.cancel();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+
+    /**
+     * Pin seleccionado: crece desde el tamaño normal hasta pasarse un poco y se
+     * asienta (0,8 → 1,12 → 0,96 → 1), mientras da un saltito sobre su punta.
+     */
+    public static ValueAnimator popPin(Marker marker, BitmapDescriptor[] frames, float anchorV) {
+        ValueAnimator animator = ValueAnimator.ofFloat(MapPinHelper.POP_FROM, 1.12f, 0.96f, 1f);
+        animator.setDuration(340);
+        animator.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        animator.addUpdateListener(a -> {
+            try {
+                marker.setIcon(MapPinHelper.frameFor(frames, (float) a.getAnimatedValue()));
+                // Salto: sube hasta 0,12 del alto y vuelve, en media sinusoide
+                float hop = 0.12f * (float) Math.sin(Math.PI * a.getAnimatedFraction());
+                marker.setAnchor(0.5f, anchorV + hop);
+            } catch (IllegalArgumentException e) {
+                a.cancel();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+
+    /** Pin que deja de estar seleccionado: se encoge al tamaño normal y luego llama a onEnd. */
+    public static ValueAnimator shrinkPin(Marker marker, BitmapDescriptor[] frames, float anchorV,
+                                          Runnable onEnd) {
+        ValueAnimator animator = ValueAnimator.ofFloat(1f, MapPinHelper.POP_FROM);
+        animator.setDuration(160);
+        animator.addUpdateListener(a -> {
+            try {
+                marker.setIcon(MapPinHelper.frameFor(frames, (float) a.getAnimatedValue()));
+                marker.setAnchor(0.5f, anchorV);
+            } catch (IllegalArgumentException e) {
+                a.cancel();
+            }
+        });
+        animator.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                onEnd.run();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+
+    /**
+     * Halo del cliente que respira sin fin (crece y se encoge en 1,3 s). Pausarlo
+     * en onPause y cancelarlo en onDestroy; sin animaciones no se llama.
+     */
+    public static ValueAnimator breathe(Marker marker, BitmapDescriptor[] frames) {
+        ValueAnimator animator = ValueAnimator.ofInt(0, frames.length - 1);
+        animator.setDuration(1300);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        int[] shown = {-1};
+        animator.addUpdateListener(a -> {
+            int frame = (int) a.getAnimatedValue();
+            if (frame == shown[0]) return;   // solo se cambia el ícono cuando cambia el cuadro
+            shown[0] = frame;
+            try {
+                marker.setIcon(frames[frame]);
+            } catch (IllegalArgumentException e) {
+                a.cancel();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+
+    /** Desliza el marcador a su nueva posición en lugar de saltar. */
+    public static ValueAnimator glide(Marker marker, LatLng to) {
+        LatLng from = marker.getPosition();
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(600);
+        animator.addUpdateListener(a -> {
+            float f = a.getAnimatedFraction();
+            try {
+                marker.setPosition(new LatLng(from.latitude + (to.latitude - from.latitude) * f,
+                        from.longitude + (to.longitude - from.longitude) * f));
+            } catch (IllegalArgumentException e) {
+                a.cancel();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+
+    /** El pin cae desde un poco más arriba y rebota en su punta (ancla anchorV). */
+    public static ValueAnimator drop(Marker marker, float anchorV) {
+        ValueAnimator animator = ValueAnimator.ofFloat(0.35f, 0f);
+        animator.setDuration(350);
+        animator.setInterpolator(new BounceInterpolator());
+        animator.addUpdateListener(a -> {
+            try {
+                marker.setAnchor(0.5f, anchorV + (float) a.getAnimatedValue());
+            } catch (IllegalArgumentException e) {
+                a.cancel();
+            }
+        });
+        animator.start();
+        return animator;
+    }
+}

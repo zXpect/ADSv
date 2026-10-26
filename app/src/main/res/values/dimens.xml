@@ -1,8 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="margin_top_button">32dp</dimen>
-    <dimen name="margin_between_buttons">16dp</dimen>
-    <dimen name="button_vertical_padding">16dp</dimen>
-    <dimen name="text_size_button">18sp</dimen>
-    <dimen name="nav_header_vertical_spacing">2dp</dimen>
+    <!-- Heredados -->
+
+    <!-- Espaciado ADS (tokens.json: 4, 8, 16, 24; 12 y 20 salen de los mockups) -->
+    <dimen name="space_1">4dp</dimen>
+    <dimen name="space_2">8dp</dimen>
+    <dimen name="space_3">12dp</dimen>
+    <dimen name="space_4">16dp</dimen>
+    <dimen name="space_5">20dp</dimen>
+    <dimen name="space_6">24dp</dimen>
+    <!-- Margen lateral de pantalla: los mockups usan 24 px -->
+    <dimen name="screen_margin">24dp</dimen>
+
+    <!-- Radios ADS (tokens.json: 12, 16, 22; 14, 20 y 28 salen de los mockups) -->
+    <dimen name="radius_chip">10dp</dimen>
+    <dimen name="radius_sm">12dp</dimen>
+    <dimen name="radius_field">14dp</dimen>
+    <dimen name="radius_md">16dp</dimen>
+    <dimen name="radius_card">20dp</dimen>
+    <!-- Elevación de las tarjetas: sombra suave en claro (1 dp en oscuro, values-night) -->
+    <dimen name="ads_card_elevation">3dp</dimen>
+    <dimen name="radius_lg">22dp</dimen>
+    <dimen name="radius_sheet">28dp</dimen>
+
+    <!-- Componentes -->
+    <dimen name="touch_min">44dp</dimen>
+    <dimen name="button_height">54dp</dimen>
+    <dimen name="field_height">52dp</dimen>
+    <dimen name="bottom_nav_height">76dp</dimen>
+    <dimen name="stroke_line">1dp</dimen>
+    <dimen name="stroke_control">1.5dp</dimen>
+    <dimen name="stroke_focus">2dp</dimen>
+    <dimen name="icon_md">22dp</dimen>
+    <!-- Ficha de ícono de las filas de notificaciones -->
+    <dimen name="icon_tile">40dp</dimen>
+    <!-- Columna del número de cláusula en Términos y privacidad ("10.2.") -->
+    <dimen name="legal_marker_width">44dp</dimen>
+    <!-- Ficha de ícono de las opciones grandes (métodos de pago) -->
+    <dimen name="icon_tile_lg">48dp</dimen>
 </resources>

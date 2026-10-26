@@ -1,150 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Tarjeta de técnico · mockup 08: avatar (foto o iniciales), nombre y distancia,
+     oficios y calificación. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/worker_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_marginBottom="@dimen/space_3"
     android:clickable="true"
     android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="horizontal">
 
-        <!-- Worker Image -->
         <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp">
+            android:layout_width="56dp"
+            android:layout_height="56dp">
+
+            <TextView
+                android:id="@+id/worker_initials"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_ads_avatar"
+                android:gravity="center"
+                android:importantForAccessibility="no"
+                android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                android:textColor="@color/ads_surface"
+                android:textSize="18sp"
+                tools:text="CR" />
 
             <ImageView
                 android:id="@+id/worker_image"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/logo"
-                android:contentDescription="Foto del trabajador"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
                 android:scaleType="centerCrop"
-                android:background="@drawable/circle_background" />
-
-            <!-- Worker Type Icon -->
-            <ImageView
-                android:id="@+id/worker_type_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="bottom|end"
-                android:src="@drawable/icon_worker"
-                android:background="@drawable/circle_white_background"
-                android:padding="4dp"
-                android:contentDescription="Tipo de servicio" />
-
+                android:visibility="gone" />
         </FrameLayout>
 
-        <!-- Worker Info -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <!-- Name and Rating Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/worker_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Nombre Trabajador"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
+                    android:ellipsize="end"
                     android:maxLines="1"
-                    android:ellipsize="end" />
-
-                <TextView
-                    android:id="@+id/worker_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="★ 4.5"
-                    android:textSize="14sp"
-                    android:textColor="@color/rating_color"
-                    android:background="@drawable/rating_background"
-                    android:padding="4dp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-            <!-- Work Type -->
-            <TextView
-                android:id="@+id/worker_work"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tipo de trabajo"
-                android:textSize="14sp"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginTop="4dp"
-                android:drawableLeft="@drawable/ic_work_small"
-                android:drawablePadding="4dp"
-                android:gravity="center_vertical" />
-
-            <!-- Distance and Status Row -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="8dp">
+                    android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                    android:textSize="16sp"
+                    tools:text="Carlos Rojas" />
 
                 <TextView
                     android:id="@+id/worker_distance"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="1.2 km"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:drawableLeft="@drawable/ic_location_small"
-                    android:drawablePadding="4dp"
-                    android:gravity="center_vertical" />
-
-                <View
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:background="@drawable/circle_green"
-                    android:layout_marginEnd="4dp" />
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Disponible"
-                    android:textSize="12sp"
-                    android:textColor="@color/status_available" />
-
+                    android:layout_marginStart="@dimen/space_2"
+                    android:drawablePadding="@dimen/space_1"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.ADS.Label"
+                    android:textColor="@color/ads_charcoal"
+                    app:drawableStartCompat="@drawable/ic_location_small"
+                    app:drawableTint="@color/ads_muted"
+                    tools:text="0,8 km" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/worker_work"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                tools:text="Electricidad" />
+
+            <TextView
+                android:id="@+id/worker_rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                android:textColor="@color/ads_charcoal"
+                app:drawableStartCompat="@drawable/ic_star_filled"
+                tools:text="4,8 · 32 calificaciones" />
         </LinearLayout>
-
-        <!-- Action Button -->
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_arrow_forward"
-            android:contentDescription="Ver detalles"
-            android:padding="8dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless" />
-
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

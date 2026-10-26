@@ -1,61 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- ===================================================================
+         TOKENS ADS · MODO OSCURO (se activa con el tema oscuro del teléfono)
+         Paleta aprobada el 18/10/2026 (COLORES_ADS_ANDROID.md): azul noche
+         más oscuro y menos morado; el naranja de marca no cambia.
+         Equivalencias con esa tabla: ads_charcoal = ads_on_surface,
+         ads_text = ads_on_surface_strong, ads_header = ads_card_highlight,
+         ads_on_navy(_muted) = ads_on_highlight(_muted),
+         ads_control = ads_control_border.
+         Los marcados (*) no están en la tabla: se derivan de ella.
+         =================================================================== -->
+    <color name="ads_brand">#F28A2E</color>
+    <color name="ads_brand_text">#F28A2E</color>
+    <color name="ads_navy">#1F2540</color>           <!-- (*) bloques navy: igual que la tarjeta destacada -->
+    <color name="ads_on_brand">#0F1220</color>
+    <color name="ads_charcoal">#F6F3EE</color>
+    <color name="ads_text">#F6F3EE</color>
+    <color name="ads_muted">#A8AEC0</color>
+    <color name="ads_surface">#0F1220</color>
+    <color name="ads_surface_alt">#171B2B</color>
+    <color name="ads_card">#171B2B</color>
+    <color name="ads_bar">#171B2B</color>            <!-- barra inferior = tarjetas -->
+    <color name="ads_line">#2A2F45</color>
+    <!-- Relieve: tarjeta más clara que el fondo y borde con un poco de brillo -->
+    <color name="ads_card_raised">#1B2035</color>
+    <color name="ads_card_edge">#343A56</color>
+    <color name="ads_shadow">#000000</color>
+    <color name="ads_control">#6B7288</color>
+    <color name="ads_chip_bg">#3A2616</color>
+    <color name="ads_chip_text">#F28A2E</color>
+    <color name="ads_on_navy">#F6F3EE</color>
+    <color name="ads_on_navy_muted">#C9CCD6</color>
+    <color name="ads_map_me">#6F8BFF</color>         <!-- (*) -->
+    <color name="ads_header">#1F2540</color>
+    <color name="ads_start_bg">#0F1220</color>       <!-- Bienvenida y Login: lo más oscuro posible -->
+    <color name="ads_sheet">#171B2B</color>          <!-- (*) hoja del Login: se separa del fondo -->
+    <color name="ads_segment_selected">#2A2F45</color> <!-- (*) se distingue del fondo ads_surface_alt -->
+    <color name="ads_highlight_raised">#2A3152</color> <!-- (*) ficha sobre la tarjeta destacada -->
+    <color name="ads_highlight_track">#3A4262</color>  <!-- (*) rieles sobre la tarjeta destacada -->
+    <color name="ads_switch_disabled">#6B7288</color>
+    <color name="ads_chip_strong_bg">#2A3152</color>   <!-- (*) = ads_highlight_raised -->
+    <color name="ads_chip_strong_text">#F6F3EE</color>
+    <color name="ads_chip_neutral_bg">#2A2F45</color>  <!-- (*) = ads_line: ads_surface_alt es igual a la tarjeta -->
+    <color name="ads_skeleton">#2A2F45</color>        <!-- (*) = ads_line: se ve sobre la tarjeta -->
+
+    <!-- ===================================================================
+         HEREDADOS que NO apuntan a tokens: conservan su valor oscuro
+         anterior. El resto de nombres heredados se resuelve solo con los
+         tokens de arriba (ver values/colors.xml).
+         Ojo: "white" y "black" aquí NO son blanco ni negro (se invierten);
+         no usarlos en layouts nuevos.
+         =================================================================== -->
+    <color name="black">#D1CDCD</color>
+    <color name="textOnlywhite">#ECEFF4</color>
 
 
-    <color name="status_bar_dark">#CC1A1A1A</color>
-    <color name="nav_item_selected_bg">#33FFFFFF</color>
+    <!-- Colores de estado -->
+    <color name="success_color">#52D86A</color>
+    <color name="error_color">#F56B5F</color>
+    <color name="warning_color">#FFB340</color>
+    <color name="status_available">#52D86A</color>
 
 
-    <!-- Fondos adaptados a oscuro - GRISES MÁS CLAROS Y CONTRASTANTES -->
-    <color name="background_light">#1A1A1A</color>
 
-    <color name="background_color">#1A1A1A</color>
-    <color name="whitevariable">#353433</color>
-    <color name="white">#101010</color>
-    <color name="black">#FFFFFF</color>
-    <color name="background_card">#262626</color>
-    <color name="card_background">#262626</color>
-    <color name="surface_dark">#2D2D2D</color>
+    <!-- Estados del servicio -->
 
-    <!-- Textos adaptados - MÁS BRILLANTES -->
-    <color name="text_primary">#FAFAFA</color>
-    <color name="text_secondary">#C7C7C7</color>
-    <color name="text_hint">#8A8A8A</color>
-    <color name="primary_text">#FAFAFA</color>
-    <color name="secondary_text">#C7C7C7</color>
-
-    <!-- Dividers / bordes oscuros - MÁS VISIBLES -->
-    <color name="divider_color">#404040</color>
-    <color name="border_gray">#404040</color>
-
-    <!-- ============================================ -->
-    <!-- ESTADÍSTICAS - TEMA OSCURO CON CONTRASTE -->
-    <!-- ============================================ -->
-    <!-- Fondo de tarjetas en oscuro (gris medio) -->
-    <color name="stat_card_bg_1">#2D2D2D</color>
-    <color name="stat_card_bg_2">#2D2D2D</color>
-    <color name="stat_card_bg_3">#2D2D2D</color>
-    <color name="stat_card_bg_4">#2D2D2D</color>
-
-    <!-- El naranja se mantiene ESTÁTICO y resalta perfecto -->
-    <!-- <color name="stat_value_color">#FF7500</color> -->
-
-    <!-- Texto descriptivo claro -->
-    <color name="stat_icon_color">#C7C7C7</color>
-
-    <!-- ============================================ -->
-    <!-- BADGES Y NOTIFICACIONES -->
-    <!-- ============================================ -->
-    <color name="notification_badge_bg">#353535</color>
-
-    <!-- ============================================ -->
-    <!-- ACCESOS RÁPIDOS -->
-    <!-- ============================================ -->
-    <color name="quick_access_bg_1">#2D2D2D</color>
-    <color name="quick_access_bg_2">#2D2D2D</color>
-
-    <!-- Legacy -->
-    <color name="stat_card_bg">#2D2D2D</color>
-    <color name="quick_access_bg_1_dark">#2D2D2D</color>
-    <color name="quick_access_bg_2_dark">#2D2D2D</color>
+    <!-- Utilidad -->
+    <color name="ads_tile">#0F1220</color>          <!-- ficha de ícono gris dentro de una tarjeta -->
+    <color name="ads_divider">#2A2F45</color>       <!-- divisor entre filas dentro de una tarjeta -->
 </resources>

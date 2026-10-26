@@ -9,6 +9,7 @@
     android:paddingHorizontal="8dp">
 
     <ImageView
+        android:importantForAccessibility="no"
         android:id="@+id/legend_icon"
         android:layout_width="20dp"
         android:layout_height="20dp"

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ficha de ícono naranja claro (oficios, tarjeta del mapa) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ads_chip_bg" />
+    <corners android:radius="@dimen/radius_sm" />
+</shape>

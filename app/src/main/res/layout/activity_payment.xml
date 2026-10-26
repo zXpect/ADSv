@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pago del servicio · mockups 25 (PagarWompi) y 26-28 (PagoAprobado, PagoRechazado,
+     PagoPendiente). PaymentActivity muestra el modo «pagar» o el modo «resultado». -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ads_surface"
+    tools:context="com.project.ads.activities.client.PaymentActivity">
+
+    <!-- Modo pagar (mockup 25) -->
+    <LinearLayout
+        android:id="@+id/layout_payment_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingTop="@dimen/space_4"
+                android:paddingEnd="@dimen/screen_margin"
+                android:paddingBottom="@dimen/space_6">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/btn_back"
+                        android:layout_width="@dimen/touch_min"
+                        android:layout_height="@dimen/touch_min"
+                        android:background="@drawable/bg_ads_circle_button"
+                        android:contentDescription="@string/action_back"
+                        android:src="@drawable/ic_arrow_back"
+                        app:tint="@color/ads_text" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        style="@style/Widget.ADS.StatusChip.Strong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="12dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="5dp"
+                        android:text="@string/request_status_completed" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_4"
+                    android:accessibilityHeading="true"
+                    android:text="@string/payment_checkout_title"
+                    android:textAppearance="@style/TextAppearance.ADS.Headline" />
+
+                <TextView
+                    android:id="@+id/tv_payment_worker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                    tools:text="Carlos Rojas finalizó el trabajo. Ya puedes pagar." />
+
+                <!-- Total a pagar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_5"
+                    android:background="@drawable/bg_ads_price_block"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/space_5"
+                    android:paddingTop="22dp"
+                    android:paddingEnd="@dimen/space_5"
+                    android:paddingBottom="22dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/payment_total"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption"
+                        android:textColor="@color/ads_on_navy_muted" />
+
+                    <TextView
+                        android:id="@+id/tv_payment_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_1"
+                        android:fontFamily="@font/sora_extrabold"
+                        android:textColor="@color/ads_on_navy"
+                        android:textSize="40sp"
+                        tools:text="$95.000" />
+
+                    <TextView
+                        android:id="@+id/tv_payment_service"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_1"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption"
+                        android:textColor="@color/ads_on_navy_muted"
+                        tools:text="Electricidad" />
+                </LinearLayout>
+
+                <!-- Medios de pago de Wompi -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:text="@string/payment_methods_title"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_payment_methods"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:chipSpacingHorizontal="@dimen/space_2">
+
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.ADS.Chip.Static"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/payment_method_card" />
+
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.ADS.Chip.Static"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/payment_method_nequi" />
+
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.ADS.Chip.Static"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/payment_method_pse" />
+
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.ADS.Chip.Static"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/payment_method_bancolombia" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.ADS.Card.Notice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_info"
+                            app:tint="@color/ads_charcoal" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:text="@string/payment_sandbox_note"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption"
+                            android:textColor="@color/ads_charcoal" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- Barra de acción fija -->
+        <LinearLayout
+            android:id="@id/ads_action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ads_bar"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/stroke_line"
+                android:background="@color/ads_line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingTop="14dp"
+                android:paddingEnd="@dimen/screen_margin"
+                android:paddingBottom="@dimen/screen_margin">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_payment_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/payment_pay_wompi" />
+
+                <TextView
+                    android:id="@+id/tv_payment_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:fontFamily="@font/sora"
+                    android:gravity="center"
+                    android:text="@string/payment_secure_screen_note"
+                    android:textAppearance="@style/TextAppearance.ADS.Label" />
+
+                <ProgressBar
+                    android:id="@+id/progress_payment"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:indeterminateTint="@color/ads_brand"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Modo resultado (mockups 26, 27 y 28) -->
+    <LinearLayout
+        android:id="@+id/layout_payment_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingEnd="@dimen/screen_margin"
+        android:paddingBottom="32dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_result_icon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/bg_ads_avatar"
+                android:contentDescription="@null"
+                android:padding="28dp"
+                android:src="@drawable/ic_ads_check"
+                app:tint="@color/ads_brand" />
+
+            <TextView
+                android:id="@+id/tv_result_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:accessibilityHeading="true"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.ADS.Headline"
+                tools:text="Pago aprobado" />
+
+            <TextView
+                android:id="@+id/tv_result_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_3"
+                android:fontFamily="@font/sora_extrabold"
+                android:textColor="@color/ads_text"
+                android:textSize="32sp"
+                android:visibility="gone"
+                tools:text="$95.000"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_result_message"
+                android:layout_width="290dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_3"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                tools:text="Pagaste con Wompi. Ahora puedes calificar el servicio de Carlos Rojas." />
+
+            <ProgressBar
+                android:id="@+id/progress_result"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="@dimen/space_4"
+                android:indeterminateTint="@color/ads_brand"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_result_primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Calificar servicio" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_result_home"
+            style="@style/Widget.ADS.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_3"
+            android:text="@string/request_sent_home" />
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tarea elegible en la solicitud · mockup 10. Sin elegir: casilla vacía y unidad.
+     Elegida: borde naranja, casilla marcada y contador de cantidad. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_task_option"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="18dp"
+    app:contentPaddingBottom="14dp"
+    app:contentPaddingLeft="@dimen/space_4"
+    app:contentPaddingRight="@dimen/space_4"
+    app:contentPaddingTop="14dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="32dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_task_check"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_ads_check_off"
+                android:contentDescription="@null"
+                android:padding="4dp" />
+
+            <TextView
+                android:id="@+id/tv_task_option_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_3"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                tools:text="Reparar cortocircuito" />
+
+            <TextView
+                android:id="@+id/tv_task_option_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_2"
+                android:fontFamily="@font/sora"
+                android:textAppearance="@style/TextAppearance.ADS.Label"
+                tools:text="Visita" />
+        </LinearLayout>
+
+        <!-- «Otro trabajo»: qué hay que hacer -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_task_custom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_task_custom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/request_custom_hint"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLength="200"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Cantidad -->
+        <LinearLayout
+            android:id="@+id/layout_task_quantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_task_quantity_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/sora"
+                android:textAppearance="@style/TextAppearance.ADS.Label"
+                tools:text="Visitas" />
+
+            <ImageButton
+                android:id="@+id/btn_task_minus"
+                android:layout_width="@dimen/touch_min"
+                android:layout_height="@dimen/touch_min"
+                android:background="@drawable/bg_ads_stepper_button"
+                android:contentDescription="@string/request_quantity_minus"
+                android:src="@drawable/ic_ads_minus"
+                app:tint="@color/ads_text" />
+
+            <TextView
+                android:id="@+id/tv_task_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touch_min"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:minWidth="44dp"
+                android:paddingStart="@dimen/space_1"
+                android:paddingEnd="@dimen/space_1"
+                android:textAppearance="@style/TextAppearance.ADS.Price"
+                android:textSize="18sp"
+                tools:text="1" />
+
+            <ImageButton
+                android:id="@+id/btn_task_plus"
+                android:layout_width="@dimen/touch_min"
+                android:layout_height="@dimen/touch_min"
+                android:background="@drawable/bg_ads_stepper_button"
+                android:contentDescription="@string/request_quantity_plus"
+                android:src="@drawable/ic_ads_plus"
+                app:tint="@color/ads_text" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

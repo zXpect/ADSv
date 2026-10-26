@@ -1,121 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Historial de solicitudes · mockup 41 (docs/mockups/Historial.dc.html).
+     Pestaña «Solicitudes» de la barra inferior; la flecha de volver queda oculta. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
-    tools:context="com.ads.activities.client.MyRequestsActivity">
+    android:background="@color/ads_surface"
+    android:orientation="vertical">
 
-    <!-- AppBar -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    <!-- Encabezado -->
+    <LinearLayout
+        android:id="@+id/layout_list_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:background="@color/ads_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingTop="@dimen/space_3"
+        android:paddingEnd="@dimen/screen_margin">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="Mis Solicitudes"
-            app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_arrow_back" />
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/touch_min"
+            android:layout_height="@dimen/touch_min"
+            android:layout_marginStart="@dimen/space_1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_back"
+            android:src="@drawable/ic_arrow_back"
+            android:visibility="gone"
+            app:tint="@color/ads_text" />
 
-        <!-- Tabs para filtrar -->
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/colorPrimary"
-            app:tabMode="scrollable"
-            app:tabTextColor="@color/white"
-            app:tabSelectedTextColor="@color/white"
-            app:tabIndicatorColor="@color/white"
-            app:tabIndicatorHeight="3dp"
-            app:tabTextAppearance="@style/TabTextStyle" />
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:accessibilityHeading="true"
+            android:text="@string/history_title"
+            android:textAppearance="@style/TextAppearance.ADS.Headline" />
+    </LinearLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Contenido principal -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_requests"
+                android:id="@+id/recycler_my_requests"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingTop="8dp"
-                android:paddingBottom="80dp"
-                android:scrollbars="vertical" />
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingTop="@dimen/space_1"
+                android:paddingEnd="@dimen/screen_margin"
+                android:paddingBottom="@dimen/space_6" />
 
-            <!-- Empty State -->
+            <!-- Tarjetas de relleno mientras carga la lista (antes, rueda de carga) -->
+            <com.project.ads.includes.AdsSkeletonView
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingTop="@dimen/space_1"
+                android:paddingEnd="@dimen/screen_margin"
+                android:visibility="gone" />
+
+            <!-- Sin solicitudes -->
             <LinearLayout
                 android:id="@+id/empty_state"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:visibility="gone"
-                android:padding="32dp">
-
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@drawable/ic_no_requests"
-                    android:alpha="0.3"
-                    app:tint="@color/text_secondary"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No tienes solicitudes"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Solicita un servicio y aparecerá aquí"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center" />
-
-            </LinearLayout>
-
-            <!-- Loading State -->
-            <FrameLayout
-                android:id="@+id/loading_state"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/background_light"
+                android:orientation="vertical"
+                android:padding="32dp"
                 android:visibility="gone">
 
-                <ProgressBar
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_empty_requests" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:indeterminateTint="@color/colorPrimary" />
+                    android:layout_marginTop="@dimen/space_4"
+                    android:gravity="center"
+                    android:text="@string/history_empty_title"
+                    android:textAppearance="@style/TextAppearance.ADS.Subtitle" />
 
-            </FrameLayout>
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_1"
+                    android:gravity="center"
+                    android:text="@string/history_empty_message"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall" />
+            </LinearLayout>
         </FrameLayout>
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <include layout="@layout/view_bottom_nav_client" />
+</LinearLayout>

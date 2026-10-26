@@ -1,0 +1,619 @@
+package com.project.ads.activities.client;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.Log;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.project.ads.R;
+import com.project.ads.activities.LegalActivity;
+import com.project.ads.activities.LoginActivity;
+import com.project.ads.models.Client;
+import com.project.ads.providers.AuthProvider;
+import com.project.ads.providers.ClientProvider;
+
+import java.io.IOException;
+import java.util.regex.Pattern;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+/**
+ * Registro de cliente · mockup 04 (docs/mockups/RegistroCliente.dc.html).
+ * Mayor de edad, términos y datos personales son tres casillas obligatorias;
+ * todavía no se guardan como marcas de consentimiento (pendiente del backend).
+ */
+public class RegisterActivity extends AppCompatActivity {
+
+    private static final String TAG = "RegisterActivity";
+    private static final int MIN_PASSWORD_LENGTH = 8;
+    private static final int MAX_PASSWORD_LENGTH = 50;
+    private static final int MAX_NAME_LENGTH = 50;
+    private static final int MIN_PHONE_LENGTH = 7; // ⭐ NUEVO
+    private static final int MAX_PHONE_LENGTH = 10; // ⭐ NUEVO
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]+$"); // ⭐ NUEVO
+
+    private SharedPreferences mPref;
+    private AuthProvider mAuthProvider;
+    private ClientProvider mClientProvider;
+
+    // Views
+    private Button mButtonRegister;
+    private TextInputEditText mTextInputNames;
+    private TextInputEditText mTextInputLastNames;
+    private TextInputEditText mTextInputEmail;
+    private TextInputEditText mTextInputPassword;
+    private TextInputEditText mTextInputPhone; // ⭐ NUEVO
+    private CheckBox mCheckBoxTerms;
+    private CheckBox mCheckBoxAdult;
+    private CheckBox mCheckBoxData;
+    private long mConsentAcceptedAt;
+    private TextView mTextViewTerms;
+    private CircleImageView mCircleImageProfile;
+    private ImageView mImageViewAddPhoto;
+
+    // TextInputLayouts para mostrar errores
+    private TextInputLayout mTextInputLayoutNames;
+    private TextInputLayout mTextInputLayoutLastNames;
+    private TextInputLayout mTextInputLayoutEmail;
+    private TextInputLayout mTextInputLayoutPassword;
+    private TextInputLayout mTextInputLayoutPhone; // ⭐ NUEVO
+
+    // Variables para Google Sign-In
+    private boolean isFromGoogleSignIn = false;
+    private String googleUserId;
+    private String googleEmail;
+
+    // Variable para la imagen seleccionada
+    private Uri mImageUri;
+    private boolean mImageSelected = false;
+
+    // Launcher para seleccionar imagen de galería
+    private final ActivityResultLauncher<Intent> galleryLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri imageUri = result.getData().getData();
+                    if (imageUri != null) {
+                        handleSelectedImage(imageUri);
+                    }
+                }
+            });
+
+    // Launcher para tomar foto con cámara
+    private final ActivityResultLauncher<Intent> cameraLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Bundle extras = result.getData().getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    if (imageBitmap != null) {
+                        mCircleImageProfile.setImageBitmap(imageBitmap);
+                        mImageUri = getImageUriFromBitmap(imageBitmap);
+                        mImageSelected = true;
+                    }
+                }
+            });
+
+    // Launcher para permisos de cámara
+    private final ActivityResultLauncher<String> cameraPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    openCamera();
+                } else {
+                    showToast("Permiso de cámara denegado");
+                }
+            });
+
+    // Launcher para permisos de galería (Android 13+)
+    private final ActivityResultLauncher<String> galleryPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    openGallery();
+                } else {
+                    showToast("Permiso de galería denegado");
+                }
+            });
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register);
+
+        initializeComponents();
+        handleGoogleSignInData();
+        setupClickListeners();
+        setupTermsAndConditionsLink();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isFromGoogleSignIn) {
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Cancelar registro")
+                    .setMessage("Si cancelas ahora, no se tendrá en cuenta el progreso de registro. ¿Estás seguro?")
+                    .setPositiveButton("Sí, cancelar", (dialog, which) -> deleteUserAndSignOut())
+                    .setNegativeButton("Continuar registro", null)
+                    .setCancelable(false)
+                    .show();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    private void deleteUserAndSignOut() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        com.google.firebase.auth.FirebaseUser user = auth.getCurrentUser();
+
+        if (user != null) {
+            user.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Usuario eliminado correctamente");
+                } else {
+                    Log.e(TAG, "Error al eliminar usuario", task.getException());
+                }
+
+                auth.signOut();
+
+                com.google.android.gms.auth.api.signin.GoogleSignInOptions gso =
+                        new com.google.android.gms.auth.api.signin.GoogleSignInOptions.Builder(
+                                com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestIdToken(getString(R.string.default_web_client_id))
+                                .requestEmail()
+                                .build();
+
+                com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(this, gso).signOut()
+                        .addOnCompleteListener(this, task1 -> {
+                            showToast("Registro cancelado");
+                            finish();
+                        });
+            });
+        } else {
+            finish();
+        }
+    }
+
+    private void initializeComponents() {
+        findViewById(R.id.btn_back).setOnClickListener(v -> onBackPressed());
+        findViewById(R.id.btn_register_login).setOnClickListener(v -> {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        });
+
+        mAuthProvider = new AuthProvider();
+        mClientProvider = new ClientProvider();
+        mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
+
+        // Initialize views
+        mButtonRegister = findViewById(R.id.continue_register);
+        mTextInputNames = findViewById(R.id.names_user_client);
+        mTextInputLastNames = findViewById(R.id.last_names);
+        mTextInputEmail = findViewById(R.id.emailAddress);
+        mTextInputPassword = findViewById(R.id.Password);
+        mTextInputPhone = findViewById(R.id.phone_number); // ⭐ NUEVO
+        mCheckBoxTerms = findViewById(R.id.checkBox2);
+        mCheckBoxAdult = findViewById(R.id.checkbox_adult);
+        mCheckBoxData = findViewById(R.id.checkbox_data);
+        findViewById(R.id.tv_register_adult).setOnClickListener(v -> mCheckBoxAdult.toggle());
+        mTextViewTerms = findViewById(R.id.textViewTerms);
+        mCircleImageProfile = findViewById(R.id.circleImageProfile);
+        mImageViewAddPhoto = findViewById(R.id.imageViewAddPhoto);
+
+        // Initialize TextInputLayouts
+        mTextInputLayoutNames = findViewById(R.id.textInputLayoutNames);
+        mTextInputLayoutLastNames = findViewById(R.id.textInputLayoutLastNames);
+        mTextInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
+        mTextInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
+        mTextInputLayoutPhone = findViewById(R.id.textInputLayoutPhone); // ⭐ NUEVO
+    }
+
+    private void handleGoogleSignInData() {
+        Intent intent = getIntent();
+        isFromGoogleSignIn = intent.getBooleanExtra("fromGoogleSignIn", false);
+
+        if (isFromGoogleSignIn) {
+            googleUserId = intent.getStringExtra("userId");
+            googleEmail = intent.getStringExtra("email");
+            String name = intent.getStringExtra("name");
+            String lastName = intent.getStringExtra("lastName");
+
+            if (name != null) {
+                mTextInputNames.setText(name);
+            }
+            if (lastName != null) {
+                mTextInputLastNames.setText(lastName);
+            }
+            if (googleEmail != null) {
+                mTextInputEmail.setText(googleEmail);
+                mTextInputEmail.setEnabled(false);
+            }
+
+            findViewById(R.id.layout_password).setVisibility(View.GONE);
+            mButtonRegister.setText(R.string.register_complete);
+        }
+    }
+
+    private void setupClickListeners() {
+        mButtonRegister.setOnClickListener(v -> {
+            mButtonRegister.setEnabled(false);
+            try {
+                clickRegister();
+            } finally {
+                mButtonRegister.postDelayed(() -> mButtonRegister.setEnabled(true), 1000);
+            }
+        });
+
+        // Listener para seleccionar foto de perfil
+        mCircleImageProfile.setOnClickListener(v -> showImagePickerDialog());
+        mImageViewAddPhoto.setOnClickListener(v -> showImagePickerDialog());
+    }
+
+    private void showImagePickerDialog() {
+        String[] options = {"Tomar foto", "Seleccionar de galería", "Cancelar"};
+
+        AlertDialog.Builder builder = new MaterialAlertDialogBuilder(this);
+        builder.setTitle("Seleccionar foto de perfil");
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    checkCameraPermission();
+                    break;
+                case 1:
+                    checkGalleryPermission();
+                    break;
+                case 2:
+                    dialog.dismiss();
+                    break;
+            }
+        });
+        builder.show();
+    }
+
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            openCamera();
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+    }
+
+    private void checkGalleryPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+                    == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                galleryPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
+        }
+    }
+
+    private void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            cameraLauncher.launch(takePictureIntent);
+        } else {
+            showToast("No se encontró aplicación de cámara");
+        }
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        galleryLauncher.launch(intent);
+    }
+
+    private void handleSelectedImage(Uri imageUri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+            mCircleImageProfile.setImageBitmap(bitmap);
+            mImageUri = imageUri;
+            mImageSelected = true;
+        } catch (IOException e) {
+            Log.e(TAG, "Error al cargar imagen", e);
+            showToast("Error al cargar la imagen");
+        }
+    }
+
+    private Uri getImageUriFromBitmap(Bitmap bitmap) {
+        String path = MediaStore.Images.Media.insertImage(
+                getContentResolver(),
+                bitmap,
+                "profile_" + System.currentTimeMillis(),
+                null
+        );
+        return Uri.parse(path);
+    }
+
+    private void setupTermsAndConditionsLink() {
+        mTextViewTerms.setText(linkText(R.string.register_terms_text, R.string.register_terms_link, LegalActivity.DOCUMENT_TERMS));
+        mTextViewTerms.setMovementMethod(LinkMovementMethod.getInstance());
+        TextView data = findViewById(R.id.textViewData);
+        data.setText(linkText(R.string.register_data_text, R.string.register_data_link, LegalActivity.DOCUMENT_PRIVACY));
+        data.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    /** "Acepto los Términos y Condiciones" con el enlace en negrita sobre la parte indicada. */
+    private SpannableString linkText(int textRes, int linkRes, String document) {
+        String text = getString(textRes);
+        String link = getString(linkRes);
+        SpannableString spannable = new SpannableString(text);
+        int start = Math.max(0, text.indexOf(link));
+        spannable.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                // Términos o Aviso de privacidad, dentro de la app
+                startActivity(LegalActivity.intent(RegisterActivity.this, document));
+            }
+        }, start, Math.min(text.length(), start + link.length()), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                start, Math.min(text.length(), start + link.length()), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
+    }
+
+
+    private void clickRegister() {
+        clearErrors();
+
+        String name = sanitizeInput(mTextInputNames.getText().toString());
+        String lastName = sanitizeInput(mTextInputLastNames.getText().toString());
+        String phone = sanitizeInput(mTextInputPhone.getText().toString()); // ⭐ NUEVO
+        String email = sanitizeInput(mTextInputEmail.getText().toString().toLowerCase());
+        String password = isFromGoogleSignIn ? "" : mTextInputPassword.getText().toString();
+
+        if (!validateFields(name, lastName, phone, email, password)) { // ⭐ AGREGADO phone
+            return;
+        }
+
+        if (!mCheckBoxAdult.isChecked()) {
+            showToast(getString(R.string.register_error_adult));
+            return;
+        }
+
+        if (!mCheckBoxTerms.isChecked()) {
+            showToast("Debe aceptar los términos y condiciones");
+            return;
+        }
+
+        if (!mCheckBoxData.isChecked()) {
+            showToast(getString(R.string.register_error_data));
+            return;
+        }
+        mConsentAcceptedAt = System.currentTimeMillis();
+
+        if (isFromGoogleSignIn) {
+            createClientFromGoogle(name, lastName, phone, email); // ⭐ AGREGADO phone
+        } else {
+            register(name, lastName, phone, email, password); // ⭐ AGREGADO phone
+        }
+    }
+
+    private boolean validateFields(String name, String lastName, String phone, String email, String password) { // ⭐ AGREGADO phone
+        boolean isValid = true;
+
+        if (!validateName(name)) {
+            mTextInputLayoutNames.setError("Nombre inválido (solo letras, máx. 50 caracteres)");
+            isValid = false;
+        }
+
+        if (!validateName(lastName)) {
+            mTextInputLayoutLastNames.setError("Apellido inválido (solo letras, máx. 50 caracteres)");
+            isValid = false;
+        }
+
+        // ⭐ VALIDACIÓN DE TELÉFONO
+        if (!validatePhone(phone)) {
+            mTextInputLayoutPhone.setError("Teléfono inválido (7-10 dígitos)");
+            isValid = false;
+        }
+
+        if (!validateEmail(email)) {
+            mTextInputLayoutEmail.setError("Email inválido");
+            isValid = false;
+        }
+
+        if (!isFromGoogleSignIn && !validatePassword(password)) {
+            mTextInputLayoutPassword.setError("La contraseña debe tener entre 8 y 50 caracteres, incluir mayúsculas, minúsculas y números");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    private boolean validateName(String name) {
+        return !TextUtils.isEmpty(name) &&
+                name.length() <= MAX_NAME_LENGTH &&
+                NAME_PATTERN.matcher(name).matches();
+    }
+
+    private boolean validateEmail(String email) {
+        return !TextUtils.isEmpty(email) &&
+                Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    // ⭐ NUEVO: Validación de teléfono
+    private boolean validatePhone(String phone) {
+        if (TextUtils.isEmpty(phone)) {
+            return false;
+        }
+
+        // Validar que solo contenga números
+        if (!PHONE_PATTERN.matcher(phone).matches()) {
+            return false;
+        }
+
+        // Validar longitud
+        int length = phone.length();
+        return length >= MIN_PHONE_LENGTH && length <= MAX_PHONE_LENGTH;
+    }
+
+    private boolean validatePassword(String password) {
+        return !TextUtils.isEmpty(password) &&
+                password.length() >= MIN_PASSWORD_LENGTH &&
+                password.length() <= MAX_PASSWORD_LENGTH &&
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[a-z].*") &&
+                password.matches(".*\\d.*");
+    }
+
+    private String sanitizeInput(String input) {
+        return input != null ? input.trim() : "";
+    }
+
+    private void clearErrors() {
+        mTextInputLayoutNames.setError(null);
+        mTextInputLayoutLastNames.setError(null);
+        mTextInputLayoutPhone.setError(null); // ⭐ NUEVO
+        mTextInputLayoutEmail.setError(null);
+        if (!isFromGoogleSignIn) {
+            mTextInputLayoutPassword.setError(null);
+        }
+    }
+
+    private void createClientFromGoogle(String name, String lastName, String phone, String email) { // ⭐ AGREGADO phone
+        Client client = new Client(googleUserId, name, lastName, email, phone); // ⭐ AGREGADO phone
+        client.setConsentAcceptedAt(mConsentAcceptedAt);
+
+        if (mImageSelected && mImageUri != null) {
+            // Crear cliente con imagen
+            mClientProvider.createWithImage(client, mImageUri)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            showToast("Registro completado con éxito");
+                            navigateToHome();
+                        } else {
+                            Log.e(TAG, "Error creating client from Google", task.getException());
+                            showToast("Error al completar el registro. Por favor, intente nuevamente");
+                        }
+                    });
+        } else {
+            // Crear cliente sin imagen
+            mClientProvider.create(client)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            showToast("Registro completado con éxito");
+                            navigateToHome();
+                        } else {
+                            Log.e(TAG, "Error creating client from Google", task.getException());
+                            showToast("Error al completar el registro. Por favor, intente nuevamente");
+                        }
+                    });
+        }
+    }
+
+    private void register(final String name, final String lastName, final String phone, final String email, String password) { // ⭐ AGREGADO phone
+        mAuthProvider.register(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        Client client = new Client(id, name, lastName, email, phone); // ⭐ AGREGADO phone
+                        client.setConsentAcceptedAt(mConsentAcceptedAt);
+                        createClient(client);
+                    } else {
+                        handleRegistrationError(task.getException());
+                    }
+                });
+    }
+
+    private void createClient(Client client) {
+        if (mImageSelected && mImageUri != null) {
+            // Crear cliente con imagen
+            mClientProvider.createWithImage(client, mImageUri)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            showToast("El registro se realizó con éxito");
+                            navigateToHome();
+                        } else {
+                            Log.e(TAG, "Error creating client", task.getException());
+                            showToast("Error al crear el cliente. Por favor, intente nuevamente");
+                            FirebaseAuth.getInstance().getCurrentUser().delete();
+                        }
+                    });
+        } else {
+            // Crear cliente sin imagen
+            mClientProvider.create(client)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            showToast("El registro se realizó con éxito");
+                            navigateToHome();
+                        } else {
+                            Log.e(TAG, "Error creating client", task.getException());
+                            showToast("Error al crear el cliente. Por favor, intente nuevamente");
+                            FirebaseAuth.getInstance().getCurrentUser().delete();
+                        }
+                    });
+        }
+    }
+
+    private void handleRegistrationError(Exception exception) {
+        String errorMessage = "Error en el registro. ";
+
+        if (exception instanceof FirebaseAuthWeakPasswordException) {
+            errorMessage += "La contraseña es muy débil";
+        } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+            errorMessage += "El email no es válido";
+        } else if (exception instanceof FirebaseAuthUserCollisionException) {
+            errorMessage += "El email ya está registrado";
+        } else {
+            errorMessage += "Por favor, intente nuevamente";
+            Log.e(TAG, "Registration error", exception);
+        }
+
+        showToast(errorMessage);
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(RegisterActivity.this, HomeUserActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+}

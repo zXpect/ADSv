@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Esqueleto del inicio del trabajador mientras llega su primer dato de Firebase
+     (HomeWorkerActivity.hideHomeSkeleton): la misma forma de saludo, «Tu estado»,
+     botón del mapa, contadores y próximo servicio, con bloques que laten. Evita que
+     la tarjeta muestre un estado («Perfil incompleto») antes de saber el real.
+     El fondo es opaco y nunca late: solo laten los bloques (home_skeleton_blocks),
+     para que no se asome el inicio real. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_skeleton"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ads_surface"
+    android:importantForAccessibility="noHideDescendants">
+
+    <LinearLayout
+        android:id="@+id/home_skeleton_blocks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingTop="@dimen/space_5"
+        android:paddingEnd="@dimen/screen_margin">
+
+        <!-- Oficio y saludo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="120dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/bg_ads_skeleton_block" />
+
+                <View
+                    android:layout_width="200dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:background="@drawable/bg_ads_skeleton_block" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="@dimen/touch_min"
+                android:layout_height="@dimen/touch_min"
+                android:background="@drawable/bg_ads_skeleton_card" />
+        </LinearLayout>
+
+        <!-- Tu estado: tarjeta navy con bloques claros -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_5"
+            android:background="@drawable/bg_ads_status_card"
+            android:orientation="vertical"
+            android:padding="@dimen/space_5">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="72dp"
+                        android:layout_height="12dp"
+                        android:background="@drawable/bg_ads_skeleton_block_on_navy" />
+
+                    <View
+                        android:layout_width="160dp"
+                        android:layout_height="24dp"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:background="@drawable/bg_ads_skeleton_block_on_navy" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="52dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_ads_skeleton_block_on_navy" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_marginTop="@dimen/space_4"
+                android:background="@drawable/bg_ads_skeleton_block_on_navy" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_marginTop="@dimen/space_2"
+                android:layout_marginEnd="96dp"
+                android:background="@drawable/bg_ads_skeleton_block_on_navy" />
+        </LinearLayout>
+
+        <!-- Ver mapa -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_ads_skeleton_card" />
+
+        <!-- Contadores -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="88dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_ads_skeleton_card" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="88dp"
+                android:layout_marginStart="@dimen/space_3"
+                android:layout_weight="1"
+                android:background="@drawable/bg_ads_skeleton_card" />
+        </LinearLayout>
+
+        <!-- Próximo servicio -->
+        <View
+            android:layout_width="140dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/bg_ads_skeleton_block" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_ads_skeleton_card" />
+    </LinearLayout>
+</FrameLayout>

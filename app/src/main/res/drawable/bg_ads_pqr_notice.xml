@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Aviso navy del plazo de respuesta de las PQR (mockups 42 y 54) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ads_header" />
+    <corners android:radius="@dimen/radius_md" />
+</shape>

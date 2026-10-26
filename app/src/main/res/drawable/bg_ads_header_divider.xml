@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Línea inferior de un encabezado fijo cuando la lista de abajo está desplazada
+     (Motion.liftOnScroll); su opacidad se anima de 0 a 255 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="bottom">
+        <shape android:shape="rectangle">
+            <size android:height="1dp" />
+            <solid android:color="@color/ads_line" />
+        </shape>
+    </item>
+</layer-list>

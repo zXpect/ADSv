@@ -1,0 +1,38 @@
+Nota. Este aviso forma parte del prototipo desarrollado en el proyecto de grado. Durante la etapa de prototipo, la aplicación se usa en pruebas con participantes voluntarios que emplean cuentas de prueba creadas por el equipo del proyecto, sin ingresar datos personales reales ni sensibles.
+En cumplimiento de la Ley Estatutaria 1581 de 2012 y del Decreto 1074 de 2015 (que compila el Decreto 1377 de 2013), la plataforma ADS informa a los titulares de datos personales la existencia de su Política de Tratamiento de Información, las finalidades para las cuales se recolectan sus datos, los derechos que les asisten y los mecanismos dispuestos para ejercerlos (Congreso de la República de Colombia, 2012; Ministerio de Comercio, Industria y Turismo, 2015).
+
+## Responsable del Tratamiento
+Los responsables del tratamiento de los datos personales son Maikoll Fabián Ballesteros Pinilla y Breider Yesid López Valero, autores del proyecto de grado del programa de Ingeniería de Sistemas de la Universidad de Cundinamarca, con domicilio para notificaciones en la Universidad de Cundinamarca, Seccional Ubaté, calle 6 N.º 9-80, Ubaté, Cundinamarca, correo electrónico adsteamsp@gmail.com y teléfonos 310 848 1366 (Breider Yesid López Valero) y 320 598 0873 (Maikoll Fabián Ballesteros Pinilla).
+
+## Tratamiento y Finalidades
+Los datos personales que el titular suministre al registrarse o al usar la plataforma, tales como el nombre, los datos de contacto, la dirección, la ubicación (la del Usuario Trabajador solo mientras mantenga el estado «disponible» y la del Usuario Solicitante solo al crear la Solicitud, sin seguimiento permanente), los documentos de verificación del Usuario Trabajador y la información de las Solicitudes y de los pagos, serán recolectados, almacenados, usados, circulados y suprimidos para las siguientes finalidades:
+- Crear, administrar y mantener la cuenta del usuario en la plataforma.
+- Poner en contacto a los Usuarios Solicitantes con los Usuarios Trabajadores y compartir con cada parte los datos de la otra que sean necesarios para el Servicio, como el nombre, la dirección del Servicio y el teléfono.
+- Gestionar las Solicitudes, el agendamiento y los pagos, y enviar las notificaciones asociadas.
+- Atender peticiones, consultas, quejas y reclamos.
+- Verificar la identidad y los documentos de los Usuarios Trabajadores.
+- Garantizar la seguridad de la aplicación.
+
+## Datos Sensibles, Menores de Edad y Encargados del Tratamiento
+La fotografía del documento de identidad y los demás documentos de verificación del Usuario Trabajador pueden contener datos sensibles y se tratarán solo para la verificación documental. El titular no está obligado a autorizar el tratamiento de datos sensibles; sin embargo, sin esos documentos no podrá completarse la verificación del Usuario Trabajador (Congreso de la República de Colombia, 2012, arts. 5–6). La ubicación no constituye por sí misma un dato sensible, pero se recolecta solo en los momentos indicados para limitar su tratamiento a lo estrictamente necesario. ADS no permite el registro de menores de edad: el Usuario Solicitante declara ser mayor de edad y la edad del Usuario Trabajador se verifica con su documento de identidad.
+Para operar la aplicación, ADS se apoya en proveedores tecnológicos que actúan como encargados del tratamiento, como Firebase (Google) y Render, cuyos servidores pueden estar ubicados fuera de Colombia. Estos encargados solo podrán tratar los datos por cuenta de ADS y para las finalidades indicadas, conforme al artículo 26 de la Ley 1581 de 2012 y a los artículos 24 y 25 del Decreto 1377 de 2013, compilados en el Decreto 1074 de 2015. Los datos de pago son tratados directamente por la pasarela Wompi conforme a sus propias políticas, y ADS no recibe ni almacena números de tarjeta. ADS solo entregará datos personales a las autoridades cuando medie una orden de autoridad competente.
+
+## Derechos del Titular
+De acuerdo con el artículo 8 de la Ley 1581 de 2012, el titular de los datos personales tiene derecho a:
+- Conocer, actualizar y rectificar sus datos personales frente al responsable del tratamiento.
+- Solicitar prueba de la autorización otorgada, salvo cuando esta no sea requerida por la ley.
+- Ser informado, previa solicitud, sobre el uso que se ha dado a sus datos personales.
+- Presentar quejas ante la Superintendencia de Industria y Comercio por infracciones a la normativa vigente.
+- Revocar la autorización o solicitar la supresión de sus datos cuando no se respeten los principios, derechos y garantías constitucionales y legales.
+- Acceder en forma gratuita a sus datos personales que hayan sido objeto de tratamiento.
+
+## Mecanismos para Ejercer los Derechos y Consultar la Política
+El titular podrá ejercer sus derechos desde las opciones «Mis datos» y «Eliminar mi cuenta» de la aplicación, desde el módulo de PQR o mediante solicitud enviada al correo electrónico adsteamsp@gmail.com, indicando su nombre, número de identificación, la descripción de la solicitud y un medio de respuesta. Las consultas se atenderán en un término máximo de diez (10) días hábiles y los reclamos en un término máximo de quince (15) días hábiles, contados a partir de su recepción, conforme a los artículos 14 y 15 de la Ley 1581 de 2012.
+La Política de Tratamiento de Información de ADS, desarrollada en la sección «Protección de datos personales» de los Términos y Condiciones, se encuentra disponible para consulta en la aplicación.
+
+## Conservación de los Datos y Vigencia del Aviso
+ADS conservará los datos personales mientras la cuenta esté activa y los borrará o anonimizará de inmediato cuando el titular elimine su cuenta. El presente aviso rige a partir de su publicación en la aplicación. Cualquier cambio sustancial en la Política de Tratamiento de Información será comunicado oportunamente a los titulares a través de los canales habituales antes de su implementación.
+
+## Referencias
+Congreso de la República de Colombia. (2012, 17 de octubre). Ley Estatutaria 1581 de 2012, por la cual se dictan disposiciones generales para la protección de datos personales. Diario Oficial No. 48.587.
+Ministerio de Comercio, Industria y Turismo. (2015, 26 de mayo). Decreto 1074 de 2015, por medio del cual se expide el Decreto Único Reglamentario del Sector Comercio, Industria y Turismo. Diario Oficial No. 49.523.

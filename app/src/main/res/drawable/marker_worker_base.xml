@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pin de los marcadores de trabajadores en el mapa; el ícono del oficio se dibuja encima
+     (MapClientActivity.workerMarkerIcon). Fuente: iconos_tipos_trabajo/vectoriales/marker_base.svg -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="56dp"
+    android:viewportWidth="48"
+    android:viewportHeight="56">
+    <path
+        android:pathData="M24,54C24,54 5,36 5,22a19,19 0,0 1,38,0c0,14 -19,32 -19,32z"
+        android:fillColor="@color/ads_marker_fill"
+        android:strokeColor="@color/ads_marker_stroke"
+        android:strokeWidth="2.5"
+        android:strokeLineJoin="round" />
+</vector>

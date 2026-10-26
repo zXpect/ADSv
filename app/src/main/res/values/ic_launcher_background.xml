@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <!-- Fondo del ícono adaptativo (ads_icon_bg): igual al fondo del modo oscuro -->
+    <color name="ic_launcher_background">#0F1220</color>
 </resources>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Tarjeta de cotización y pago, compartida por el detalle del cliente
+    (ServiceRequestDetailActivity) y del trabajador (ServiceDetailWorkerActivity).
+    Cada Activity decide qué textos y botones mostrar.
+    Diseño del mockup 17 (Revisar cotización): bloque navy con el precio y la
+    referencia ADS, motivo del ajuste y filas de llegada y duración. Las piezas
+    nuevas empiezan ocultas; hoy solo las llena el detalle del cliente.
+-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_quote"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="16dp"
+    android:visibility="gone"
+    app:contentPadding="@dimen/space_3"
+    tools:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Precio propuesto -->
+        <LinearLayout
+            android:id="@+id/layout_quote_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_ads_price_block"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/space_5"
+            android:paddingTop="18dp"
+            android:paddingEnd="@dimen/space_5"
+            android:paddingBottom="18dp">
+
+            <TextView
+                android:id="@+id/tv_quote_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/quote_card_title"
+                android:textAppearance="@style/TextAppearance.ADS.Label"
+                android:fontFamily="@font/sora"
+                android:textColor="@color/ads_on_navy_muted" />
+
+            <TextView
+                android:id="@+id/tv_quote_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/sora_extrabold"
+                android:textColor="@color/ads_on_navy"
+                android:textSize="34sp"
+                android:visibility="gone"
+                tools:text="$95.000"
+                tools:visibility="visible" />
+
+            <!-- Referencia ADS: riel con el precio propuesto marcado -->
+            <LinearLayout
+                android:id="@+id/layout_quote_reference"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="8dp"
+                        android:background="@drawable/bg_ads_reference_track"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/view_quote_marker"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/bg_ads_reference_marker"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_quote_reference_min"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/ads_on_navy_muted"
+                        android:textSize="12sp"
+                        tools:text="$55.500" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/quote_reference_label"
+                        android:textColor="@color/ads_on_navy_muted"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_quote_reference_max"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textColor="@color/ads_on_navy_muted"
+                        android:textSize="12sp"
+                        tools:text="$110.000" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Motivo del ajuste -->
+        <LinearLayout
+            android:id="@+id/layout_quote_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_3"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/quote_card_reason_label"
+                android:textAppearance="@style/TextAppearance.ADS.Label"
+                android:fontFamily="@font/sora" />
+
+            <TextView
+                android:id="@+id/tv_quote_reason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+                tools:text="Materiales" />
+        </LinearLayout>
+
+        <!-- Llegada y duración -->
+        <LinearLayout
+            android:id="@+id/layout_quote_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_2"
+            android:divider="@drawable/bg_ads_row_divider"
+            android:orientation="vertical"
+            android:showDividers="middle"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/field_height"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_quote_arrival_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/quote_arrival_label"
+                    android:textAppearance="@style/TextAppearance.ADS.Caption" />
+
+                <TextView
+                    android:id="@+id/tv_quote_arrival"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+                    tools:text="Lun 19 oct · 3:00 p. m." />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_quote_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/field_height"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/quote_duration_label"
+                    android:textAppearance="@style/TextAppearance.ADS.Caption" />
+
+                <TextView
+                    android:id="@+id/tv_quote_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+                    tools:text="2 h" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Tareas, referencia, motivo y agenda en texto (el trabajador aún usa este) -->
+        <TextView
+            android:id="@+id/tv_quote_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_3"
+            android:textAppearance="@style/TextAppearance.ADS.Caption"
+            android:visibility="gone"
+            tools:text="• Reparar cortocircuito · 1 visita"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_quote_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_3"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+            tools:text="El trabajador cotizó tu servicio. Acepta el precio para que pueda iniciar." />
+
+        <TextView
+            android:id="@+id/tv_payment_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_2"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_quote_primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_4"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_quote_secondary"
+            style="@style/Widget.ADS.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone" />
+
+        <!-- Trabajador: reprogramar y cancelar antes de «Iniciar viaje» (D8, D9) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_quote_reschedule"
+            style="@style/Widget.ADS.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/reschedule_action"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_quote_cancel"
+            style="@style/Widget.ADS.Button.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_1"
+            android:text="@string/cancel_action"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,12 +1,9 @@
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+# Configuración local de Android Studio: la escribe el IDE en cada PC (ruta de
+# Gradle, JVM, dispositivo elegido) y se regenera al sincronizar el proyecto
+/.idea/
 .DS_Store
 /build
 /captures
@@ -24,3 +21,17 @@ app/src/main/assets/serviceAccountKey.json
 app/release/
 
 app/google-services.json
+# Dependencias de Node (herramientas de Firebase u otras)
+node_modules/
+
+# Credenciales de cuentas de servicio: nunca en la app (van solo en el backend)
+*serviceAccount*.json
+*firebase-adminsdk*.json
+adsv-d87e1-*.json
+
+# Capturas del celular para comparar con los mockups (rediseño)
+capturas/
+
+# Llaves de firma: nunca versionarlas
+*.jks
+*.keystore

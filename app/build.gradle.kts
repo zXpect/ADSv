@@ -1,3 +1,21 @@
+// URL del backend Django (API de pagos, cotización, calificación y notificaciones).
+// Se puede sobrescribir en gradle.properties o con -P, p. ej. para un teléfono
+// físico en la misma red: ADS_API_BASE_URL_DEBUG=http://192.168.1.50:8000/
+val adsApiBaseUrlDebug = (project.findProperty("ADS_API_BASE_URL_DEBUG") as String?)
+    ?: "http://10.0.2.2:8000/"  // emulador -> localhost del PC
+val adsApiBaseUrlRelease = (project.findProperty("ADS_API_BASE_URL_RELEASE") as String?)
+    ?: "https://ads-api-4o89.onrender.com/"  // backend desplegado en Render
+
+// Firma del APK de release con app_key.jks (respaldo en Documents/ADS/keystore-backup/).
+// Las contraseñas van solo en ~/.gradle/gradle.properties, nunca en el repositorio:
+//   ADS_KEYSTORE_FILE=C:/ruta/app_key.jks   (opcional; por defecto app/app_key.jks)
+//   ADS_KEYSTORE_PASSWORD=...
+//   ADS_KEY_ALIAS=...
+//   ADS_KEY_PASSWORD=...
+// Sin ellas, el release se firma con la llave de depuración: sirve para probar R8
+// en un teléfono, pero no para entregar.
+val adsKeystorePassword = project.findProperty("ADS_KEYSTORE_PASSWORD") as String?
+
 plugins {
     id("com.android.application")
     id("com.google.firebase.crashlytics")
@@ -5,7 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "com.ads"
+    namespace = "com.project.ads"
     compileSdk = 34
 
     defaultConfig {
@@ -20,9 +38,23 @@ android {
         multiDexEnabled = true
     }
 
+    signingConfigs {
+        if (adsKeystorePassword != null) {
+            create("release") {
+                storeFile = file((project.findProperty("ADS_KEYSTORE_FILE") as String?) ?: "app_key.jks")
+                storePassword = adsKeystorePassword
+                keyAlias = project.findProperty("ADS_KEY_ALIAS") as String?
+                keyPassword = project.findProperty("ADS_KEY_PASSWORD") as String?
+            }
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            buildConfigField("String", "ADS_API_BASE_URL", "\"$adsApiBaseUrlRelease\"")
+            // MASVS M7: R8 reduce y ofusca el código; M4: proguard-rules.pro quita los logs
+            isMinifyEnabled = true
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -30,6 +62,7 @@ android {
         }
 
         debug {
+            buildConfigField("String", "ADS_API_BASE_URL", "\"$adsApiBaseUrlDebug\"")
             isMinifyEnabled = false
             isDebuggable = true
         }
@@ -45,6 +78,13 @@ android {
     buildFeatures {
         dataBinding = true
         viewBinding = true
+        buildConfig = true
+    }
+
+    androidResources {
+        // Nunca empaquetar una credencial de servicio en el APK, aunque exista en
+        // assets/ en la copia local de algún desarrollador
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~:!serviceAccountKey.json"
     }
 
     packaging {
@@ -152,10 +192,8 @@ dependencies {
     // JSON Processing
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // Google Auth Library
-    implementation("com.google.auth:google-auth-library-oauth2-http:1.17.0") {
-        exclude(group = "org.jetbrains.kotlin")
-    }
+    // Custom Tabs para abrir el checkout de pagos en el navegador
+    implementation("androidx.browser:browser:1.5.0")
 
     // Forzar versión específica de Kotlin stdlib
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.10")

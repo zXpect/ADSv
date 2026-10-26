@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Crear PQR · mockup 43 (docs/mockups/PQRNueva.dc.html). La usan cliente y trabajador.
+     El backend exige la solicitud relacionada (de ella sale el rol del autor). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ads_surface"
+    android:orientation="vertical"
+    tools:context="com.project.ads.activities.PqrCreateActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="@dimen/space_4"
+            android:paddingEnd="@dimen/screen_margin"
+            android:paddingBottom="@dimen/space_6">
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="@dimen/touch_min"
+                android:layout_height="@dimen/touch_min"
+                android:background="@drawable/bg_ads_circle_button"
+                android:contentDescription="@string/action_back"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/ads_text" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:accessibilityHeading="true"
+                android:text="@string/pqr_create"
+                android:textAppearance="@style/TextAppearance.ADS.Headline" />
+
+            <!-- Tipo -->
+            <TextView
+                android:id="@+id/tv_pqr_type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="@string/pqr_type_label"
+                android:textAppearance="@style/TextAppearance.ADS.Label"
+                android:textColor="@color/ads_charcoal" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_pqr_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_pqr_petition"
+                    style="@style/Widget.ADS.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pqr_type_petition" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_pqr_complaint"
+                    style="@style/Widget.ADS.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pqr_type_complaint" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_pqr_claim"
+                    style="@style/Widget.ADS.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pqr_type_claim" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/tv_pqr_type_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pqr_error_type"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                android:textColor="?attr/colorError"
+                android:visibility="gone" />
+
+            <!-- Solicitud relacionada -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:labelFor="@id/btn_pqr_request"
+                android:text="@string/pqr_request_label"
+                android:textAppearance="@style/TextAppearance.ADS.Label"
+                android:textColor="@color/ads_charcoal" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pqr_request"
+                style="@style/Widget.ADS.Button.Field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:minHeight="@dimen/field_height"
+                android:text="@string/pqr_request_placeholder"
+                app:icon="@drawable/ic_ads_chevron_down"
+                app:iconGravity="end"
+                app:iconTint="@color/ads_muted" />
+
+            <TextView
+                android:id="@+id/tv_pqr_request_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                android:textColor="?attr/colorError"
+                android:visibility="gone"
+                tools:text="Elige la solicitud" />
+
+            <!-- Descripción -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:labelFor="@id/et_pqr_description"
+                android:text="@string/pqr_description_label"
+                android:textAppearance="@style/TextAppearance.ADS.Label"
+                android:textColor="@color/ads_charcoal" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_pqr_description"
+                style="@style/Widget.ADS.TextField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="2000"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_pqr_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:gravity="top|start"
+                    android:hint="@string/pqr_description_hint"
+                    android:importantForAutofill="no"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLength="2000" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Plazo de respuesta (D21) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_ads_notice"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/space_4"
+                android:paddingTop="@dimen/space_3"
+                android:paddingEnd="@dimen/space_4"
+                android:paddingBottom="@dimen/space_3">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_notif_schedule"
+                    app:tint="@color/ads_charcoal" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/pqr_deadline_create"
+                    android:textAppearance="@style/TextAppearance.ADS.Caption"
+                    android:textColor="@color/ads_charcoal" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Barra de acción fija -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ads_bar"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/stroke_line"
+            android:background="@color/ads_line" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_pqr_send"
+            style="@style/Widget.ADS.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/screen_margin"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="@dimen/screen_margin"
+            android:layout_marginBottom="@dimen/screen_margin"
+            android:text="@string/pqr_send" />
+    </LinearLayout>
+</LinearLayout>

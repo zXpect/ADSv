@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ícono pequeño de las notificaciones push: silueta de un color del logo ADS (techo,
+     chimenea y llave con el hueco de tuerca), con la misma geometría de ic_ads_logo.
+     Android solo usa la transparencia de este ícono; el color lo pone setColor (ads_brand). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Techo -->
+    <path
+        android:pathData="M12,58 L60,18 L108,58"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="11"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- Chimenea -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M84,20 H92 A2,2 0,0 1,94 22 V42 A2,2 0,0 1,92 44 H84 A2,2 0,0 1,82 42 V22 A2,2 0,0 1,84 20 Z" />
+    <!-- Cabeza de la llave -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M51.5,42 L51.5,55 L68.5,55 L68.5,42 L78,50 L78,58 L60,73.1 L42,58 L42,50 Z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineJoin="round" />
+    <!-- Mango con hueco de tuerca (sentido contrario: hueco con nonZero, como ic_ads_logo) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M52.5,66 H67.5 V104.5 A7.5,7.5 0,0 1,52.5 104.5 Z M60,95.4 L56.02,97.7 L56.02,102.3 L60,104.6 L63.98,102.3 L63.98,97.7 Z" />
+</vector>

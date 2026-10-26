@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background_color"
-    tools:context="com.ads.activities.worker.WorkerDocumentsActivity">
+    tools:context="com.project.ads.activities.worker.WorkerDocumentsActivity">
 
     <!-- AppBar -->
     <com.google.android.material.appbar.AppBarLayout

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fila de PQR (mockups 42 y 54): tipo y estado en fichas, descripción, fechas
+     y, si ya hay, la respuesta. Al tocarla se muestra el texto completo. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_pqr"
+    style="@style/Widget.ADS.Card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/space_3"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="@dimen/touch_min">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_pqr_type"
+                style="@style/Widget.ADS.StatusChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/ads_navy"
+                android:textColor="@color/ads_on_navy"
+                tools:text="Queja" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_pqr_status"
+                style="@style/Widget.ADS.StatusChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="En revisión" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_pqr_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_2"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+            tools:text="El técnico llegó una hora tarde" />
+
+        <TextView
+            android:id="@+id/tv_pqr_dates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_2"
+            android:textAppearance="@style/TextAppearance.ADS.Label"
+            android:fontFamily="@font/sora_regular"
+            tools:text="Enviada el 14 oct · Responde antes del 4 nov" />
+
+        <!-- Respuesta del equipo ADS -->
+        <LinearLayout
+            android:id="@+id/layout_pqr_response"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_3"
+            android:background="@drawable/bg_ads_notice"
+            android:orientation="vertical"
+            android:padding="@dimen/space_3"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pqr_response_label"
+                android:textAppearance="@style/TextAppearance.ADS.Label" />
+
+            <TextView
+                android:id="@+id/tv_pqr_response"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                android:textColor="@color/ads_charcoal"
+                tools:text="Hablamos con el técnico y..." />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

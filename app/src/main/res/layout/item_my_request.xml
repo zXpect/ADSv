@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tarjeta del historial · mockup 41. La etiqueta de sección ("Activas" /
+     "Anteriores") va dentro del ítem y se muestra en el primero de cada grupo. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_4"
+        android:layout_marginBottom="@dimen/space_2"
+        android:accessibilityHeading="true"
+        android:textAppearance="@style/TextAppearance.ADS.Label"
+        android:visibility="gone"
+        tools:text="Activas"
+        tools:visibility="visible" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Oficio y estado -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_service_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                    tools:text="Electricidad" />
+
+                <TextView
+                    android:id="@+id/tv_status"
+                    style="@style/Widget.ADS.StatusChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_2"
+                    tools:text="Aceptada" />
+            </LinearLayout>
+
+            <!-- Técnico · fecha -->
+            <TextView
+                android:id="@+id/tv_worker_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.ADS.Caption"
+                tools:text="Carlos Rojas · Lun 19 oct, 3:00 p. m." />
+
+            <!-- Precio (activas), calificación (completadas) o motivo (canceladas) -->
+            <TextView
+                android:id="@+id/tv_timestamp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2"
+                android:drawablePadding="@dimen/space_1"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.ADS.Price"
+                android:visibility="gone"
+                tools:text="$95.000"
+                tools:visibility="visible" />
+
+            <!-- La dirección no aparece en el mockup; se conserva oculta para el código -->
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <View
+                android:id="@+id/status_indicator"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

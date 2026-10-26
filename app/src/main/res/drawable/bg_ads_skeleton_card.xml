@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tarjeta de relleno del esqueleto del inicio: el bloque gris con el radio de las tarjetas -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ads_skeleton" />
+    <corners android:radius="@dimen/radius_card" />
+</shape>

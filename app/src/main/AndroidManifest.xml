@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.ads">
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Permiso para acceder a internet -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- Permiso para notificaciones (Android 13+) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Permiso para notificaciones (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Permisos para la cámara y galería -->
     <uses-feature
         android:name="android.hardware.camera"
@@ -20,112 +20,172 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
-        android:name=".MyApplication"
-        android:allowBackup="true"
+        android:name="com.project.ads.MyApplication"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ADSv"
         tools:targetApi="33">
+        <!--
+            Pago: vuelve del checkout por adsapp://payment-result?request_id=...
+            Exportada solo para el deep link; el resultado del pago se lee de
+            Firebase (lo escribe el backend), no de los parámetros del enlace.
+        -->
         <activity
-            android:name=".activities.worker.ServiceDetailWorkerActivity"
+            android:name="com.project.ads.activities.client.PaymentActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-result"
+                    android:scheme="adsapp" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.project.ads.activities.client.ServiceRequestDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.ActiveServicesActivity"
+            android:name="com.project.ads.activities.worker.ServiceDetailWorkerActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.client.RatingActivity"
+            android:name="com.project.ads.activities.worker.ActiveServicesActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.client.RequestDetailClientActivity"
+            android:name="com.project.ads.activities.client.RatingActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.client.MyRequestsActivity"
+            android:name="com.project.ads.activities.client.MyRequestsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.client.ProfileClientActivity"
+            android:name="com.project.ads.activities.client.ProfileClientActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.client.ProfileUserActivity"
+            android:name="com.project.ads.activities.worker.ProfileWorkerActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.ProfileWorkerActivity"
+            android:name="com.project.ads.activities.worker.WorkerDocumentsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.WorkerDocumentsActivity"
+            android:name="com.project.ads.activities.worker.DocumentStatusActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.DocumentStatusActivity"
+            android:name="com.project.ads.activities.worker.SecondRegisterWorkerActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.SecondRegisterWorkerActivity"
+            android:name="com.project.ads.activities.client.WebViewActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.client.WebViewActivity"
+            android:name="com.project.ads.activities.client.ServiceSummaryActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.fixdepot.StoreFinderActivity"
+            android:name="com.project.ads.activities.client.ServiceCompletionActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.MapFixDepotActivity"
+            android:name="com.project.ads.activities.client.VerifyRequestActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.fixdepot.FixDepotActivity"
+            android:name="com.project.ads.activities.client.ServiceRequestActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.client.ServiceSummaryActivity"
+            android:name="com.project.ads.activities.worker.HomeWorkerActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.client.ServiceCompletionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.client.VerifyRequestActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.client.ServiceRequestActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.worker.HomeWorkerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.worker.FirtsRegisterWorkerActivity"
+            android:name="com.project.ads.activities.worker.FirtsRegisterWorkerActivity"
             android:exported="false"
-            android:parentActivityName=".activities.LoginActivity" />
+            android:parentActivityName="com.project.ads.activities.LoginActivity" />
         <activity
-            android:name=".activities.client.HomeUserActivity"
+            android:name="com.project.ads.activities.client.HomeUserActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.MapWorkerActivity"
+            android:name="com.project.ads.activities.client.WorkersActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.worker.RequestDetailActivity"
+            android:name="com.project.ads.activities.client.TasksActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.client.MapClientActivity"
+            android:name="com.project.ads.activities.client.RequestSentActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.client.WorkerProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.worker.MapWorkerActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.worker.RequestDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.client.MapClientActivity"
             android:exported="false"
             android:theme="@style/Theme.ADSv" />
         <activity
-            android:name=".activities.client.RegisterActivity"
+            android:name="com.project.ads.activities.client.RegisterActivity"
             android:exported="false"
-            android:parentActivityName=".activities.LoginActivity" />
+            android:parentActivityName="com.project.ads.activities.LoginActivity" />
+        <!-- Términos y privacidad dentro de la app (antes, página externa en un WebView) -->
         <activity
-            android:name=".activities.TermsConditionsActivity"
+            android:name="com.project.ads.activities.LegalActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.LoginActivity"
             android:exported="false"
-            android:parentActivityName=".activities.LoginActivity" />
+            android:parentActivityName="com.project.ads.activities.MainActivity" />
         <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false"
-            android:parentActivityName=".activities.MainActivity" />
-        <activity
-            android:name=".activities.worker.PendingRequestsActivity"
+            android:name="com.project.ads.activities.worker.PendingRequestsActivity"
             android:label="Solicitudes Pendientes"
-            android:parentActivityName=".activities.worker.HomeWorkerActivity"
+            android:parentActivityName="com.project.ads.activities.worker.HomeWorkerActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.project.ads.activities.worker.VerificationStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.worker.WorkerSkillsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.MyDataActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.NotificationsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.PqrListActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.PqrCreateActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.PqrDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.client.PaymentMethodActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.client.CashPaidActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.worker.CashReceivedActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.worker.RequoteActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.client.RequoteAnswerActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.RoleActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.project.ads.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -134,12 +194,20 @@
             </intent-filter>
         </activity>
 
+        <!-- Ícono y color de las push que muestra el sistema con la app cerrada -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_ads" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/ads_brand" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <service
-            android:name=".services.MyFirebaseMessagingService"
+            android:name="com.project.ads.services.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

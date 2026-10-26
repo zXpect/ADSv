@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ícono de trazo 2 dp: escudo con verificación (beneficio de la Bienvenida). El color lo pone el tint. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M12,3l7,3v5c0,4.6 -3,8.4 -7,10c-4,-1.6 -7,-5.4 -7,-10V6zM9,12l2,2 4,-4"
+        android:strokeColor="#FF1B1830"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

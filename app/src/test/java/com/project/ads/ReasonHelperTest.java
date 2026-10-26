@@ -1,0 +1,75 @@
+package com.project.ads;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import com.project.ads.helpers.ReasonHelper;
+
+import org.junit.Test;
+
+/** Motivos de ajuste (D5) y de cancelación por rol (D8); deben ser los códigos que acepta el backend. */
+public class ReasonHelperTest {
+
+    @Test
+    public void cancellationReasonsDependOnRole() {
+        assertSame(ReasonHelper.CANCELLATION_WORKER, ReasonHelper.cancellationReasons(ReasonHelper.ROLE_WORKER));
+        assertSame(ReasonHelper.CANCELLATION_CLIENT, ReasonHelper.cancellationReasons(ReasonHelper.ROLE_CLIENT));
+        assertSame(ReasonHelper.CANCELLATION_CLIENT, ReasonHelper.cancellationReasons(null));
+    }
+
+    @Test
+    public void everyListOffersOther() {
+        assertTrue(ReasonHelper.ADJUSTMENT.containsKey(ReasonHelper.OTHER));
+        assertTrue(ReasonHelper.CANCELLATION_CLIENT.containsKey(ReasonHelper.OTHER));
+        assertTrue(ReasonHelper.CANCELLATION_WORKER.containsKey(ReasonHelper.OTHER));
+    }
+
+    @Test
+    public void labelUsesFreeTextOnlyForOther() {
+        assertEquals("Revisar humedad", ReasonHelper.label(ReasonHelper.ADJUSTMENT, "otro", "Revisar humedad"));
+        assertEquals("Otro", ReasonHelper.label(ReasonHelper.ADJUSTMENT, "otro", ""));
+        assertEquals("Materiales", ReasonHelper.label(ReasonHelper.ADJUSTMENT, "materiales", "ignorado"));
+        // Un código que la app aún no conoce se muestra tal cual
+        assertEquals("codigo_nuevo", ReasonHelper.label(ReasonHelper.ADJUSTMENT, "codigo_nuevo", null));
+        assertNull(ReasonHelper.label(ReasonHelper.ADJUSTMENT, null, "texto"));
+    }
+
+    @Test
+    public void adjustmentLabelAddsTheOptionalComment() {
+        // MEJ-01: el cliente ve el detalle además de la etiqueta
+        assertEquals("Materiales: Hace falta cable adicional",
+                ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, "materiales", " Hace falta cable adicional "));
+        assertEquals("Materiales", ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, "materiales", "  "));
+        assertEquals("Materiales", ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, "materiales", null));
+        // Con «Otro» el texto ya es el motivo: no se repite
+        assertEquals("Revisar humedad", ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, "otro", "Revisar humedad"));
+        assertNull(ReasonHelper.labelWithComment(ReasonHelper.ADJUSTMENT, null, "texto"));
+    }
+
+    @Test
+    public void cancellationLabelSearchesBothRoles() {
+        assertEquals("Por el precio", ReasonHelper.cancellationLabel("precio", null));
+        assertEquals("Está fuera de mi zona", ReasonHelper.cancellationLabel("fuera_de_zona", null));
+        assertEquals("Se mudó", ReasonHelper.cancellationLabel("otro", "Se mudó"));
+        assertNull(ReasonHelper.cancellationLabel(null, null));
+    }
+
+    @Test
+    public void adjustmentReasonsHaveOneOther() {
+        // DEF-13: «Otro» ya está en ADJUSTMENT; el diálogo Cotizar no debe agregar otro
+        long others = ReasonHelper.ADJUSTMENT.values().stream().filter("Otro"::equals).count();
+        assertEquals(1, others);
+        assertTrue(ReasonHelper.ADJUSTMENT.containsKey(ReasonHelper.OTHER));
+    }
+
+    @Test
+    public void suspendedOnlyWhenIsActiveIsFalse() {
+        // HU-32: sin el campo la cuenta está activa
+        assertTrue(com.project.ads.helpers.AccountStatusWatcher.isSuspended(false));
+        assertFalse(com.project.ads.helpers.AccountStatusWatcher.isSuspended(true));
+        assertFalse(com.project.ads.helpers.AccountStatusWatcher.isSuspended(null));
+    }
+}

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Encabezado del registro del trabajador (mockups 05, 32 y 33): volver, chip,
+     barra de 3 pasos y «Paso N de 3 · …». Lo llena RegisterStepsHelper. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/touch_min"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/touch_min"
+            android:layout_height="@dimen/touch_min"
+            android:background="@drawable/bg_ads_circle_button"
+            android:contentDescription="@string/action_back"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/ads_text" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            style="@style/Widget.ADS.StatusChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register_role_worker" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_register_steps"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_marginTop="14dp"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/step_bar_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ads_progress_off" />
+
+        <View
+            android:id="@+id/step_bar_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ads_progress_off" />
+
+        <View
+            android:id="@+id/step_bar_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ads_progress_off" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_register_step"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAppearance="@style/TextAppearance.ADS.Caption" />
+</LinearLayout>

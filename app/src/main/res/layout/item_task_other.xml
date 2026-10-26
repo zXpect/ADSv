@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- «Otro problema» · mockup 07: borde punteado y fondo transparente -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_ads_dashed_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:minHeight="64dp"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/space_4"
+    android:paddingTop="@dimen/space_3"
+    android:paddingEnd="@dimen/space_4"
+    android:paddingBottom="@dimen/space_3">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_task_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tasks_other_title"
+            android:textAppearance="@style/TextAppearance.ADS.Subtitle" />
+
+        <TextView
+            android:id="@+id/tv_task_unit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_1"
+            android:fontFamily="@font/sora"
+            android:text="@string/tasks_other_subtitle"
+            android:textAppearance="@style/TextAppearance.ADS.Label" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="@dimen/space_3"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_arrow_forward"
+        app:tint="@color/ads_muted" />
+</LinearLayout>

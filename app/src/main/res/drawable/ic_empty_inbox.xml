@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sin solicitudes nuevas: casa con una llave, como el logo de ADS -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="56dp"
+    android:height="56dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M3.5,11L12,4l8.5,7"
+        android:strokeWidth="1.6"
+        android:strokeColor="@color/ads_muted"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M5.5,9.5V19a1,1 0,0 0,1 1h11a1,1 0,0 0,1 -1V9.5"
+        android:strokeWidth="1.6"
+        android:strokeColor="@color/ads_muted"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M16.5,5.5V8"
+        android:strokeWidth="1.6"
+        android:strokeColor="@color/ads_muted"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <group
+        android:scaleX="0.46"
+        android:scaleY="0.46"
+        android:translateX="7.1"
+        android:translateY="9.0">
+        <path
+            android:pathData="M14.7,6.3a4,4 0,0 0,-5.4 5.4L3,18l3,3 6.3,-6.3a4,4 0,0 0,5.4 -5.4l-2.6,2.6 -2.4,-0.6 -0.6,-2.4 2.6,-2.6z"
+            android:strokeWidth="2.2"
+            android:strokeColor="@color/ads_brand"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

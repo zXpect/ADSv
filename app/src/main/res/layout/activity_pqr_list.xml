@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PQR · mockups 42 (cliente, pestaña de la barra inferior) y 54 (trabajador, con volver):
+     docs/mockups/PQRLista.dc.html y PQRListaTrab.dc.html. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ads_surface"
+    android:orientation="vertical"
+    tools:context="com.project.ads.activities.PqrListActivity">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_pqr"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingTop="@dimen/space_5"
+                android:paddingEnd="@dimen/screen_margin"
+                android:paddingBottom="@dimen/space_4">
+
+                <!-- Solo el trabajador: llega desde Mi cuenta (mockup 54) -->
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="@dimen/touch_min"
+                    android:layout_height="@dimen/touch_min"
+                    android:layout_marginBottom="@dimen/space_3"
+                    android:background="@drawable/bg_ads_circle_button"
+                    android:contentDescription="@string/action_back"
+                    android:src="@drawable/ic_arrow_back"
+                    android:visibility="gone"
+                    app:tint="@color/ads_text" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:accessibilityHeading="true"
+                    android:text="@string/pqr_title"
+                    android:textAppearance="@style/TextAppearance.ADS.Headline" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_1"
+                    android:text="@string/pqr_subtitle"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall" />
+
+                <!-- Plazo de respuesta (D21) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bg_ads_pqr_notice"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/space_4"
+                    android:paddingTop="14dp"
+                    android:paddingEnd="@dimen/space_4"
+                    android:paddingBottom="14dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_md"
+                        android:layout_height="@dimen/icon_md"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_notif_schedule"
+                        app:tint="@color/ads_brand" />
+
+                    <TextView
+                        android:id="@+id/tv_pqr_deadline"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_3"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption"
+                        android:text="@string/pqr_deadline_notice"
+                        android:textColor="@color/ads_on_navy" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_pqr_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginBottom="@dimen/space_2"
+                    android:accessibilityHeading="true"
+                    android:text="@string/pqr_mine"
+                    android:textAppearance="@style/TextAppearance.ADS.Label"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_pqr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+                <!-- Tarjetas de relleno mientras carga la lista (antes, rueda de carga) -->
+                <com.project.ads.includes.AdsSkeletonView
+                    android:id="@+id/progress_pqr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/space_1" />
+
+                <!-- Sin PQR o error al cargar -->
+                <LinearLayout
+                    android:id="@+id/layout_pqr_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_6"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_empty_pqr" />
+
+                    <TextView
+                        android:id="@+id/tv_pqr_empty_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_4"
+                        android:gravity="center"
+                        android:text="@string/pqr_empty_title"
+                        android:textAppearance="@style/TextAppearance.ADS.Subtitle" />
+
+                    <TextView
+                        android:id="@+id/tv_pqr_empty_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_1"
+                        android:gravity="center"
+                        android:text="@string/pqr_empty_message"
+                        android:textAppearance="@style/TextAppearance.ADS.BodySmall" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_pqr_retry"
+                        style="@style/Widget.ADS.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:text="@string/notifications_retry"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- Crear PQR, sobre el fondo de la pantalla (mockups 42 y 54) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_pqr_create"
+        style="@style/Widget.ADS.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/space_3"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:layout_marginBottom="14dp"
+        android:text="@string/pqr_create" />
+
+    <!-- Solo el cliente: PQR es una pestaña de la barra inferior -->
+    <include
+        android:id="@+id/include_bottom_nav"
+        layout="@layout/view_bottom_nav_client" />
+</LinearLayout>

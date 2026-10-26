@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notificaciones · mockups 40 (cliente) y 53 (trabajador):
+     docs/mockups/Notificaciones.dc.html y NotificacionesTrab.dc.html. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ads_surface"
+    android:orientation="vertical"
+    tools:context="com.project.ads.activities.NotificationsActivity">
+
+    <!-- Volver y "Marcar como leídas" -->
+    <LinearLayout
+        android:id="@+id/layout_list_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ads_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingTop="@dimen/space_4"
+        android:paddingEnd="@dimen/screen_margin">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/touch_min"
+            android:layout_height="@dimen/touch_min"
+            android:background="@drawable/bg_ads_circle_button"
+            android:contentDescription="@string/action_back"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/ads_text" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_notifications_mark_read"
+            style="@style/Widget.ADS.Button.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notifications_mark_read"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/space_3"
+        android:layout_marginEnd="@dimen/screen_margin"
+        android:accessibilityHeading="true"
+        android:text="@string/account_notifications"
+        android:textAppearance="@style/TextAppearance.ADS.Headline" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingEnd="@dimen/screen_margin"
+            android:paddingBottom="@dimen/space_6"
+            android:visibility="gone" />
+
+        <!-- Tarjetas de relleno mientras carga la lista (antes, rueda de carga) -->
+        <com.project.ads.includes.AdsSkeletonView
+            android:id="@+id/progress_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="@dimen/space_1"
+            android:paddingEnd="@dimen/screen_margin" />
+
+        <!-- Sin notificaciones o error al cargar -->
+        <LinearLayout
+            android:id="@+id/layout_notifications_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_empty_notifications" />
+
+            <TextView
+                android:id="@+id/tv_notifications_empty_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:gravity="center"
+                android:text="@string/notifications_empty_title"
+                android:textAppearance="@style/TextAppearance.ADS.Subtitle" />
+
+            <TextView
+                android:id="@+id/tv_notifications_empty_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                android:gravity="center"
+                android:text="@string/notifications_empty_message"
+                android:textAppearance="@style/TextAppearance.ADS.BodySmall" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_notifications_retry"
+                style="@style/Widget.ADS.Button.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2"
+                android:text="@string/notifications_retry"
+                android:visibility="gone" />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

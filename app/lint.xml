@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Pantallas y layouts del diseño anterior que ya no usa ninguna pantalla (Fase 6
+     del rediseño). Se conservan sin borrar hasta que el equipo lo apruebe; lint no
+     los revisa para que sus advertencias no tapen las de las pantallas en uso. -->
+<lint>
+    <issue id="all">
+        <ignore path="src/main/res/layout/activity_service_completion.xml" />
+        <ignore path="src/main/res/layout/activity_service_summary.xml" />
+        <ignore path="src/main/res/layout/activity_worker_documents.xml" />
+        <ignore path="src/main/res/layout/activity_web_view.xml" />
+        <ignore path="src/main/java/com/project/ads/activities/client/ServiceCompletionActivity.java" />
+        <ignore path="src/main/java/com/project/ads/activities/client/ServiceSummaryActivity.java" />
+        <ignore path="src/main/java/com/project/ads/activities/worker/WorkerDocumentsActivity.java" />
+        <ignore path="src/main/java/com/project/ads/activities/client/WebViewActivity.java" />
+    </issue>
+</lint>

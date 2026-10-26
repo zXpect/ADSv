@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Oficio: Jardinería. Ícono de trazo, fuente en iconos_tipos_trabajo/vectoriales/icon_gardener.svg -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M5,19c0,-8 5,-13 14,-14 0,9 -5,14 -13,14z"
+        android:strokeColor="@color/ads_brand_text"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M5,19l7,-7"
+        android:strokeColor="@color/ads_brand_text"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

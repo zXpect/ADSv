@@ -1,223 +1,878 @@
 <resources>
     <string name="app_name">ADS</string>
-    <string name="boton_client">CLIENTE</string>
-    <string name="boton_worker">TRABAJADOR</string>
-    <string name="select_tipe_user">¡Bienvenido/a! Selecciona el tipo de Usuario</string>
-    <string name="boton_login">INICIAR SESIÓN</string>
     <string name="email">Correo</string>
     <string name="contraseña">Contraseña</string>
-    <string name="boton_register">REGISTRARSE</string>
-    <string name="boton_continue">CONTINUAR</string>
-    <string name="boton_usuario">USUARIO</string>
-    <string name="boton_trabajador">TRABAJADOR</string>
-    <string name="documentid">Numero de Documento</string>
-    <string name="date">Fecha de Nacimiento</string>
-    <string name="datexp">Fecha de Expedicion</string>
-    <string name="ddmmaaaa">DD/MM/AAAA</string>
-    <string name="fromexp">Lugar de Expedicion</string>
-    <string name="UserName">Nombres</string>
-    <string name="UserLastName">Apellidos</string>
-    <string name="UserEmail">Correo</string>
-    <string name="UserPassword">Contraseña</string>
-    <string name="UserPhone">Telefono</string>
-    <string name="UserAddress">Direccion</string>
-    <string name="UserContinue">Continuar</string>
-    <string name="Direccion">Calle 3####</string>
-    <string name="title_activity_drawer">DrawerActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Nombre de Usuario</string>
-    <string name="nav_header_subtitle">username@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Direcciones</string>
-    <string name="mostrar_mapa">Ver Mapa</string>
-    <string name="Mostrar">Mostrar</string>
-    <string name="direcciones">DIRECCIONES</string>
-    <string name="type_work">Tipo de Trabajo</string>
-    <string name="vermapaworker">Ver Mapa</string>
-    <string name="conectarse">Conectarse</string>
-    <string name="worker_photo_desc">Descripcion</string>
-    <string name="find_stores">Buscar Tiendas</string>
 
 
-    <string-array name="service_types">
-        <item>Carpintería</item>
-        <item>Ferretería</item>
-        <item>Pintor</item>
-        <item>Electricista</item>
-        <item>Plomería</item>
-        <item>Jardinería</item>
-        <item>Albañilería</item>
-    </string-array>
 
 
-    <string name="logo_description">Logo de la aplicación</string>
-    <string name="footer_text">© 2024 ADS. Todos los derechos reservados.</string>
 
 
-    <string name="fix_depot_title">Fix Depot</string>
-    <string name="tools_banner_description">Tools and materials banner</string>
-    <string name="featured_tools">Featured Tools</string>
-    <string name="all_tools">All Tools</string>
-    <string name="tool_image_description">Tool image</string>
-    <string name="available_tools">Herramientas destacadas</string>
 
     <!-- Martillo -->
-    <string name="hammer">Martillo</string>
-    <string name="hammer_description">Un martillo resistente para trabajos duros</string>
-    <string name="hammer_price">$60,000 COP</string>
 
     <!-- Juego de Destornilladores -->
-    <string name="screwdriver_set">Juego de Destornilladores</string>
-    <string name="screwdriver_set_description">Un juego de destornilladores de precisión</string>
-    <string name="screwdriver_set_price">$80,000 COP</string>
 
     <!-- Taladro Eléctrico -->
-    <string name="power_drill">Taladro Eléctrico</string>
-    <string name="power_drill_description">Taladro eléctrico inalámbrico con batería</string>
-    <string name="power_drill_price">$200,000 COP</string>
 
     <!-- Juego de Llaves -->
-    <string name="wrench_set">Juego de Llaves</string>
-    <string name="wrench_set_description">Un juego completo de llaves</string>
-    <string name="wrench_set_price">$120,000 COP</string>
 
     <!-- Cinta Métrica -->
-    <string name="measuring_tape">Cinta Métrica</string>
-    <string name="measuring_tape_description">Una cinta métrica duradera</string>
-    <string name="measuring_tape_price">$40,000 COP</string>
 
     <!-- Sierra -->
-    <string name="saw">Sierra</string>
-    <string name="saw_description">Sierra manual de alta calidad</string>
-    <string name="saw_price">$100,000 COP</string>
 
     <!-- Nivel -->
-    <string name="level">Nivel</string>
-    <string name="level_description">Una herramienta confiable para verificar el nivel</string>
-    <string name="level_price">$48,000 COP</string>
 
     <!-- Alicates -->
-    <string name="pliers">Alicates</string>
-    <string name="pliers_description">Alicates duraderos para varios usos</string>
-    <string name="pliers_price">$32,000 COP</string>
 
     <!-- Destornillador Eléctrico -->
-    <string name="electric_screwdriver">Destornillador Eléctrico</string>
-    <string name="electric_screwdriver_description">Destornillador eléctrico recargable</string>
-    <string name="electric_screwdriver_price">$160,000 COP</string>
 
-    <string name="map_client_title">Mapa Cliente</string>
     <string name="location_permission_title">Permisos de Ubicacion</string>
     <string name="location_permission_message">Concede permisos de Ubicacion a la Aplicacion</string>
     <string name="ok">Aceptar</string>
     <string name="location_permission_denied">Permisos denegados</string>
-    <string name="worker_info_title">Informacion del trabajador</string>
-    <string name="worker_info_message">Mensaje</string>
     <string name="request_service">Solicitar servicio</string>
     <string name="cancel">Cancelar</string>
-    <string name="map_worker_title">Mapa Trabajador</string>
-    <string name="filter_icon">Filtrar</string>
-    <string name="default_web_client_id">107911803130746486598</string>
-    <string name="app_logo">logo app</string>
-    <string name="facebook_login">inicia sesion con Facebook</string>
+    <string name="map_worker_title">Mapa</string>
+    <string name="default_web_client_id">125108376031-7l3e1tdjbvhae0h951kavkj4onskb6nc.apps.googleusercontent.com</string>
     <string name="google_login">inicia sesión con Google</string>
-    <string name="twitter_login">Inicia sesión con Twitter(X)</string>
-    <string name="filter_by_tool">Filtrar por herramienta</string>
-    <string name="sort_by">Ordenar por</string>
-    <string name="apply">Aplicar</string>
-    <string name="flashlight_description">flashlight_description</string>
-    <string name="search_icon">Buscar</string>
-    <string name="search_tools">Buscar Herramientas</string>
-    <string name="add_to_cart">Agregar al carrito</string>
-    <string name="add_to_favorites">Agregar a Favoritos</string>
-    <string name="filter_tools">Filtrar Herramientas</string>
-    <string name="discount_percentage">Porcentaje de Descuento</string>
     <string name="my_location">Mi ubicacion</string>
     <string name="legend_toggle">Leyenda</string>
-    <string name="distance_filter">Distancia</string>
 
     <!-- Sort options for spinner -->
-    <string-array name="sort_options">
-        <item>Distance (closest first)</item>
-        <item>Price (low to high)</item>
-        <item>Price (high to low)</item>
-        <item>Rating (highest first)</item>
-    </string-array>
 
     <!-- Estados de solicitud -->
-    <string name="status_pending">Pendiente</string>
-    <string name="status_accepted">Aceptado</string>
-    <string name="status_on_the_way">En camino</string>
-    <string name="status_in_progress">En progreso</string>
-    <string name="status_completed">Completado</string>
-    <string name="status_rejected">Rechazado</string>
-    <string name="status_cancelled">Cancelado</string>
 
     <!-- Tabs de filtros -->
-    <string name="tab_all">Todas</string>
-    <string name="tab_active">Activas</string>
-    <string name="tab_completed">Completadas</string>
-    <string name="tab_cancelled">Canceladas</string>
 
     <!-- MyRequestsActivity -->
-    <string name="my_requests_title">Mis Solicitudes</string>
-    <string name="no_requests_title">No tienes solicitudes</string>
-    <string name="no_requests_message">Solicita un servicio y aparecerá aquí</string>
-    <string name="loading_requests">Cargando solicitudes...</string>
-    <string name="error_loading_requests">Error al cargar solicitudes</string>
 
     <!-- Request Details -->
-    <string name="request_details_title">Detalles de Solicitud</string>
-    <string name="worker_assigned">Trabajador asignado</string>
-    <string name="no_worker_assigned">Sin trabajador asignado</string>
-    <string name="waiting_response">Esperando respuesta...</string>
-    <string name="worker_on_the_way">El trabajador va en camino</string>
-    <string name="service_in_progress">Servicio en progreso</string>
-    <string name="service_completed">Servicio completado</string>
-    <string name="request_rejected">Solicitud rechazada</string>
-    <string name="request_cancelled">Solicitud cancelada</string>
 
     <!-- Acciones -->
-    <string name="action_cancel_request">Cancelar solicitud</string>
-    <string name="action_call_worker">Llamar trabajador</string>
-    <string name="action_rate_service">Calificar servicio</string>
-    <string name="action_view_details">Ver detalles</string>
-    <string name="action_view_on_map">Ver en mapa</string>
 
     <!-- Rating -->
-    <string name="rate_service_title">Califica el servicio</string>
-    <string name="rate_experience">¿Cómo fue tu experiencia?</string>
     <string name="rating_comment_hint">Escribe tus comentarios aquí (opcional)</string>
-    <string name="rating_submitted">¡Gracias por tu calificación!</string>
-    <string name="rating_error">Error al enviar calificación</string>
 
     <!-- Confirmaciones -->
-    <string name="cancel_request_title">¿Cancelar solicitud?</string>
-    <string name="cancel_request_message">¿Estás seguro de que deseas cancelar esta solicitud?</string>
-    <string name="cancel_reason_hint">Motivo de cancelación (opcional)</string>
-    <string name="request_cancelled_success">Solicitud cancelada</string>
 
     <!-- Timeline -->
-    <string name="timeline_created">Solicitud creada</string>
-    <string name="timeline_accepted">Aceptada por trabajador</string>
-    <string name="timeline_on_the_way">Trabajador en camino</string>
-    <string name="timeline_started">Servicio iniciado</string>
-    <string name="timeline_completed">Servicio completado</string>
 
     <!-- Mensajes -->
-    <string name="request_created_success">Solicitud creada exitosamente</string>
-    <string name="request_updated_success">Solicitud actualizada</string>
-    <string name="worker_notified">Trabajador notificado</string>
 
     <!-- Botones -->
-    <string name="btn_submit_rating">Enviar calificación</string>
-    <string name="btn_cancel">Cancelar</string>
-    <string name="btn_confirm">Confirmar</string>
-    <string name="btn_close">Cerrar</string>
-    <string name="btn_retry">Reintentar</string>
 
 
+    <!-- Login Activity - Mensajes de error mejorados -->
+
+    <!-- Recuperación de contraseña -->
+    <string name="forgot_password_title">Recuperar contraseña</string>
+    <string name="forgot_password_enter_email">Ingrese su correo electrónico para restablecer la contraseña</string>
+    <string name="forgot_password_sending">Enviando correo de recuperación...</string>
+    <string name="forgot_password_success_title">Correo enviado</string>
+    <string name="forgot_password_error_title">Error</string>
+    <string name="forgot_password_send_error">Error al enviar el correo. Intente nuevamente</string>
+    <string name="forgot_password_confirm_message">Se enviará un enlace para restablecer la contraseña a:\n\n%1$s\n\n¿Deseas continuar?</string>
+    <string name="forgot_password_confirm_yes">Sí, enviar</string>
+    <string name="forgot_password_cancel">Cancelar</string>
+    <string name="forgot_password_neutral_message">Si existe una cuenta registrada con:\n\n%1$s\n\nrecibirás un correo con las instrucciones para restablecer tu contraseña.\n\nSi no lo ves en unos minutos, revisa tu carpeta de spam y verifica que escribiste bien el correo.</string>
+
+    <!-- Tipo de usuario incorrecto -->
+
+    <!-- Cuenta existente -->
+
+    <!-- Bloqueo de cuenta -->
+
+    <!-- Sugerencia de recuperación de contraseña -->
+
+    <!-- Login con Google -->
+
+    <!-- Mensajes de verificación -->
+
+    <!-- Navegación -->
+
+    <!-- Botones generales -->
+
+    <!-- Permisos de notificaciones -->
+
+    <!-- Cotización -->
+    <string name="quote_card_title">Precio del servicio</string>
+    <string name="quote_dialog_send">Enviar</string>
+    <string name="quote_error_invalid">Ingresa un precio válido</string>
+    <string name="quote_sent">Cotización enviada al cliente</string>
+    <string name="quote_send">Enviar cotización</string>
+    <string name="quote_send_new">Enviar nueva cotización</string>
+    <string name="quote_reject">Rechazar</string>
+    <string name="quote_accepted_toast">Cotización aceptada</string>
+    <string name="quote_reject_reason_hint">Motivo (opcional)</string>
+    <string name="quote_rejected_toast">Cotización rechazada</string>
+    <string name="quote_status_agreed">Precio acordado</string>
+    <string name="quote_status_agreed_value">Precio acordado: %1$s</string>
+    <string name="quote_status_waiting_client">Esperando que el cliente acepte la cotización</string>
+    <string name="quote_status_answer_client">El trabajador cotizó tu servicio. Acepta el precio para que pueda iniciar.</string>
+    <string name="quote_status_missing_worker">Envía una cotización para que el cliente la acepte</string>
+    <string name="quote_status_missing_client">Esperando la cotización del trabajador</string>
+    <string name="quote_status_rejected_worker">El cliente rechazó la cotización. Puedes enviar una nueva.</string>
+    <string name="quote_status_rejected_reason">El cliente rechazó la cotización: \"%1$s\". Puedes enviar una nueva.</string>
+    <string name="quote_status_rejected_client">Rechazaste la cotización. Esperando una nueva del trabajador.</string>
+
+    <!-- Pagos -->
+    <string name="payment_retry_button">Reintentar pago</string>
+    <string name="payment_reopen_button">Volver a abrir el pago</string>
+    <string name="payment_rate_button">Calificar servicio</string>
+    <string name="payment_back">Volver</string>
+    <string name="payment_loading">Cargando…</string>
+    <string name="payment_creating">Preparando el pago…</string>
+    <string name="payment_error">No se pudo completar el pago. Puedes intentarlo de nuevo.</string>
+    <string name="payment_error_no_request">No se encontró la solicitud</string>
+    <string name="payment_error_not_owner">Solo el cliente de la solicitud puede pagarla</string>
+    <string name="payment_error_not_payable">Esta solicitud todavía no se puede pagar</string>
+    <string name="payment_error_no_browser">No hay un navegador disponible para abrir el pago</string>
+    <string name="payment_status_paid">Pagado</string>
+    <string name="payment_status_in_process">Pago en proceso</string>
+    <string name="payment_status_pending_client">Pendiente de pago</string>
+    <string name="payment_status_waiting_client">Esperando el pago del cliente</string>
+    <string name="rating_requires_payment">Primero realiza el pago del servicio</string>
+
+
+    <!-- Catálogo de oficios (Sprint 4: B3, D16) -->
+    <string name="accept">Aceptar</string>
+    <string name="worker_categories_max">Puedes elegir hasta %1$d oficios</string>
+    <string name="worker_categories_required">Selecciona al menos un oficio</string>
+    <string name="no_specialty">Sin especialidad</string>
+    <!-- Crear solicitud con tareas del catálogo (Sprint 4: B1, B14, B18) -->
+    <string name="loading">Cargando…</string>
+    <string name="retry">Reintentar</string>
+    <string name="request_custom_task_required">Describe la tarea</string>
+    <string name="request_quantity_error_integer">Ingresa un número entero entre 1 y %1$d</string>
+    <string name="request_quantity_error_decimal">Ingresa una cantidad mayor que 0 y hasta %1$d</string>
+    <string name="request_max_items">Puedes agregar hasta %1$d tareas</string>
+    <string name="request_tasks_required">Agrega al menos una tarea</string>
+    <string name="request_estimate_unavailable">El trabajador te enviará la cotización.</string>
+    <string name="request_worker_without_category">Este trabajador aún no tiene un oficio del catálogo</string>
+    <string name="request_choose_category">Elige el oficio</string>
+    <string name="request_category_change">%1$s (tocar para cambiar)</string>
+    <string name="request_category_change_confirm">Al cambiar de oficio se quitan las tareas agregadas. ¿Continuar?</string>
+    <string name="request_catalog_error_title">No se pudo cargar el catálogo</string>
+    <string name="request_location_required">No se pudo obtener tu ubicación. Activa la ubicación e intenta de nuevo.</string>
+    <string name="request_sending">Enviando solicitud…</string>
+    <!-- Cotización con motivo y agenda, reprogramación y cancelación (Sprint 4: B1, B2, B4) -->
+    <string name="quote_dialog_min_fee">Mínimo %1$s (tarifa mínima por visita)</string>
+    <string name="quote_error_too_high">El precio supera el máximo permitido</string>
+    <string name="quote_reference_partial">Algunas tareas no tienen rango: el precio necesita motivo.</string>
+    <string name="quote_reference_unpriced">Sin precio de referencia: indica el motivo de tu precio.</string>
+    <string name="quote_reference_missing">Solicitud sin precio de referencia: indica el motivo de tu precio.</string>
+    <string name="quote_reason_label_unpriced">Motivo del precio:</string>
+    <string name="quote_reason_required">Elige el motivo del precio</string>
+    <string name="reason_text_required">Describe el motivo</string>
+    <string name="quote_detail_reason">Motivo del precio: %1$s</string>
+    <string name="quote_detail_reference">Referencia: %1$s – %2$s</string>
+    <string name="schedule_arrival_label">Fecha y hora de llegada</string>
+    <string name="schedule_pick_date">Fecha</string>
+    <string name="schedule_pick_time">Hora</string>
+    <string name="schedule_picker_date_title">Fecha de llegada</string>
+    <string name="schedule_picker_time_title">Hora de llegada</string>
+    <string name="schedule_duration_label">Duración estimada</string>
+    <string name="schedule_error_missing">Elige la fecha y la hora de llegada</string>
+    <string name="schedule_error_past">La hora de llegada debe ser futura</string>
+    <string name="schedule_error_too_far">La llegada debe ser dentro de los próximos %1$d días</string>
+    <string name="schedule_detail">Llegada: %1$s</string>
+    <string name="schedule_detail_rescheduled">Llegada: %1$s (reprogramada)</string>
+    <string name="reschedule_title">Reprogramar servicio</string>
+    <string name="reschedule_message">El cliente recibirá un aviso con la nueva hora. Si no le sirve, puede cancelar.</string>
+    <string name="reschedule_send">Reprogramar</string>
+    <string name="reschedule_done">Servicio reprogramado; avisamos al cliente</string>
+    <string name="reschedule_action">Reprogramar</string>
+    <string name="cancel_reason_required">Elige un motivo</string>
+    <string name="cancel_reason_text_hint">Describe el motivo</string>
+    <string name="cancel_done">Solicitud cancelada</string>
+    <string name="cancel_action">Cancelar solicitud</string>
+    <string name="cancelled_by_client">Cancelada por el cliente: %1$s</string>
+    <string name="cancelled_by_worker">Cancelada por el trabajador: %1$s</string>
+
+    <!-- Rediseño: barra inferior (mockups) -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_client_requests">Solicitudes</string>
+    <string name="nav_pqr">PQR</string>
+    <string name="nav_account">Mi cuenta</string>
+    <string name="nav_worker_requests">Solicitudes</string>
+    <string name="nav_worker_jobs">Mis trabajos</string>
+    <string name="ads_logo_desc">Logo de ADS</string>
+
+    <!-- Rediseño: inicio de sesión (mockup 01) -->
+    <string name="login_title">Bienvenido de nuevo</string>
+    <string name="login_subtitle">Encuentra técnicos de confianza en Ubaté.</string>
+    <string name="login_subtitle_worker">Recibe solicitudes de clientes cerca de ti.</string>
+    <string name="login_email_placeholder">tucorreo@ejemplo.com</string>
+    <string name="login_password_placeholder">Tu contraseña</string>
+    <string name="login_forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="login_button">Iniciar sesión</string>
+    <string name="login_or_continue_with">o continúa con</string>
+    <string name="login_google">Google</string>
+    <string name="login_no_account">¿Aún no tienes cuenta?</string>
+    <string name="login_register">Regístrate</string>
+    <string name="ads_wordmark" translatable="false">ADS</string>
+
+    <!-- Rediseño: historial de solicitudes (mockup 41) -->
+    <string name="action_back">Volver</string>
+    <string name="history_title">Mis solicitudes</string>
+    <string name="history_section_active">Activas</string>
+    <string name="history_section_previous">Anteriores</string>
+    <string name="history_empty_title">No tienes solicitudes</string>
+    <string name="history_empty_message">Tus solicitudes de servicio aparecerán aquí.</string>
+    <string name="history_cancel_reason">Motivo: %1$s</string>
+    <string name="history_worker_pending">Técnico por confirmar</string>
+    <string name="history_service_default">Servicio</string>
+    <string name="request_status_pending">Pendiente</string>
+    <string name="request_status_quoted">Cotizada</string>
+    <string name="request_status_accepted">Aceptada</string>
+    <string name="request_status_quote_rejected">Cotización rechazada</string>
+    <string name="request_status_on_the_way">En camino</string>
+    <string name="request_status_in_progress">En progreso</string>
+    <string name="request_status_completed">Completada</string>
+    <string name="request_status_cancelled">Cancelada</string>
+    <string name="request_status_rejected">Rechazada</string>
+
+    <!-- Rediseño: tarjeta de cotización (mockup 17) -->
+    <string name="quote_reference_label">Referencia ADS</string>
+    <string name="quote_card_reason_label">Motivo del ajuste</string>
+    <string name="quote_arrival_label">Llegada</string>
+    <string name="quote_arrival_rescheduled_label">Llegada (reprogramada)</string>
+    <string name="quote_duration_label">Duración estimada</string>
+
+    <!-- Rediseño: mapa del cliente (mockup 56) -->
+    <string name="map_client_heading">Cerca de ti</string>
+    <string name="map_client_subtitle">Técnicos disponibles en Ubaté</string>
+    <string name="map_filter_all">Todos</string>
+    <string name="map_worker_card_title">%1$s · %2$s</string>
+    <string name="map_worker_new">Verificado – nuevo</string>
+    <string name="map_worker_close">Cerrar</string>
+    <plurals name="map_worker_ratings">
+        <item quantity="one">%1$s · %2$d calificación</item>
+        <item quantity="other">%1$s · %2$d calificaciones</item>
+    </plurals>
+
+    <!-- Rediseño: inicio del cliente (mockup 06) y técnicos (mockup 08) -->
+    <string name="nav_coming_soon">Disponible pronto</string>
+    <string name="home_location">Ubaté, Cundinamarca</string>
+    <string name="home_greeting">Hola, %1$s</string>
+    <string name="home_greeting_default">Hola</string>
+    <string name="home_question">¿Qué necesitas reparar hoy?</string>
+    <string name="home_search_hint">Busca un técnico u oficio</string>
+    <string name="home_map_title">Ver técnicos en el mapa</string>
+    <string name="home_map_subtitle">Encuentra quién está cerca de ti</string>
+    <string name="home_categories_title">Oficios</string>
+    <string name="home_categories_hint">Elige uno para ver los problemas</string>
+    <string name="home_active_service">Servicio activo · %1$s</string>
+    <string name="home_active_pending">Esperando la cotización del técnico</string>
+    <string name="home_active_quoted">Tienes una cotización por revisar</string>
+    <string name="home_active_new_quote">Esperando una nueva cotización del técnico</string>
+    <string name="home_active_accepted">Servicio aceptado</string>
+    <string name="home_active_on_the_way">El técnico va en camino</string>
+    <string name="home_active_in_progress">El técnico está trabajando</string>
+    <string name="workers_label">Técnicos disponibles</string>
+    <string name="workers_all_title">Todos los oficios</string>
+    <string name="workers_search_title">Resultados para «%1$s»</string>
+    <string name="workers_tab_list">Lista</string>
+    <string name="workers_tab_map">Mapa</string>
+    <string name="workers_sort_label">Cercanía y calificación</string>
+    <string name="workers_empty_title">No hay técnicos cerca</string>
+    <string name="workers_empty_message">Prueba con otro oficio o vuelve más tarde.</string>
+    <plurals name="workers_count">
+        <item quantity="one">%1$d técnico disponible</item>
+        <item quantity="other">%1$d técnicos disponibles</item>
+    </plurals>
+    <plurals name="workers_rating">
+        <item quantity="one">%1$s · %2$d calificación</item>
+        <item quantity="other">%1$s · %2$d calificaciones</item>
+    </plurals>
+    <string name="profile_logout">Cerrar sesión</string>
+
+    <!-- Rediseño: problemas del oficio (mockup 07) -->
+    <string name="tasks_question">¿Qué problema tienes?</string>
+    <string name="tasks_unit">Se cobra por %1$s</string>
+    <string name="tasks_other_title">Otro problema</string>
+    <string name="tasks_other_subtitle">Descríbelo y el técnico lo cotiza</string>
+    <string name="tasks_next_step">En el siguiente paso eliges al técnico que prefieras.</string>
+
+    <!-- Rediseño: solicitud (mockups 10, 11, 12 y 47) -->
+    <string name="request_step1_label">Paso 1 de 2 · Qué necesitas</string>
+    <string name="request_step1_title">Elige las tareas</string>
+    <string name="request_price_at_end">Precio al final</string>
+    <string name="request_continue">Continuar</string>
+    <string name="request_custom_hint">Describe el trabajo</string>
+    <string name="request_quantity_minus">Quitar uno</string>
+    <string name="request_quantity_plus">Agregar uno</string>
+    <string name="request_custom_title">Otro trabajo</string>
+    <string name="request_custom_subtitle">Lo describes tú</string>
+    <string name="request_quantity_label">Cantidad</string>
+    <string name="request_step2_label">Paso 2 de 2 · Dónde y cuánto</string>
+    <string name="request_step2_title">Revisa tu solicitud</string>
+    <string name="request_address_label">Dirección del trabajo</string>
+    <string name="request_address_hint">Calle, carrera y número</string>
+    <string name="request_use_location">Usar mi ubicación actual</string>
+    <string name="request_details_label">Detalles para el técnico (opcional)</string>
+    <string name="request_details_hint">Ej.: el tablero está en el patio</string>
+    <string name="request_price_estimated">Precio estimado</string>
+    <string name="request_price">Precio</string>
+    <string name="request_total_estimated">Total estimado</string>
+    <string name="request_total">Total</string>
+    <string name="request_total_unpriced">Lo defines al recibir la cotización</string>
+    <string name="request_price_notice">El valor final puede variar según materiales, tiempo, dificultad y condiciones del lugar.</string>
+    <string name="request_price_notice_partial">Algunas tareas no tienen un rango fijo y el técnico las cotiza. El valor final puede variar según materiales, tiempo, dificultad y condiciones del lugar.</string>
+    <string name="request_price_notice_unpriced">Estas tareas no tienen un rango fijo. El técnico revisa tu solicitud y te envía el precio.</string>
+    <string name="request_min_fee_notice">La tarifa mínima por visita es %1$s. Es el piso del precio, no un cobro aparte.</string>
+    <string name="request_send">Enviar solicitud</string>
+    <string name="request_send_note">Aún no pagas nada. %1$s te enviará una cotización.</string>
+    <string name="request_the_worker">El técnico</string>
+    <string name="request_task_quoted_by_worker">El técnico la cotizará</string>
+    <string name="request_custom_row">Otro: %1$s</string>
+    <string name="request_location_address_error">No pudimos obtener la dirección de tu ubicación. Escríbela, por favor.</string>
+    <string name="request_address_required">Escribe la dirección del trabajo</string>
+    <string name="request_sent_title">Solicitud enviada</string>
+    <string name="request_sent_message">%1$s la revisará y te enviará una cotización con el precio, la fecha y la hora de llegada.</string>
+    <string name="request_sent_status_desc">Estado: pendiente. Siguientes: cotizada, aceptada</string>
+    <string name="request_sent_view">Ver mi solicitud</string>
+    <string name="request_sent_home">Volver al inicio</string>
+    <plurals name="request_selected_count">
+        <item quantity="one">%1$d tarea seleccionada</item>
+        <item quantity="other">%1$d tareas seleccionadas</item>
+    </plurals>
+
+    <!-- Rediseño: perfil del técnico (mockup 09) -->
+    <string name="profile_view">Ver perfil</string>
+    <string name="profile_verified">Verificado por ADS</string>
+    <string name="profile_new">Nuevo</string>
+    <string name="profile_rating_label">Calificación</string>
+    <string name="profile_ratings_label">Calificaciones</string>
+    <string name="profile_jobs_label">Trabajos</string>
+    <string name="profile_distance_label">De ti</string>
+    <string name="profile_about">Sobre mí</string>
+    <string name="profile_categories">Oficios</string>
+    <string name="profile_request_note">El técnico confirma el precio al cotizar. Tú decides si aceptas.</string>
+
+    <!-- Rediseño: detalle y seguimiento de la solicitud (mockups 17, 19, 20, 45, 46, 55) -->
+    <string name="detail_call_worker">Llamar al técnico</string>
+    <string name="detail_address">Dirección</string>
+    <string name="detail_description">Detalles</string>
+    <string name="detail_accept_quote">Aceptar cotización</string>
+    <string name="detail_cancel_service">Cancelar servicio</string>
+    <string name="detail_title_on_the_way">%1$s va hacia tu casa</string>
+    <string name="detail_subtitle_arrival">%1$s · Llegada %2$s</string>
+    <string name="detail_title_in_progress">%1$s está trabajando</string>
+    <string name="detail_subtitle_duration">%1$s · Duración estimada: %2$s</string>
+    <string name="detail_title_completed">Trabajo terminado</string>
+    <string name="detail_title_cancelled">Servicio cancelado</string>
+    <string name="detail_eyebrow_quote">Cotización de</string>
+    <string name="detail_title_service">Tu servicio</string>
+    <string name="detail_title_new_quote">Esperando una nueva cotización</string>
+    <string name="detail_title_waiting_quote">Esperando la cotización</string>
+    <string name="detail_title_pending">Esperando al técnico</string>
+    <string name="detail_timeline_accepted">Cotización aceptada por ti</string>
+    <string name="detail_timeline_on_the_way">El técnico salió hacia tu dirección</string>
+    <string name="detail_timeline_in_progress">El técnico está trabajando</string>
+    <string name="detail_timeline_completed">Trabajo terminado</string>
+    <string name="detail_view_rating">Ver calificación</string>
+    <string name="detail_rate">Calificar servicio</string>
+    <string name="detail_pay">Pagar %1$s</string>
+    <string name="detail_pay_note">Pagas en línea. Después podrás calificar el servicio.</string>
+    <string name="detail_continue_payment">Continuar pago</string>
+    <string name="detail_continue_payment_note">Si no terminaste el pago, puedes continuarlo. No se cobra dos veces.</string>
+    <string name="detail_cancel_note">Puedes cancelar hasta que el técnico salga. Después, usa una PQR.</string>
+    <string name="detail_cannot_cancel_note">Ya no puedes cancelar desde aquí. Si hay un problema, crea una PQR.</string>
+    <string name="detail_quote_proposed">Precio propuesto</string>
+    <string name="detail_reject_title">¿Rechazar la cotización?</string>
+    <string name="detail_reject_message">%1$s recibirá un aviso de que no aceptaste su cotización de %2$s. Podrá enviarte una nueva.</string>
+    <string name="detail_reject_confirm">Sí, rechazar</string>
+    <string name="detail_reject_back">Volver a la cotización</string>
+
+    <!-- Rediseño: pago (mockups 25-28) y calificación (mockup 30) -->
+    <string name="payment_checkout_title">El servicio terminó</string>
+    <string name="payment_checkout_subtitle">%1$s finalizó el trabajo. Ya puedes pagar.</string>
+    <string name="payment_total">Total a pagar</string>
+    <string name="payment_methods_title">Podrás pagar con</string>
+    <string name="payment_method_card">Tarjeta</string>
+    <string name="payment_method_nequi">Nequi</string>
+    <string name="payment_method_pse">PSE</string>
+    <string name="payment_method_bancolombia">Bancolombia</string>
+    <string name="payment_sandbox_note">Entorno de pruebas de Wompi: no se hace ningún cobro real.</string>
+    <string name="payment_pay_wompi">Pagar con Wompi</string>
+    <string name="payment_secure_screen_note">Se abrirá la pantalla segura de Wompi.</string>
+    <string name="payment_result_approved">Pago aprobado</string>
+    <string name="payment_result_approved_message">Pagaste con Wompi. Ahora puedes calificar el servicio de %1$s.</string>
+    <string name="payment_result_approved_rated">Pagaste con Wompi y ya calificaste el servicio. ¡Gracias!</string>
+    <string name="payment_result_pending">Pago pendiente</string>
+    <string name="payment_result_pending_message">Estamos esperando la confirmación de Wompi. Te avisaremos cuando se apruebe.</string>
+    <string name="payment_result_declined">Pago rechazado</string>
+    <string name="payment_result_declined_message">Wompi no pudo aprobar la transacción. Revisa los datos o prueba con otro medio de pago.</string>
+    <string name="payment_result_error">No se pudo completar el pago</string>
+    <string name="payment_result_unavailable">Pago no disponible</string>
+    <string name="rating_close">Cerrar</string>
+    <string name="rating_title">¿Cómo te fue con %1$s?</string>
+    <string name="rating_subtitle">Tu calificación ayuda a otros clientes de Ubaté.</string>
+    <string name="rating_star_1">1 estrella</string>
+    <string name="rating_star_2">2 estrellas</string>
+    <string name="rating_star_3">3 estrellas</string>
+    <string name="rating_star_4">4 estrellas</string>
+    <string name="rating_star_5">5 estrellas</string>
+    <string name="rating_label_1">Muy malo</string>
+    <string name="rating_label_2">Malo</string>
+    <string name="rating_label_3">Regular</string>
+    <string name="rating_label_4">Muy bueno</string>
+    <string name="rating_label_5">Excelente</string>
+    <string name="rating_submit">Enviar calificación</string>
+
+    <!-- Rediseño: cancelar servicio (mockups 21 y 50) -->
+    <string name="cancel_screen_title">Cancelar servicio</string>
+    <string name="cancel_screen_message_client">Cuéntanos el motivo. Es obligatorio y se le avisa al técnico.</string>
+    <string name="cancel_screen_message_worker">Elige el motivo. Es obligatorio y se le avisa al cliente.</string>
+    <string name="cancel_keep_service">Mantener servicio</string>
+
+    <!-- Rediseño: inicio del trabajador (mockup 13) -->
+    <string name="worker_home_status_label">Tu estado</string>
+    <string name="worker_home_switch_desc">Disponible</string>
+    <string name="worker_home_status_on">Disponible</string>
+    <string name="worker_home_status_off">No disponible</string>
+    <string name="worker_home_message_on">Los clientes cercanos pueden encontrarte. Tu ubicación solo se comparte mientras estés disponible.</string>
+    <string name="worker_home_message_off">Activa «Disponible» para que los clientes cercanos puedan encontrarte.</string>
+    <string name="worker_home_map_title">Ver mapa</string>
+    <string name="worker_home_map_subtitle">Solicitudes cerca de ti</string>
+    <string name="worker_home_new_requests">Solicitudes nuevas</string>
+    <string name="worker_home_active_services">Servicios activos</string>
+    <string name="worker_home_next_service">Próximo servicio</string>
+    <string name="worker_home_next_empty_title">Sin servicios programados</string>
+    <string name="worker_home_next_empty_message">Cuando un cliente acepte tu cotización, aparecerá aquí.</string>
+
+    <!-- Rediseño: bandeja del trabajador (mockup 14) -->
+    <string name="inbox_title">Solicitudes</string>
+    <string name="inbox_tab_new">Nuevas</string>
+    <string name="inbox_tab_new_count">Nuevas · %1$d</string>
+    <string name="inbox_tab_quoted">Cotizadas</string>
+    <string name="inbox_tab_active">Activas</string>
+    <string name="inbox_notice">Responde pronto: el cliente espera tu cotización con precio, fecha y hora.</string>
+    <string name="inbox_empty_new">No tienes solicitudes nuevas</string>
+    <string name="inbox_empty_quoted">No tienes cotizaciones esperando respuesta</string>
+    <string name="inbox_empty_active">No tienes servicios activos</string>
+    <string name="inbox_client_default">Cliente</string>
+    <string name="inbox_price_to_quote">Por cotizar</string>
+
+    <!-- Rediseño: detalle de solicitud y cotizar del trabajador (mockups 15 y 16) -->
+    <string name="quote_screen_title">Tu cotización</string>
+    <string name="quote_screen_estimate">Estimado de ADS: %1$s – %2$s</string>
+    <string name="quote_screen_price_label">Tu precio (COP)</string>
+    <string name="quote_screen_price_hint">95000</string>
+    <string name="quote_screen_other_hint">Si eliges «Otro», escribe el motivo.</string>
+    <string name="quote_screen_note">El cliente podrá aceptarla o rechazarla.</string>
+    <string name="worker_detail_request_of">Solicitud de</string>
+    <string name="worker_detail_tasks">Tareas</string>
+    <string name="worker_detail_where">Dónde</string>
+    <string name="worker_detail_quote">Cotizar</string>
+    <string name="worker_detail_reject">Rechazar solicitud</string>
+    <string name="worker_detail_price_note">Puedes confirmar el estimado o ajustarlo con un motivo.</string>
+    <string name="worker_detail_price_note_fee">Tarifa mínima por visita: %1$s. Puedes confirmar el estimado o ajustarlo con un motivo.</string>
+    <string name="worker_detail_price_quoted">Precio que cotizaste.</string>
+    <string name="worker_detail_price_unpriced">Estas tareas no tienen un rango fijo: define el precio al cotizar.</string>
+
+    <!-- Rediseño: Mis trabajos y Mi cuenta del trabajador (mockups 51 y 52) -->
+    <string name="jobs_section_pending">Pendientes</string>
+    <string name="jobs_section_done">Realizados</string>
+    <string name="jobs_not_rated">Sin calificar</string>
+    <string name="jobs_empty">Aún no tienes trabajos aceptados.</string>
+    <string name="account_my_data">Mis datos</string>
+    <string name="account_my_documents">Mis documentos</string>
+    <string name="account_notifications">Notificaciones</string>
+    <string name="account_enable_notifications">Activar notificaciones</string>
+    <string name="notification_login_required">Inicia sesión para ver la notificación</string>
+    <string name="notifications_permission_denied">Sin notificaciones no te enteras al momento de cotizaciones y cambios. Puedes activarlas en Mi cuenta.</string>
+    <string name="account_terms">Términos y datos personales</string>
+    <string name="account_coming_soon">Disponible pronto</string>
+    <string name="account_verified">Verificado</string>
+    <string name="account_verification_pending">Verificación pendiente</string>
+    <string name="account_verification_rejected">Verificación rechazada</string>
+    <string name="account_documents_missing">Documentos pendientes</string>
+    <string name="profile_photo_desc">Foto de perfil</string>
+
+    <!-- Rediseño: mapa del trabajador (mockups 57 y 58) -->
+    <string name="map_worker_subtitle_on">Solicitudes cerca de ti</string>
+    <string name="map_worker_subtitle_off">Sin recibir solicitudes</string>
+    <string name="map_worker_connected">Conectado</string>
+    <string name="map_worker_disconnected">Desconectado</string>
+    <string name="map_worker_off_title">Estás desconectado</string>
+    <string name="map_worker_off_message">Los clientes no te ven en el mapa ni pueden enviarte solicitudes nuevas. Tus servicios ya aceptados siguen activos.</string>
+    <string name="map_worker_connect">Conectarme</string>
+    <string name="map_worker_on_title">Estás conectado</string>
+    <string name="map_worker_on_message">Aún no tienes solicitudes nuevas. Te avisaremos cuando llegue una.</string>
+    <string name="map_worker_view_request">Ver solicitud</string>
+    <string name="map_worker_distance">A %1$s km de ti</string>
+    <string name="map_worker_view_documents">Ver mis documentos</string>
+    <string name="map_worker_unverified_title">Verificación pendiente</string>
+    <string name="map_worker_unverified_incomplete">Debes subir los documentos requeridos para poder conectarte.</string>
+    <string name="map_worker_unverified_pending">Tus documentos están en revisión. Podrás conectarte cuando sean aprobados.</string>
+    <string name="map_worker_unverified_rejected">Tus documentos fueron rechazados. Revisa el motivo y vuelve a subirlos.</string>
+    <string name="map_worker_unverified_approved">Tus documentos fueron verificados. Ya puedes conectarte.</string>
+
+    <!-- Rediseño: servicio en curso del trabajador (mockups 23, 48 y 49) -->
+    <string name="service_worker_for">Servicio para</string>
+    <string name="service_worker_agreed_price">Precio acordado</string>
+    <string name="service_worker_no_address">Sin dirección</string>
+    <string name="service_worker_call">Llamar</string>
+    <string name="service_worker_directions">Cómo llegar</string>
+    <string name="service_worker_reschedule">Reprogramar</string>
+    <string name="service_worker_step_trip">Viaje</string>
+    <string name="service_worker_step_work">Trabajo</string>
+    <string name="service_worker_step_finish">Finalizar</string>
+    <string name="service_worker_start_trip">Iniciar viaje</string>
+    <string name="service_worker_start_work">Iniciar trabajo</string>
+    <string name="service_worker_finish">Finalizar</string>
+    <string name="service_worker_cancel">Cancelar</string>
+    <string name="service_worker_started">Iniciado %1$s</string>
+    <string name="service_worker_started_estimate">Iniciado %1$s · %2$s estimadas</string>
+    <string name="service_worker_note_accepted">Puedes cancelar o reprogramar antes de iniciar el viaje.</string>
+    <string name="service_worker_note_waiting">Podrás iniciar el viaje cuando el cliente acepte tu cotización.</string>
+    <string name="service_worker_note_no_cancel">Ya no puedes cancelar. Si hay un problema, crea una PQR.</string>
+    <!-- Confirmar el cambio de estado (DEF-29: títulos con mayúscula solo al inicio) -->
+    <string name="service_worker_finish_title">Finalizar trabajo</string>
+    <string name="service_worker_confirm_trip">¿Estás en camino hacia el cliente?</string>
+    <string name="service_worker_confirm_work">¿Has llegado y vas a comenzar el trabajo?</string>
+    <string name="service_worker_confirm_finish">¿Has completado el servicio? El cliente podrá pagar y calificarte.</string>
+    <string name="service_worker_confirm_yes">Sí, continuar</string>
+
+    <!-- Rediseño: Bienvenida y Elegir rol (mockups 02 y 03) -->
+    <string name="welcome_logo_desc">Logotipo ADS</string>
+    <string name="welcome_wordmark">ADS</string>
+    <string name="welcome_tagline">Reparaciones del hogar, con técnicos de confianza en Ubaté.</string>
+    <string name="welcome_benefit_verified">Técnicos con documentos verificados</string>
+    <string name="welcome_benefit_price">Precio de referencia antes de pedir</string>
+    <string name="welcome_benefit_payment">Paga en línea o en efectivo</string>
+    <string name="welcome_create_account">Crear cuenta</string>
+    <string name="welcome_have_account">Ya tengo cuenta</string>
+    <string name="role_title">¿Cómo quieres usar ADS?</string>
+    <string name="role_subtitle_register">Elige tu rol para crear la cuenta. Más adelante no se puede cambiar.</string>
+    <string name="role_subtitle_login">Elige con qué rol vas a iniciar sesión.</string>
+    <string name="role_client">Soy cliente</string>
+    <string name="role_client_desc">Necesito una reparación. Recibo cotizaciones de técnicos verificados.</string>
+    <string name="role_worker">Soy trabajador</string>
+    <string name="role_worker_desc">Ofrezco mis servicios. Recibo solicitudes y cotizo mi trabajo.</string>
+    <string name="role_have_account">¿Ya tienes cuenta?</string>
+    <string name="role_login">Inicia sesión</string>
+    <string name="role_no_account">¿No tienes cuenta?</string>
+    <string name="role_register">Crea una</string>
+
+    <!-- Rediseño: registro de cliente (mockup 04) -->
+    <string name="register_role_client">Cliente</string>
+    <string name="register_title">Crea tu cuenta</string>
+    <string name="register_subtitle">Solo necesitamos lo básico para empezar.</string>
+    <string name="register_names">Nombres</string>
+    <string name="register_last_names">Apellidos</string>
+    <string name="register_email">Correo</string>
+    <string name="register_phone">Teléfono</string>
+    <string name="register_phone_prefix">+57</string>
+    <string name="register_phone_placeholder">300 123 4567</string>
+    <string name="register_password_placeholder">Mínimo 8 caracteres</string>
+    <string name="register_adult">Soy mayor de edad</string>
+    <string name="register_terms_text">Acepto los Términos y Condiciones</string>
+    <string name="register_terms_link">Términos y Condiciones</string>
+    <string name="register_terms_desc">Acepto los Términos y Condiciones</string>
+    <string name="register_data_text">Autorizo el tratamiento de mis datos personales</string>
+    <string name="register_data_link">datos personales</string>
+    <string name="register_data_desc">Autorizo el tratamiento de mis datos personales</string>
+    <string name="register_submit">Crear cuenta</string>
+    <string name="register_complete">Completar registro</string>
+    <string name="register_error_adult">Debes ser mayor de edad para crear una cuenta</string>
+    <string name="register_error_data">Debes autorizar el tratamiento de tus datos personales</string>
+
+    <!-- Rediseño: registro del trabajador (mockups 05, 32 y 33) -->
+    <string name="register_role_worker">Trabajador</string>
+    <string name="register_step_label">Paso %1$d de 3 · %2$s</string>
+    <string name="register_step_desc">Paso %1$d de 3</string>
+    <string name="register_step1">Tu cuenta</string>
+    <string name="register_step2">Tu especialidad</string>
+    <string name="register_step3">Verificación</string>
+    <string name="register_continue">Continuar</string>
+    <string name="register_worker_notice">En los siguientes pasos elegirás tus oficios y subirás tus documentos. Revisamos tu perfil antes de mostrarte a los clientes.</string>
+    <string name="skills_title">¿Qué sabes hacer?</string>
+    <string name="skills_categories">Oficios</string>
+    <string name="skills_tasks_title">Problemas que resuelves</string>
+    <string name="skills_tasks_hint">Así te encuentran los clientes.</string>
+    <string name="skills_counter">%1$d de %2$d máximo</string>
+    <string name="skills_hint">Elige hasta 3. Los clientes te encuentran por tus oficios.</string>
+    <string name="skills_description">Descripción (opcional)</string>
+    <string name="skills_description_placeholder">Cuéntales a los clientes tu experiencia</string>
+    <string name="docs_title">Sube tus documentos</string>
+    <string name="docs_subtitle">Los revisamos antes de mostrarte a los clientes.</string>
+    <string name="docs_cv">Hoja de vida</string>
+    <string name="docs_background">Antecedentes judiciales</string>
+    <string name="docs_pdf_required">PDF · Obligatorio</string>
+    <string name="docs_pdf">PDF</string>
+    <string name="docs_pdf_optional">PDF · Opcional</string>
+    <string name="docs_upload">Subir</string>
+    <string name="docs_loaded">Cargado</string>
+    <string name="docs_selected">Archivo listo para enviar</string>
+    <string name="docs_certifications">Certificaciones</string>
+    <string name="docs_letters_option">Cartas de recomendación (mínimo 3)</string>
+    <string name="docs_titles_option">Títulos o certificados (mínimo 1)</string>
+    <string name="docs_letter_1">Carta de recomendación 1</string>
+    <string name="docs_letter_2">Carta de recomendación 2</string>
+    <string name="docs_letter_3">Carta de recomendación 3</string>
+    <string name="docs_title_1">Título o certificado 1</string>
+    <string name="docs_title_2">Título o certificado 2</string>
+    <string name="docs_title_3">Título o certificado 3</string>
+    <string name="docs_privacy">Usamos tus documentos solo para verificar tu perfil.</string>
+    <string name="docs_rules">Los documentos van en PDF. Los revisamos en 24 a 48 horas.</string>
+    <string name="docs_submit">Enviar para verificación</string>
+    <string name="docs_skip">Subirlos más tarde</string>
+
+    <!-- Rediseño: estado de verificación del trabajador (mockups 34, 35 y 36) -->
+    <string name="verify_pending_title">Estamos revisando tu perfil</string>
+    <string name="verify_pending_message">Te avisaremos cuando esté listo. Hasta entonces no apareces en las búsquedas de los clientes.</string>
+    <string name="verify_step_sent">Documentos enviados</string>
+    <string name="verify_step_review">En revisión</string>
+    <string name="verify_step_approved">Perfil aprobado</string>
+    <string name="verify_ok">Entendido</string>
+    <string name="verify_rejected_title">No pudimos aprobar tu perfil</string>
+    <string name="verify_rejected_message">Corrige lo que indica el equipo de ADS y vuelve a enviarlo.</string>
+    <string name="verify_reason_label">Motivo</string>
+    <string name="verify_reason_missing">El equipo de ADS no dejó un motivo. Revisa tus documentos y vuelve a subirlos.</string>
+    <string name="verify_reupload">Volver a subir documentos</string>
+    <string name="verify_exit">Salir</string>
+    <string name="verify_approved_title">Perfil verificado</string>
+    <string name="verify_approved_message">Ya puedes activar «Disponible» y empezar a recibir solicitudes de clientes en Ubaté.</string>
+    <string name="verify_chip_new">Verificado – nuevo</string>
+    <string name="verify_start">Empezar</string>
+    <string name="verify_incomplete_title">Te faltan tus documentos</string>
+    <string name="verify_incomplete_message">Súbelos para que revisemos tu perfil. Hasta entonces no apareces en las búsquedas de los clientes.</string>
+    <string name="verify_upload">Subir documentos</string>
+    <string name="verify_later">Más tarde</string>
+
+    <!-- Rediseño: Mi cuenta del cliente y Mis datos (mockups 37 y 38) -->
+    <string name="account_history">Historial de solicitudes</string>
+    <string name="data_change_password">Cambiar contraseña</string>
+    <string name="data_password_confirm">Te enviaremos un enlace a %1$s para que elijas una contraseña nueva.</string>
+    <string name="data_password_send">Enviar enlace</string>
+    <string name="data_password_sent">Revisa tu correo para cambiar la contraseña.</string>
+    <string name="data_password_error">No pudimos enviar el correo. Intenta de nuevo.</string>
+    <string name="data_password_google">Entras con tu cuenta de Google, así que la contraseña se cambia en Google.</string>
+    <string name="data_delete_title">Eliminar mi cuenta</string>
+    <string name="data_delete_message">Perderás el acceso a ADS con esta cuenta.</string>
+    <string name="data_delete_action">Eliminar cuenta</string>
+    <string name="data_save">Guardar cambios</string>
+    <string name="data_saved">Datos actualizados</string>
+    <string name="data_email_locked">El correo no se puede cambiar: es con el que inicias sesión.</string>
+    <string name="data_save_error">No pudimos guardar los cambios. Intenta de nuevo.</string>
+    <string name="data_load_error">No pudimos cargar tus datos</string>
+    <string name="data_error_name">Solo letras, máximo 50 caracteres</string>
+    <string name="data_error_last_name">Solo letras, máximo 50 caracteres</string>
+    <string name="data_error_phone">Entre 7 y 10 dígitos</string>
+
+    <!-- Rediseño: Mis documentos del trabajador -->
+    <string name="mydocs_subtitle">Revisa el estado de tus documentos y actualiza los que rechacemos.</string>
+    <string name="mydocs_uploading">Subiendo documento…</string>
+    <string name="mydocs_upload_progress">%1$d de %2$d documentos subidos</string>
+    <string name="mydocs_empty_title">Aún no tienes documentos</string>
+    <string name="mydocs_empty_message">Súbelos para que revisemos tu perfil.</string>
+    <string name="mydocs_list_title">Tus documentos</string>
+    <string name="mydocs_rules">Los documentos van en PDF. Los revisamos en 24 a 48 horas. Si rechazamos uno, puedes actualizarlo desde la lista.</string>
+    <string name="mydocs_add">Agregar documento</string>
+    <string name="mydocs_view">Ver</string>
+    <string name="mydocs_update">Actualizar</string>
+    <string name="mydocs_uploaded">Subido: %1$s</string>
+    <string name="mydocs_reviewed">Revisado: %1$s</string>
+    <string name="mydocs_chip_approved">Aprobado</string>
+    <string name="mydocs_chip_rejected">Rechazado</string>
+    <string name="mydocs_chip_pending">En revisión</string>
+    <string name="mydocs_reason_missing">El documento no cumple con los requisitos.</string>
+    <string name="mydocs_status_rejected">Documentos rechazados</string>
+    <string name="mydocs_status_rejected_message">Tienes %1$d documento(s) rechazado(s). Actualízalos desde la lista.</string>
+    <string name="mydocs_status_pending">Verificación en proceso</string>
+    <string name="mydocs_status_pending_message">Tienes %1$d documento(s) en revisión. Te avisaremos cuando terminemos.</string>
+    <string name="mydocs_status_approved">Documentos verificados</string>
+    <string name="mydocs_status_approved_message">Todos tus documentos están aprobados. Ya puedes conectarte.</string>
+    <string name="mydocs_type_title">¿Qué documento subes?</string>
+    <string name="mydocs_type_subtitle">En PDF.</string>
+    <string name="mydocs_close">Cerrar</string>
+    <string name="mydocs_type_cv_desc">Tu experiencia laboral</string>
+    <string name="mydocs_type_background_desc">Certificado de antecedentes judiciales</string>
+    <string name="mydocs_type_letter">Carta de recomendación</string>
+    <string name="mydocs_type_letter_desc">Referencia laboral o personal</string>
+    <string name="mydocs_type_degree">Título o certificado</string>
+    <string name="mydocs_type_degree_desc">Diplomas o certificaciones</string>
+    <string name="mydocs_letter_n">Carta de recomendación %1$d</string>
+    <string name="mydocs_same_file">Ya subiste este mismo archivo. Elige otro PDF.</string>
+    <string name="mydocs_same_name">Ya subiste un archivo llamado %1$s. Elige otro PDF.</string>
+    <string name="mydocs_degree_n">Título o certificado %1$d</string>
+
+    <!-- Rediseño: pie de la lista de técnicos -->
+    <string name="workers_list_end">Has visto todos los técnicos disponibles</string>
+    <string name="workers_load_more">Cargar más técnicos</string>
+    <string name="workers_loading_more">Cargando más técnicos…</string>
+
+    <!-- Rediseño: Notificaciones (mockups 40 y 53) -->
+    <string name="notifications_mark_read">Marcar como leídas</string>
+    <string name="notifications_today">Hoy</string>
+    <string name="notifications_earlier">Antes</string>
+    <string name="notifications_unread">Nueva</string>
+    <string name="notifications_empty_title">No tienes notificaciones</string>
+    <string name="notifications_empty_message">Aquí verás las novedades de tus solicitudes: cotizaciones, cambios de estado y pagos.</string>
+    <string name="notifications_error_title">No pudimos cargar tus notificaciones</string>
+    <string name="notifications_error_message">Revisa tu conexión e intenta de nuevo.</string>
+    <string name="notifications_retry">Reintentar</string>
+    <string name="notifications_mark_read_error">No pudimos marcarlas como leídas. Intenta de nuevo.</string>
+    <string name="notifications_time_now">Hace un momento</string>
+    <string name="notifications_time_minutes">Hace %1$d min</string>
+    <string name="notifications_time_hours">Hace %1$d h</string>
+    <string name="notifications_time_yesterday">Ayer</string>
+
+    <!-- Aviso sin conexión (HU-35) -->
+    <string name="offline_banner">Sin conexión. Algunas acciones no estarán disponibles hasta que vuelva internet.</string>
+    <!-- Rediseño: PQR (mockups 42, 43 y 54; D21) -->
+    <string name="pqr_title">PQR</string>
+    <string name="pqr_subtitle">Peticiones, quejas y reclamos sobre ADS o un servicio.</string>
+    <string name="pqr_deadline_notice">Respondemos en un plazo de <b>15 días hábiles</b>.</string>
+    <string name="pqr_deadline_create">Te responderemos en un plazo de 15 días hábiles.</string>
+    <string name="pqr_mine">Mis PQR</string>
+    <string name="pqr_create">Crear PQR</string>
+    <string name="pqr_send">Enviar PQR</string>
+    <string name="pqr_sent">PQR enviada</string>
+    <string name="pqr_empty_title">No tienes PQR</string>
+    <string name="pqr_empty_message">Si tienes un problema con un servicio o con ADS, crea una PQR.</string>
+    <string name="pqr_error_title">No pudimos cargar tus PQR</string>
+    <string name="pqr_type_label">Tipo</string>
+    <string name="pqr_type_petition">Petición</string>
+    <string name="pqr_type_complaint">Queja</string>
+    <string name="pqr_type_claim">Reclamo</string>
+    <string name="pqr_status_open">Abierta</string>
+    <string name="pqr_status_in_progress">En revisión</string>
+    <string name="pqr_status_closed">Respondida</string>
+    <string name="pqr_sent_on">Enviada el %1$s</string>
+    <string name="pqr_dates_open">%1$s · Responde antes del %2$s</string>
+    <string name="pqr_dates_closed">%1$s · Respondida el %2$s</string>
+    <string name="pqr_detail_title">PQR %1$d</string>
+    <string name="pqr_detail_message">Tu mensaje</string>
+    <string name="pqr_detail_no_response_title">Aún sin respuesta</string>
+    <string name="pqr_detail_no_response">Te avisaremos con una notificación cuando la respondamos.</string>
+    <string name="pqr_detail_view_request">Ver la solicitud</string>
+    <string name="pqr_detail_error">No pudimos cargar la PQR</string>
+    <string name="pqr_detail_not_found">No encontramos esta PQR</string>
+    <string name="pqr_response_label">Respuesta de ADS</string>
+    <string name="pqr_request_label">Solicitud relacionada</string>
+    <string name="pqr_request_placeholder">Elige la solicitud</string>
+    <string name="pqr_request_none">No tienes solicitudes</string>
+    <string name="pqr_request_option">%1$s · %2$s</string>
+    <string name="pqr_description_label">Descripción</string>
+    <string name="pqr_description_hint">Cuéntanos qué pasó</string>
+    <string name="pqr_error_type">Elige el tipo de PQR</string>
+    <string name="pqr_error_request">Elige la solicitud de la PQR</string>
+    <string name="pqr_error_no_requests">Para crear una PQR necesitas una solicitud de servicio</string>
+    <string name="pqr_error_description">Escribe qué pasó para que podamos ayudarte</string>
+    <!-- Rediseño: Método de pago (mockups 18, 20 y 23, D10) -->
+    <string name="payment_method_title">¿Cómo vas a pagar?</string>
+    <string name="payment_method_subtitle">Puedes cambiar el método hasta que el servicio termine.</string>
+    <string name="payment_method_digital">Pago en línea</string>
+    <string name="payment_method_digital_detail">Tarjeta, Nequi, PSE o Bancolombia con Wompi.</string>
+    <string name="payment_method_sandbox">Entorno de pruebas</string>
+    <string name="payment_method_cash">Efectivo</string>
+    <string name="payment_method_cash_detail">Le pagas al técnico al terminar. Él registra el pago en la app.</string>
+    <string name="payment_method_total">Total acordado</string>
+    <string name="payment_method_confirm_accept">Confirmar y aceptar</string>
+    <string name="payment_method_confirm_change">Guardar método</string>
+    <string name="payment_method_changed">Método de pago actualizado</string>
+    <string name="payment_method_selected">%1$s, seleccionado</string>
+    <string name="payment_method_not_selected">%1$s, no seleccionado</string>
+    <string name="payment_method_label">Pago</string>
+    <string name="payment_method_change">Cambiar método</string>
+    <string name="payment_method_worker_digital">Pago: en línea</string>
+    <string name="payment_method_worker_cash">Pago: efectivo</string>
+    <string name="payment_status_cash_client">Pagas en efectivo al técnico</string>
+    <string name="payment_status_cash_worker">El cliente paga en efectivo</string>
+    <!-- Pago en efectivo (mockups 29 y 31, D10) -->
+    <string name="cash_register_action">Recibí el pago</string>
+    <string name="cash_received_title">Cobra el servicio</string>
+    <string name="cash_received_subtitle">%1$s eligió pagar en efectivo.</string>
+    <string name="cash_received_subtitle_generic">El cliente eligió pagar en efectivo.</string>
+    <string name="cash_received_amount_label">Debes recibir</string>
+    <string name="cash_received_notice">Confirma solo cuando tengas el dinero en la mano. El cliente verá el pago registrado y podrá calificarte.</string>
+    <string name="cash_received_confirm">Recibí el pago</string>
+    <string name="cash_received_done">Pago registrado</string>
+    <string name="cash_paid_title">Pago en efectivo registrado</string>
+    <string name="cash_paid_message">%1$s registró que recibió el pago en efectivo.</string>
+    <string name="cash_paid_message_generic">El técnico registró que recibió el pago en efectivo.</string>
+    <string name="cash_paid_disagree">¿No estás de acuerdo? Puedes abrir una PQR y la revisamos. Respondemos en 15 días hábiles.</string>
+    <string name="cash_paid_open_pqr">Abrir una PQR</string>
+    <string name="cash_paid_home">Volver al inicio</string>
+    <!-- Re-cotización (mockups 22, 24, 46 y 49, D7) -->
+    <string name="requote_action">Re-cotizar</string>
+    <string name="requote_title">Re-cotizar</string>
+    <string name="requote_subtitle">Si el trabajo cambió, propón un nuevo precio. El cliente decide si lo acepta.</string>
+    <string name="requote_once">Solo puedes re-cotizar una vez por servicio.</string>
+    <string name="requote_current">Precio actual: %1$s</string>
+    <string name="requote_price_label">Nuevo precio (COP)</string>
+    <string name="requote_reason_label">Motivo</string>
+    <string name="requote_reason_text_hint">Cuéntale al cliente qué cambió</string>
+    <string name="requote_reason_comment_hint">Cuéntale al cliente qué cambió (opcional)</string>
+    <string name="quote_reason_comment_hint">Comentario para el cliente (opcional)</string>
+    <string name="requote_send">Enviar nueva cotización</string>
+    <string name="requote_sent">Nueva cotización enviada al cliente</string>
+    <string name="requote_error_price">Escribe el nuevo precio</string>
+    <string name="requote_error_same">El nuevo precio debe ser distinto al actual</string>
+    <string name="requote_error_reason">Elige el motivo</string>
+    <string name="requote_error_reason_text">Escribe el motivo</string>
+    <string name="requote_worker_hint">Si el trabajo cambió, puedes re-cotizar una sola vez.</string>
+    <string name="requote_worker_waiting">Esperando que el cliente responda tu nueva cotización. Podrás finalizar cuando responda.</string>
+    <string name="requote_worker_rejected">El cliente rechazó la nueva cotización: el servicio sigue con el precio original.</string>
+    <string name="requote_review">Revisar nuevo precio</string>
+    <string name="requote_client_pending">El técnico propone un nuevo precio. Revísalo para continuar.</string>
+    <string name="requote_answer_status_on_the_way">En camino</string>
+    <string name="requote_answer_status_in_progress">En progreso</string>
+    <string name="requote_answer_title">%1$s propone un nuevo precio</string>
+    <string name="requote_answer_title_generic">El técnico propone un nuevo precio</string>
+    <string name="requote_answer_once">Solo puede hacerlo una vez por servicio.</string>
+    <string name="requote_answer_current">Precio actual</string>
+    <string name="requote_answer_new">Nuevo precio</string>
+    <string name="requote_answer_reject_note">Si rechazas, se mantiene el precio original de %1$s.</string>
+    <string name="requote_answer_accept">Aceptar nuevo precio</string>
+    <string name="requote_answer_reject">Rechazar</string>
+    <string name="requote_answer_accepted">Aceptaste el nuevo precio</string>
+    <string name="requote_answer_rejected">Se mantiene el precio original</string>
+    <string name="detail_cash_note">Paga en efectivo al técnico. Él registrará el pago y después podrás calificar.</string>
+    <!-- Rediseño: Eliminar cuenta (mockup 39, D18) -->
+    <string name="delete_account_title">¿Eliminar tu cuenta?</string>
+    <string name="delete_account_message">Perderás el acceso a ADS con esta cuenta. Esta acción no se puede deshacer.</string>
+    <string name="delete_account_keep">Conservar mi cuenta</string>
+    <string name="delete_account_confirm">Sí, eliminar mi cuenta</string>
+    <string name="delete_account_done">Tu cuenta fue eliminada</string>
+
+    <!-- Cuenta suspendida desde el panel (HU-32) -->
+    <string name="account_suspended_title">Tu cuenta fue suspendida</string>
+    <string name="account_suspended_message">El equipo de ADS suspendió tu cuenta, así que se cerrará la sesión. Si crees que es un error, escríbenos a soporte.</string>
+    <string name="account_suspended_login">Esta cuenta está suspendida y no puede iniciar sesión. Si crees que es un error, escríbenos a soporte.</string>
+    <string name="account_suspended_ok">Entendido</string>
+    <!-- Cuenta eliminada desde el panel o por el propio usuario -->
+    <string name="account_deleted_title">Tu cuenta fue eliminada</string>
+    <string name="account_deleted_message">El equipo de desarrollo de ADS eliminó tu cuenta, así que se cerrará la sesión. Si crees que es un error, escríbenos a soporte.</string>
+    <string name="account_deleted_login_title">Esta cuenta ya no existe</string>
+    <string name="account_deleted_login_admin">El equipo de desarrollo de ADS eliminó esta cuenta, así que ya no puedes iniciar sesión con ella. Si crees que es un error, escríbenos a soporte.</string>
+    <string name="account_deleted_login_user">Eliminaste esta cuenta, así que ya no puedes iniciar sesión con ella. Si quieres volver a usar ADS, crea una cuenta nueva.</string>
+    <!-- Términos y privacidad (LegalActivity; los textos están en res/raw) -->
+    <string name="legal_title">Términos y privacidad</string>
+    <string name="legal_tab_terms">Términos</string>
+    <string name="legal_tab_privacy">Privacidad</string>
+    <string name="legal_terms_title">Términos y Condiciones de Uso</string>
+    <string name="legal_privacy_title">Aviso de Privacidad</string>
+    <string name="legal_terms_version">Versión %1$s · Actualizada el %2$s</string>
+    <string name="legal_terms_updated">16 de octubre de 2026</string>
+    <string name="legal_privacy_version">Versión %1$s</string>
+    <!-- Conteo de notificaciones sin leer en Mi cuenta (lector de pantalla) -->
+    <plurals name="account_notifications_unread">
+        <item quantity="one">%d notificación sin leer</item>
+        <item quantity="many">%d notificaciones sin leer</item>
+        <item quantity="other">%d notificaciones sin leer</item>
+    </plurals>
+    <!-- Campana de notificaciones de los inicios -->
+    <string name="home_notifications_desc">Notificaciones</string>
+    <string name="home_notifications_unread_desc">Notificaciones, tienes sin leer</string>
+    <!-- Avisos (AdsSnackbar) -->
+    <string name="error_check_status">No se pudo verificar el estado. Inténtalo de nuevo.</string>
+    <string name="error_connection">Error de conexión. Revisa tu internet e inténtalo de nuevo.</string>
+    <string name="error_update_status">No se pudo actualizar el estado. Inténtalo de nuevo.</string>
+    <string name="error_no_maps">Google Maps no está instalado.</string>
 </resources>
