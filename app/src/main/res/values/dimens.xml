@@ -30,6 +30,9 @@
     <dimen name="field_height">52dp</dimen>
     <dimen name="bottom_nav_height">74dp</dimen>
     <dimen name="stroke_line">1dp</dimen>
+    <!-- Línea de las filas de lista: arranca donde arranca el texto, después del ícono
+         (screen_margin + icon_tile + space_3) -->
+    <dimen name="list_row_divider_inset">68dp</dimen>
     <dimen name="stroke_control">1.5dp</dimen>
     <dimen name="stroke_focus">2dp</dimen>
     <dimen name="icon_md">22dp</dimen>
