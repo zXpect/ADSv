@@ -340,12 +340,12 @@
                     android:visibility="gone" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_detail_reject_quote"
-                    style="@style/Widget.ADS.Button.Secondary"
+                    android:id="@+id/btn_detail_quote_options"
+                    style="@style/Widget.ADS.Button.Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/quote_reject"
+                    android:layout_marginTop="@dimen/space_1"
+                    android:text="@string/quote_options_action"
                     android:visibility="gone" />
 
                 <!-- Completada: pagar o calificar (mockup 55) -->

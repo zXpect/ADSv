@@ -103,6 +103,11 @@
     <string name="quote_send">Enviar cotización</string>
     <string name="quote_send_new">Enviar nueva cotización</string>
     <string name="quote_reject">Rechazar</string>
+    <string name="quote_options_action">Rechazar o cancelar</string>
+    <string name="quote_options_title">¿Qué quieres hacer?</string>
+    <string name="quote_options_reject">Rechazar cotización</string>
+    <string name="quote_options_reject_detail">No aceptas este precio. El técnico podrá enviarte otra.</string>
+    <string name="quote_options_cancel_detail">Ya no necesitas el servicio. Debes elegir un motivo.</string>
     <string name="quote_accepted_toast">Cotización aceptada</string>
     <string name="quote_reject_reason_hint">Motivo (opcional)</string>
     <string name="quote_rejected_toast">Cotización rechazada</string>

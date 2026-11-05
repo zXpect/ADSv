@@ -95,6 +95,11 @@
     <!-- Diálogo ADS: tarjeta con radio 22, título y texto en Sora, botón principal
          naranja con texto navy y secundario de texto (DEF-22). Lo usa
          MaterialAlertDialogBuilder en toda la app. -->
+    <!-- Hoja inferior con el fondo de tarjeta ADS, sin el tinte de elevación de Material 3 -->
+    <style name="ThemeOverlay.ADS.BottomSheet" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="colorSurface">@color/ads_card</item>
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
     <style name="ThemeOverlay.ADS.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="alertDialogStyle">@style/MaterialAlertDialog.ADS</item>
         <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.ADS.Title</item>
