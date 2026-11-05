@@ -27,7 +27,7 @@
             <LinearLayout
                 android:id="@+id/brand_header"
                 style="@style/Widget.ADS.BrandHeader.Bleed"
-                android:paddingBottom="52dp">
+                android:paddingBottom="@dimen/space_5">
             <ImageButton
                 android:id="@+id/btn_rating_close"
                 android:layout_width="@dimen/touch_min"
@@ -36,7 +36,27 @@
                 android:contentDescription="@string/rating_close"
                 android:src="@drawable/ic_close"
                 app:tint="@color/ads_on_brand_header" />
-            </LinearLayout>
+            <TextView
+                android:textColor="@color/ads_on_brand_header"
+                    android:id="@+id/tv_worker_name_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_1"
+                    android:accessibilityHeading="true"
+                    android:fontFamily="@font/sora_extrabold"
+                    android:gravity="start"
+                    android:textAppearance="@style/TextAppearance.ADS.Title"
+                    tools:text="¿Cómo te fue con Carlos?" />
+<TextView
+    android:textColor="@color/ads_on_brand_header"
+                    android:id="@+id/tv_service_type_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:gravity="start"
+                    android:text="@string/rating_subtitle"
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall" />
+</LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,12 +64,10 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:minHeight="420dp"
-                android:orientation="vertical"
-                android:clipChildren="false"
-                android:clipToPadding="false">
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_marginTop="-56dp"
+                    android:visibility="gone"
                     android:id="@+id/tv_rating_initials"
                     android:layout_width="88dp"
                     android:layout_height="88dp"
@@ -61,25 +79,9 @@
                     android:textSize="30sp"
                     tools:text="CR" />
 
-                <TextView
-                    android:id="@+id/tv_worker_name_rating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:accessibilityHeading="true"
-                    android:fontFamily="@font/sora_extrabold"
-                    android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.ADS.Title"
-                    tools:text="¿Cómo te fue con Carlos?" />
+                
 
-                <TextView
-                    android:id="@+id/tv_service_type_rating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_3"
-                    android:gravity="center"
-                    android:text="@string/rating_subtitle"
-                    android:textAppearance="@style/TextAppearance.ADS.BodySmall" />
+                
 
                 <!-- Estrellas de 1 a 5 (lo que acepta el backend) -->
                 <LinearLayout
