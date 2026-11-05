@@ -17,20 +17,23 @@
         android:orientation="horizontal"
         android:paddingStart="@dimen/screen_margin"
         android:paddingTop="@dimen/space_5"
-        android:paddingEnd="@dimen/screen_margin">
+        android:paddingEnd="@dimen/screen_margin"
+        android:background="@drawable/bg_ads_brand_header"
+        android:paddingBottom="@dimen/space_4">
 
         <!-- Es una pestaña de la barra inferior: sin flecha de volver -->
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="@dimen/touch_min"
             android:layout_height="@dimen/touch_min"
-            android:background="@drawable/bg_ads_circle_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/action_back"
             android:src="@drawable/ic_arrow_back"
             android:visibility="gone"
-            app:tint="@color/ads_text" />
+            app:tint="@color/ads_on_brand_header" />
 
         <TextView
+            android:textColor="@color/ads_on_brand_header"
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

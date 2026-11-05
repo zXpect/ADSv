@@ -28,6 +28,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.helpers.SearchTimer;
+import com.project.ads.helpers.SystemBarsHelper;
 import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.Motion;
@@ -78,6 +79,8 @@ public class HomeUserActivity extends AppCompatActivity {
     // Oficios de relleno que laten mientras llega el catálogo
     private View mCategoriesSkeleton;
     private ValueAnimator mCategoriesPulse;
+    // Anillo que late bajo el pin de la vista previa del mapa
+    private ValueAnimator mMapPinRing;
     private NotificationBellHelper mNotificationBell;
     private RequestsNavBadge mRequestsBadge;
 
@@ -93,6 +96,12 @@ public class HomeUserActivity extends AppCompatActivity {
         mClientProvider = new ClientProvider();
 
         setupViews();
+        SystemBarsHelper.matchBrandHeader(this);
+        if (savedInstanceState == null) {
+            Motion.dropIn(findViewById(R.id.home_header));
+            Motion.enterStagger(160, findViewById(R.id.til_home_search), findViewById(R.id.vermapa));
+            Motion.pinDrop(findViewById(R.id.iv_map_pin), 420);
+        }
         loadUserName();
         loadCategories();
         listenActiveService();
@@ -143,7 +152,7 @@ public class HomeUserActivity extends AppCompatActivity {
         });
 
         mCategoriesList = findViewById(R.id.recycler_home_categories);
-        mCategoriesList.setLayoutManager(new GridLayoutManager(this, 2));
+        mCategoriesList.setLayoutManager(new GridLayoutManager(this, 3));
         mCategoriesAdapter = new CategoriesAdapter();
         mCategoriesList.setAdapter(mCategoriesAdapter);
         mCategoriesSkeleton = findViewById(R.id.grid_home_categories_skeleton);
@@ -311,10 +320,12 @@ public class HomeUserActivity extends AppCompatActivity {
         mNotificationBell.start();
         mRequestsBadge.start();
         setActiveLive(mActiveLive);
+        mMapPinRing = Motion.ring(findViewById(R.id.view_map_pin_ring));
     }
 
     @Override
     protected void onStop() {
+        if (mMapPinRing != null) mMapPinRing.cancel();
         mNotificationBell.stop();
         mRequestsBadge.stop();
         mActiveSheen.stop();   // no anima con la pantalla oculta; onStart lo retoma

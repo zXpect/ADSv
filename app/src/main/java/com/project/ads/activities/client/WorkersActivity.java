@@ -106,6 +106,7 @@ public class WorkersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workers);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
         crashlytics = FirebaseCrashlytics.getInstance();
 
         String category = getIntent().getStringExtra(EXTRA_CATEGORY);

@@ -52,6 +52,7 @@ public class NotificationsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         mUid = new AuthProvider().getId();
         if (mUid == null) {

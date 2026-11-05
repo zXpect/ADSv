@@ -258,6 +258,84 @@ public final class Motion {
         });
     }
 
+    /**
+     * Entrada en cascada: cada vista sube con un fundido, una tras otra. Se llama antes
+     * del primer dibujo. Al terminar limpia el retraso, porque ViewPropertyAnimator lo
+     * conserva y retrasaría las animaciones siguientes de la misma vista.
+     */
+    public static void enterStagger(long startDelay, View... views) {
+        if (views.length == 0 || !enabled(views[0].getContext())) return;
+        float rise = 28 * views[0].getResources().getDisplayMetrics().density;
+        for (int i = 0; i < views.length; i++) {
+            View view = views[i];
+            view.setAlpha(0f);
+            view.setTranslationY(rise);
+            view.animate().alpha(1f).translationY(0f)
+                    .setStartDelay(startDelay + i * 70L)
+                    .setDuration(340)
+                    .setInterpolator(new android.view.animation.DecelerateInterpolator(1.6f))
+                    .withEndAction(() -> view.animate().setStartDelay(0))
+                    .start();
+        }
+    }
+
+    /** Flotación suave y sin fin del logo. Devuelve el animador; null si están quitadas. */
+    public static ValueAnimator floatLoop(View view) {
+        if (!enabled(view.getContext())) return null;
+        float rise = 6 * view.getResources().getDisplayMetrics().density;
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, -rise);
+        animator.setDuration(2000);
+        animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.addUpdateListener(a -> view.setTranslationY((float) a.getAnimatedValue()));
+        animator.start();
+        return animator;
+    }
+
+    /** El pin de la vista previa del mapa cae con un rebote al abrir el inicio. */
+    public static void pinDrop(View pin, long startDelay) {
+        if (!enabled(pin.getContext())) return;
+        pin.setAlpha(0f);
+        pin.setTranslationY(-36 * pin.getResources().getDisplayMetrics().density);
+        pin.animate().alpha(1f).translationY(0f)
+                .setStartDelay(startDelay)
+                .setDuration(560)
+                .setInterpolator(new BounceInterpolator())
+                .withEndAction(() -> pin.animate().setStartDelay(0))
+                .start();
+    }
+
+    /**
+     * Pantalla con cabecera de marca: barra de estado del mismo color y, al abrirse,
+     * la cabecera baja y lo que sigue sube en cascada. La barra inferior no se anima.
+     */
+    public static void enterBrandScreen(android.app.Activity activity, android.os.Bundle savedState) {
+        SystemBarsHelper.matchBrandHeader(activity);
+        if (savedState != null) return;
+        View header = activity.findViewById(R.id.brand_header);
+        if (header == null) return;
+        dropIn(header);
+        if (!(header.getParent() instanceof android.view.ViewGroup)) return;
+        android.view.ViewGroup parent = (android.view.ViewGroup) header.getParent();
+        java.util.List<View> next = new java.util.ArrayList<>();
+        for (int i = parent.indexOfChild(header) + 1; i < parent.getChildCount() && next.size() < 5; i++) {
+            View child = parent.getChildAt(i);
+            if (child.getVisibility() == View.VISIBLE && child.getId() != R.id.bottom_nav_container) next.add(child);
+        }
+        if (!next.isEmpty()) enterStagger(140, next.toArray(new View[0]));
+    }
+
+    /** La cabecera de marca baja desde la barra de estado al abrir la pantalla. */
+    public static void dropIn(View header) {
+        if (!enabled(header.getContext())) return;
+        header.setTranslationY(-240 * header.getResources().getDisplayMetrics().density);
+        header.animate().translationY(0f)
+                .setDuration(420)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator(2f))
+                .start();
+    }
+
     /** Fundido corto de un texto que acaba de cambiar. */
     public static void fadeIn(View view) {
         view.setAlpha(0f);

@@ -35,6 +35,17 @@
     <!-- Pines del mapa (docs/branding/pines): iguales en claro y oscuro -->
     <color name="ads_pin_brand">#E8751A</color>
     <color name="ads_pin_navy">#1B1830</color>
+    <!-- Cabecera de marca del esquema nuevo: naranja en claro, azul noche en oscuro -->
+    <!-- Vista previa dibujada del mapa en los inicios -->
+    <color name="ads_map_land">#EFE9DF</color>
+    <color name="ads_map_block">#E2DACC</color>
+    <color name="ads_map_road">#FFFFFF</color>
+    <!-- Menú inferior flotante: barra blanca con borde en claro, azul noche en oscuro -->
+    <color name="ads_nav_float">#FFFFFF</color>
+    <color name="ads_nav_edge">#E4DED3</color>
+    <color name="ads_nav_idle">#5B606B</color>
+    <color name="ads_brand_header">#E8751A</color>
+    <color name="ads_on_brand_header">#1B1830</color>
     <color name="ads_header">#1B1830</color>         <!-- tarjeta destacada (servicio activo) y cabecera del login -->
     <!-- Pantallas de entrada (Bienvenida y Login): fondo navy y hoja del formulario.
          En oscuro el fondo es el tono más oscuro de la paleta (= ads_icon_bg). -->

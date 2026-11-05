@@ -8,6 +8,8 @@ import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import com.project.ads.R;
+
 /**
  * Barra de navegación del sistema del mismo color que el fondo de la pantalla
  * (Bienvenida, Elegir rol, Login), para que no quede una franja gris abajo.
@@ -15,6 +17,14 @@ import androidx.core.view.WindowInsetsControllerCompat;
 public final class SystemBarsHelper {
 
     private SystemBarsHelper() {}
+
+    /** Barra de estado del color de la cabecera de marca, con íconos que se leen encima. */
+    public static void matchBrandHeader(Activity activity) {
+        Window window = activity.getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(activity, R.color.ads_brand_header));
+        new WindowInsetsControllerCompat(window, window.getDecorView())
+                .setAppearanceLightStatusBars(activity.getResources().getBoolean(R.bool.ads_light_status_bar));
+    }
 
     /**
      * @param lightBackground true si el fondo es claro (íconos oscuros en la barra).

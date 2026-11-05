@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Inicio del cliente · mockup 06 (docs/mockups/InicioCliente.dc.html).
-     Saludo, buscador, tarjeta del mapa, oficios, servicio activo y barra inferior.
-     La lista de técnicos vive ahora en WorkersActivity (mockup 08). -->
+<!-- Inicio del cliente · esquema nuevo (docs/rediseno-v2): cabecera de marca, buscador
+     montado, servicio activo, oficios en círculos, mapa y barra inferior. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -21,51 +20,90 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="@dimen/screen_margin"
-            android:paddingTop="@dimen/space_5"
-            android:paddingEnd="@dimen/screen_margin"
             android:paddingBottom="@dimen/space_6">
 
-            <!-- Ubicación y saludo, con la campana de notificaciones a la derecha -->
+            <!-- Cabecera de marca: ubicación, campana y saludo -->
             <LinearLayout
+                android:id="@+id/home_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:background="@drawable/bg_ads_brand_header"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingTop="@dimen/space_3"
+                android:paddingEnd="@dimen/screen_margin"
+                android:paddingBottom="56dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:drawablePadding="@dimen/space_1"
                         android:gravity="center_vertical"
                         android:text="@string/home_location"
                         android:textAppearance="@style/TextAppearance.ADS.Caption"
+                        android:textColor="@color/ads_on_brand_header"
                         app:drawableStartCompat="@drawable/ic_location_small"
-                        app:drawableTint="@color/ads_muted" />
+                        app:drawableTint="@color/ads_on_brand_header" />
 
-                    <TextView
-                        android:id="@+id/user_greeting_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:accessibilityHeading="true"
-                        android:fontFamily="@font/sora_extrabold"
-                        android:text="@string/home_greeting_default"
-                        android:textAppearance="@style/TextAppearance.ADS.Title" />
+                    <include layout="@layout/view_notifications_bell" />
                 </LinearLayout>
 
-                <include layout="@layout/view_notifications_bell" />
+                <TextView
+                    android:id="@+id/user_greeting_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:accessibilityHeading="true"
+                    android:fontFamily="@font/sora_extrabold"
+                    android:text="@string/home_greeting_default"
+                    android:textColor="@color/ads_on_brand_header"
+                    android:textSize="27sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sora_extrabold"
+                    android:text="@string/home_question"
+                    android:textColor="@color/ads_on_brand_header"
+                    android:textSize="27sp" />
             </LinearLayout>
 
-            <!-- Servicio activo: va bajo el saludo para que se vea sin desplazar
-                 (con 7 oficios, debajo de la cuadrícula quedaba fuera de la pantalla) -->
+            <!-- Buscador montado sobre la cabecera -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_home_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/screen_margin"
+                android:layout_marginTop="-30dp"
+                android:layout_marginEnd="@dimen/screen_margin"
+                app:boxBackgroundColor="@color/ads_card"
+                app:boxCornerRadiusBottomEnd="@dimen/radius_md"
+                app:boxCornerRadiusBottomStart="@dimen/radius_md"
+                app:boxCornerRadiusTopEnd="@dimen/radius_md"
+                app:boxCornerRadiusTopStart="@dimen/radius_md"
+                app:hintEnabled="false"
+                app:startIconContentDescription="@null"
+                app:startIconDrawable="@drawable/ic_search">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/home_search_hint"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Servicio activo -->
             <LinearLayout
                 android:id="@+id/card_active_service"
                 android:elevation="@dimen/ads_card_elevation"
@@ -74,7 +112,9 @@
                 android:stateListAnimator="@animator/ads_card_press"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/screen_margin"
                 android:layout_marginTop="@dimen/space_4"
+                android:layout_marginEnd="@dimen/screen_margin"
                 android:background="@drawable/bg_ads_active_service"
                 android:clickable="true"
                 android:focusable="true"
@@ -128,135 +168,19 @@
                     app:tint="@color/ads_on_navy" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="@string/home_question"
-                android:textAppearance="@style/TextAppearance.ADS.Subtitle"
-                android:textSize="20sp" />
-
-            <!-- Buscador -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_home_search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                app:boxCornerRadiusBottomEnd="@dimen/radius_md"
-                app:boxCornerRadiusBottomStart="@dimen/radius_md"
-                app:boxCornerRadiusTopEnd="@dimen/radius_md"
-                app:boxCornerRadiusTopStart="@dimen/radius_md"
-                app:hintEnabled="false"
-                app:startIconContentDescription="@null"
-                app:startIconDrawable="@drawable/ic_search">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/search_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/home_search_hint"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Ver técnicos en el mapa -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/vermapa"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_4"
-                android:clickable="true"
-                android:focusable="true"
-                app:contentPaddingBottom="14dp"
-                app:contentPaddingTop="14dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="@dimen/touch_min"
-                        android:layout_height="@dimen/touch_min"
-                        android:background="@drawable/bg_ads_icon_tile"
-                        android:contentDescription="@null"
-                        android:padding="11dp"
-                        android:src="@drawable/ic_map"
-                        app:tint="@color/ads_chip_text" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/home_map_title"
-                            android:textAppearance="@style/TextAppearance.ADS.Subtitle" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="@string/home_map_subtitle"
-                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_arrow_forward"
-                        app:tint="@color/ads_muted" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
             <!-- Oficios -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_6"
-                android:gravity="bottom"
-                android:orientation="horizontal">
-
-                <!-- El título no se parte: si falta espacio, cede el texto de ayuda -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:accessibilityHeading="true"
-                    android:text="@string/home_categories_title"
-                    android:textAppearance="@style/TextAppearance.ADS.Subtitle"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/space_3"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/sora"
-                    android:gravity="end"
-                    android:text="@string/home_categories_hint"
-                    android:textAppearance="@style/TextAppearance.ADS.Label" />
-            </LinearLayout>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_home_categories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-6dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="-6dp"
+                android:layout_marginStart="@dimen/space_4"
+                android:layout_marginTop="@dimen/space_5"
+                android:layout_marginEnd="@dimen/space_4"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="6"
                 tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:listitem="@layout/item_home_category"
-                tools:spanCount="2" />
+                tools:spanCount="3" />
 
             <!-- Oficios de relleno mientras llegan del catálogo; se quita al llegar
                  (HomeUserActivity.showCategories). Mismas medidas que la cuadrícula real. -->
@@ -264,17 +188,11 @@
                 android:id="@+id/grid_home_categories_skeleton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-6dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="-6dp"
-                android:columnCount="2"
+                android:layout_marginStart="@dimen/space_4"
+                android:layout_marginTop="@dimen/space_5"
+                android:layout_marginEnd="@dimen/space_4"
+                android:columnCount="3"
                 android:importantForAccessibility="noHideDescendants">
-
-                <include
-                    layout="@layout/item_home_category_skeleton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
 
                 <include
                     layout="@layout/item_home_category_skeleton"
@@ -313,6 +231,91 @@
                     android:layout_columnWeight="1" />
             </GridLayout>
 
+            <!-- Ver técnicos en el mapa: tarjeta con vista previa -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/vermapa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/screen_margin"
+                android:layout_marginTop="@dimen/space_3"
+                android:layout_marginEnd="@dimen/screen_margin"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:contentPadding="0dp"
+                app:contentPaddingBottom="0dp"
+                app:contentPaddingLeft="0dp"
+                app:contentPaddingRight="0dp"
+                app:contentPaddingTop="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:minHeight="104dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:paddingStart="@dimen/space_4"
+                        android:paddingTop="@dimen/space_3"
+                        android:paddingEnd="@dimen/space_3"
+                        android:paddingBottom="@dimen/space_3">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_map_title"
+                            android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/home_map_subtitle"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption" />
+                    </LinearLayout>
+
+                    <!-- Vista previa: mapa dibujado y pin con un anillo que late -->
+                    <FrameLayout
+                        android:layout_width="124dp"
+                        android:layout_height="match_parent"
+                        android:importantForAccessibility="noHideDescendants">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="@null"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_ads_map_preview" />
+
+                        <View
+                            android:id="@+id/view_map_pin_ring"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="10dp"
+                            android:alpha="0"
+                            android:background="@drawable/bg_ads_status_dot"
+                            android:backgroundTint="@color/ads_brand" />
+
+                        <ImageView
+                            android:id="@+id/iv_map_pin"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="10dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/pin_electricidad" />
+                    </FrameLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

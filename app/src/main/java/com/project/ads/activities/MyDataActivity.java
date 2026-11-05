@@ -54,6 +54,7 @@ public class MyDataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_data);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
         mIsWorker = "trabajador".equals(pref.getString("user", ""));

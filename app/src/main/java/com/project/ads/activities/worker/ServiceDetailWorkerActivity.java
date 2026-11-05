@@ -111,6 +111,7 @@ public class ServiceDetailWorkerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_detail_worker);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         // Get request ID
         mRequestId = getIntent().getStringExtra("request_id");

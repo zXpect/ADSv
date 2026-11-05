@@ -9,11 +9,14 @@
     android:clickable="true"
     android:focusable="true"
     android:minHeight="64dp"
-    app:cardCornerRadius="18dp"
     app:contentPaddingBottom="@dimen/space_3"
-    app:contentPaddingLeft="@dimen/space_4"
-    app:contentPaddingRight="@dimen/space_4"
-    app:contentPaddingTop="@dimen/space_3">
+    app:contentPaddingTop="@dimen/space_3"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    app:cardCornerRadius="0dp"
+    app:contentPaddingLeft="0dp"
+    app:contentPaddingRight="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,4 +55,9 @@
             android:src="@drawable/ic_arrow_forward"
             app:tint="@color/ads_muted" />
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stroke_line"
+        android:layout_gravity="bottom"
+        android:background="@color/ads_line" />
 </com.google.android.material.card.MaterialCardView>

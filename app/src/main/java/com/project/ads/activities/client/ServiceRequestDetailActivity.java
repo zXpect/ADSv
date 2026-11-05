@@ -101,7 +101,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     private View mCardPaymentMethod;
     private TextView mTvPaymentMethod;
     private View mBtnChangePaymentMethod;
-    private Button mBtnRejectQuote;
+    private Button mBtnQuoteOptions;
 
     // Quote and Payment Card
     private CardView mCardQuote;
@@ -123,6 +123,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_request_detail);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         // Get request ID
         mRequestId = getIntent().getStringExtra("request_id");
@@ -167,7 +168,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         mBtnPayService = findViewById(R.id.btn_pay_service);
         // Aceptar y rechazar van en la barra fija (mockup 17), no dentro de la tarjeta
         mBtnAcceptQuote = findViewById(R.id.btn_detail_accept_quote);
-        mBtnRejectQuote = findViewById(R.id.btn_detail_reject_quote);
+        mBtnQuoteOptions = findViewById(R.id.btn_detail_quote_options);
 
         mCardQuote = findViewById(R.id.card_quote);
         mTvQuoteAmount = findViewById(R.id.tv_quote_amount);
@@ -193,7 +194,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         mTvPaymentMethod = findViewById(R.id.tv_payment_method);
         mBtnChangePaymentMethod = findViewById(R.id.btn_change_payment_method);
         mBtnChangePaymentMethod.setOnClickListener(v -> openChangePaymentMethod());
-        mBtnRejectQuote.setOnClickListener(v -> showRejectQuoteDialog());
+        mBtnQuoteOptions.setOnClickListener(v -> showQuoteOptions());
     }
 
     private void loadCatalog() {
@@ -444,7 +445,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
 
     private void updateActionButtons(ServiceRequest request) {
         mBtnAcceptQuote.setVisibility(View.GONE);
-        mBtnRejectQuote.setVisibility(View.GONE);
+        mBtnQuoteOptions.setVisibility(View.GONE);
         mBtnPayService.setVisibility(View.GONE);
         mBtnRateService.setVisibility(View.GONE);
         mBtnCancelRequest.setVisibility(View.GONE);
@@ -460,7 +461,7 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         // Cotización por responder (mockup 17)
         if ("accepted".equals(status) && request.isQuotePendingAnswer()) {
             mBtnAcceptQuote.setVisibility(View.VISIBLE);
-            mBtnRejectQuote.setVisibility(View.VISIBLE);
+            mBtnQuoteOptions.setVisibility(View.VISIBLE);
             any = true;
         }
 
@@ -491,8 +492,11 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
             }
         }
 
-        // Cancelar con motivo hasta que el técnico inicie el viaje (D8, mockup 20)
-        if (request.canBeCancelled()) {
+        // Cancelar con motivo hasta que el técnico inicie el viaje (D8, mockup 20). Con una
+        // cotización por responder, cancelar va dentro de «Rechazar o cancelar»
+        if (request.isQuotePendingAnswer() && "accepted".equals(status)) {
+            any = true;
+        } else if (request.canBeCancelled()) {
             mBtnCancelRequest.setVisibility(View.VISIBLE);
             ((android.widget.LinearLayout.LayoutParams) mBtnCancelRequest.getLayoutParams()).topMargin =
                     any ? getResources().getDimensionPixelSize(R.dimen.space_3) : 0;
@@ -700,9 +704,30 @@ public class ServiceRequestDetailActivity extends AppCompatActivity {
         };
     }
 
+    /** Hoja con las dos salidas de una cotización; cada una sigue con su flujo de siempre. */
+    private void showQuoteOptions() {
+        com.google.android.material.bottomsheet.BottomSheetDialog sheet =
+                new com.google.android.material.bottomsheet.BottomSheetDialog(this, R.style.ThemeOverlay_ADS_BottomSheet);
+        View content = getLayoutInflater().inflate(R.layout.sheet_quote_options, null);
+        sheet.setContentView(content);
+        content.findViewById(R.id.row_quote_reject).setOnClickListener(v -> {
+            sheet.dismiss();
+            showRejectQuoteDialog();
+        });
+        boolean canCancel = mServiceRequest != null && mServiceRequest.canBeCancelled();
+        content.findViewById(R.id.divider_quote_options).setVisibility(canCancel ? View.VISIBLE : View.GONE);
+        View cancel = content.findViewById(R.id.row_quote_cancel);
+        cancel.setVisibility(canCancel ? View.VISIBLE : View.GONE);
+        cancel.setOnClickListener(v -> {
+            sheet.dismiss();
+            cancelRequest();
+        });
+        sheet.show();
+    }
+
     private void setQuoteButtonsEnabled(boolean enabled) {
         mBtnAcceptQuote.setEnabled(enabled);
-        mBtnRejectQuote.setEnabled(enabled);
+        mBtnQuoteOptions.setEnabled(enabled);
     }
 
     private void openPayment() {

@@ -72,6 +72,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_services);
+        com.project.ads.helpers.SystemBarsHelper.matchBrandHeader(this);
 
         mWorkerId = getIntent().getStringExtra("worker_id");
         if (mWorkerId == null || mWorkerId.isEmpty()) {
@@ -277,10 +278,6 @@ public class ActiveServicesActivity extends AppCompatActivity {
                     detail.setText(R.string.jobs_not_rated);
                 }
 
-                card.setStrokeColor(ContextCompat.getColor(ActiveServicesActivity.this,
-                        pending ? R.color.ads_brand_text : R.color.ads_line));
-                card.setStrokeWidth(getResources().getDimensionPixelSize(
-                        pending ? R.dimen.stroke_focus : R.dimen.stroke_control));
 
                 card.setOnClickListener(v -> {
                     Intent intent = new Intent(ActiveServicesActivity.this, ServiceDetailWorkerActivity.class);

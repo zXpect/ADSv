@@ -49,6 +49,7 @@ public class RequoteAnswerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requote_answer);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         mRequestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         if (TextUtils.isEmpty(mRequestId)) {
