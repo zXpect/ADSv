@@ -25,6 +25,7 @@
         android:contentDescription="@null"
         android:padding="15dp"
         android:scaleType="fitCenter"
+        app:tint="@color/ads_category_icon"
         tools:src="@drawable/icon_electrician" />
 
     <!-- Autoajuste: con letra grande «Electricidad» se achica en vez de cortarse -->

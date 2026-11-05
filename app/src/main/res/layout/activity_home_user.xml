@@ -169,12 +169,22 @@
             </LinearLayout>
 
             <!-- Oficios -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/screen_margin"
+                android:layout_marginTop="@dimen/space_5"
+                android:layout_marginEnd="@dimen/screen_margin"
+                android:accessibilityHeading="true"
+                android:text="@string/home_categories_title"
+                android:textAppearance="@style/TextAppearance.ADS.Subtitle" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_home_categories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4"
-                android:layout_marginTop="@dimen/space_5"
+                android:layout_marginTop="@dimen/space_2"
                 android:layout_marginEnd="@dimen/space_4"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="8"
@@ -189,7 +199,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_4"
-                android:layout_marginTop="@dimen/space_5"
+                android:layout_marginTop="@dimen/space_2"
                 android:layout_marginEnd="@dimen/space_4"
                 android:columnCount="4"
                 android:importantForAccessibility="noHideDescendants">

@@ -264,6 +264,7 @@
     <string name="home_greeting_default">Hola</string>
     <string name="home_question">¿Qué arreglamos?</string>
     <string name="home_search_hint">Busca un técnico u oficio</string>
+    <string name="home_categories_title">Oficios</string>
     <string name="home_all_workers">Ver todos</string>
     <string name="home_all_workers_desc">Ver todos los técnicos</string>
     <string name="home_map_title">Ver técnicos en el mapa</string>
@@ -762,6 +763,7 @@
     <string name="pqr_request_placeholder">Elige la solicitud</string>
     <string name="pqr_request_none">No tienes solicitudes</string>
     <string name="pqr_request_option">%1$s · %2$s</string>
+    <string name="pqr_request_selected">Solicitud elegida</string>
     <string name="pqr_description_label">Descripción</string>
     <string name="pqr_description_hint">Cuéntanos qué pasó</string>
     <string name="pqr_error_type">Elige el tipo de PQR</string>
