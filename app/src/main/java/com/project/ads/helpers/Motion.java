@@ -279,6 +279,20 @@ public final class Motion {
         }
     }
 
+    /** Flotación suave y sin fin del logo. Devuelve el animador; null si están quitadas. */
+    public static ValueAnimator floatLoop(View view) {
+        if (!enabled(view.getContext())) return null;
+        float rise = 6 * view.getResources().getDisplayMetrics().density;
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, -rise);
+        animator.setDuration(2000);
+        animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.addUpdateListener(a -> view.setTranslationY((float) a.getAnimatedValue()));
+        animator.start();
+        return animator;
+    }
+
     /** El pin de la vista previa del mapa cae con un rebote al abrir el inicio. */
     public static void pinDrop(View pin, long startDelay) {
         if (!enabled(pin.getContext())) return;

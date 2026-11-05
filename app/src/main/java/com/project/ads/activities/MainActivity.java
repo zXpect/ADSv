@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     Button mButtonClient;
     Button mButtonWorker;
     SharedPreferences mPref;
+    // Flotación del logo mientras la Bienvenida está a la vista
+    private android.animation.ValueAnimator mLogoFloat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
         if (handleNotificationIntent()) return;
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
+        if (auth.getCurrentUser() == null) {
+            mLogoFloat = Motion.floatLoop(findViewById(R.id.imageViewLogo));
+        } else {
             String user = mPref.getString("user", "");
 
             if (user.equals("cliente")) {
@@ -82,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
                 auth.signOut(); // evitar entrar al home por error
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        if (mLogoFloat != null) mLogoFloat.cancel();
+        super.onStop();
     }
 
     private void goToHomeUser() {
