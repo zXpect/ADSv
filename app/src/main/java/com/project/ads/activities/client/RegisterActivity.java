@@ -149,6 +149,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         initializeComponents();
         handleGoogleSignInData();

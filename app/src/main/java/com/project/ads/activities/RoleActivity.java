@@ -29,6 +29,7 @@ public class RoleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_role);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
         // Barra de navegación del color del fondo (sin franja gris abajo)
         SystemBarsHelper.matchNavigationBar(this, R.color.ads_surface,
                 getResources().getBoolean(R.bool.ads_light_status_bar));
