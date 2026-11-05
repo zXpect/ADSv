@@ -28,6 +28,9 @@
     <color name="ads_shadow">#000000</color>
     <color name="ads_control">#6B7288</color>
     <color name="ads_chip_bg">#3A2616</color>
+    <color name="ads_category_bg">@color/ads_chip_bg</color>
+    <color name="ads_category_stroke">#A8642A</color>
+    <color name="ads_category_icon">@color/ads_brand_text</color>
     <color name="ads_chip_text">#F28A2E</color>
     <color name="ads_on_navy">#F6F3EE</color>
     <color name="ads_on_navy_muted">#C9CCD6</color>

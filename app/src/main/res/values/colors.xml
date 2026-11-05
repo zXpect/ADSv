@@ -23,6 +23,10 @@
     <color name="ads_shadow">#1B1830</color>
     <color name="ads_control">#858A93</color>        <!-- borde de campos y botones secundarios -->
     <color name="ads_chip_bg">#FBE7D3</color>        <!-- chip naranja claro, indicador activo -->
+    <!-- Círculo de oficio: en claro es el chip sin borde; en oscuro resalta con borde -->
+    <color name="ads_category_bg">@color/ads_chip_bg</color>
+    <color name="ads_category_stroke">@color/ads_chip_bg</color>
+    <color name="ads_category_icon">@color/ads_brand_text</color>
     <color name="ads_chip_text">#8F3F06</color>      <!-- texto de chip naranja -->
     <color name="ads_on_navy">#F6F3EE</color>        <!-- texto sobre navy -->
     <color name="ads_on_navy_muted">#CFCBDA</color>  <!-- texto secundario sobre navy -->
