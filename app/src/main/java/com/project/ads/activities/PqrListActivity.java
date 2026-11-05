@@ -46,6 +46,7 @@ public class PqrListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pqr_list);
+        com.project.ads.helpers.SystemBarsHelper.matchBrandHeader(this);
 
         boolean isWorker = ROLE_WORKER.equals(NotificationRouter.role(this));
         View back = findViewById(R.id.btn_back);

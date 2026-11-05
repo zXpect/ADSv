@@ -194,9 +194,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
             ImageViewCompat.setImageTintList(icon, ColorStateList.valueOf(ContextCompat.getColor(context,
                     isUnread ? R.color.ads_brand_text : R.color.ads_charcoal)));
             iconTile.setBackgroundResource(isUnread ? R.drawable.bg_ads_icon_tile : R.drawable.bg_ads_icon_tile_neutral);
-            card.setStrokeColor(ContextCompat.getColor(context, isUnread ? R.color.ads_brand_text : R.color.ads_line));
-            card.setStrokeWidth(context.getResources().getDimensionPixelSize(
-                    isUnread ? R.dimen.stroke_focus : R.dimen.stroke_control));
 
             card.setOnClickListener(v -> mListener.onNotificationClick(n));
         }

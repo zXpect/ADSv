@@ -330,7 +330,6 @@
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:layout_gravity="center"
-                            android:layout_marginTop="10dp"
                             android:alpha="0"
                             android:background="@drawable/bg_ads_status_dot"
                             android:backgroundTint="@color/ads_brand" />
@@ -340,7 +339,6 @@
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_gravity="center"
-                            android:layout_marginBottom="10dp"
                             android:contentDescription="@null"
                             android:src="@drawable/pin_cliente" />
                     </FrameLayout>
