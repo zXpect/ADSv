@@ -292,6 +292,26 @@ public final class Motion {
                 .start();
     }
 
+    /**
+     * Pantalla con cabecera de marca: barra de estado del mismo color y, al abrirse,
+     * la cabecera baja y lo que sigue sube en cascada. La barra inferior no se anima.
+     */
+    public static void enterBrandScreen(android.app.Activity activity, android.os.Bundle savedState) {
+        SystemBarsHelper.matchBrandHeader(activity);
+        if (savedState != null) return;
+        View header = activity.findViewById(R.id.brand_header);
+        if (header == null) return;
+        dropIn(header);
+        if (!(header.getParent() instanceof android.view.ViewGroup)) return;
+        android.view.ViewGroup parent = (android.view.ViewGroup) header.getParent();
+        java.util.List<View> next = new java.util.ArrayList<>();
+        for (int i = parent.indexOfChild(header) + 1; i < parent.getChildCount() && next.size() < 5; i++) {
+            View child = parent.getChildAt(i);
+            if (child.getVisibility() == View.VISIBLE && child.getId() != R.id.bottom_nav_container) next.add(child);
+        }
+        if (!next.isEmpty()) enterStagger(140, next.toArray(new View[0]));
+    }
+
     /** La cabecera de marca baja desde la barra de estado al abrir la pantalla. */
     public static void dropIn(View header) {
         if (!enabled(header.getContext())) return;

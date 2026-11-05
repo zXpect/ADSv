@@ -11,6 +11,7 @@
     <dimen name="space_6">24dp</dimen>
     <!-- Margen lateral de pantalla: los mockups usan 24 px -->
     <dimen name="screen_margin">24dp</dimen>
+    <dimen name="brand_header_bleed">-24dp</dimen>
 
     <!-- Radios ADS (tokens.json: 12, 16, 22; 14, 20 y 28 salen de los mockups) -->
     <dimen name="radius_chip">10dp</dimen>

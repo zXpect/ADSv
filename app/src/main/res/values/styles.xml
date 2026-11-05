@@ -328,6 +328,25 @@
          BARRA INFERIOR: 76 dp, fondo de barra, indicador activo 56x30
          naranja claro, ícono y texto naranja oscuro al estar activo.
          =================================================================== -->
+    <!-- Cabecera de marca del esquema nuevo (docs/rediseno-v2) -->
+    <style name="Widget.ADS.BrandHeader" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/space_4</item>
+        <item name="android:background">@drawable/bg_ads_brand_header</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingStart">@dimen/screen_margin</item>
+        <item name="android:paddingTop">@dimen/space_3</item>
+        <item name="android:paddingEnd">@dimen/screen_margin</item>
+        <item name="android:paddingBottom">@dimen/space_5</item>
+    </style>
+
+    <!-- Dentro de un contenedor con margen de pantalla: llega hasta los bordes -->
+    <style name="Widget.ADS.BrandHeader.Bleed">
+        <item name="android:layout_marginStart">@dimen/brand_header_bleed</item>
+        <item name="android:layout_marginEnd">@dimen/brand_header_bleed</item>
+    </style>
+
     <style name="Widget.ADS.BottomNav" parent="Widget.Material3.BottomNavigationView">
         <item name="backgroundTint">@color/ads_bar</item>
         <item name="android:minHeight">@dimen/bottom_nav_height</item>
