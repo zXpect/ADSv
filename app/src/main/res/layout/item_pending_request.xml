@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Solicitud en la bandeja · mockup 14: cliente y hace cuánto, oficio,
-     dirección y precio (rango de referencia o cotizado). -->
+<!-- Solicitud en la bandeja · mockup 14: cliente y hace cuánto, oficio, dirección y
+     precio (rango de referencia o cotizado). Fila de lista como las notificaciones: el
+     relleno va en la fila y no en la tarjeta, para que la línea no quede pegada al texto. -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_pending_request"
-    style="@style/Widget.ADS.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/space_3"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:minHeight="@dimen/touch_min"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
+    app:contentPaddingBottom="0dp"
+    app:contentPaddingLeft="0dp"
+    app:contentPaddingRight="0dp"
+    app:contentPaddingTop="0dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="@dimen/space_4"
+        android:paddingBottom="@dimen/space_4">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -125,4 +135,9 @@
             android:layout_height="0dp"
             android:visibility="gone" />
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stroke_line"
+        android:layout_gravity="bottom"
+        android:background="@color/ads_line" />
 </com.google.android.material.card.MaterialCardView>

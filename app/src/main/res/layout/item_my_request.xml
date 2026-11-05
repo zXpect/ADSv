@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tarjeta del historial · mockup 41. La etiqueta de sección ("Activas" /
-     "Anteriores") va dentro del ítem y se muestra en el primero de cada grupo. -->
+<!-- Fila del historial · mockup 41, con el mismo principio de lista de notificaciones:
+     el relleno va en la fila y no en la tarjeta, para que la línea no quede pegada al
+     texto. La etiqueta de sección ("Activas" / "Anteriores") va dentro del ítem y se
+     muestra en el primero de cada grupo. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipChildren="false"
     android:orientation="vertical">
 
     <TextView
@@ -23,18 +24,27 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_request"
-        style="@style/Widget.ADS.Card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/space_3"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:minHeight="@dimen/touch_min"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:contentPaddingBottom="0dp"
+        app:contentPaddingLeft="0dp"
+        app:contentPaddingRight="0dp"
+        app:contentPaddingTop="0dp"
+        app:strokeWidth="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/space_4"
+            android:paddingBottom="@dimen/space_4">
 
             <!-- Ícono del oficio (CategoryHelper.iconFor) -->
             <ImageView
@@ -119,5 +129,10 @@
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/stroke_line"
+            android:layout_gravity="bottom"
+            android:background="@color/ads_line" />
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
