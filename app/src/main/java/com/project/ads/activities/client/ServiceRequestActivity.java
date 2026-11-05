@@ -86,6 +86,7 @@ public class ServiceRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_request);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
         initViews();
 
         mWorkerId = getIntent().getStringExtra("workerId");

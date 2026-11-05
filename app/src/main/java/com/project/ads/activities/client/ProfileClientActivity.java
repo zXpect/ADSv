@@ -75,6 +75,7 @@ public class ProfileClientActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_client);
+        com.project.ads.helpers.SystemBarsHelper.matchBrandHeader(this);
 
         initProviders();
         initViews();

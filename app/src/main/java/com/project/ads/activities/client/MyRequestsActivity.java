@@ -77,6 +77,7 @@ public class MyRequestsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_requests);
+        com.project.ads.helpers.SystemBarsHelper.matchBrandHeader(this);
 
         // Obtener client ID
         mClientId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -304,11 +305,6 @@ public class MyRequestsActivity extends AppCompatActivity {
                 bindStatus(request);
                 bindDetail(request, active);
 
-                // La tarjeta activa lleva borde naranja (como Widget.ADS.Card.Highlight)
-                cardView.setStrokeColor(ContextCompat.getColor(MyRequestsActivity.this,
-                        active ? R.color.ads_brand_text : R.color.ads_line));
-                cardView.setStrokeWidth(getResources().getDimensionPixelSize(
-                        active ? R.dimen.stroke_focus : R.dimen.stroke_control));
 
                 cardView.setOnClickListener(v -> {
                     Intent intent = new Intent(MyRequestsActivity.this,

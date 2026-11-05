@@ -74,6 +74,7 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         mPaymentProvider = new PaymentProvider();
         initViews();

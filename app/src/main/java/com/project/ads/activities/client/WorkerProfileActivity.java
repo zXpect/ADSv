@@ -42,6 +42,7 @@ public class WorkerProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_worker_profile);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         mWorkerId = getIntent().getStringExtra(EXTRA_WORKER_ID);
         if (TextUtils.isEmpty(mWorkerId)) {

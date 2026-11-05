@@ -13,12 +13,13 @@
         android:id="@+id/layout_list_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ads_surface"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/screen_margin"
         android:paddingTop="@dimen/space_3"
-        android:paddingEnd="@dimen/screen_margin">
+        android:paddingEnd="@dimen/screen_margin"
+        android:background="@drawable/bg_ads_brand_header"
+        android:paddingBottom="@dimen/space_4">
 
         <ImageButton
             android:id="@+id/btn_back"
@@ -29,9 +30,10 @@
             android:contentDescription="@string/action_back"
             android:src="@drawable/ic_arrow_back"
             android:visibility="gone"
-            app:tint="@color/ads_text" />
+            app:tint="@color/ads_on_brand_header" />
 
         <TextView
+            android:textColor="@color/ads_on_brand_header"
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -64,6 +64,7 @@ public class VerifyRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_request);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         mRequestProvider = new RequestProvider(this);
         mConfirmButton = findViewById(R.id.btn_confirm);
