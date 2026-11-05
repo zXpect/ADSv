@@ -257,12 +257,10 @@
     <string name="home_location">Ubaté, Cundinamarca</string>
     <string name="home_greeting">Hola, %1$s</string>
     <string name="home_greeting_default">Hola</string>
-    <string name="home_question">¿Qué necesitas reparar hoy?</string>
+    <string name="home_question">¿Qué arreglamos?</string>
     <string name="home_search_hint">Busca un técnico u oficio</string>
     <string name="home_map_title">Ver técnicos en el mapa</string>
     <string name="home_map_subtitle">Encuentra quién está cerca de ti</string>
-    <string name="home_categories_title">Oficios</string>
-    <string name="home_categories_hint">Elige uno para ver los problemas</string>
     <string name="home_active_service">Servicio activo · %1$s</string>
     <string name="home_active_pending">Esperando la cotización del técnico</string>
     <string name="home_active_quoted">Tienes una cotización por revisar</string>
@@ -541,9 +539,6 @@
     <string name="welcome_logo_desc">Logotipo ADS</string>
     <string name="welcome_wordmark">ADS</string>
     <string name="welcome_tagline">Reparaciones del hogar, con técnicos de confianza en Ubaté.</string>
-    <string name="welcome_benefit_verified">Técnicos con documentos verificados</string>
-    <string name="welcome_benefit_price">Precio de referencia antes de pedir</string>
-    <string name="welcome_benefit_payment">Paga en línea o en efectivo</string>
     <string name="welcome_create_account">Crear cuenta</string>
     <string name="welcome_have_account">Ya tengo cuenta</string>
     <string name="role_title">¿Cómo quieres usar ADS?</string>

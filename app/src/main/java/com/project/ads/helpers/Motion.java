@@ -258,6 +258,37 @@ public final class Motion {
         });
     }
 
+    /**
+     * Entrada en cascada: cada vista sube con un fundido, una tras otra. Se llama antes
+     * del primer dibujo. Al terminar limpia el retraso, porque ViewPropertyAnimator lo
+     * conserva y retrasaría las animaciones siguientes de la misma vista.
+     */
+    public static void enterStagger(long startDelay, View... views) {
+        if (views.length == 0 || !enabled(views[0].getContext())) return;
+        float rise = 28 * views[0].getResources().getDisplayMetrics().density;
+        for (int i = 0; i < views.length; i++) {
+            View view = views[i];
+            view.setAlpha(0f);
+            view.setTranslationY(rise);
+            view.animate().alpha(1f).translationY(0f)
+                    .setStartDelay(startDelay + i * 70L)
+                    .setDuration(340)
+                    .setInterpolator(new android.view.animation.DecelerateInterpolator(1.6f))
+                    .withEndAction(() -> view.animate().setStartDelay(0))
+                    .start();
+        }
+    }
+
+    /** La cabecera de marca baja desde la barra de estado al abrir la pantalla. */
+    public static void dropIn(View header) {
+        if (!enabled(header.getContext())) return;
+        header.setTranslationY(-240 * header.getResources().getDisplayMetrics().density);
+        header.animate().translationY(0f)
+                .setDuration(420)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator(2f))
+                .start();
+    }
+
     /** Fundido corto de un texto que acaba de cambiar. */
     public static void fadeIn(View view) {
         view.setAlpha(0f);
