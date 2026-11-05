@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Perfil del técnico · mockup 09 (docs/mockups/Perfil.dc.html). -->
+<!-- Perfil del técnico que ve el cliente: nombre grande con ficha de iniciales,
+     calificación destacada, trabajos y distancia. Fondo azul noche en ambos modos. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ads_surface"
+    android:background="@color/ads_start_bg"
     android:orientation="vertical"
     tools:context="com.project.ads.activities.client.WorkerProfileActivity">
 
@@ -19,206 +20,188 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="@dimen/screen_margin"
-            android:paddingTop="0dp"
+            android:paddingTop="@dimen/space_2"
             android:paddingEnd="@dimen/screen_margin"
-            android:paddingBottom="@dimen/space_6"
-            android:clipToPadding="false">
+            android:paddingBottom="@dimen/space_5">
 
-            <LinearLayout
-                android:id="@+id/brand_header"
-                style="@style/Widget.ADS.BrandHeader.Bleed"
-                android:paddingBottom="52dp">
             <ImageButton
                 android:id="@+id/btn_profile_back"
                 android:layout_width="@dimen/touch_min"
                 android:layout_height="@dimen/touch_min"
+                android:layout_marginStart="-10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/action_back"
                 android:src="@drawable/ic_arrow_back"
-                app:tint="@color/ads_on_brand_header" />
-            </LinearLayout>
+                app:tint="@color/ads_on_navy" />
 
-            <!-- Foto o iniciales, nombre y verificación -->
-            <FrameLayout
-                android:layout_width="88dp"
-                android:layout_height="88dp"
-                android:layout_gravity="start"
-                android:layout_marginTop="-56dp">
-
-                <TextView
-                    android:id="@+id/tv_profile_initials"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_ads_avatar"
-                    android:gravity="center"
-                    android:importantForAccessibility="no"
-                    android:textAppearance="@style/TextAppearance.ADS.Subtitle"
-                    android:textColor="@color/ads_surface"
-                    android:textSize="30sp"
-                    tools:text="CR" />
-
-                <ImageView
-                    android:id="@+id/iv_profile_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@null"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/tv_profile_name"
+            <LinearLayout
+                android:id="@+id/layout_profile_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_3"
-                android:accessibilityHeading="true"
-                android:fontFamily="@font/sora_extrabold"
-                android:gravity="start"
-                android:textAppearance="@style/TextAppearance.ADS.Title"
-                tools:text="Carlos Rojas" />
+                android:layout_marginTop="@dimen/space_2"
+                android:baselineAligned="false"
+                android:gravity="top"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_profile_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:accessibilityHeading="true"
+                    android:fontFamily="@font/sora_extrabold"
+                    android:lineSpacingMultiplier="1.05"
+                    android:textColor="@color/ads_on_navy"
+                    android:textSize="32sp"
+                    tools:text="Carlos Rojas" />
+
+                <FrameLayout
+                    android:layout_width="84dp"
+                    android:layout_height="84dp"
+                    android:layout_marginStart="@dimen/space_3"
+                    android:background="@drawable/bg_ads_profile_tile"
+                    android:clipToOutline="true">
+
+                    <TextView
+                        android:id="@+id/tv_profile_initials"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/sora_extrabold"
+                        android:gravity="center"
+                        android:importantForAccessibility="no"
+                        android:textColor="@color/ads_on_brand"
+                        android:textSize="28sp"
+                        tools:text="CR" />
+
+                    <ImageView
+                        android:id="@+id/iv_profile_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@null"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+                </FrameLayout>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_profile_verified"
-                style="@style/Widget.ADS.StatusChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
                 android:layout_marginTop="@dimen/space_2"
-                android:drawablePadding="5dp"
+                android:drawablePadding="6dp"
+                android:fontFamily="@font/sora_semibold"
                 android:gravity="center_vertical"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
                 android:text="@string/profile_verified"
+                android:textColor="@color/ads_pin_brand"
+                android:textSize="14sp"
                 android:visibility="gone"
                 app:drawableStartCompat="@drawable/ic_check_circle"
-                app:drawableTint="@color/ads_chip_text"
+                app:drawableTint="@color/ads_pin_brand"
                 tools:visibility="visible" />
 
-            <!-- Calificación, calificaciones y distancia -->
+            <!-- Calificación destacada; trabajos y distancia a la derecha -->
             <LinearLayout
+                android:id="@+id/layout_profile_stats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="@dimen/space_4"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
-                <com.google.android.material.card.MaterialCardView
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.15"
+                    android:background="@drawable/bg_ads_profile_tile"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_4">
+
+                    <TextView
+                        android:id="@+id/tv_profile_rating"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:fontFamily="@font/sora_extrabold"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:textColor="@color/ads_on_brand"
+                        app:autoSizeMaxTextSize="52sp"
+                        app:autoSizeMinTextSize="20sp"
+                        app:autoSizeTextType="uniform"
+                        tools:text="4,8" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_1"
+                        android:drawablePadding="@dimen/space_1"
+                        android:fontFamily="@font/sora_semibold"
+                        android:gravity="center_vertical"
+                        android:text="@string/profile_rating_label"
+                        android:textColor="@color/ads_on_brand"
+                        android:textSize="13sp"
+                        app:drawableStartCompat="@drawable/ic_star_filled"
+                        app:drawableTint="@color/ads_on_brand" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_3"
                     android:layout_weight="1"
-                    app:cardCornerRadius="@dimen/radius_md"
-                    app:contentPaddingBottom="@dimen/space_3"
-                    app:contentPaddingLeft="@dimen/space_2"
-                    app:contentPaddingRight="@dimen/space_2"
-                    app:contentPaddingTop="@dimen/space_3">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tv_profile_rating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/space_1"
-                            android:gravity="center_vertical"
-                            android:textAppearance="@style/TextAppearance.ADS.Price"
-                            android:textSize="18sp"
-                            app:drawableStartCompat="@drawable/ic_star_filled"
-                            tools:text="4,8" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:fontFamily="@font/sora"
-                            android:text="@string/profile_rating_label"
-                            android:textAppearance="@style/TextAppearance.ADS.Label" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    app:cardCornerRadius="@dimen/radius_md"
-                    app:contentPaddingBottom="@dimen/space_3"
-                    app:contentPaddingLeft="@dimen/space_2"
-                    app:contentPaddingRight="@dimen/space_2"
-                    app:contentPaddingTop="@dimen/space_3">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
+                        android:background="@drawable/bg_ads_profile_stat"
+                        android:orientation="vertical"
+                        android:padding="@dimen/space_3">
 
                         <TextView
                             android:id="@+id/tv_profile_ratings"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.ADS.Price"
-                            android:textSize="18sp"
+                            android:fontFamily="@font/sora_extrabold"
+                            android:textColor="@color/ads_on_navy"
+                            android:textSize="20sp"
                             tools:text="32" />
 
                         <TextView
                             android:id="@+id/tv_profile_ratings_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:fontFamily="@font/sora"
                             android:text="@string/profile_ratings_label"
-                            android:textAppearance="@style/TextAppearance.ADS.Label" />
+                            android:textAppearance="@style/TextAppearance.ADS.Caption"
+                            android:textColor="@color/ads_on_navy_muted" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    app:cardCornerRadius="@dimen/radius_md"
-                    app:contentPaddingBottom="@dimen/space_3"
-                    app:contentPaddingLeft="@dimen/space_2"
-                    app:contentPaddingRight="@dimen/space_2"
-                    app:contentPaddingTop="@dimen/space_3">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
+                        android:layout_marginTop="@dimen/space_3"
+                        android:background="@drawable/bg_ads_profile_stat"
+                        android:orientation="vertical"
+                        android:padding="@dimen/space_3">
 
                         <TextView
                             android:id="@+id/tv_profile_distance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/sora_extrabold"
                             android:maxLines="1"
-                            android:textAppearance="@style/TextAppearance.ADS.Price"
-                            android:textSize="18sp"
+                            android:textColor="@color/ads_on_navy"
+                            android:textSize="20sp"
                             tools:text="0,8 km" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:fontFamily="@font/sora"
                             android:text="@string/profile_distance_label"
-                            android:textAppearance="@style/TextAppearance.ADS.Label" />
+                            android:textAppearance="@style/TextAppearance.ADS.Caption"
+                            android:textColor="@color/ads_on_navy_muted" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Sobre mí -->
@@ -226,19 +209,21 @@
                 android:id="@+id/tv_profile_about_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="@dimen/space_5"
                 android:accessibilityHeading="true"
+                android:fontFamily="@font/sora_semibold"
                 android:text="@string/profile_about"
-                android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+                android:textColor="@color/ads_on_navy"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_profile_about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="@dimen/space_1"
                 android:lineSpacingExtra="3dp"
                 android:textAppearance="@style/TextAppearance.ADS.BodySmall"
-                android:textColor="@color/ads_charcoal"
+                android:textColor="@color/ads_on_navy_muted"
                 tools:text="Electricista con experiencia en instalaciones residenciales." />
 
             <!-- Oficios -->
@@ -248,8 +233,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_5"
                 android:accessibilityHeading="true"
+                android:fontFamily="@font/sora_semibold"
                 android:text="@string/profile_categories"
-                android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+                android:textColor="@color/ads_on_navy"
+                android:textSize="15sp" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chip_group_profile_categories"
@@ -260,41 +247,31 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Barra de acción fija -->
+    <!-- Aviso y acción, sobre el mismo fondo -->
     <LinearLayout
+        android:id="@+id/layout_profile_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ads_bar"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingTop="@dimen/space_2"
+        android:paddingEnd="@dimen/screen_margin"
+        android:paddingBottom="@dimen/space_5">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/stroke_line"
-            android:background="@color/ads_line" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingStart="@dimen/screen_margin"
-            android:paddingTop="14dp"
-            android:paddingEnd="@dimen/screen_margin"
-            android:paddingBottom="@dimen/screen_margin">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_profile_request"
+        <TextView
+                android:textColor="@color/ads_on_navy_muted"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/request_service" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_2"
+                android:layout_marginBottom="@dimen/space_3"
                 android:fontFamily="@font/sora"
-                android:gravity="center"
+                android:gravity="start"
                 android:text="@string/profile_request_note"
                 android:textAppearance="@style/TextAppearance.ADS.Label" />
-        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_profile_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/request_service" />
     </LinearLayout>
 </LinearLayout>
