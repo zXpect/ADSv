@@ -28,7 +28,7 @@
     <dimen name="touch_min">44dp</dimen>
     <dimen name="button_height">54dp</dimen>
     <dimen name="field_height">52dp</dimen>
-    <dimen name="bottom_nav_height">76dp</dimen>
+    <dimen name="bottom_nav_height">74dp</dimen>
     <dimen name="stroke_line">1dp</dimen>
     <dimen name="stroke_control">1.5dp</dimen>
     <dimen name="stroke_focus">2dp</dimen>

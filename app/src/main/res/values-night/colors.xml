@@ -35,6 +35,7 @@
     <color name="ads_map_land">#1B2035</color>
     <color name="ads_map_block">#232944</color>
     <color name="ads_map_road">#343A56</color>
+    <color name="ads_nav_float">#1F2540</color>
     <color name="ads_brand_header">#1F2540</color>
     <color name="ads_on_brand_header">#F6F3EE</color>
     <color name="ads_header">#1F2540</color>

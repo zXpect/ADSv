@@ -24,6 +24,9 @@ public final class ClientNavHelper {
     public static void setup(Activity activity, int selectedItemId) {
         BottomNavigationView nav = activity.findViewById(R.id.bottom_nav);
         if (nav == null) return;
+        // La barra del sistema sigue el fondo que rodea al menú flotante
+        SystemBarsHelper.matchNavigationBar(activity, R.color.ads_surface,
+                activity.getResources().getBoolean(R.bool.ads_light_status_bar));
         nav.setSelectedItemId(selectedItemId);
         nav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
