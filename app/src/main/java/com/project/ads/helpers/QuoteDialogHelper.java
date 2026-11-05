@@ -108,6 +108,9 @@ public class QuoteDialogHelper {
         View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_send_quote, null);
         dialog.setContentView(view, new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setStatusBarColor(mActivity.getColor(R.color.ads_brand_header));
+        }
 
         TextView tvHint = view.findViewById(R.id.tv_quote_hint);
         TextView tvReference = view.findViewById(R.id.tv_quote_reference);

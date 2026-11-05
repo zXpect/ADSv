@@ -87,6 +87,7 @@ public class DocumentStatusActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document_status);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         initProviders();
         getIntentData();

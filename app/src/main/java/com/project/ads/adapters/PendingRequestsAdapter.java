@@ -106,10 +106,6 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<PendingRequests
 
             // Nuevas (por responder): borde naranja
             boolean isNew = "pending".equals(request.getStatus());
-            card.setStrokeColor(ContextCompat.getColor(itemView.getContext(),
-                    isNew ? R.color.ads_brand_text : R.color.ads_line));
-            card.setStrokeWidth(itemView.getResources().getDimensionPixelSize(
-                    isNew ? R.dimen.stroke_focus : R.dimen.stroke_control));
         }
     }
 }

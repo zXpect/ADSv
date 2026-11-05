@@ -69,6 +69,7 @@ public class PendingRequestsActivity extends AppCompatActivity implements Pendin
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_requests);
+        com.project.ads.helpers.SystemBarsHelper.matchBrandHeader(this);
 
         // Get data from intent
         workerId = getIntent().getStringExtra("worker_id");
