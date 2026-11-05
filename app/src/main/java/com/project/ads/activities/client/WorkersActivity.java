@@ -36,6 +36,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseError;
 import com.project.ads.helpers.Motion;
@@ -43,6 +45,9 @@ import com.project.ads.R;
 import com.project.ads.helpers.RankingHelper;
 import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.models.Worker;
+import com.project.ads.models.api.CatalogData;
+import com.project.ads.providers.ApiCallback;
+import com.project.ads.providers.CatalogProvider;
 import com.project.ads.providers.GeofireProvider;
 import com.project.ads.providers.WorkerProvider;
 import com.project.ads.helpers.DisplayNameHelper;
@@ -57,6 +62,7 @@ import java.util.Map;
 /**
  * Técnicos disponibles · mockup 08 (docs/mockups/Trabajadores.dc.html).
  * Lista de técnicos cercanos de un oficio, ordenada por distancia y paginada.
+ * Sin oficio ni texto buscado («Ver todos» del inicio) muestra todos y filtra con chips.
  * La búsqueda (ubicación + Geofire + datos del trabajador) es la que antes vivía
  * en HomeUserActivity; se movió sin cambiar su lógica.
  */
@@ -96,6 +102,8 @@ public class WorkersActivity extends AppCompatActivity {
     private final Map<String, Worker> mWorkersMap = new HashMap<>();
     private String mCurrentFilter = CategoryHelper.ALL;
     private String mSearchQuery = "";
+    /** Se entró por «Ver todos»: sin oficio ni búsqueda, con filtro por oficio. */
+    private boolean mAllWorkersMode = false;
     private boolean mIsFirstTime = true;
     private boolean mLocationPermissionDenied = false;
 
@@ -113,6 +121,7 @@ public class WorkersActivity extends AppCompatActivity {
         if (category != null) mCurrentFilter = category;
         String query = getIntent().getStringExtra(EXTRA_QUERY);
         if (query != null) mSearchQuery = query.toLowerCase(Locale.ROOT).trim();
+        mAllWorkersMode = category == null && mSearchQuery.isEmpty();
 
         mGeofireProvider = new GeofireProvider();
         mWorkerProvider = new WorkerProvider();
@@ -143,13 +152,60 @@ public class WorkersActivity extends AppCompatActivity {
         } else {
             title.setText(categoryName != null ? categoryName : getString(R.string.workers_all_title));
         }
+        if (mAllWorkersMode) setupCategoryFilter();
 
-        // Lista / Mapa: el mapa es la pantalla del mapa del cliente
+        // Lista / Mapa: el mapa es la pantalla del mapa del cliente, con el mismo oficio
         findViewById(R.id.btn_workers_map).setOnClickListener(v ->
-                startActivity(new Intent(this, MapClientActivity.class)));
+                startActivity(new Intent(this, MapClientActivity.class)
+                        .putExtra(EXTRA_CATEGORY, mCurrentFilter)));
 
         mSwipeRefreshLayout.setColorSchemeResources(R.color.ads_brand);
         mSwipeRefreshLayout.setOnRefreshListener(this::refreshWorkersList);
+    }
+
+    /** Chips «Todos» y los oficios del catálogo, como en el mapa (mockup 56). */
+    private void setupCategoryFilter() {
+        ((TextView) findViewById(R.id.tv_workers_label)).setText(R.string.workers_all_label);
+        findViewById(R.id.scroll_workers_filters).setVisibility(View.VISIBLE);
+        new CatalogProvider().getCategoriesWithFallback(new ApiCallback<CatalogData>() {
+            @Override
+            public void onSuccess(CatalogData catalog) {
+                if (isFinishing()) return;
+                bindFilterChips(CategoryHelper.filterOptions(catalog, getString(R.string.workers_filter_all)));
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                // getCategoriesWithFallback no falla
+            }
+        });
+    }
+
+    private void bindFilterChips(List<CatalogData.Category> options) {
+        ChipGroup group = findViewById(R.id.chip_group_workers_filter);
+        group.removeAllViews();
+        for (CatalogData.Category option : options) {
+            Chip chip = new Chip(this);
+            chip.setId(View.generateViewId());
+            chip.setText(option.getName());
+            chip.setCheckable(true);
+            chip.setChecked(option.getSlug().equals(mCurrentFilter));
+            chip.setOnCheckedChangeListener((button, isChecked) -> {
+                if (isChecked && !option.getSlug().equals(mCurrentFilter)) applyCategoryFilter(option);
+            });
+            group.addView(chip);
+        }
+    }
+
+    private void applyCategoryFilter(CatalogData.Category option) {
+        mCurrentFilter = option.getSlug();
+        ((TextView) findViewById(R.id.tv_workers_label)).setText(CategoryHelper.ALL.equals(mCurrentFilter)
+                ? getString(R.string.workers_all_label) : option.getName());
+        // La paginación vuelve a empezar: si no, al quitar el filtro quedarían menos visibles
+        mDisplayedWorkersCount = 0;
+        mIsLoadingMore = false;
+        filterAndSearchWorkers();
+        mWorkersRecyclerView.scrollToPosition(0);
     }
 
     private void setupRecyclerView() {

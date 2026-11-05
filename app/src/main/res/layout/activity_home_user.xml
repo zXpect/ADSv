@@ -177,10 +177,10 @@
                 android:layout_marginTop="@dimen/space_5"
                 android:layout_marginEnd="@dimen/space_4"
                 android:nestedScrollingEnabled="false"
-                tools:itemCount="6"
+                tools:itemCount="8"
                 tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:listitem="@layout/item_home_category"
-                tools:spanCount="3" />
+                tools:spanCount="4" />
 
             <!-- Oficios de relleno mientras llegan del catálogo; se quita al llegar
                  (HomeUserActivity.showCategories). Mismas medidas que la cuadrícula real. -->
@@ -191,8 +191,20 @@
                 android:layout_marginStart="@dimen/space_4"
                 android:layout_marginTop="@dimen/space_5"
                 android:layout_marginEnd="@dimen/space_4"
-                android:columnCount="3"
+                android:columnCount="4"
                 android:importantForAccessibility="noHideDescendants">
+
+                <include
+                    layout="@layout/item_home_category_skeleton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+
+                <include
+                    layout="@layout/item_home_category_skeleton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
 
                 <include
                     layout="@layout/item_home_category_skeleton"

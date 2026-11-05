@@ -139,6 +139,10 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_client);
 
+        // Desde la lista de técnicos el mapa abre con el mismo oficio
+        String category = getIntent().getStringExtra(WorkersActivity.EXTRA_CATEGORY);
+        if (category != null) mCurrentFilter = category;
+
         initToolbar();
         initProviders();
         initMap();

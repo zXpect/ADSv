@@ -264,6 +264,8 @@
     <string name="home_greeting_default">Hola</string>
     <string name="home_question">¿Qué arreglamos?</string>
     <string name="home_search_hint">Busca un técnico u oficio</string>
+    <string name="home_all_workers">Ver todos</string>
+    <string name="home_all_workers_desc">Ver todos los técnicos</string>
     <string name="home_map_title">Ver técnicos en el mapa</string>
     <string name="home_map_subtitle">Encuentra quién está cerca de ti</string>
     <string name="home_active_service">Servicio activo · %1$s</string>
@@ -274,7 +276,9 @@
     <string name="home_active_on_the_way">El técnico va en camino</string>
     <string name="home_active_in_progress">El técnico está trabajando</string>
     <string name="workers_label">Técnicos disponibles</string>
-    <string name="workers_all_title">Todos los oficios</string>
+    <string name="workers_all_title">Todos los técnicos</string>
+    <string name="workers_all_label">Todos los oficios</string>
+    <string name="workers_filter_all">Todos</string>
     <string name="workers_search_title">Resultados para «%1$s»</string>
     <string name="workers_tab_list">Lista</string>
     <string name="workers_tab_map">Mapa</string>

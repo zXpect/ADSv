@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -152,7 +153,7 @@ public class HomeUserActivity extends AppCompatActivity {
         });
 
         mCategoriesList = findViewById(R.id.recycler_home_categories);
-        mCategoriesList.setLayoutManager(new GridLayoutManager(this, 3));
+        mCategoriesList.setLayoutManager(new GridLayoutManager(this, 4));
         mCategoriesAdapter = new CategoriesAdapter();
         mCategoriesList.setAdapter(mCategoriesAdapter);
         mCategoriesSkeleton = findViewById(R.id.grid_home_categories_skeleton);
@@ -205,6 +206,12 @@ public class HomeUserActivity extends AppCompatActivity {
         intent.putExtra(WorkersActivity.EXTRA_CATEGORY, category.getSlug());
         intent.putExtra(WorkersActivity.EXTRA_CATEGORY_NAME, category.getName());
         startActivity(intent);
+    }
+
+    /** «Ver todos»: salta los problemas del oficio y abre todos los técnicos, con filtro por oficio. */
+    private void openAllWorkers() {
+        SearchTimer.start(this);
+        startActivity(new Intent(this, WorkersActivity.class));
     }
 
     /** Tarjeta navy con la solicitud en curso más reciente del cliente (mockup 06). */
@@ -344,6 +351,13 @@ public class HomeUserActivity extends AppCompatActivity {
     // ---------- Oficios ----------
 
     private class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Holder> {
+        private static final int VIEW_TYPE_CATEGORY = 0;
+        private static final int VIEW_TYPE_ALL = 1;
+
+        @Override
+        public int getItemViewType(int position) {
+            return position < mCategories.size() ? VIEW_TYPE_CATEGORY : VIEW_TYPE_ALL;
+        }
 
         @NonNull
         @Override
@@ -354,6 +368,15 @@ public class HomeUserActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull Holder holder, int position) {
+            if (getItemViewType(position) == VIEW_TYPE_ALL) {
+                holder.name.setText(R.string.home_all_workers);
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.ads_brand_text));
+                holder.icon.setBackgroundResource(R.drawable.bg_ads_category_all);
+                holder.icon.setImageResource(R.drawable.icon_all_workers);
+                holder.itemView.setContentDescription(getString(R.string.home_all_workers_desc));
+                holder.itemView.setOnClickListener(v -> openAllWorkers());
+                return;
+            }
             CatalogData.Category category = mCategories.get(position);
             holder.name.setText(category.getName());
             holder.icon.setImageResource(CategoryHelper.iconFor(category.getSlug()));
@@ -362,7 +385,8 @@ public class HomeUserActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mCategories.size();
+            // «Ver todos» va siempre al final, cuando ya hay oficios
+            return mCategories.isEmpty() ? 0 : mCategories.size() + 1;
         }
 
         class Holder extends RecyclerView.ViewHolder {
