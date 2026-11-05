@@ -45,7 +45,7 @@
         <item name="android:fontFamily">@font/sora_extrabold</item>
         <item name="fontFamily">@font/sora_extrabold</item>
         <item name="android:textSize">26sp</item>
-        <item name="lineHeight">32sp</item>
+        <item name="lineHeight">34sp</item>
         <item name="android:textColor">@color/ads_text</item>
     </style>
 
@@ -482,13 +482,13 @@
     <style name="MaterialAlertDialog.ADS" parent="MaterialAlertDialog.Material3">
         <item name="backgroundTint">@color/ads_card</item>
         <item name="shapeAppearance">@style/ShapeAppearance.ADS.Dialog</item>
-        <item name="backgroundInsetStart">@dimen/space_6</item>
-        <item name="backgroundInsetEnd">@dimen/space_6</item>
+        <item name="backgroundInsetStart">@dimen/space_5</item>
+        <item name="backgroundInsetEnd">@dimen/space_5</item>
     </style>
 
     <style name="ShapeAppearance.ADS.Dialog" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/radius_lg</item>
+        <item name="cornerSize">@dimen/radius_sheet</item>
     </style>
 
     <style name="MaterialAlertDialog.ADS.Title" parent="MaterialAlertDialog.Material3.Title.Text">
@@ -497,19 +497,21 @@
     </style>
 
     <style name="MaterialAlertDialog.ADS.Body" parent="MaterialAlertDialog.Material3.Body.Text">
-        <item name="android:textAppearance">@style/TextAppearance.ADS.Body</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.BodySmall</item>
         <item name="android:textColor">@color/ads_muted</item>
     </style>
 
     <!-- Título del diálogo: 20/26, 600 -->
     <style name="TextAppearance.ADS.Dialog.Title" parent="TextAppearance.ADS.Title">
-        <item name="android:textSize">20sp</item>
-        <item name="lineHeight">26sp</item>
+        <item name="android:fontFamily">@font/sora_extrabold</item>
+        <item name="fontFamily">@font/sora_extrabold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="lineHeight">28sp</item>
     </style>
 
     <!-- Botón principal del diálogo: naranja con texto navy, 44 dp -->
     <style name="Widget.ADS.Button.Dialog">
-        <item name="android:minHeight">@dimen/touch_min</item>
+        <item name="android:minHeight">48dp</item>
         <item name="android:paddingStart">@dimen/space_5</item>
         <item name="android:paddingEnd">@dimen/space_5</item>
         <item name="android:layout_marginStart">@dimen/space_2</item>
