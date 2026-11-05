@@ -269,6 +269,7 @@ public class MyRequestsActivity extends AppCompatActivity {
         class RequestViewHolder extends RecyclerView.ViewHolder {
             MaterialCardView cardView;
             TextView tvSection, tvServiceType, tvWorkerName, tvStatus, tvDetail;
+            android.widget.ImageView ivIcon;
 
             RequestViewHolder(View itemView) {
                 super(itemView);
@@ -278,6 +279,7 @@ public class MyRequestsActivity extends AppCompatActivity {
                 tvWorkerName = itemView.findViewById(R.id.tv_worker_name);
                 tvStatus = itemView.findViewById(R.id.tv_status);
                 tvDetail = itemView.findViewById(R.id.tv_timestamp);
+                ivIcon = itemView.findViewById(R.id.iv_request_icon);
             }
 
             void bind(ServiceRequest request) {
@@ -290,6 +292,8 @@ public class MyRequestsActivity extends AppCompatActivity {
                 tvSection.setVisibility(firstOfGroup ? View.VISIBLE : View.GONE);
                 tvSection.setText(active ? R.string.history_section_active
                         : R.string.history_section_previous);
+
+                ivIcon.setImageResource(com.project.ads.helpers.CategoryHelper.iconFor(request));
 
                 // «Oficio · tarea» como el mockup 41; sin tareas o catálogo, solo el oficio
                 String service = request.getService_type() != null

@@ -2,6 +2,8 @@ package com.project.ads.helpers;
 
 import com.project.ads.R;
 import com.project.ads.models.Worker;
+import com.project.ads.providers.CatalogProvider;
+import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.api.CatalogData;
 
 import java.util.ArrayList;
@@ -77,6 +79,12 @@ public final class CategoryHelper {
     public static int iconFor(Worker worker) {
         List<String> slugs = worker.getCategorySlugs();
         return iconFor(slugs.isEmpty() ? null : slugs.get(0));
+    }
+
+    /** Ícono del oficio de una solicitud; las antiguas sin slug se resuelven por el nombre. */
+    public static int iconFor(ServiceRequest request) {
+        String slug = request.getService_category();
+        return iconFor(slug != null ? slug : CatalogProvider.legacyWorkToSlug(request.getService_type()));
     }
 
     /** Opciones del filtro: "Todos los servicios" y los oficios del catálogo. */

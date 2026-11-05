@@ -33,70 +33,90 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <!-- Oficio y estado -->
+            <!-- Ícono del oficio (CategoryHelper.iconFor) -->
+            <ImageView
+                android:id="@+id/iv_request_icon"
+                android:layout_width="@dimen/icon_tile"
+                android:layout_height="@dimen/icon_tile"
+                android:background="@drawable/bg_ads_category_circle"
+                android:contentDescription="@null"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                tools:src="@drawable/icon_electrician" />
+
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginStart="@dimen/space_3"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_service_type"
-                    android:layout_width="0dp"
+                <!-- Oficio y estado -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textAppearance="@style/TextAppearance.ADS.Subtitle"
-                    tools:text="Electricidad" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:id="@+id/tv_service_type"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                        tools:text="Electricidad" />
+
+                    <TextView
+                        android:id="@+id/tv_status"
+                        style="@style/Widget.ADS.StatusChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_2"
+                        tools:text="Aceptada" />
+                </LinearLayout>
+
+                <!-- Técnico · fecha -->
                 <TextView
-                    android:id="@+id/tv_status"
-                    style="@style/Widget.ADS.StatusChip"
+                    android:id="@+id/tv_worker_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.ADS.Caption"
+                    tools:text="Carlos Rojas · Lun 19 oct, 3:00 p. m." />
+
+                <!-- Precio (activas), calificación (completadas) o motivo (canceladas) -->
+                <TextView
+                    android:id="@+id/tv_timestamp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:drawablePadding="@dimen/space_1"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.ADS.Price"
+                    android:visibility="gone"
+                    tools:text="$95.000"
+                    tools:visibility="visible" />
+
+                <!-- La dirección no aparece en el mockup; se conserva oculta para el código -->
+                <TextView
+                    android:id="@+id/tv_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/space_2"
-                    tools:text="Aceptada" />
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/status_indicator"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
             </LinearLayout>
-
-            <!-- Técnico · fecha -->
-            <TextView
-                android:id="@+id/tv_worker_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_2"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.ADS.Caption"
-                tools:text="Carlos Rojas · Lun 19 oct, 3:00 p. m." />
-
-            <!-- Precio (activas), calificación (completadas) o motivo (canceladas) -->
-            <TextView
-                android:id="@+id/tv_timestamp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_2"
-                android:drawablePadding="@dimen/space_1"
-                android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.ADS.Price"
-                android:visibility="gone"
-                tools:text="$95.000"
-                tools:visibility="visible" />
-
-            <!-- La dirección no aparece en el mockup; se conserva oculta para el código -->
-            <TextView
-                android:id="@+id/tv_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <View
-                android:id="@+id/status_indicator"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
