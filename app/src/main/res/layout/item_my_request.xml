@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clipChildren="false"
     android:orientation="vertical">
 
     <TextView
@@ -22,17 +23,12 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_request"
+        style="@style/Widget.ADS.Card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/space_3"
         android:clickable="true"
-        android:focusable="true"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:contentPaddingLeft="0dp"
-        app:contentPaddingRight="0dp"
-        app:strokeWidth="0dp">
+        android:focusable="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -102,10 +98,5 @@
                 android:layout_height="0dp"
                 android:visibility="gone" />
         </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/stroke_line"
-            android:layout_gravity="bottom"
-            android:background="@color/ads_line" />
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
