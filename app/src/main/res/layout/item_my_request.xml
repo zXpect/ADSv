@@ -31,7 +31,7 @@
         android:clickable="true"
         android:focusable="true"
         android:minHeight="@dimen/touch_min"
-        app:cardBackgroundColor="@color/ads_card_raised"
+        app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
         app:contentPaddingBottom="0dp"
@@ -154,7 +154,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/stroke_line"
             android:layout_gravity="bottom"
-            android:layout_marginStart="@dimen/list_row_divider_inset"
+            android:layout_marginStart="@dimen/screen_margin"
+            android:layout_marginEnd="@dimen/screen_margin"
             android:background="@color/ads_line" />
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
