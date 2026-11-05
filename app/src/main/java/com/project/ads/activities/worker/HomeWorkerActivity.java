@@ -30,13 +30,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.helpers.Motion;
+import com.project.ads.helpers.SystemBarsHelper;
 import com.project.ads.helpers.LogoutHelper;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.NotificationRouter;
@@ -177,6 +177,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private void initViews() {
         mButtonViewMap2 = findViewById(R.id.vermapaworker);
 
+        SystemBarsHelper.matchBrandHeader(this);
+
         // BOTÓN ÚNICO
         mButtonToggleConnection = findViewById(R.id.buttonToggleConnection);
         mHomeSkeleton = findViewById(R.id.home_skeleton);
@@ -308,27 +310,10 @@ public class HomeWorkerActivity extends AppCompatActivity {
     }
 
     private void animateEntranceEffects() {
-        View[] views = {
+        Motion.enterStagger(60,
                 findViewById(R.id.cardConnectionStatus),
-                findViewById(R.id.cardPendingRequests)
-        };
-
-        for (int i = 0; i < views.length; i++) {
-            final View view = views[i];
-            if (view != null) {
-                view.setAlpha(0f);
-                view.setTranslationY(50f);
-
-                view.postDelayed(() -> {
-                    view.animate()
-                            .alpha(1f)
-                            .translationY(0f)
-                            .setDuration(400)
-                            .setInterpolator(new AccelerateDecelerateInterpolator())
-                            .start();
-                }, i * 100L);
-            }
-        }
+                findViewById(R.id.cardPendingRequests),
+                findViewById(R.id.vermapaworker));
     }
 
     private void setupLocationCallback() {
@@ -594,11 +579,11 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
         // Estado: no disponible (pero puede conectarse)
         mTextConnectionStatus.setText(R.string.worker_home_status_off);
-        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
+        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
 
         // Mensaje alentador
         mTextConnectionMessage.setText(R.string.worker_home_message_off);
-        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy_muted));
+        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_muted));
 
         // Limpiar icono del mensaje (no necesita icono cuando está verificado y desconectado)
         mTextConnectionMessage.setCompoundDrawablesRelative(null, null, null, null);
@@ -640,11 +625,11 @@ public class HomeWorkerActivity extends AppCompatActivity {
         // Actualizar texto de estado según verificación
         String statusText = getVerificationStatusText();
         mTextConnectionStatus.setText(statusText);
-        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
+        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
 
         // Configurar el mensaje con icono (sobre la tarjeta navy)
         mTextConnectionMessage.setText(message);
-        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy_muted));
+        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_muted));
         setTextViewIcon(mTextConnectionMessage, iconRes, R.color.ads_brand);
 
         // Actualizar indicador visual según estado
@@ -1000,8 +985,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
      * vez (al abrir la pantalla) se pinta directo, sin animar.
      */
     private void showStatusLook(boolean online) {
-        int dot = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_on_navy_muted);
-        int text = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_on_navy);
+        int dot = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_muted);
+        int text = ContextCompat.getColor(this, online ? R.color.ads_brand_text : R.color.ads_text);
         boolean animate = mStatusColor != null && mStatusColor != dot;
         int fromDot = mStatusColor != null ? mStatusColor : dot;
         int fromText = mTextConnectionStatus.getCurrentTextColor();
@@ -1135,9 +1120,9 @@ public class HomeWorkerActivity extends AppCompatActivity {
                 // MODO CONECTADO
                 Log.d(TAG, "🟢 Actualizando UI - CONECTADO");
                 mTextConnectionStatus.setText(R.string.worker_home_status_on);
-                mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
+                mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
                 mTextConnectionMessage.setText(R.string.worker_home_message_on);
-                mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy_muted));
+                mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_muted));
                 mTextConnectionMessage.setCompoundDrawablesRelative(null, null, null, null);
                 mConnectionIndicator.setBackgroundResource(R.drawable.circle_green);
                 mConnectionIndicatorGlow.setBackgroundResource(R.drawable.circle_glow_green);
@@ -1269,12 +1254,9 @@ public class HomeWorkerActivity extends AppCompatActivity {
         boolean newArrived = !firstTime && pendingCount > mShownPending;
         mShownPending = pendingCount;
         mShownActive = activeCount;
-        com.google.android.material.card.MaterialCardView newRequests = findViewById(R.id.card_new_requests);
-        // Borde naranja cuando hay solicitudes nuevas por responder
-        newRequests.setStrokeColor(ContextCompat.getColor(this,
-                pendingCount > 0 ? R.color.ads_brand_text : R.color.ads_card_edge));
-        newRequests.setStrokeWidth(getResources().getDimensionPixelSize(
-                pendingCount > 0 ? R.dimen.stroke_focus : R.dimen.stroke_line));
+        // Cifra naranja cuando hay solicitudes nuevas por responder
+        mTextPendingRequests.setTextColor(ContextCompat.getColor(this,
+                pendingCount > 0 ? R.color.ads_brand_text : R.color.ads_text));
         // Llama la atención cuando llega una solicitud nueva (no en cada actualización)
         if (newArrived || (firstTime && pendingCount > 0)) animateAttention(mLayoutPendingRequests);
     }
