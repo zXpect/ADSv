@@ -19,6 +19,8 @@ import com.project.ads.providers.PaymentProvider;
 import com.project.ads.providers.QuoteProvider;
 import com.project.ads.helpers.AdsSnackbar;
 import com.project.ads.helpers.Haptics;
+import com.project.ads.helpers.Motion;
+import com.project.ads.helpers.SystemBarsHelper;
 
 /**
  * Método de pago · mockup 18 (docs/mockups/Pago.dc.html). El cliente elige
@@ -94,6 +96,12 @@ public class PaymentMethodActivity extends AppCompatActivity {
 
         select(savedInstanceState != null
                 ? savedInstanceState.getString(EXTRA_METHOD, mInitialMethod) : mInitialMethod);
+
+        SystemBarsHelper.matchBrandHeader(this);
+        if (savedInstanceState == null) {
+            Motion.dropIn(findViewById(R.id.payment_header));
+            Motion.enterStagger(120, mCardDigital, mCardCash, findViewById(R.id.ads_action_bar));
+        }
     }
 
     @Override
@@ -103,16 +111,23 @@ public class PaymentMethodActivity extends AppCompatActivity {
     }
 
     private void select(String method) {
+        // Solo se anima al cambiar de opción, no al pintar la selección inicial
+        boolean animate = mSelected != null && !mSelected.equals(method);
         mSelected = method;
         boolean cash = PaymentProvider.METHOD_CASH.equals(method);
-        style(mCardDigital, mRadioDigital, !cash, R.string.payment_method_digital);
-        style(mCardCash, mRadioCash, cash, R.string.payment_method_cash);
+        style(mCardDigital, mRadioDigital, !cash, R.string.payment_method_digital, animate);
+        style(mCardCash, mRadioCash, cash, R.string.payment_method_cash, animate);
     }
 
     /** Elegida: borde naranja de 2 dp y el indicador lleno; el lector de pantalla dice el estado. */
-    private void style(MaterialCardView card, MaterialRadioButton radio, boolean checked, int title) {
+    private void style(MaterialCardView card, MaterialRadioButton radio, boolean checked, int title, boolean animate) {
         radio.setChecked(checked);
-        card.setStrokeColor(getColor(checked ? R.color.ads_brand_text : R.color.ads_line));
+        int stroke = getColor(checked ? R.color.ads_brand_text : R.color.ads_line);
+        Motion.colorTo(card, card.getStrokeColor(), stroke, animate, card::setStrokeColor);
+        if (animate && checked) {
+            Motion.bump(radio);
+            Motion.pulse(card);
+        }
         card.setStrokeWidth(getResources().getDimensionPixelSize(
                 checked ? R.dimen.stroke_focus : R.dimen.stroke_control));
         card.setContentDescription(getString(checked
