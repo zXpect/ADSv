@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vista previa del mapa en los inicios: manzanas, calles y una ruta naranja. Es un
+     dibujo, no el mapa real; los colores cambian con el modo claro y oscuro. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="140dp"
+    android:height="112dp"
+    android:viewportWidth="140"
+    android:viewportHeight="112">
+    <path android:fillColor="@color/ads_map_land" android:pathData="M0,0h140v112H0z" />
+    <path android:fillColor="@color/ads_map_block" android:pathData="M8,8h40v28H8zM60,6h34v34H60zM106,10h28v22h-28zM6,50h30v30H6zM50,52h38v22H50zM102,46h32v36h-32zM14,92h44v16H14zM70,88h26v20H70z" />
+    <path android:strokeColor="@color/ads_map_road" android:strokeWidth="6" android:strokeLineCap="round" android:pathData="M-6,44C30,40 66,50 146,38" />
+    <path android:strokeColor="@color/ads_map_road" android:strokeWidth="6" android:strokeLineCap="round" android:pathData="M54,-6C52,30 44,70 62,118" />
+    <path android:strokeColor="@color/ads_map_road" android:strokeWidth="4" android:strokeLineCap="round" android:pathData="M100,-6C96,36 100,76 98,118" />
+    <path android:strokeColor="@color/ads_map_road" android:strokeWidth="4" android:strokeLineCap="round" android:pathData="M-6,84C36,86 92,80 146,88" />
+    <path android:strokeColor="@color/ads_brand" android:strokeWidth="3" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M22,86C50,84 50,60 52,46C70,48 84,46 98,42" />
+    <path android:fillColor="@color/ads_brand" android:pathData="M22,82a4,4 0,1 0,0.01 0z" />
+</vector>

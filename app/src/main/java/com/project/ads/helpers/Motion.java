@@ -279,6 +279,19 @@ public final class Motion {
         }
     }
 
+    /** El pin de la vista previa del mapa cae con un rebote al abrir el inicio. */
+    public static void pinDrop(View pin, long startDelay) {
+        if (!enabled(pin.getContext())) return;
+        pin.setAlpha(0f);
+        pin.setTranslationY(-36 * pin.getResources().getDisplayMetrics().density);
+        pin.animate().alpha(1f).translationY(0f)
+                .setStartDelay(startDelay)
+                .setDuration(560)
+                .setInterpolator(new BounceInterpolator())
+                .withEndAction(() -> pin.animate().setStartDelay(0))
+                .start();
+    }
+
     /** La cabecera de marca baja desde la barra de estado al abrir la pantalla. */
     public static void dropIn(View header) {
         if (!enabled(header.getContext())) return;

@@ -79,6 +79,8 @@ public class HomeUserActivity extends AppCompatActivity {
     // Oficios de relleno que laten mientras llega el catálogo
     private View mCategoriesSkeleton;
     private ValueAnimator mCategoriesPulse;
+    // Anillo que late bajo el pin de la vista previa del mapa
+    private ValueAnimator mMapPinRing;
     private NotificationBellHelper mNotificationBell;
     private RequestsNavBadge mRequestsBadge;
 
@@ -98,6 +100,7 @@ public class HomeUserActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Motion.dropIn(findViewById(R.id.home_header));
             Motion.enterStagger(160, findViewById(R.id.til_home_search), findViewById(R.id.vermapa));
+            Motion.pinDrop(findViewById(R.id.iv_map_pin), 420);
         }
         loadUserName();
         loadCategories();
@@ -317,10 +320,12 @@ public class HomeUserActivity extends AppCompatActivity {
         mNotificationBell.start();
         mRequestsBadge.start();
         setActiveLive(mActiveLive);
+        mMapPinRing = Motion.ring(findViewById(R.id.view_map_pin_ring));
     }
 
     @Override
     protected void onStop() {
+        if (mMapPinRing != null) mMapPinRing.cancel();
         mNotificationBell.stop();
         mRequestsBadge.stop();
         mActiveSheen.stop();   // no anima con la pantalla oculta; onStart lo retoma

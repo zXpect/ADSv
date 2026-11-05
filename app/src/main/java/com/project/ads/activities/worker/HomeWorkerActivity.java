@@ -82,7 +82,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
     // Componentes UI
     MaterialSwitch mButtonToggleConnection; // Interruptor Disponible (mockup 13)
-    LinearLayout mButtonViewMap2;
+    View mButtonViewMap2;
     View mConnectionIndicator;
     View mConnectionIndicatorGlow;
     TextView mTextConnectionStatus;
@@ -115,6 +115,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private View mHomeSkeleton;
     private View mHomeContent;
     private ValueAnimator mSkeletonPulse;
+    // Anillo que late bajo el pin de la vista previa del mapa
+    private ValueAnimator mMapPinRing;
     private boolean mHomeLoaded = false;
     private Boolean mShownConnected;   // estado que muestra la tarjeta (null: aún nada)
     private Worker mCurrentWorker;
@@ -314,6 +316,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
                 findViewById(R.id.cardConnectionStatus),
                 findViewById(R.id.cardPendingRequests),
                 findViewById(R.id.vermapaworker));
+        Motion.pinDrop(findViewById(R.id.iv_map_pin), 320);
     }
 
     private void setupLocationCallback() {
@@ -1479,12 +1482,14 @@ public class HomeWorkerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        mMapPinRing = Motion.ring(findViewById(R.id.view_map_pin_ring));
         mNotificationBell.start();
         mRequestsBadge.start();
     }
 
     @Override
     protected void onStop() {
+        if (mMapPinRing != null) mMapPinRing.cancel();
         mNotificationBell.stop();
         mRequestsBadge.stop();
         super.onStop();
