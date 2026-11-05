@@ -349,7 +349,7 @@
 
     <style name="Widget.ADS.BottomNav" parent="Widget.Material3.BottomNavigationView">
         <item name="android:background">@drawable/bg_ads_nav_float</item>
-        <item name="backgroundTint">@color/ads_nav_float</item>
+        <item name="backgroundTint">@null</item>
         <item name="android:minHeight">@dimen/bottom_nav_height</item>
         <item name="elevation">0dp</item>
         <item name="itemIconSize">22dp</item>

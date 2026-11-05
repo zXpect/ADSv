@@ -40,8 +40,10 @@
     <color name="ads_map_land">#EFE9DF</color>
     <color name="ads_map_block">#E2DACC</color>
     <color name="ads_map_road">#FFFFFF</color>
-    <!-- Menú inferior flotante: azul noche en ambos modos -->
-    <color name="ads_nav_float">#1B1830</color>
+    <!-- Menú inferior flotante: barra blanca con borde en claro, azul noche en oscuro -->
+    <color name="ads_nav_float">#FFFFFF</color>
+    <color name="ads_nav_edge">#E4DED3</color>
+    <color name="ads_nav_idle">#5B606B</color>
     <color name="ads_brand_header">#E8751A</color>
     <color name="ads_on_brand_header">#1B1830</color>
     <color name="ads_header">#1B1830</color>         <!-- tarjeta destacada (servicio activo) y cabecera del login -->
