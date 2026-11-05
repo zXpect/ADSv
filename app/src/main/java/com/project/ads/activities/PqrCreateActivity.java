@@ -2,24 +2,34 @@ package com.project.ads.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.project.ads.R;
+import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.helpers.NotificationRouter;
 import com.project.ads.helpers.RequestDetailsHelper;
 import com.project.ads.models.Pqr;
@@ -149,15 +159,9 @@ public class PqrCreateActivity extends AppCompatActivity {
      * distinguen (MEJ-02). En el botón va en una sola línea.
      */
     private String label(ServiceRequest request) {
-        String service = !TextUtils.isEmpty(request.getService_type())
-                ? request.getService_type() : getString(R.string.history_service_default);
-        String first = service;
-        if (request.getTimestamp() > 0) {
-            Date created = new Date(request.getTimestamp());
-            String date = new SimpleDateFormat("d MMM", LOCALE).format(created).replace(".", "")
-                    + ", " + new SimpleDateFormat("h:mm a", LOCALE).format(created);
-            first = getString(R.string.pqr_request_option, service, date);
-        }
+        String service = serviceName(request);
+        String date = dateLabel(request);
+        String first = date != null ? getString(R.string.pqr_request_option, service, date) : service;
         StringBuilder second = new StringBuilder();
         int status = RequestDetailsHelper.statusLabel(request.getDisplayStatus());
         if (status != 0) second.append(getString(status));
@@ -168,24 +172,90 @@ public class PqrCreateActivity extends AppCompatActivity {
         return second.length() > 0 ? first + "\n" + second : first;
     }
 
+    private String serviceName(ServiceRequest request) {
+        return !TextUtils.isEmpty(request.getService_type())
+                ? request.getService_type() : getString(R.string.history_service_default);
+    }
+
+    /** «17 oct, 2:06 p. m.», o null si la solicitud no tiene fecha. */
+    private String dateLabel(ServiceRequest request) {
+        if (request.getTimestamp() <= 0) return null;
+        Date created = new Date(request.getTimestamp());
+        return new SimpleDateFormat("d MMM", LOCALE).format(created).replace(".", "")
+                + ", " + new SimpleDateFormat("h:mm a", LOCALE).format(created);
+    }
+
     private void chooseRequest() {
         if (mRequests.isEmpty()) return;
-        String[] options = new String[mRequests.size()];
-        int checked = -1;
-        for (int i = 0; i < mRequests.size(); i++) {
-            options[i] = label(mRequests.get(i));
-            if (mRequests.get(i).getRequest_id().equals(mSelectedRequestId)) checked = i;
-        }
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.pqr_request_label)
-                .setSingleChoiceItems(options, checked, (dialog, which) -> {
+                .setAdapter(new RequestOptionsAdapter(), (dialog, which) -> {
                     mSelectedRequestId = mRequests.get(which).getRequest_id();
                     mRequestError.setVisibility(View.GONE);
                     bindRequestButton();
-                    dialog.dismiss();
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+    }
+
+    /** Filas del pop-up: ícono del oficio, estado, fecha y precio (item_pqr_request_option). */
+    private class RequestOptionsAdapter extends ArrayAdapter<ServiceRequest> {
+
+        RequestOptionsAdapter() {
+            super(PqrCreateActivity.this, R.layout.item_pqr_request_option, mRequests);
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+            View row = convertView != null ? convertView : LayoutInflater.from(getContext())
+                    .inflate(R.layout.item_pqr_request_option, parent, false);
+            ServiceRequest request = mRequests.get(position);
+
+            ((ImageView) row.findViewById(R.id.iv_request_icon))
+                    .setImageResource(CategoryHelper.iconFor(request));
+            ((TextView) row.findViewById(R.id.tv_pqr_request_service)).setText(serviceName(request));
+            bindStatus(row.findViewById(R.id.tv_pqr_request_status), request.getDisplayStatus());
+
+            String date = dateLabel(request);
+            String price = request.hasQuote() ? request.getFormattedQuotedPrice() : null;
+            String detail = date != null && price != null
+                    ? getString(R.string.pqr_request_option, date, price) : date != null ? date : price;
+            TextView detailView = row.findViewById(R.id.tv_pqr_request_detail);
+            detailView.setText(detail);
+            detailView.setVisibility(detail != null ? View.VISIBLE : View.GONE);
+
+            // La elegida: borde naranja y visto, para que no dependa solo del color
+            boolean selected = request.getRequest_id().equals(mSelectedRequestId);
+            MaterialCardView card = row.findViewById(R.id.card_pqr_request);
+            card.setStrokeColor(ContextCompat.getColor(getContext(),
+                    selected ? R.color.ads_brand_text : R.color.ads_card_edge));
+            card.setStrokeWidth(getResources().getDimensionPixelSize(
+                    selected ? R.dimen.stroke_focus : R.dimen.stroke_line));
+            row.findViewById(R.id.iv_pqr_request_selected).setVisibility(selected ? View.VISIBLE : View.GONE);
+            return row;
+        }
+
+        /** Chip como el del historial: naranja en curso, navy completada, gris cancelada. */
+        private void bindStatus(TextView chip, String displayStatus) {
+            int label = RequestDetailsHelper.statusLabel(displayStatus);
+            chip.setVisibility(label != 0 ? View.VISIBLE : View.GONE);
+            if (label == 0) return;
+            chip.setText(label);
+            int background = R.color.ads_chip_bg;
+            int text = R.color.ads_chip_text;
+            if ("completed".equals(displayStatus)) {
+                background = R.color.ads_chip_strong_bg;
+                text = R.color.ads_chip_strong_text;
+            } else if ("cancelled".equals(displayStatus) || "rejected".equals(displayStatus)
+                    || ServiceRequest.DISPLAY_QUOTE_REJECTED.equals(displayStatus)) {
+                background = R.color.ads_chip_neutral_bg;
+                text = R.color.ads_charcoal;
+            }
+            ViewCompat.setBackgroundTintList(chip, ColorStateList.valueOf(
+                    ContextCompat.getColor(getContext(), background)));
+            chip.setTextColor(ContextCompat.getColor(getContext(), text));
+        }
     }
 
     private String selectedType() {
