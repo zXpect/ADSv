@@ -130,6 +130,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private Integer mStatusColor;   // color que muestra hoy el punto (null: aún nada)
     private GradientDrawable mStatusCardBg;   // fondo de la tarjeta: contorno naranja si está disponible
     private int mStatusBorderColor = Color.TRANSPARENT;
+    private Integer mHeaderColor;   // color que muestra hoy la cabecera (null: aún nada)
+    private GradientDrawable mHeaderBg;
     private LinearLayout mLayoutActiveServices;
 
     private String mVerificationStatus = null;
@@ -1003,10 +1005,32 @@ public class HomeWorkerActivity extends AppCompatActivity {
         Motion.colorTo(mCardConnectionStatus, mStatusBorderColor, border, animate,
                 c -> mStatusCardBg.setStroke(borderWidth, c));
         mStatusBorderColor = border;
+        showHeaderLook(online, animate);
         if (animate) {
             Motion.bump(mStatusDot);
             Motion.pulse(mCardConnectionStatus);
         }
+    }
+
+    /** Cabecera de marca: naranja mientras está disponible, también en modo oscuro. */
+    private void showHeaderLook(boolean online, boolean animate) {
+        View header = findViewById(R.id.home_header);
+        if (mHeaderBg == null) mHeaderBg = (GradientDrawable) header.getBackground().mutate();
+        int fill = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_brand_header);
+        int text = ContextCompat.getColor(this, online ? R.color.ads_on_brand : R.color.ads_on_brand_header);
+        int fromFill = mHeaderColor != null ? mHeaderColor : fill;
+        int fromText = mTextWorkerName.getCurrentTextColor();
+        mHeaderColor = fill;
+        Motion.colorTo(header, fromFill, fill, animate, c -> {
+            mHeaderBg.setColor(c);
+            getWindow().setStatusBarColor(c);
+        });
+        Motion.colorTo(mTextWorkerName, fromText, text, animate, c -> {
+            mTextWorkerName.setTextColor(c);
+            mTextWorkerType.setTextColor(c);
+        });
+        new androidx.core.view.WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightStatusBars(online || getResources().getBoolean(R.bool.ads_light_status_bar));
     }
 
     private void startLocationUpdates() {
