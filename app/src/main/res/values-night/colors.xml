@@ -28,8 +28,8 @@
     <color name="ads_shadow">#000000</color>
     <color name="ads_control">#6B7288</color>
     <color name="ads_chip_bg">#3A2616</color>
-    <color name="ads_category_bg">@color/ads_chip_bg</color>
-    <color name="ads_category_stroke">#A8642A</color>
+    <color name="ads_category_bg">@color/ads_card_raised</color>
+    <color name="ads_category_stroke">@color/ads_card_edge</color>
     <color name="ads_category_icon">@color/ads_brand_text</color>
     <color name="ads_chip_text">#F28A2E</color>
     <color name="ads_on_navy">#F6F3EE</color>
@@ -46,6 +46,13 @@
     <color name="ads_brand_header">#1F2540</color>
     <color name="ads_on_brand_header">#F6F3EE</color>
     <color name="ads_header">#1F2540</color>
+    <!-- Tarjeta de servicio activo del inicio: fondo cálido, borde y ficha naranja -->
+    <color name="ads_active_bg">#2A2019</color>
+    <color name="ads_active_stroke">#99F28A2E</color>
+    <color name="ads_active_label">#F5B070</color>
+    <color name="ads_active_tile">@color/ads_brand</color>
+    <color name="ads_active_icon">@color/ads_on_brand</color>
+    <color name="ads_active_arrow">@color/ads_brand</color>
     <color name="ads_start_bg">#0F1220</color>       <!-- Bienvenida y Login: lo más oscuro posible -->
     <color name="ads_sheet">#171B2B</color>          <!-- (*) hoja del Login: se separa del fondo -->
     <color name="ads_segment_selected">#2A2F45</color> <!-- (*) se distingue del fondo ads_surface_alt -->
