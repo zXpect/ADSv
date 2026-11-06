@@ -42,12 +42,10 @@ public class WorkerProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_worker_profile);
-        // Barras del sistema del color del fondo, en modo claro y oscuro
-        boolean light = getResources().getBoolean(R.bool.ads_light_status_bar);
-        getWindow().setStatusBarColor(getColor(R.color.ads_surface));
+        getWindow().setStatusBarColor(getColor(R.color.ads_start_bg));
         new androidx.core.view.WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
-                .setAppearanceLightStatusBars(light);
-        com.project.ads.helpers.SystemBarsHelper.matchNavigationBar(this, R.color.ads_surface, light);
+                .setAppearanceLightStatusBars(false);
+        com.project.ads.helpers.SystemBarsHelper.matchNavigationBar(this, R.color.ads_start_bg, false);
         if (savedInstanceState == null) {
             com.project.ads.helpers.Motion.enterStagger(80, findViewById(R.id.layout_profile_top),
                     findViewById(R.id.layout_profile_stats), findViewById(R.id.layout_profile_action));
