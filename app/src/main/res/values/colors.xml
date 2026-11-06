@@ -58,6 +58,13 @@
     <color name="ads_start_bg">#1B1830</color>
     <color name="ads_sheet">#F6F3EE</color>
     <color name="ads_segment_selected">#FFFFFF</color> <!-- opción elegida del control Lista / Mapa -->
+    <!-- Tarjeta de servicio activo del inicio: en claro es la tarjeta destacada; en noche, cálida -->
+    <color name="ads_active_bg">@color/ads_header</color>
+    <color name="ads_active_stroke">@color/ads_header</color>
+    <color name="ads_active_label">@color/ads_on_navy_muted</color>
+    <color name="ads_active_tile">@color/ads_highlight_raised</color>
+    <color name="ads_active_icon">@color/ads_brand</color>
+    <color name="ads_active_arrow">@color/ads_on_navy</color>
     <!-- Elementos sobre la tarjeta destacada (ads_header) -->
     <color name="ads_highlight_raised">#2A2647</color> <!-- ficha de ícono sobre la tarjeta destacada -->
     <color name="ads_highlight_track">#3A3658</color>  <!-- rieles (interruptor apagado, referencia de precio) -->
