@@ -347,6 +347,14 @@
         <item name="android:layout_marginEnd">@dimen/brand_header_bleed</item>
     </style>
 
+    <!-- Píldora detrás del ícono activo. No cubre el número de la pestaña: ese círculo es
+         naranja y sobre un bloque naranja no se veía. -->
+    <style name="Widget.ADS.BottomNav.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:width">56dp</item>
+        <item name="android:height">30dp</item>
+        <item name="android:color">@color/ads_nav_pill</item>
+    </style>
+
     <style name="Widget.ADS.BottomNav" parent="Widget.Material3.BottomNavigationView">
         <item name="android:background">@drawable/bg_ads_nav_float</item>
         <item name="backgroundTint">@null</item>
@@ -359,8 +367,7 @@
         <item name="itemTextColor">@color/ads_nav_item</item>
         <item name="itemTextAppearanceActive">@style/TextAppearance.ADS.Label</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.ADS.Label</item>
-        <item name="itemActiveIndicatorStyle">@null</item>
-        <item name="itemBackground">@drawable/bg_ads_nav_item</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.ADS.BottomNav.ActiveIndicator</item>
         <item name="itemRippleColor">@android:color/transparent</item>
         <item name="labelVisibilityMode">labeled</item>
     </style>
