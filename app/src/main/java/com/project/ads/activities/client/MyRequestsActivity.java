@@ -77,6 +77,7 @@ public class MyRequestsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_requests);
+        com.project.ads.helpers.SystemBarsHelper.matchBrandHeader(this);
 
         // Obtener client ID
         mClientId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -268,6 +269,7 @@ public class MyRequestsActivity extends AppCompatActivity {
         class RequestViewHolder extends RecyclerView.ViewHolder {
             MaterialCardView cardView;
             TextView tvSection, tvServiceType, tvWorkerName, tvStatus, tvDetail;
+            android.widget.ImageView ivIcon;
 
             RequestViewHolder(View itemView) {
                 super(itemView);
@@ -277,6 +279,7 @@ public class MyRequestsActivity extends AppCompatActivity {
                 tvWorkerName = itemView.findViewById(R.id.tv_worker_name);
                 tvStatus = itemView.findViewById(R.id.tv_status);
                 tvDetail = itemView.findViewById(R.id.tv_timestamp);
+                ivIcon = itemView.findViewById(R.id.iv_request_icon);
             }
 
             void bind(ServiceRequest request) {
@@ -289,6 +292,8 @@ public class MyRequestsActivity extends AppCompatActivity {
                 tvSection.setVisibility(firstOfGroup ? View.VISIBLE : View.GONE);
                 tvSection.setText(active ? R.string.history_section_active
                         : R.string.history_section_previous);
+
+                ivIcon.setImageResource(com.project.ads.helpers.CategoryHelper.iconFor(request));
 
                 // «Oficio · tarea» como el mockup 41; sin tareas o catálogo, solo el oficio
                 String service = request.getService_type() != null
@@ -304,11 +309,6 @@ public class MyRequestsActivity extends AppCompatActivity {
                 bindStatus(request);
                 bindDetail(request, active);
 
-                // La tarjeta activa lleva borde naranja (como Widget.ADS.Card.Highlight)
-                cardView.setStrokeColor(ContextCompat.getColor(MyRequestsActivity.this,
-                        active ? R.color.ads_brand_text : R.color.ads_line));
-                cardView.setStrokeWidth(getResources().getDimensionPixelSize(
-                        active ? R.dimen.stroke_focus : R.dimen.stroke_control));
 
                 cardView.setOnClickListener(v -> {
                     Intent intent = new Intent(MyRequestsActivity.this,

@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +29,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.helpers.SearchTimer;
+import com.project.ads.helpers.SystemBarsHelper;
 import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.helpers.ClientNavHelper;
 import com.project.ads.helpers.Motion;
@@ -78,6 +80,8 @@ public class HomeUserActivity extends AppCompatActivity {
     // Oficios de relleno que laten mientras llega el catálogo
     private View mCategoriesSkeleton;
     private ValueAnimator mCategoriesPulse;
+    // Anillo que late bajo el pin de la vista previa del mapa
+    private ValueAnimator mMapPinRing;
     private NotificationBellHelper mNotificationBell;
     private RequestsNavBadge mRequestsBadge;
 
@@ -93,6 +97,12 @@ public class HomeUserActivity extends AppCompatActivity {
         mClientProvider = new ClientProvider();
 
         setupViews();
+        SystemBarsHelper.matchBrandHeader(this);
+        if (savedInstanceState == null) {
+            Motion.dropIn(findViewById(R.id.home_header));
+            Motion.enterStagger(160, findViewById(R.id.til_home_search), findViewById(R.id.vermapa));
+            Motion.pinDrop(findViewById(R.id.iv_map_pin), 420);
+        }
         loadUserName();
         loadCategories();
         listenActiveService();
@@ -143,7 +153,7 @@ public class HomeUserActivity extends AppCompatActivity {
         });
 
         mCategoriesList = findViewById(R.id.recycler_home_categories);
-        mCategoriesList.setLayoutManager(new GridLayoutManager(this, 2));
+        mCategoriesList.setLayoutManager(new GridLayoutManager(this, 4));
         mCategoriesAdapter = new CategoriesAdapter();
         mCategoriesList.setAdapter(mCategoriesAdapter);
         mCategoriesSkeleton = findViewById(R.id.grid_home_categories_skeleton);
@@ -196,6 +206,12 @@ public class HomeUserActivity extends AppCompatActivity {
         intent.putExtra(WorkersActivity.EXTRA_CATEGORY, category.getSlug());
         intent.putExtra(WorkersActivity.EXTRA_CATEGORY_NAME, category.getName());
         startActivity(intent);
+    }
+
+    /** «Ver todos»: salta los problemas del oficio y abre todos los técnicos, con filtro por oficio. */
+    private void openAllWorkers() {
+        SearchTimer.start(this);
+        startActivity(new Intent(this, WorkersActivity.class));
     }
 
     /** Tarjeta navy con la solicitud en curso más reciente del cliente (mockup 06). */
@@ -311,10 +327,12 @@ public class HomeUserActivity extends AppCompatActivity {
         mNotificationBell.start();
         mRequestsBadge.start();
         setActiveLive(mActiveLive);
+        mMapPinRing = Motion.ring(findViewById(R.id.view_map_pin_ring));
     }
 
     @Override
     protected void onStop() {
+        if (mMapPinRing != null) mMapPinRing.cancel();
         mNotificationBell.stop();
         mRequestsBadge.stop();
         mActiveSheen.stop();   // no anima con la pantalla oculta; onStart lo retoma
@@ -333,6 +351,13 @@ public class HomeUserActivity extends AppCompatActivity {
     // ---------- Oficios ----------
 
     private class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Holder> {
+        private static final int VIEW_TYPE_CATEGORY = 0;
+        private static final int VIEW_TYPE_ALL = 1;
+
+        @Override
+        public int getItemViewType(int position) {
+            return position < mCategories.size() ? VIEW_TYPE_CATEGORY : VIEW_TYPE_ALL;
+        }
 
         @NonNull
         @Override
@@ -343,6 +368,15 @@ public class HomeUserActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull Holder holder, int position) {
+            if (getItemViewType(position) == VIEW_TYPE_ALL) {
+                holder.name.setText(R.string.home_all_workers);
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.ads_brand_text));
+                holder.icon.setBackgroundResource(R.drawable.bg_ads_category_all);
+                holder.icon.setImageResource(R.drawable.icon_all_workers);
+                holder.itemView.setContentDescription(getString(R.string.home_all_workers_desc));
+                holder.itemView.setOnClickListener(v -> openAllWorkers());
+                return;
+            }
             CatalogData.Category category = mCategories.get(position);
             holder.name.setText(category.getName());
             holder.icon.setImageResource(CategoryHelper.iconFor(category.getSlug()));
@@ -351,7 +385,8 @@ public class HomeUserActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mCategories.size();
+            // «Ver todos» va siempre al final, cuando ya hay oficios
+            return mCategories.isEmpty() ? 0 : mCategories.size() + 1;
         }
 
         class Holder extends RecyclerView.ViewHolder {

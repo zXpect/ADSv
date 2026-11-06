@@ -19,10 +19,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="@dimen/screen_margin"
-            android:paddingTop="@dimen/space_4"
+            android:paddingTop="0dp"
             android:paddingEnd="@dimen/screen_margin"
-            android:paddingBottom="@dimen/space_6">
+            android:paddingBottom="@dimen/space_6"
+            android:clipToPadding="false">
 
+            <LinearLayout
+                android:id="@+id/brand_header"
+                style="@style/Widget.ADS.BrandHeader.Bleed">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,10 +37,10 @@
                     android:id="@+id/btn_back"
                     android:layout_width="@dimen/touch_min"
                     android:layout_height="@dimen/touch_min"
-                    android:background="@drawable/bg_ads_circle_button"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/action_back"
                     android:src="@drawable/ic_arrow_back"
-                    app:tint="@color/ads_text" />
+                    app:tint="@color/ads_on_brand_header" />
 
                 <Space
                     android:layout_width="0dp"
@@ -53,6 +57,7 @@
             </LinearLayout>
 
             <TextView
+                android:textColor="@color/ads_on_brand_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_4"
@@ -61,12 +66,14 @@
                 android:textAppearance="@style/TextAppearance.ADS.Headline" />
 
             <TextView
+                android:textColor="@color/ads_on_brand_header"
                 android:id="@+id/tv_cash_received_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:textAppearance="@style/TextAppearance.ADS.BodySmall"
                 tools:text="El cliente eligió pagar en efectivo." />
+</LinearLayout>
 
             <!-- Monto a recibir -->
             <LinearLayout
@@ -140,15 +147,13 @@
             android:layout_height="@dimen/stroke_line"
             android:background="@color/ads_line" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cash_received_confirm"
-            style="@style/Widget.ADS.Button"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginStart="@dimen/screen_margin"
+        <com.project.ads.includes.SlideToConfirmView
+        android:id="@+id/btn_cash_received_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginStart="@dimen/screen_margin"
             android:layout_marginTop="14dp"
             android:layout_marginEnd="@dimen/screen_margin"
-            android:layout_marginBottom="@dimen/screen_margin"
-            android:text="@string/cash_received_confirm" />
+            android:layout_marginBottom="@dimen/screen_margin" />
     </LinearLayout>
 </LinearLayout>

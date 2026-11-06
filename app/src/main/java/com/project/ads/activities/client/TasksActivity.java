@@ -42,6 +42,7 @@ public class TasksActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         mCategorySlug = getIntent().getStringExtra(WorkersActivity.EXTRA_CATEGORY);
         mCategoryName = getIntent().getStringExtra(WorkersActivity.EXTRA_CATEGORY_NAME);

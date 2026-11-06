@@ -24,6 +24,9 @@ public final class ClientNavHelper {
     public static void setup(Activity activity, int selectedItemId) {
         BottomNavigationView nav = activity.findViewById(R.id.bottom_nav);
         if (nav == null) return;
+        // La barra del sistema sigue el fondo que rodea al menú flotante
+        SystemBarsHelper.matchNavigationBar(activity, R.color.ads_surface,
+                activity.getResources().getBoolean(R.bool.ads_light_status_bar));
         nav.setSelectedItemId(selectedItemId);
         nav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -33,22 +36,10 @@ public final class ClientNavHelper {
                 Toast.makeText(activity, R.string.nav_coming_soon, Toast.LENGTH_SHORT).show();
                 return false;
             }
-            TabTransition.start(activity, new Intent(activity, target),
-                    isAfter(nav, id, selectedItemId), selectedItemId);
+            TabTransition.start(activity, new Intent(activity, target));
             return false;   // la pestaña se marca en la pantalla de destino
         });
         nav.setOnItemReselectedListener(item -> { });
-    }
-
-    /** true si la pestaña de destino está a la derecha de la actual en la barra. */
-    static boolean isAfter(BottomNavigationView nav, int targetId, int currentId) {
-        int target = -1, current = -1;
-        for (int i = 0; i < nav.getMenu().size(); i++) {
-            int id = nav.getMenu().getItem(i).getItemId();
-            if (id == targetId) target = i;
-            if (id == currentId) current = i;
-        }
-        return target > current;
     }
 
     private static Class<? extends Activity> targetFor(int itemId) {

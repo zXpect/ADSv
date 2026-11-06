@@ -42,6 +42,14 @@ public class WorkerProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_worker_profile);
+        getWindow().setStatusBarColor(getColor(R.color.ads_start_bg));
+        new androidx.core.view.WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightStatusBars(false);
+        com.project.ads.helpers.SystemBarsHelper.matchNavigationBar(this, R.color.ads_start_bg, false);
+        if (savedInstanceState == null) {
+            com.project.ads.helpers.Motion.enterStagger(80, findViewById(R.id.layout_profile_top),
+                    findViewById(R.id.layout_profile_stats), findViewById(R.id.layout_profile_action));
+        }
 
         mWorkerId = getIntent().getStringExtra(EXTRA_WORKER_ID);
         if (TextUtils.isEmpty(mWorkerId)) {
@@ -102,7 +110,6 @@ public class WorkerProfileActivity extends AppCompatActivity {
             ratings.setText(String.valueOf(worker.getTotalRatings()));
         } else {
             rating.setText(R.string.profile_new);
-            rating.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             ratings.setText("0");
         }
         loadCompletedJobs(ratings);

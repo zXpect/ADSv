@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hoja que se monta sobre la cabecera de marca -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ads_card" />
+    <corners android:radius="@dimen/radius_card" />
+</shape>

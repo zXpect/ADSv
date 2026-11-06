@@ -2,15 +2,21 @@
 <!-- Fila de PQR (mockups 42 y 54): tipo y estado en fichas, descripción, fechas
      y, si ya hay, la respuesta. Al tocarla se muestra el texto completo. -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_pqr"
-    style="@style/Widget.ADS.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/space_3"
     android:clickable="true"
     android:focusable="true"
-    android:minHeight="@dimen/touch_min">
+    android:minHeight="@dimen/touch_min"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    app:cardCornerRadius="0dp"
+    app:contentPaddingLeft="0dp"
+    app:contentPaddingRight="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -93,4 +99,9 @@
                 tools:text="Hablamos con el técnico y..." />
         </LinearLayout>
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stroke_line"
+        android:layout_gravity="bottom"
+        android:background="@color/ads_line" />
 </com.google.android.material.card.MaterialCardView>

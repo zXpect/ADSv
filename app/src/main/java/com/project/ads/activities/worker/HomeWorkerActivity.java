@@ -30,13 +30,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ads.helpers.Motion;
+import com.project.ads.helpers.SystemBarsHelper;
 import com.project.ads.helpers.LogoutHelper;
 import com.project.ads.helpers.NotificationPermissionHelper;
 import com.project.ads.helpers.NotificationRouter;
@@ -82,7 +82,7 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
     // Componentes UI
     MaterialSwitch mButtonToggleConnection; // Interruptor Disponible (mockup 13)
-    LinearLayout mButtonViewMap2;
+    View mButtonViewMap2;
     View mConnectionIndicator;
     View mConnectionIndicatorGlow;
     TextView mTextConnectionStatus;
@@ -115,6 +115,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private View mHomeSkeleton;
     private View mHomeContent;
     private ValueAnimator mSkeletonPulse;
+    // Anillo que late bajo el pin de la vista previa del mapa
+    private ValueAnimator mMapPinRing;
     private boolean mHomeLoaded = false;
     private Boolean mShownConnected;   // estado que muestra la tarjeta (null: aún nada)
     private Worker mCurrentWorker;
@@ -128,6 +130,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
     private Integer mStatusColor;   // color que muestra hoy el punto (null: aún nada)
     private GradientDrawable mStatusCardBg;   // fondo de la tarjeta: contorno naranja si está disponible
     private int mStatusBorderColor = Color.TRANSPARENT;
+    private Integer mHeaderColor;   // color que muestra hoy la cabecera (null: aún nada)
+    private GradientDrawable mHeaderBg;
     private LinearLayout mLayoutActiveServices;
 
     private String mVerificationStatus = null;
@@ -176,6 +180,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
     private void initViews() {
         mButtonViewMap2 = findViewById(R.id.vermapaworker);
+
+        SystemBarsHelper.matchBrandHeader(this);
 
         // BOTÓN ÚNICO
         mButtonToggleConnection = findViewById(R.id.buttonToggleConnection);
@@ -308,27 +314,11 @@ public class HomeWorkerActivity extends AppCompatActivity {
     }
 
     private void animateEntranceEffects() {
-        View[] views = {
+        Motion.enterStagger(60,
                 findViewById(R.id.cardConnectionStatus),
-                findViewById(R.id.cardPendingRequests)
-        };
-
-        for (int i = 0; i < views.length; i++) {
-            final View view = views[i];
-            if (view != null) {
-                view.setAlpha(0f);
-                view.setTranslationY(50f);
-
-                view.postDelayed(() -> {
-                    view.animate()
-                            .alpha(1f)
-                            .translationY(0f)
-                            .setDuration(400)
-                            .setInterpolator(new AccelerateDecelerateInterpolator())
-                            .start();
-                }, i * 100L);
-            }
-        }
+                findViewById(R.id.cardPendingRequests),
+                findViewById(R.id.vermapaworker));
+        Motion.pinDrop(findViewById(R.id.iv_map_pin), 320);
     }
 
     private void setupLocationCallback() {
@@ -594,11 +584,11 @@ public class HomeWorkerActivity extends AppCompatActivity {
 
         // Estado: no disponible (pero puede conectarse)
         mTextConnectionStatus.setText(R.string.worker_home_status_off);
-        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
+        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
 
         // Mensaje alentador
         mTextConnectionMessage.setText(R.string.worker_home_message_off);
-        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy_muted));
+        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_muted));
 
         // Limpiar icono del mensaje (no necesita icono cuando está verificado y desconectado)
         mTextConnectionMessage.setCompoundDrawablesRelative(null, null, null, null);
@@ -640,11 +630,11 @@ public class HomeWorkerActivity extends AppCompatActivity {
         // Actualizar texto de estado según verificación
         String statusText = getVerificationStatusText();
         mTextConnectionStatus.setText(statusText);
-        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
+        mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
 
         // Configurar el mensaje con icono (sobre la tarjeta navy)
         mTextConnectionMessage.setText(message);
-        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy_muted));
+        mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_muted));
         setTextViewIcon(mTextConnectionMessage, iconRes, R.color.ads_brand);
 
         // Actualizar indicador visual según estado
@@ -1000,8 +990,8 @@ public class HomeWorkerActivity extends AppCompatActivity {
      * vez (al abrir la pantalla) se pinta directo, sin animar.
      */
     private void showStatusLook(boolean online) {
-        int dot = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_on_navy_muted);
-        int text = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_on_navy);
+        int dot = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_muted);
+        int text = ContextCompat.getColor(this, online ? R.color.ads_brand_text : R.color.ads_text);
         boolean animate = mStatusColor != null && mStatusColor != dot;
         int fromDot = mStatusColor != null ? mStatusColor : dot;
         int fromText = mTextConnectionStatus.getCurrentTextColor();
@@ -1015,10 +1005,32 @@ public class HomeWorkerActivity extends AppCompatActivity {
         Motion.colorTo(mCardConnectionStatus, mStatusBorderColor, border, animate,
                 c -> mStatusCardBg.setStroke(borderWidth, c));
         mStatusBorderColor = border;
+        showHeaderLook(online, animate);
         if (animate) {
             Motion.bump(mStatusDot);
             Motion.pulse(mCardConnectionStatus);
         }
+    }
+
+    /** Cabecera de marca: naranja mientras está disponible, también en modo oscuro. */
+    private void showHeaderLook(boolean online, boolean animate) {
+        View header = findViewById(R.id.home_header);
+        if (mHeaderBg == null) mHeaderBg = (GradientDrawable) header.getBackground().mutate();
+        int fill = ContextCompat.getColor(this, online ? R.color.ads_brand : R.color.ads_brand_header);
+        int text = ContextCompat.getColor(this, online ? R.color.ads_on_brand : R.color.ads_on_brand_header);
+        int fromFill = mHeaderColor != null ? mHeaderColor : fill;
+        int fromText = mTextWorkerName.getCurrentTextColor();
+        mHeaderColor = fill;
+        Motion.colorTo(header, fromFill, fill, animate, c -> {
+            mHeaderBg.setColor(c);
+            getWindow().setStatusBarColor(c);
+        });
+        Motion.colorTo(mTextWorkerName, fromText, text, animate, c -> {
+            mTextWorkerName.setTextColor(c);
+            mTextWorkerType.setTextColor(c);
+        });
+        new androidx.core.view.WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightStatusBars(online || getResources().getBoolean(R.bool.ads_light_status_bar));
     }
 
     private void startLocationUpdates() {
@@ -1135,9 +1147,9 @@ public class HomeWorkerActivity extends AppCompatActivity {
                 // MODO CONECTADO
                 Log.d(TAG, "🟢 Actualizando UI - CONECTADO");
                 mTextConnectionStatus.setText(R.string.worker_home_status_on);
-                mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy));
+                mTextConnectionStatus.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
                 mTextConnectionMessage.setText(R.string.worker_home_message_on);
-                mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_on_navy_muted));
+                mTextConnectionMessage.setTextColor(ContextCompat.getColor(this, R.color.ads_muted));
                 mTextConnectionMessage.setCompoundDrawablesRelative(null, null, null, null);
                 mConnectionIndicator.setBackgroundResource(R.drawable.circle_green);
                 mConnectionIndicatorGlow.setBackgroundResource(R.drawable.circle_glow_green);
@@ -1269,12 +1281,9 @@ public class HomeWorkerActivity extends AppCompatActivity {
         boolean newArrived = !firstTime && pendingCount > mShownPending;
         mShownPending = pendingCount;
         mShownActive = activeCount;
-        com.google.android.material.card.MaterialCardView newRequests = findViewById(R.id.card_new_requests);
-        // Borde naranja cuando hay solicitudes nuevas por responder
-        newRequests.setStrokeColor(ContextCompat.getColor(this,
-                pendingCount > 0 ? R.color.ads_brand_text : R.color.ads_card_edge));
-        newRequests.setStrokeWidth(getResources().getDimensionPixelSize(
-                pendingCount > 0 ? R.dimen.stroke_focus : R.dimen.stroke_line));
+        // Cifra naranja cuando hay solicitudes nuevas por responder
+        mTextPendingRequests.setTextColor(ContextCompat.getColor(this,
+                pendingCount > 0 ? R.color.ads_brand_text : R.color.ads_text));
         // Llama la atención cuando llega una solicitud nueva (no en cada actualización)
         if (newArrived || (firstTime && pendingCount > 0)) animateAttention(mLayoutPendingRequests);
     }
@@ -1497,12 +1506,14 @@ public class HomeWorkerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        mMapPinRing = Motion.ring(findViewById(R.id.view_map_pin_ring));
         mNotificationBell.start();
         mRequestsBadge.start();
     }
 
     @Override
     protected void onStop() {
+        if (mMapPinRing != null) mMapPinRing.cancel();
         mNotificationBell.stop();
         mRequestsBadge.stop();
         super.onStop();

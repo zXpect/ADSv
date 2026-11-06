@@ -103,6 +103,11 @@
     <string name="quote_send">Enviar cotización</string>
     <string name="quote_send_new">Enviar nueva cotización</string>
     <string name="quote_reject">Rechazar</string>
+    <string name="quote_options_action">Rechazar o cancelar</string>
+    <string name="quote_options_title">¿Qué quieres hacer?</string>
+    <string name="quote_options_reject">Rechazar cotización</string>
+    <string name="quote_options_reject_detail">No aceptas este precio. El técnico podrá enviarte otra.</string>
+    <string name="quote_options_cancel_detail">Ya no necesitas el servicio. Debes elegir un motivo.</string>
     <string name="quote_accepted_toast">Cotización aceptada</string>
     <string name="quote_reject_reason_hint">Motivo (opcional)</string>
     <string name="quote_rejected_toast">Cotización rechazada</string>
@@ -257,12 +262,13 @@
     <string name="home_location">Ubaté, Cundinamarca</string>
     <string name="home_greeting">Hola, %1$s</string>
     <string name="home_greeting_default">Hola</string>
-    <string name="home_question">¿Qué necesitas reparar hoy?</string>
+    <string name="home_question">¿Qué arreglamos?</string>
     <string name="home_search_hint">Busca un técnico u oficio</string>
+    <string name="home_categories_title">Oficios</string>
+    <string name="home_all_workers">Ver todos</string>
+    <string name="home_all_workers_desc">Ver todos los técnicos</string>
     <string name="home_map_title">Ver técnicos en el mapa</string>
     <string name="home_map_subtitle">Encuentra quién está cerca de ti</string>
-    <string name="home_categories_title">Oficios</string>
-    <string name="home_categories_hint">Elige uno para ver los problemas</string>
     <string name="home_active_service">Servicio activo · %1$s</string>
     <string name="home_active_pending">Esperando la cotización del técnico</string>
     <string name="home_active_quoted">Tienes una cotización por revisar</string>
@@ -271,7 +277,9 @@
     <string name="home_active_on_the_way">El técnico va en camino</string>
     <string name="home_active_in_progress">El técnico está trabajando</string>
     <string name="workers_label">Técnicos disponibles</string>
-    <string name="workers_all_title">Todos los oficios</string>
+    <string name="workers_all_title">Todos los técnicos</string>
+    <string name="workers_all_label">Todos los oficios</string>
+    <string name="workers_filter_all">Todos</string>
     <string name="workers_search_title">Resultados para «%1$s»</string>
     <string name="workers_tab_list">Lista</string>
     <string name="workers_tab_map">Mapa</string>
@@ -541,9 +549,6 @@
     <string name="welcome_logo_desc">Logotipo ADS</string>
     <string name="welcome_wordmark">ADS</string>
     <string name="welcome_tagline">Reparaciones del hogar, con técnicos de confianza en Ubaté.</string>
-    <string name="welcome_benefit_verified">Técnicos con documentos verificados</string>
-    <string name="welcome_benefit_price">Precio de referencia antes de pedir</string>
-    <string name="welcome_benefit_payment">Paga en línea o en efectivo</string>
     <string name="welcome_create_account">Crear cuenta</string>
     <string name="welcome_have_account">Ya tengo cuenta</string>
     <string name="role_title">¿Cómo quieres usar ADS?</string>
@@ -758,6 +763,7 @@
     <string name="pqr_request_placeholder">Elige la solicitud</string>
     <string name="pqr_request_none">No tienes solicitudes</string>
     <string name="pqr_request_option">%1$s · %2$s</string>
+    <string name="pqr_request_selected">Solicitud elegida</string>
     <string name="pqr_description_label">Descripción</string>
     <string name="pqr_description_hint">Cuéntanos qué pasó</string>
     <string name="pqr_error_type">Elige el tipo de PQR</string>
@@ -792,6 +798,7 @@
     <string name="cash_received_amount_label">Debes recibir</string>
     <string name="cash_received_notice">Confirma solo cuando tengas el dinero en la mano. El cliente verá el pago registrado y podrá calificarte.</string>
     <string name="cash_received_confirm">Recibí el pago</string>
+    <string name="cash_received_slide">Desliza si ya recibiste</string>
     <string name="cash_received_done">Pago registrado</string>
     <string name="cash_paid_title">Pago en efectivo registrado</string>
     <string name="cash_paid_message">%1$s registró que recibió el pago en efectivo.</string>

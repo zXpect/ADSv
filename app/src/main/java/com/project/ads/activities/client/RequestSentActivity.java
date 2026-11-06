@@ -26,6 +26,7 @@ public class RequestSentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_sent);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
         Motion.showResultIcon(findViewById(R.id.iv_request_sent_icon), R.drawable.ic_ads_check);
         // Primer paso («Pendiente») marcado: aparece después del check
         View step = findViewById(R.id.iv_request_sent_step1);

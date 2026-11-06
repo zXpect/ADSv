@@ -72,6 +72,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_services);
+        com.project.ads.helpers.SystemBarsHelper.matchBrandHeader(this);
 
         mWorkerId = getIntent().getStringExtra("worker_id");
         if (mWorkerId == null || mWorkerId.isEmpty()) {
@@ -218,6 +219,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
         class Holder extends RecyclerView.ViewHolder {
             final MaterialCardView card;
             final TextView section, title, status, meta, detail;
+            final android.widget.ImageView icon;
 
             Holder(View itemView) {
                 super(itemView);
@@ -227,6 +229,7 @@ public class ActiveServicesActivity extends AppCompatActivity {
                 status = itemView.findViewById(R.id.tv_status);
                 meta = itemView.findViewById(R.id.tv_worker_name);
                 detail = itemView.findViewById(R.id.tv_timestamp);
+                icon = itemView.findViewById(R.id.iv_request_icon);
             }
 
             void bind(ServiceRequest request, int position) {
@@ -234,6 +237,8 @@ public class ActiveServicesActivity extends AppCompatActivity {
                 boolean firstOfGroup = position == 0 || isPending(mServices.get(position - 1)) != pending;
                 section.setVisibility(firstOfGroup ? View.VISIBLE : View.GONE);
                 section.setText(pending ? R.string.jobs_section_pending : R.string.jobs_section_done);
+
+                icon.setImageResource(com.project.ads.helpers.CategoryHelper.iconFor(request));
 
                 // La tarea, como el mockup 52; sin tareas o catálogo, el oficio
                 String task = request.getTaskTitle(mCatalog);
@@ -277,10 +282,6 @@ public class ActiveServicesActivity extends AppCompatActivity {
                     detail.setText(R.string.jobs_not_rated);
                 }
 
-                card.setStrokeColor(ContextCompat.getColor(ActiveServicesActivity.this,
-                        pending ? R.color.ads_brand_text : R.color.ads_line));
-                card.setStrokeWidth(getResources().getDimensionPixelSize(
-                        pending ? R.dimen.stroke_focus : R.dimen.stroke_control));
 
                 card.setOnClickListener(v -> {
                     Intent intent = new Intent(ActiveServicesActivity.this, ServiceDetailWorkerActivity.class);

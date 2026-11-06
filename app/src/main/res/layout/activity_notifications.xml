@@ -12,24 +12,27 @@
 
     <!-- Volver y "Marcar como leídas" -->
     <LinearLayout
+        android:id="@+id/brand_header"
+        style="@style/Widget.ADS.BrandHeader">
+    <LinearLayout
         android:id="@+id/layout_list_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ads_surface"
+        
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/screen_margin"
+        android:paddingStart="0dp"
         android:paddingTop="@dimen/space_4"
-        android:paddingEnd="@dimen/screen_margin">
+        android:paddingEnd="0dp">
 
         <ImageButton
             android:id="@+id/btn_back"
             android:layout_width="@dimen/touch_min"
             android:layout_height="@dimen/touch_min"
-            android:background="@drawable/bg_ads_circle_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/action_back"
             android:src="@drawable/ic_arrow_back"
-            app:tint="@color/ads_text" />
+            app:tint="@color/ads_on_brand_header" />
 
         <Space
             android:layout_width="0dp"
@@ -42,18 +45,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/notifications_mark_read"
+            android:textColor="@color/ads_on_brand_header"
             android:visibility="gone" />
     </LinearLayout>
 
     <TextView
+        android:textColor="@color/ads_on_brand_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/screen_margin"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="@dimen/space_3"
-        android:layout_marginEnd="@dimen/screen_margin"
+        android:layout_marginEnd="0dp"
         android:accessibilityHeading="true"
         android:text="@string/account_notifications"
         android:textAppearance="@style/TextAppearance.ADS.Headline" />
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -17,16 +17,19 @@
         android:orientation="horizontal"
         android:paddingStart="@dimen/screen_margin"
         android:paddingTop="@dimen/space_4"
-        android:paddingEnd="@dimen/screen_margin">
+        android:paddingEnd="@dimen/screen_margin"
+        android:background="@drawable/bg_ads_brand_header"
+        android:paddingBottom="@dimen/space_4"
+        android:id="@+id/brand_header">
 
         <ImageButton
             android:id="@+id/btn_workers_back"
             android:layout_width="@dimen/touch_min"
             android:layout_height="@dimen/touch_min"
-            android:background="@drawable/bg_ads_circle_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/action_back"
             android:src="@drawable/ic_arrow_back"
-            app:tint="@color/ads_text" />
+            app:tint="@color/ads_on_brand_header" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -36,6 +39,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:textColor="@color/ads_on_brand_header"
                 android:id="@+id/tv_workers_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,6 +48,7 @@
                 android:textAppearance="@style/TextAppearance.ADS.Label" />
 
             <TextView
+                android:textColor="@color/ads_on_brand_header"
                 android:id="@+id/tv_workers_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,6 +95,28 @@
             android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
             android:textColor="@color/ads_muted" />
     </LinearLayout>
+
+    <!-- Filtro por oficio: solo al entrar por «Ver todos» (WorkersActivity) -->
+    <HorizontalScrollView
+        android:id="@+id/scroll_workers_filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_3"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/screen_margin"
+        android:paddingEnd="@dimen/screen_margin"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_workers_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="@dimen/space_2"
+            app:selectionRequired="true"
+            app:singleLine="true"
+            app:singleSelection="true" />
+    </HorizontalScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"

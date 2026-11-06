@@ -9,7 +9,13 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/space_3"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    app:cardCornerRadius="0dp"
+    app:contentPaddingLeft="0dp"
+    app:contentPaddingRight="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,4 +108,9 @@
                 tools:text="4,8 · 32 calificaciones" />
         </LinearLayout>
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stroke_line"
+        android:layout_gravity="bottom"
+        android:background="@color/ads_line" />
 </com.google.android.material.card.MaterialCardView>

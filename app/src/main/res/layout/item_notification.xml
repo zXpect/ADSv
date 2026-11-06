@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fila de notificación (mockups 40 y 53). No leída: borde naranja 2 dp, ficha
-     naranja y la etiqueta "Nueva", para que el estado no dependa solo del color. -->
+<!-- Fila de notificación (mockups 40 y 53). No leída: ficha naranja y la etiqueta
+     "Nueva", para que el estado no dependa solo del color. El relleno va en la fila y
+     no en la tarjeta: el de la tarjeta dejaba la línea pegada al texto. -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_notification"
-    style="@style/Widget.ADS.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/space_3"
     android:clickable="true"
     android:focusable="true"
     android:minHeight="@dimen/touch_min"
-    app:contentPaddingBottom="@dimen/space_3"
-    app:contentPaddingTop="@dimen/space_3">
+    app:contentPaddingBottom="0dp"
+    app:contentPaddingTop="0dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    app:cardCornerRadius="0dp"
+    app:contentPaddingLeft="0dp"
+    app:contentPaddingRight="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/space_4"
+        android:paddingBottom="@dimen/space_4">
 
         <FrameLayout
             android:id="@+id/layout_notification_icon"
@@ -82,4 +89,9 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stroke_line"
+        android:layout_gravity="bottom"
+        android:background="@color/ads_line" />
 </com.google.android.material.card.MaterialCardView>

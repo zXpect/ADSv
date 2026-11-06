@@ -3,18 +3,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_client_home"
-        android:icon="@drawable/ic_nav_home"
+        android:icon="@drawable/ic_nav_home_state"
         android:title="@string/nav_home" />
     <item
         android:id="@+id/nav_client_requests"
-        android:icon="@drawable/ic_nav_requests"
+        android:icon="@drawable/ic_nav_requests_state"
         android:title="@string/nav_client_requests" />
     <item
         android:id="@+id/nav_client_pqr"
-        android:icon="@drawable/ic_nav_pqr"
+        android:icon="@drawable/ic_nav_pqr_state"
         android:title="@string/nav_pqr" />
     <item
         android:id="@+id/nav_client_account"
-        android:icon="@drawable/ic_nav_account"
+        android:icon="@drawable/ic_nav_account_state"
         android:title="@string/nav_account" />
 </menu>

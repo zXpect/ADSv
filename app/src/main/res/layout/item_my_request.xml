@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tarjeta del historial · mockup 41. La etiqueta de sección ("Activas" /
-     "Anteriores") va dentro del ítem y se muestra en el primero de cada grupo. -->
+<!-- Fila del historial · mockup 41, con el mismo principio de lista de notificaciones:
+     el relleno va en la fila y no en la tarjeta, para que la línea no quede pegada al
+     texto. La etiqueta de sección ("Activas" / "Anteriores") va dentro del ítem y se
+     muestra en el primero de cada grupo. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,7 +14,9 @@
         android:id="@+id/tv_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/screen_margin"
         android:layout_marginTop="@dimen/space_4"
+        android:layout_marginEnd="@dimen/screen_margin"
         android:layout_marginBottom="@dimen/space_2"
         android:accessibilityHeading="true"
         android:textAppearance="@style/TextAppearance.ADS.Label"
@@ -24,77 +28,134 @@
         android:id="@+id/card_request"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:minHeight="@dimen/touch_min"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:contentPaddingBottom="0dp"
+        app:contentPaddingLeft="0dp"
+        app:contentPaddingRight="0dp"
+        app:contentPaddingTop="0dp"
+        app:strokeWidth="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="@dimen/space_4"
+            android:paddingEnd="@dimen/screen_margin"
+            android:paddingBottom="@dimen/space_4">
 
-            <!-- Oficio y estado -->
+            <!-- Ícono del oficio (CategoryHelper.iconFor) -->
+            <ImageView
+                android:id="@+id/iv_request_icon"
+                android:layout_width="@dimen/icon_tile"
+                android:layout_height="@dimen/icon_tile"
+                android:background="@drawable/bg_ads_category_circle"
+                android:contentDescription="@null"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                app:tint="@color/ads_category_icon"
+                tools:src="@drawable/icon_electrician" />
+
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginStart="@dimen/space_3"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_service_type"
-                    android:layout_width="0dp"
+                <!-- Oficio y estado -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textAppearance="@style/TextAppearance.ADS.Subtitle"
-                    tools:text="Electricidad" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:id="@+id/tv_service_type"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                        tools:text="Electricidad" />
+
+                    <TextView
+                        android:id="@+id/tv_status"
+                        style="@style/Widget.ADS.StatusChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_2"
+                        tools:text="Aceptada" />
+                </LinearLayout>
+
+                <!-- Técnico · fecha -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_worker_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption"
+                        tools:text="Carlos Rojas · Lun 19 oct, 3:00 p. m." />
+
+                    <!-- Se puede abrir: flecha debajo del estado -->
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/ads_brand_text" />
+                </LinearLayout>
+
+                <!-- Precio (activas), calificación (completadas) o motivo (canceladas) -->
                 <TextView
-                    android:id="@+id/tv_status"
-                    style="@style/Widget.ADS.StatusChip"
+                    android:id="@+id/tv_timestamp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:drawablePadding="@dimen/space_1"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.ADS.Price"
+                    android:visibility="gone"
+                    tools:text="$95.000"
+                    tools:visibility="visible" />
+
+                <!-- La dirección no aparece en el mockup; se conserva oculta para el código -->
+                <TextView
+                    android:id="@+id/tv_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/space_2"
-                    tools:text="Aceptada" />
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/status_indicator"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
             </LinearLayout>
-
-            <!-- Técnico · fecha -->
-            <TextView
-                android:id="@+id/tv_worker_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_2"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.ADS.Caption"
-                tools:text="Carlos Rojas · Lun 19 oct, 3:00 p. m." />
-
-            <!-- Precio (activas), calificación (completadas) o motivo (canceladas) -->
-            <TextView
-                android:id="@+id/tv_timestamp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_2"
-                android:drawablePadding="@dimen/space_1"
-                android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.ADS.Price"
-                android:visibility="gone"
-                tools:text="$95.000"
-                tools:visibility="visible" />
-
-            <!-- La dirección no aparece en el mockup; se conserva oculta para el código -->
-            <TextView
-                android:id="@+id/tv_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <View
-                android:id="@+id/status_indicator"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone" />
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/stroke_line"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/screen_margin"
+            android:layout_marginEnd="@dimen/screen_margin"
+            android:background="@color/ads_line" />
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

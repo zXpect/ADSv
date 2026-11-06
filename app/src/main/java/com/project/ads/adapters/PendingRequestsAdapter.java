@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.project.ads.R;
+import com.project.ads.helpers.CategoryHelper;
 import com.project.ads.models.ServiceRequest;
 import com.project.ads.models.api.QuoteReference;
 import com.project.ads.helpers.DisplayNameHelper;
@@ -66,6 +68,7 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<PendingRequests
         private final TextView tvAddress;
         private final TextView tvTimestamp;
         private final TextView tvEstimatedCost;
+        private final ImageView ivIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,12 +78,14 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<PendingRequests
             tvAddress = itemView.findViewById(R.id.tvAddress);
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
             tvEstimatedCost = itemView.findViewById(R.id.tvEstimatedCost);
+            ivIcon = itemView.findViewById(R.id.iv_request_icon);
         }
 
         public void bind(ServiceRequest request) {
             tvClientName.setText(!TextUtils.isEmpty(request.getClient_name())
                     ? DisplayNameHelper.format(request.getClient_name()) : itemView.getContext().getString(R.string.inbox_client_default));
             tvTimestamp.setText(request.getTimeAgo());
+            ivIcon.setImageResource(CategoryHelper.iconFor(request));
 
             String service = request.getService_type() != null ? request.getService_type() : "";
             if (!TextUtils.isEmpty(request.getDescription())) service += " · " + request.getDescription();
@@ -106,10 +111,6 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<PendingRequests
 
             // Nuevas (por responder): borde naranja
             boolean isNew = "pending".equals(request.getStatus());
-            card.setStrokeColor(ContextCompat.getColor(itemView.getContext(),
-                    isNew ? R.color.ads_brand_text : R.color.ads_line));
-            card.setStrokeWidth(itemView.getResources().getDimensionPixelSize(
-                    isNew ? R.dimen.stroke_focus : R.dimen.stroke_control));
         }
     }
 }

@@ -28,6 +28,7 @@ public class CashReceivedActivity extends AppCompatActivity {
     private static final String EXTRA_CLIENT = "client_name";
 
     private String mRequestId;
+    private com.project.ads.includes.SlideToConfirmView mSlide;
 
     public static Intent intent(Context context, String requestId, String formattedPrice, String clientName) {
         return new Intent(context, CashReceivedActivity.class)
@@ -40,6 +41,7 @@ public class CashReceivedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cash_received);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         mRequestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         if (TextUtils.isEmpty(mRequestId)) {
@@ -53,11 +55,12 @@ public class CashReceivedActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.tv_cash_received_amount)).setText(getIntent().getStringExtra(EXTRA_PRICE));
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
-        findViewById(R.id.btn_cash_received_confirm).setOnClickListener(v -> confirm());
+        mSlide = findViewById(R.id.btn_cash_received_confirm);
+        mSlide.setText(getString(R.string.cash_received_slide));
+        mSlide.setOnConfirmListener(this::confirm);
     }
 
     private void confirm() {
-        findViewById(R.id.btn_cash_received_confirm).setEnabled(false);
         new PaymentProvider().registerCash(mRequestId, new ApiCallback<PaymentMethodData>() {
             @Override
             public void onSuccess(PaymentMethodData data) {
@@ -68,7 +71,7 @@ public class CashReceivedActivity extends AppCompatActivity {
             @Override
             public void onError(String message, int httpStatus) {
                 // 409: no está completado, no es en efectivo o ya se registró; el mensaje viene del backend
-                findViewById(R.id.btn_cash_received_confirm).setEnabled(true);
+                mSlide.reset();
                 AdsSnackbar.showLong(CashReceivedActivity.this, message);
             }
         });

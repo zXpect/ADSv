@@ -75,6 +75,7 @@ public class ProfileClientActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_client);
+        com.project.ads.helpers.SystemBarsHelper.matchBrandHeader(this);
 
         initProviders();
         initViews();
@@ -119,13 +120,10 @@ public class ProfileClientActivity extends AppCompatActivity {
         findViewById(R.id.row_account_notifications).setOnClickListener(v ->
                 startActivity(new Intent(this, NotificationsActivity.class)));
         findViewById(R.id.row_account_pqr).setOnClickListener(v -> {
-            // Mi cuenta es la última pestaña: PQR está a la izquierda
-            com.project.ads.helpers.TabTransition.start(this, new Intent(this, PqrListActivity.class), false,
-                    R.id.nav_client_account);
+            com.project.ads.helpers.TabTransition.start(this, new Intent(this, PqrListActivity.class));
         });
         findViewById(R.id.row_account_history).setOnClickListener(v -> {
-            com.project.ads.helpers.TabTransition.start(this, new Intent(this, MyRequestsActivity.class), false,
-                    R.id.nav_client_account);
+            com.project.ads.helpers.TabTransition.start(this, new Intent(this, MyRequestsActivity.class));
         });
         findViewById(R.id.row_account_terms).setOnClickListener(v ->
                 startActivity(LegalActivity.intent(this, LegalActivity.DOCUMENT_TERMS)));

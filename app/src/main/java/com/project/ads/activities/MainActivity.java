@@ -16,6 +16,7 @@ import com.project.ads.activities.client.HomeUserActivity;
 import com.project.ads.activities.worker.HomeWorkerActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.ads.R;
+import com.project.ads.helpers.Motion;
 import com.project.ads.helpers.NotificationRouter;
 import com.project.ads.helpers.SystemBarsHelper;
 
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     Button mButtonClient;
     Button mButtonWorker;
     SharedPreferences mPref;
+    // Flotación del logo mientras la Bienvenida está a la vista
+    private android.animation.ValueAnimator mLogoFloat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +47,17 @@ public class MainActivity extends AppCompatActivity {
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.ads_start_bg));
         new WindowInsetsControllerCompat(window, window.getDecorView()).setAppearanceLightStatusBars(false);
-        // Barra de navegación navy como el fondo (sin franja gris abajo)
-        SystemBarsHelper.matchNavigationBar(this, R.color.ads_start_bg, false);
+        // Barra de navegación del color de la zona de botones (sin franja gris abajo)
+        SystemBarsHelper.matchNavigationBar(this, R.color.ads_surface,
+                getResources().getBoolean(R.bool.ads_light_status_bar));
+
+        // Entrada: el logo aparece y luego suben la frase y los botones.
+        // Con sesión abierta esta pantalla solo redirige, así que no se anima.
+        boolean signedOut = FirebaseAuth.getInstance().getCurrentUser() == null;
+        if (savedInstanceState == null && signedOut && Motion.enabled(this)) {
+            Motion.popIn(findViewById(R.id.imageViewLogo));
+            Motion.enterStagger(140, findViewById(R.id.textViewSubtitle), mButtonClient, mButtonWorker);
+        }
     }
 
     private void openRole(String mode) {
@@ -61,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
         if (handleNotificationIntent()) return;
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
+        if (auth.getCurrentUser() == null) {
+            mLogoFloat = Motion.floatLoop(findViewById(R.id.imageViewLogo));
+        } else {
             String user = mPref.getString("user", "");
 
             if (user.equals("cliente")) {
@@ -72,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
                 auth.signOut(); // evitar entrar al home por error
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        if (mLogoFloat != null) mLogoFloat.cancel();
+        super.onStop();
     }
 
     private void goToHomeUser() {

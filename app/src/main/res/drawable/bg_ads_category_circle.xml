@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Círculo del ícono de un oficio en el inicio -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/ads_category_bg" />
+    <stroke
+        android:width="0.75dp"
+        android:color="@color/ads_category_stroke" />
+</shape>

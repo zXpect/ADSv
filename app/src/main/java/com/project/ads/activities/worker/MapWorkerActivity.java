@@ -129,6 +129,7 @@ public class MapWorkerActivity extends AppCompatActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_worker);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         initProviders();
         initViews();

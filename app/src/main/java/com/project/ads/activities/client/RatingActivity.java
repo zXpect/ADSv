@@ -1,6 +1,7 @@
 package com.project.ads.activities.client;
 
 import android.content.res.ColorStateList;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -60,6 +61,7 @@ public class RatingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
 
         try {
             initFirebase();
@@ -202,7 +204,10 @@ public class RatingActivity extends AppCompatActivity {
                         "¡Gracias por tu calificación!",
                         Toast.LENGTH_LONG).show();
 
-                // Cerrar actividad y volver atrás
+                // Servicio cerrado: el cliente vuelve al inicio
+                Intent home = new Intent(RatingActivity.this, HomeUserActivity.class);
+                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(home);
                 finish();
             }
 

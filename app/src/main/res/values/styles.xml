@@ -45,7 +45,7 @@
         <item name="android:fontFamily">@font/sora_extrabold</item>
         <item name="fontFamily">@font/sora_extrabold</item>
         <item name="android:textSize">26sp</item>
-        <item name="lineHeight">32sp</item>
+        <item name="lineHeight">34sp</item>
         <item name="android:textColor">@color/ads_text</item>
     </style>
 
@@ -328,23 +328,48 @@
          BARRA INFERIOR: 76 dp, fondo de barra, indicador activo 56x30
          naranja claro, ícono y texto naranja oscuro al estar activo.
          =================================================================== -->
+    <!-- Cabecera de marca del esquema nuevo (docs/rediseno-v2) -->
+    <style name="Widget.ADS.BrandHeader" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/space_4</item>
+        <item name="android:background">@drawable/bg_ads_brand_header</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingStart">@dimen/screen_margin</item>
+        <item name="android:paddingTop">@dimen/space_3</item>
+        <item name="android:paddingEnd">@dimen/screen_margin</item>
+        <item name="android:paddingBottom">@dimen/space_5</item>
+    </style>
+
+    <!-- Dentro de un contenedor con margen de pantalla: llega hasta los bordes -->
+    <style name="Widget.ADS.BrandHeader.Bleed">
+        <item name="android:layout_marginStart">@dimen/brand_header_bleed</item>
+        <item name="android:layout_marginEnd">@dimen/brand_header_bleed</item>
+    </style>
+
+    <!-- Píldora detrás del ícono activo. No cubre el número de la pestaña: ese círculo es
+         naranja y sobre un bloque naranja no se veía. -->
+    <style name="Widget.ADS.BottomNav.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:width">56dp</item>
+        <item name="android:height">30dp</item>
+        <item name="android:color">@color/ads_nav_pill</item>
+    </style>
+
     <style name="Widget.ADS.BottomNav" parent="Widget.Material3.BottomNavigationView">
-        <item name="backgroundTint">@color/ads_bar</item>
+        <item name="android:background">@drawable/bg_ads_nav_float</item>
+        <item name="backgroundTint">@null</item>
         <item name="android:minHeight">@dimen/bottom_nav_height</item>
         <item name="elevation">0dp</item>
-        <item name="itemIconSize">@dimen/icon_md</item>
-        <item name="itemIconTint">@color/ads_nav_item</item>
+        <item name="itemIconSize">22dp</item>
+        <item name="itemPaddingTop">10dp</item>
+        <item name="itemPaddingBottom">10dp</item>
+        <item name="itemIconTint">@color/ads_nav_icon</item>
         <item name="itemTextColor">@color/ads_nav_item</item>
         <item name="itemTextAppearanceActive">@style/TextAppearance.ADS.Label</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.ADS.Label</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.ADS.BottomNav.ActiveIndicator</item>
+        <item name="itemRippleColor">@android:color/transparent</item>
         <item name="labelVisibilityMode">labeled</item>
-    </style>
-
-    <style name="Widget.ADS.BottomNav.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@color/ads_chip_bg</item>
-        <item name="android:width">56dp</item>
-        <item name="android:height">30dp</item>
     </style>
 
     <!-- ===================================================================
@@ -463,13 +488,13 @@
     <style name="MaterialAlertDialog.ADS" parent="MaterialAlertDialog.Material3">
         <item name="backgroundTint">@color/ads_card</item>
         <item name="shapeAppearance">@style/ShapeAppearance.ADS.Dialog</item>
-        <item name="backgroundInsetStart">@dimen/space_6</item>
-        <item name="backgroundInsetEnd">@dimen/space_6</item>
+        <item name="backgroundInsetStart">@dimen/space_5</item>
+        <item name="backgroundInsetEnd">@dimen/space_5</item>
     </style>
 
     <style name="ShapeAppearance.ADS.Dialog" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/radius_lg</item>
+        <item name="cornerSize">@dimen/radius_sheet</item>
     </style>
 
     <style name="MaterialAlertDialog.ADS.Title" parent="MaterialAlertDialog.Material3.Title.Text">
@@ -478,19 +503,21 @@
     </style>
 
     <style name="MaterialAlertDialog.ADS.Body" parent="MaterialAlertDialog.Material3.Body.Text">
-        <item name="android:textAppearance">@style/TextAppearance.ADS.Body</item>
+        <item name="android:textAppearance">@style/TextAppearance.ADS.BodySmall</item>
         <item name="android:textColor">@color/ads_muted</item>
     </style>
 
     <!-- Título del diálogo: 20/26, 600 -->
     <style name="TextAppearance.ADS.Dialog.Title" parent="TextAppearance.ADS.Title">
-        <item name="android:textSize">20sp</item>
-        <item name="lineHeight">26sp</item>
+        <item name="android:fontFamily">@font/sora_extrabold</item>
+        <item name="fontFamily">@font/sora_extrabold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="lineHeight">28sp</item>
     </style>
 
     <!-- Botón principal del diálogo: naranja con texto navy, 44 dp -->
     <style name="Widget.ADS.Button.Dialog">
-        <item name="android:minHeight">@dimen/touch_min</item>
+        <item name="android:minHeight">48dp</item>
         <item name="android:paddingStart">@dimen/space_5</item>
         <item name="android:paddingEnd">@dimen/space_5</item>
         <item name="android:layout_marginStart">@dimen/space_2</item>

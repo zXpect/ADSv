@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tarjeta de relleno de un oficio mientras cargan del catálogo (HomeUserActivity):
-     la misma forma que item_home_category, con bloques en lugar de ícono y nombre. -->
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<!-- Oficio de relleno mientras cargan del catálogo (HomeUserActivity): la misma forma
+     que item_home_category, con bloques en lugar de ícono y nombre. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="92dp"
-    android:layout_margin="6dp"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
     android:importantForAccessibility="no"
-    app:contentPadding="14dp">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/space_2"
+    android:paddingBottom="@dimen/space_2">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <View
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_ads_category_circle" />
 
-        <View
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@drawable/bg_ads_skeleton_block" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <View
-            android:layout_width="96dp"
-            android:layout_height="14dp"
-            android:background="@drawable/bg_ads_skeleton_block" />
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+    <View
+        android:layout_width="72dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_ads_skeleton_block" />
+</LinearLayout>

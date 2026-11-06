@@ -71,6 +71,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "RequestDetailActivity created");
         setContentView(R.layout.activity_request_detail);
+        com.project.ads.helpers.Motion.enterBrandScreen(this, savedInstanceState);
         
         // Initialize Firebase
         databaseReference = FirebaseDatabase.getInstance().getReference();

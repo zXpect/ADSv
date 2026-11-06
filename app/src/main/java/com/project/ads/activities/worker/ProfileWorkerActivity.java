@@ -89,6 +89,7 @@ public class ProfileWorkerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_worker);
+        com.project.ads.helpers.SystemBarsHelper.matchBrandHeader(this);
 
         initProviders();
         initViews();
