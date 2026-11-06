@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cambio de pestaña: la nueva aparece con un fundido, sin desplazarse. La barra inferior está
+     en el mismo sitio en las dos pantallas, así que no se percibe movimiento en ella. -->
+<alpha xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="180"
+    android:fromAlpha="0"
+    android:interpolator="@android:interpolator/fast_out_slow_in"
+    android:toAlpha="1" />

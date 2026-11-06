@@ -12,9 +12,9 @@ import com.project.ads.R;
 
 /**
  * Animación al cambiar de pestaña en la barra inferior (cliente y trabajador).
- * Cada pestaña es una Activity que se trae al frente; la nueva entra desde el lado
- * hacia el que está en la barra, con un fundido corto, y la anterior se queda quieta.
- * Al llegar, el fondo naranja de la pestaña de destino crece (animación de Material).
+ * Cada pestaña es una Activity que se trae al frente; la nueva aparece con un fundido
+ * sobre la anterior, que se queda quieta. Sin desplazamiento, para que la barra inferior
+ * no se mueva. Al llegar, la píldora de la pestaña de destino crece (animación de Material).
  * Si el teléfono tiene las animaciones desactivadas, Android las omite.
  */
 public final class TabTransition {
@@ -23,20 +23,18 @@ public final class TabTransition {
     }
 
     /**
-     * Abre la pestaña; forward = la de destino está más a la derecha en la barra;
-     * fromItemId = pestaña actual, para animar el indicador al llegar.
+     * Abre la pestaña; fromItemId = pestaña actual, para animar el indicador al llegar.
      */
-    public static void start(Activity activity, Intent intent, boolean forward, int fromItemId) {
+    public static void start(Activity activity, Intent intent, int fromItemId) {
         animateIndicatorOnArrival(activity, fromItemId);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         activity.startActivity(intent);
-        activity.overridePendingTransition(
-                forward ? R.anim.ads_tab_enter_right : R.anim.ads_tab_enter_left, R.anim.ads_tab_exit);
+        activity.overridePendingTransition(R.anim.ads_tab_enter, R.anim.ads_tab_exit);
     }
 
     /**
      * En la primera pantalla que se reanude (la pestaña de destino), marca un instante
-     * la pestaña de origen y luego la propia: Material anima el fondo naranja creciendo.
+     * la pestaña de origen y luego la propia: Material anima la píldora creciendo.
      * MenuItem.setChecked no avisa al listener, así que no navega.
      */
     private static void animateIndicatorOnArrival(Activity from, int fromItemId) {
