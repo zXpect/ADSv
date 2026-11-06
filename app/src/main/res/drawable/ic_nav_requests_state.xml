@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Solicitudes del cliente en la barra inferior: relleno si la pestaña está activa -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_nav_requests_filled" android:state_checked="true" />
+    <item android:drawable="@drawable/ic_nav_requests" />
+</selector>

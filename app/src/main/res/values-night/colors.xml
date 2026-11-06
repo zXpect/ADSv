@@ -41,6 +41,8 @@
     <color name="ads_nav_float">#1F2540</color>
     <color name="ads_nav_edge">#1F2540</color>
     <color name="ads_nav_idle">#F6F3EE</color>
+    <color name="ads_nav_active">#F6F3EE</color>
+    <color name="ads_nav_pill">@color/ads_chip_bg</color>
     <color name="ads_brand_header">#1F2540</color>
     <color name="ads_on_brand_header">#F6F3EE</color>
     <color name="ads_header">#1F2540</color>

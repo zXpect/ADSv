@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Solicitudes del cliente, relleno: pestaña activa de la barra inferior. Los huecos van en sentido contrario
+     al contorno para que se vean también en Android 6, donde no existe fillType. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FF5B606B"
+        android:pathData="M6,3h12v18l-3,-2 -3,2 -3,-2 -3,2zM15,7h-6a1,1 0,0 0,0 2h6a1,1 0,0 0,0 -2zM15,11h-6a1,1 0,0 0,0 2h6a1,1 0,0 0,0 -2z" />
+    <path
+        android:pathData="M6,3h12v18l-3,-2 -3,2 -3,-2 -3,2z"
+        android:strokeColor="#FF5B606B"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>
