@@ -36,7 +36,7 @@ public final class ClientNavHelper {
                 Toast.makeText(activity, R.string.nav_coming_soon, Toast.LENGTH_SHORT).show();
                 return false;
             }
-            TabTransition.start(activity, new Intent(activity, target), selectedItemId);
+            TabTransition.start(activity, new Intent(activity, target));
             return false;   // la pestaña se marca en la pantalla de destino
         });
         nav.setOnItemReselectedListener(item -> { });
