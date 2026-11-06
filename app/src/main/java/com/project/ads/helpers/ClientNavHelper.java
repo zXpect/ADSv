@@ -36,22 +36,10 @@ public final class ClientNavHelper {
                 Toast.makeText(activity, R.string.nav_coming_soon, Toast.LENGTH_SHORT).show();
                 return false;
             }
-            TabTransition.start(activity, new Intent(activity, target),
-                    isAfter(nav, id, selectedItemId), selectedItemId);
+            TabTransition.start(activity, new Intent(activity, target), selectedItemId);
             return false;   // la pestaña se marca en la pantalla de destino
         });
         nav.setOnItemReselectedListener(item -> { });
-    }
-
-    /** true si la pestaña de destino está a la derecha de la actual en la barra. */
-    static boolean isAfter(BottomNavigationView nav, int targetId, int currentId) {
-        int target = -1, current = -1;
-        for (int i = 0; i < nav.getMenu().size(); i++) {
-            int id = nav.getMenu().getItem(i).getItemId();
-            if (id == targetId) target = i;
-            if (id == currentId) current = i;
-        }
-        return target > current;
     }
 
     private static Class<? extends Activity> targetFor(int itemId) {

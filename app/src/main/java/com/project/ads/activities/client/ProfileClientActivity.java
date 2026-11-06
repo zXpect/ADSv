@@ -120,12 +120,11 @@ public class ProfileClientActivity extends AppCompatActivity {
         findViewById(R.id.row_account_notifications).setOnClickListener(v ->
                 startActivity(new Intent(this, NotificationsActivity.class)));
         findViewById(R.id.row_account_pqr).setOnClickListener(v -> {
-            // Mi cuenta es la última pestaña: PQR está a la izquierda
-            com.project.ads.helpers.TabTransition.start(this, new Intent(this, PqrListActivity.class), false,
+            com.project.ads.helpers.TabTransition.start(this, new Intent(this, PqrListActivity.class),
                     R.id.nav_client_account);
         });
         findViewById(R.id.row_account_history).setOnClickListener(v -> {
-            com.project.ads.helpers.TabTransition.start(this, new Intent(this, MyRequestsActivity.class), false,
+            com.project.ads.helpers.TabTransition.start(this, new Intent(this, MyRequestsActivity.class),
                     R.id.nav_client_account);
         });
         findViewById(R.id.row_account_terms).setOnClickListener(v ->
