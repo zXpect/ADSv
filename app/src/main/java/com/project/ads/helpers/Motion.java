@@ -8,15 +8,18 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
 import androidx.core.content.ContextCompat;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.project.ads.R;
 
 /**
@@ -25,6 +28,9 @@ import com.project.ads.R;
  * el estado final.
  */
 public final class Motion {
+
+    private static final long TAB_DELAY_MS = 60;
+    private static final float TAB_ICON_LIFT_DP = 3f;
 
     private Motion() {
     }
@@ -38,6 +44,43 @@ public final class Motion {
     public static boolean enabled(Context context) {
         return Settings.Global.getFloat(context.getContentResolver(),
                 Settings.Global.ANIMATOR_DURATION_SCALE, 1f) != 0f;
+    }
+
+    /**
+     * Pestaña recién marcada en la barra inferior: la píldora crece desde el centro y el
+     * ícono sube y baja una vez. El estado inicial se aplica ya, antes del primer cuadro,
+     * y el retraso deja que el fundido de la pantalla empiece para que se alcance a ver.
+     */
+    public static void tabSelected(BottomNavigationView nav) {
+        View item = nav.findViewById(nav.getSelectedItemId());
+        if (item == null) return;
+        View pill = item.findViewById(com.google.android.material.R.id.navigation_bar_item_active_indicator_view);
+        View icon = item.findViewById(com.google.android.material.R.id.navigation_bar_item_icon_view);
+        if (pill != null) {
+            pill.setScaleX(0.45f);
+            pill.setScaleY(0.7f);
+            pill.setAlpha(0f);
+            pill.animate().scaleX(1f).scaleY(1f).alpha(1f)
+                    .setStartDelay(TAB_DELAY_MS)
+                    .setDuration(280)
+                    .setInterpolator(new FastOutSlowInInterpolator())
+                    .start();
+        }
+        if (icon != null) {
+            float lift = TAB_ICON_LIFT_DP * nav.getResources().getDisplayMetrics().density;
+            ValueAnimator hop = ValueAnimator.ofFloat(0f, 1f);
+            hop.setStartDelay(TAB_DELAY_MS);
+            hop.setDuration(340);
+            hop.setInterpolator(new LinearInterpolator());
+            hop.addUpdateListener(a -> {
+                // Media onda de seno: sale y vuelve a cero sin cambios bruscos
+                float wave = (float) Math.sin(Math.PI * (float) a.getAnimatedValue());
+                icon.setTranslationY(-lift * wave);
+                icon.setScaleX(1f + 0.08f * wave);
+                icon.setScaleY(1f + 0.08f * wave);
+            });
+            hop.start();
+        }
     }
 
     /** Entrada de un ícono de resultado: crece desde 0,6 con un leve sobrepaso. */
