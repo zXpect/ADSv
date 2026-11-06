@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Perfil del técnico que ve el cliente: nombre grande con ficha de iniciales,
-     calificación destacada, trabajos y distancia. Fondo azul noche en ambos modos. -->
+     calificación destacada, trabajos y distancia. Sigue el modo claro u oscuro del teléfono. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ads_start_bg"
+    android:background="@color/ads_surface"
     android:orientation="vertical"
     tools:context="com.project.ads.activities.client.WorkerProfileActivity">
 
@@ -32,7 +32,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/action_back"
                 android:src="@drawable/ic_arrow_back"
-                app:tint="@color/ads_on_navy" />
+                app:tint="@color/ads_text" />
 
             <LinearLayout
                 android:id="@+id/layout_profile_top"
@@ -51,7 +51,7 @@
                     android:accessibilityHeading="true"
                     android:fontFamily="@font/sora_extrabold"
                     android:lineSpacingMultiplier="1.05"
-                    android:textColor="@color/ads_on_navy"
+                    android:textColor="@color/ads_text"
                     android:textSize="32sp"
                     tools:text="Carlos Rojas" />
 
@@ -92,11 +92,11 @@
                 android:fontFamily="@font/sora_semibold"
                 android:gravity="center_vertical"
                 android:text="@string/profile_verified"
-                android:textColor="@color/ads_pin_brand"
+                android:textColor="@color/ads_brand_text"
                 android:textSize="14sp"
                 android:visibility="gone"
                 app:drawableStartCompat="@drawable/ic_check_circle"
-                app:drawableTint="@color/ads_pin_brand"
+                app:drawableTint="@color/ads_brand_text"
                 tools:visibility="visible" />
 
             <!-- Calificación destacada; trabajos y distancia a la derecha -->
@@ -163,7 +163,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/sora_extrabold"
-                            android:textColor="@color/ads_on_navy"
+                            android:textColor="@color/ads_text"
                             android:textSize="20sp"
                             tools:text="32" />
 
@@ -173,7 +173,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/profile_ratings_label"
                             android:textAppearance="@style/TextAppearance.ADS.Caption"
-                            android:textColor="@color/ads_on_navy_muted" />
+                            android:textColor="@color/ads_muted" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -190,7 +190,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/sora_extrabold"
                             android:maxLines="1"
-                            android:textColor="@color/ads_on_navy"
+                            android:textColor="@color/ads_text"
                             android:textSize="20sp"
                             tools:text="0,8 km" />
 
@@ -199,7 +199,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/profile_distance_label"
                             android:textAppearance="@style/TextAppearance.ADS.Caption"
-                            android:textColor="@color/ads_on_navy_muted" />
+                            android:textColor="@color/ads_muted" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -213,7 +213,7 @@
                 android:accessibilityHeading="true"
                 android:fontFamily="@font/sora_semibold"
                 android:text="@string/profile_about"
-                android:textColor="@color/ads_on_navy"
+                android:textColor="@color/ads_text"
                 android:textSize="15sp" />
 
             <TextView
@@ -223,7 +223,7 @@
                 android:layout_marginTop="@dimen/space_1"
                 android:lineSpacingExtra="3dp"
                 android:textAppearance="@style/TextAppearance.ADS.BodySmall"
-                android:textColor="@color/ads_on_navy_muted"
+                android:textColor="@color/ads_muted"
                 tools:text="Electricista con experiencia en instalaciones residenciales." />
 
             <!-- Oficios -->
@@ -235,7 +235,7 @@
                 android:accessibilityHeading="true"
                 android:fontFamily="@font/sora_semibold"
                 android:text="@string/profile_categories"
-                android:textColor="@color/ads_on_navy"
+                android:textColor="@color/ads_text"
                 android:textSize="15sp" />
 
             <com.google.android.material.chip.ChipGroup
@@ -259,7 +259,7 @@
         android:paddingBottom="@dimen/space_5">
 
         <TextView
-                android:textColor="@color/ads_on_navy_muted"
+                android:textColor="@color/ads_muted"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/space_3"

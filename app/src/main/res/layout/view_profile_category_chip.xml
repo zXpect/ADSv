@@ -8,11 +8,11 @@
     android:clickable="false"
     android:focusable="false"
     android:textAppearance="@style/TextAppearance.ADS.Chip"
-    android:textColor="@color/ads_pin_brand"
+    android:textColor="@color/ads_brand_text"
     app:chipBackgroundColor="@android:color/transparent"
     app:chipSurfaceColor="@android:color/transparent"
     app:chipCornerRadius="@dimen/radius_sm"
     app:chipMinHeight="34dp"
-    app:chipStrokeColor="@color/ads_pin_brand"
+    app:chipStrokeColor="@color/ads_brand_text"
     app:chipStrokeWidth="1.5dp"
     app:ensureMinTouchTargetSize="false" />
