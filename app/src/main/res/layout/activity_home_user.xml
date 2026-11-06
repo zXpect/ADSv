@@ -132,7 +132,7 @@
                     android:contentDescription="@null"
                     android:padding="10dp"
                     android:src="@drawable/ic_nav_jobs"
-                    app:tint="@color/ads_brand" />
+                    app:tint="@color/ads_active_icon" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/sora"
                         android:textAppearance="@style/TextAppearance.ADS.Label"
-                        android:textColor="@color/ads_on_navy_muted"
+                        android:textColor="@color/ads_active_label"
                         tools:text="Servicio activo · Plomería" />
 
                     <TextView
@@ -165,7 +165,7 @@
                     android:layout_height="20dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_arrow_forward"
-                    app:tint="@color/ads_on_navy" />
+                    app:tint="@color/ads_active_arrow" />
             </LinearLayout>
 
             <!-- Oficios -->
@@ -300,6 +300,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
+                            android:breakStrategy="balanced"
                             android:text="@string/home_map_subtitle"
                             android:textAppearance="@style/TextAppearance.ADS.Caption" />
                     </LinearLayout>
