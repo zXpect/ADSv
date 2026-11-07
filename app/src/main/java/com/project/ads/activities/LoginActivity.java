@@ -665,11 +665,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showDeletedAccountDialog(boolean byAdmin) {
         tilPassword.setError(null);
-        new MaterialAlertDialogBuilder(this)
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.account_deleted_login_title)
-                .setMessage(byAdmin ? R.string.account_deleted_login_admin : R.string.account_deleted_login_user)
-                .setPositiveButton(R.string.account_suspended_ok, null)
-                .show();
+                .setMessage(byAdmin ? R.string.account_deleted_login_admin : R.string.account_deleted_login_user);
+        if (byAdmin) {
+            builder.setNeutralButton(R.string.support_write,
+                    (dialog, which) -> com.project.ads.helpers.SupportMail.open(this));
+        }
+        builder.setPositiveButton(R.string.account_suspended_ok, null).show();
     }
 
     private void handleFailedLogin(Exception exception) {
@@ -684,6 +687,8 @@ public class LoginActivity extends AppCompatActivity {
             new MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.account_suspended_title)
                     .setMessage(R.string.account_suspended_login)
+                    .setNeutralButton(R.string.support_write,
+                            (dialog, which) -> com.project.ads.helpers.SupportMail.open(this))
                     .setPositiveButton(R.string.account_suspended_ok, null)
                     .show();
 

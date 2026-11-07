@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +28,11 @@ import com.project.ads.activities.MainActivity;
  * que vence el token. Este vigilante escucha el perfil de la cuenta abierta y, si
  * isActive pasa a false o el perfil desaparece después de haber existido, avisa
  * al usuario y cierra la sesión, en cualquier pantalla.
+ *
+ * Si la cuenta se eliminó o suspendió con la app cerrada, el perfil ya no existe al
+ * abrirla y el listener no lo nota: por eso también se recarga el usuario de Firebase
+ * Auth al abrir la app y al volver a ella (USER_NOT_FOUND o USER_DISABLED). El aviso
+ * da el correo de soporte y un botón para escribirle.
  */
 public final class AccountStatusWatcher implements Application.ActivityLifecycleCallbacks {
 
@@ -45,6 +51,9 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
     private boolean mShowing;
     // «Eliminar mi cuenta» también borra el perfil: ahí no se avisa
     private static boolean sSelfDeletion;
+    // Recarga del usuario de Auth como mucho cada 30 s al cambiar de pantalla
+    private static final long AUTH_CHECK_INTERVAL_MS = 30_000;
+    private long mLastAuthCheck;
 
     private AccountStatusWatcher(Context app) {
         mApp = app;
@@ -73,6 +82,7 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
         if (uid != null && uid.equals(mWatchedUid) && mRef != null) return;
 
         stop();
+        if (uid != null) checkAuthUser(user, true);
         if (uid == null || node == null) return;
         mWatchedUid = uid;
         sSelfDeletion = false;
@@ -98,10 +108,37 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Con la sesión revocada la lectura puede dejar de permitirse; el login lo explica después
+                // Con la sesión revocada la lectura deja de permitirse: se pregunta a Firebase Auth
+                FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
+                if (current != null) checkAuthUser(current, true);
             }
         };
         mRef.addValueEventListener(mListener);
+    }
+
+    /**
+     * Recarga el usuario: si ya no existe (eliminado) o está deshabilitado
+     * (suspendido), avisa igual que el listener. Sin red no hace nada.
+     */
+    private void checkAuthUser(@NonNull FirebaseUser user, boolean force) {
+        long now = System.currentTimeMillis();
+        if (!force && now - mLastAuthCheck < AUTH_CHECK_INTERVAL_MS) return;
+        mLastAuthCheck = now;
+        String uid = user.getUid();
+        user.reload().addOnFailureListener(e -> {
+            if (!(e instanceof FirebaseAuthInvalidUserException) || sSelfDeletion || mShowing) return;
+            FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
+            if (current == null || !uid.equals(current.getUid())) return;
+            String code = ((FirebaseAuthInvalidUserException) e).getErrorCode();
+            if ("ERROR_USER_NOT_FOUND".equals(code)) {
+                mDeleted = true;
+            } else if ("ERROR_USER_DISABLED".equals(code)) {
+                mSuspended = true;
+            } else {
+                return;
+            }
+            if (mResumed != null) notifySuspended(mResumed);
+        });
     }
 
     private void stop() {
@@ -123,22 +160,29 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
                 .setTitle(deleted ? R.string.account_deleted_title : R.string.account_suspended_title)
                 .setMessage(deleted ? R.string.account_deleted_message : R.string.account_suspended_message)
                 .setCancelable(false)
-                .setPositiveButton(R.string.account_suspended_ok, (dialog, which) -> {
-                    mShowing = false;
-                    mSuspended = false;
-                    mDeleted = false;
-                    if (deleted) {
-                        // El rol y las preferencias de esa cuenta ya no sirven
-                        mApp.getSharedPreferences(ROLE_PREFS, Context.MODE_PRIVATE).edit().clear().apply();
-                    }
-                    stop();
-                    FirebaseAuth.getInstance().signOut();
-                    Intent intent = new Intent(activity, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    activity.startActivity(intent);
-                    activity.finish();
+                .setPositiveButton(R.string.account_suspended_ok, (dialog, which) -> signOut(activity, deleted))
+                .setNeutralButton(R.string.support_write, (dialog, which) -> {
+                    // La sesión se cierra igual; el correo se abre encima de la bienvenida
+                    signOut(activity, deleted);
+                    SupportMail.open(mApp);
                 })
                 .show();
+    }
+
+    private void signOut(Activity activity, boolean deleted) {
+        mShowing = false;
+        mSuspended = false;
+        mDeleted = false;
+        if (deleted) {
+            // El rol y las preferencias de esa cuenta ya no sirven
+            mApp.getSharedPreferences(ROLE_PREFS, Context.MODE_PRIVATE).edit().clear().apply();
+        }
+        stop();
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
+        activity.finish();
     }
 
     @Override
@@ -147,6 +191,8 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         // El rol puede guardarse después del login: se empieza a vigilar al volver a una pantalla
         if (mRef == null && user != null) watch(user);
+        // Eliminada o suspendida con la app cerrada o en segundo plano
+        if (user != null && !mShowing) checkAuthUser(user, false);
         // Si la suspensión o la eliminación llegó con la app en segundo plano, se avisa al volver
         if ((mSuspended || mDeleted) && user != null) notifySuspended(activity);
     }
