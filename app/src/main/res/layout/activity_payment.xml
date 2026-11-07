@@ -311,6 +311,7 @@
                 android:id="@+id/progress_result"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/space_4"
                 android:indeterminateTint="@color/ads_brand"
                 android:visibility="gone" />
