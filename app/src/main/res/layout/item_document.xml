@@ -1,175 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fila de un documento en Mis documentos (estilo del mockup 33).
-     Conserva los IDs que usa DocumentAdapter. -->
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Documento en Mis documentos. El primero de cada requisito lleva arriba el
+     nombre del grupo y su conteo ("Cartas de recomendación 3 de 3"). Un documento
+     rechazado se resalta con el motivo y "Volver a subir". Lo usa DocumentAdapter. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cardDocument"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
-    app:contentPadding="@dimen/space_4"
-    app:cardBackgroundColor="@android:color/transparent"
-    app:cardElevation="0dp"
-    app:strokeWidth="0dp"
-    app:cardCornerRadius="0dp"
-    app:contentPaddingLeft="0dp"
-    app:contentPaddingRight="0dp">
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/layoutSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/space_5"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tvSection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:accessibilityHeading="true"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+            tools:text="Cartas de recomendación" />
+
+        <TextView
+            android:id="@+id/tvSectionCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.ADS.Caption"
+            tools:text="3 de 3" />
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardDocument"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/ads_card"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+        app:contentPadding="12dp"
+        app:strokeColor="@color/ads_card_edge"
+        app:strokeWidth="@dimen/stroke_line">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <FrameLayout
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:background="@drawable/bg_ads_doc_tile">
-
-                <ImageView
-                    android:id="@+id/ivDocumentIcon"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_gravity="center"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_document"
-                    app:tint="@color/ads_text" />
-            </FrameLayout>
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvDocumentType"
-                    android:layout_width="match_parent"
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_ads_doc_tile">
+
+                    <ImageView
+                        android:id="@+id/ivDocumentIcon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_document"
+                        app:tint="@color/ads_text" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
-                    tools:text="Hoja de vida" />
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvDocumentType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+                        tools:text="Carta de recomendación 1" />
+
+                    <TextView
+                        android:id="@+id/tvUploadDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption"
+                        tools:text="Subido: 12/10/2026" />
+
+                    <TextView
+                        android:id="@+id/tvReviewDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.ADS.Caption"
+                        android:visibility="gone"
+                        tools:text="Revisado: 13/10/2026" />
+
+                    <TextView
+                        android:id="@+id/tvFileName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ivStatusIcon"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:importantForAccessibility="no"
+                    android:visibility="gone" />
 
                 <TextView
-                    android:visibility="gone"
-                    android:id="@+id/tvFileName"
+                    android:id="@+id/tvStatus"
+                    style="@style/Widget.ADS.StatusChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_2"
+                    tools:text="En revisión" />
+            </LinearLayout>
+
+            <!-- Motivo del rechazo -->
+            <LinearLayout
+                android:id="@+id/layoutRejectionReason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_3"
+                android:background="@drawable/bg_ads_notice"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/verify_reason_label"
+                    android:textAppearance="@style/TextAppearance.ADS.Label"
+                    android:textColor="@color/ads_chip_text" />
+
+                <TextView
+                    android:id="@+id/tvRejectionReason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:ellipsize="middle"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.ADS.Caption"
-                    tools:text="hoja_vida.pdf" />
+                    android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                    android:textColor="@color/ads_text" />
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/ivStatusIcon"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:importantForAccessibility="no"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tvStatus"
-                style="@style/Widget.ADS.StatusChip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_2"
-                tools:text="En revisión" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="58dp"
-            android:layout_marginTop="@dimen/space_2"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvUploadDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.ADS.Caption"
-                tools:text="Subido: 12/10/2026" />
-
-            <TextView
-                android:id="@+id/tvReviewDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textAppearance="@style/TextAppearance.ADS.Caption"
-                android:visibility="gone"
-                tools:text="Revisado: 13/10/2026" />
-        </LinearLayout>
-
-        <!-- Motivo del rechazo -->
-        <LinearLayout
-            android:id="@+id/layoutRejectionReason"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_ads_notice"
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/verify_reason_label"
-                android:textAppearance="@style/TextAppearance.ADS.Label"
-                android:textColor="@color/ads_chip_text" />
-
-            <TextView
-                android:id="@+id/tvRejectionReason"
+            <LinearLayout
+                android:id="@+id/layoutActions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textAppearance="@style/TextAppearance.ADS.BodySmall"
-                android:textColor="@color/ads_text" />
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnViewDocument"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUpdateDocument"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/touch_min"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/mydocs_reupload"
+                    android:visibility="gone" />
+            </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layoutActions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_1"
-            android:gravity="end"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnViewDocument"
-                style="@style/Widget.ADS.Button.Text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mydocs_view" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnUpdateDocument"
-                style="@style/Widget.ADS.Button.Strong"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/touch_min"
-                android:layout_marginStart="@dimen/space_2"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:minWidth="0dp"
-                android:paddingStart="@dimen/space_4"
-                android:paddingEnd="@dimen/space_4"
-                android:text="@string/mydocs_update"
-                android:textSize="13sp"
-                android:visibility="gone"
-                app:cornerRadius="14dp" />
-        </LinearLayout>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/stroke_line"
-        android:layout_gravity="bottom"
-        android:background="@color/ads_line" />
-</com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

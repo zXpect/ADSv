@@ -668,7 +668,6 @@
     <string name="mydocs_group_background">Antecedentes judiciales</string>
     <string name="mydocs_group_letters">Cartas de recomendación</string>
     <string name="mydocs_group_titles">Títulos o certificados</string>
-    <string name="mydocs_tap_to_view">Toca un documento para verlo.</string>
 
     <!-- Rediseño: estado de verificación del trabajador (mockups 34, 35 y 36) -->
     <string name="verify_pending_title">Estamos revisando tu perfil</string>
@@ -719,7 +718,7 @@
     <string name="mydocs_empty_title">Aún no tienes documentos</string>
     <string name="mydocs_empty_message">Súbelos para que revisemos tu perfil.</string>
     <string name="mydocs_list_title">Tus documentos</string>
-    <string name="mydocs_rules">Los documentos van en PDF. Los revisamos en 24 a 48 horas. Si rechazamos uno, puedes actualizarlo desde la lista.</string>
+    <string name="mydocs_rules">Toca un documento para verlo. Los documentos van en PDF. Los revisamos en 24 a 48 horas. Si rechazamos uno, puedes actualizarlo desde la lista.</string>
     <string name="mydocs_add">Agregar documento</string>
     <string name="mydocs_view">Ver</string>
     <string name="mydocs_update">Actualizar</string>
