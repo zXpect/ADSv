@@ -21,6 +21,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 import com.project.ads.activities.MainActivity;
+import com.project.ads.models.api.DeletedStatus;
+import com.project.ads.providers.AccountProvider;
+import com.project.ads.providers.ApiCallback;
 
 /**
  * Cuenta suspendida (HU-32) o eliminada desde el panel. El backend deshabilita o
@@ -33,6 +36,11 @@ import com.project.ads.activities.MainActivity;
  * abrirla y el listener no lo nota: por eso también se recarga el usuario de Firebase
  * Auth al abrir la app y al volver a ella (USER_NOT_FOUND o USER_DISABLED). El aviso
  * da el correo de soporte y un botón para escribirle.
+ *
+ * Con la app en segundo plano, Firebase puede cerrar la sesión por su cuenta al ver
+ * que el usuario ya no existe, antes de que este vigilante pregunte. Por eso, si la
+ * sesión de una cuenta vigilada se cierra sin pasar por aquí, se consulta
+ * POST /api/accounts/deleted-status/ con su correo y, si la eliminó el panel, se avisa.
  */
 public final class AccountStatusWatcher implements Application.ActivityLifecycleCallbacks {
 
@@ -54,6 +62,8 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
     // Recarga del usuario de Auth como mucho cada 30 s al cambiar de pantalla
     private static final long AUTH_CHECK_INTERVAL_MS = 30_000;
     private long mLastAuthCheck;
+    // Correo de la última cuenta vigilada, para preguntar si la eliminaron al perder la sesión
+    private String mLastEmail;
 
     private AccountStatusWatcher(Context app) {
         mApp = app;
@@ -62,7 +72,11 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
     public static void install(Application app) {
         AccountStatusWatcher watcher = new AccountStatusWatcher(app.getApplicationContext());
         app.registerActivityLifecycleCallbacks(watcher);
-        FirebaseAuth.getInstance().addAuthStateListener(auth -> watcher.watch(auth.getCurrentUser()));
+        FirebaseAuth.getInstance().addAuthStateListener(auth -> {
+            FirebaseUser user = auth.getCurrentUser();
+            if (user == null) watcher.onSessionLost();
+            watcher.watch(user);
+        });
     }
 
     /** Llamar antes de DELETE /api/me/; con false si la eliminación falla. */
@@ -82,6 +96,7 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
         if (uid != null && uid.equals(mWatchedUid) && mRef != null) return;
 
         stop();
+        if (user != null && user.getEmail() != null) mLastEmail = user.getEmail();
         if (uid != null) checkAuthUser(user, true);
         if (uid == null || node == null) return;
         mWatchedUid = uid;
@@ -127,8 +142,9 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
         String uid = user.getUid();
         user.reload().addOnFailureListener(e -> {
             if (!(e instanceof FirebaseAuthInvalidUserException) || sSelfDeletion || mShowing) return;
+            // Firebase pudo cerrar ya la sesión por su cuenta (current == null): se avisa igual
             FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
-            if (current == null || !uid.equals(current.getUid())) return;
+            if (current != null && !uid.equals(current.getUid())) return;
             String code = ((FirebaseAuthInvalidUserException) e).getErrorCode();
             if ("ERROR_USER_NOT_FOUND".equals(code)) {
                 mDeleted = true;
@@ -138,6 +154,31 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
                 return;
             }
             if (mResumed != null) notifySuspended(mResumed);
+        });
+    }
+
+    /**
+     * La sesión se cerró. Si fue un cierre normal, el correo no figura como eliminado
+     * y no pasa nada; si la cuenta la eliminó el panel, se avisa (al volver a la app,
+     * si está en segundo plano).
+     */
+    private void onSessionLost() {
+        String email = mLastEmail;
+        mLastEmail = null;
+        if (email == null || sSelfDeletion || mShowing || mDeleted) return;
+        new AccountProvider().getDeletedStatus(email, new ApiCallback<DeletedStatus>() {
+            @Override
+            public void onSuccess(DeletedStatus status) {
+                if (status == null || !status.isDeleted() || !status.isDeletedByAdmin() || mShowing) return;
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) return; // ya entró con otra cuenta
+                mDeleted = true;
+                if (mResumed != null) notifySuspended(mResumed);
+            }
+
+            @Override
+            public void onError(String message, int httpStatus) {
+                // Sin red o sin backend: el login lo explica si intenta entrar de nuevo
+            }
         });
     }
 
@@ -171,6 +212,7 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
 
     private void signOut(Activity activity, boolean deleted) {
         mShowing = false;
+        mLastEmail = null; // cierre propio: no hace falta preguntar al backend
         mSuspended = false;
         mDeleted = false;
         if (deleted) {
@@ -194,7 +236,7 @@ public final class AccountStatusWatcher implements Application.ActivityLifecycle
         // Eliminada o suspendida con la app cerrada o en segundo plano
         if (user != null && !mShowing) checkAuthUser(user, false);
         // Si la suspensión o la eliminación llegó con la app en segundo plano, se avisa al volver
-        if ((mSuspended || mDeleted) && user != null) notifySuspended(activity);
+        if (mDeleted || (mSuspended && user != null)) notifySuspended(activity);
     }
 
     @Override
