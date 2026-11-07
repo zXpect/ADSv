@@ -79,4 +79,26 @@ public class DocumentOrderHelperTest {
         assertNull(DocumentOrderHelper.findSameName(docs, "carta_pedro.pdf"));
         assertNull(DocumentOrderHelper.findSameName(docs, null));
     }
+
+    private static WorkerDocument typed(String type, int orden) {
+        WorkerDocument d = new WorkerDocument();
+        d.setDocumentType(type);
+        d.setOrden(orden);
+        return d;
+    }
+
+    @Test
+    public void sortByGroupPutsRequirementsInOrder() {
+        WorkerDocument letter2 = typed(WorkerDocument.TYPE_CARTA_RECOMENDACION, 2);
+        WorkerDocument background = typed(WorkerDocument.TYPE_ANTECEDENTES, 0);
+        WorkerDocument letter1 = typed(WorkerDocument.TYPE_CARTA_RECOMENDACION, 1);
+        WorkerDocument cv = typed(WorkerDocument.TYPE_HOJA_VIDA, 0);
+        List<WorkerDocument> docs = new ArrayList<>(Arrays.asList(letter2, background, letter1, cv));
+
+        DocumentOrderHelper.sortByGroup(docs);
+
+        assertEquals(Arrays.asList(cv, background, letter1, letter2), docs);
+        assertEquals(3, DocumentOrderHelper.expectedFor(DocumentOrderHelper.groupOf(letter1)));
+        assertEquals(1, DocumentOrderHelper.expectedFor(DocumentOrderHelper.groupOf(cv)));
+    }
 }

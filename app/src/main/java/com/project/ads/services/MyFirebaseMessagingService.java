@@ -55,13 +55,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (title != null) {
             // El destino al tocar lo decide NotificationRouter (igual que la pantalla de Notificaciones)
-            PendingIntent intent = NotificationRouter.pendingIntent(this, type, requestId, pqrId, notificationId);
+            PendingIntent intent = isAccountNotice(type)
+                    ? PendingIntent.getActivity(this, type.hashCode(),
+                            new android.content.Intent(this, com.project.ads.activities.MainActivity.class)
+                                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                                            | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK),
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE)
+                    : NotificationRouter.pendingIntent(this, type, requestId, pqrId, notificationId);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 showNotificationApiOreo(title, body, requestId, intent);
             } else {
                 showNotification(title, body, requestId, intent);
             }
         }
+    }
+
+    /** Cuenta eliminada o suspendida desde el panel: al abrir la app, AccountStatusWatcher lo explica. */
+    private static boolean isAccountNotice(String type) {
+        return "account_deleted".equals(type) || "account_suspended".equals(type);
     }
 
     private void showNotification(String title, String body, String requestId, PendingIntent intent) {

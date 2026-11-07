@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.ads.R;
+import com.project.ads.helpers.DocumentOrderHelper;
 import com.project.ads.models.WorkerDocument;
 
 import java.util.ArrayList;
@@ -76,16 +77,25 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
     public void onBindViewHolder(@NonNull DocumentViewHolder holder, int position) {
         WorkerDocument document = documents.get(position);
 
+        // Encabezado del requisito en el primer documento de cada grupo
+        int group = DocumentOrderHelper.groupOf(document);
+        boolean first = position == 0 || DocumentOrderHelper.groupOf(documents.get(position - 1)) != group;
+        holder.layoutSection.setVisibility(first ? View.VISIBLE : View.GONE);
+        if (first) {
+            holder.tvSection.setText(groupTitle(group, document));
+            int count = 0;
+            for (WorkerDocument d : documents) {
+                if (DocumentOrderHelper.groupOf(d) == group) count++;
+            }
+            int expected = Math.max(count, DocumentOrderHelper.expectedFor(group));
+            holder.tvSectionCount.setText(context.getString(R.string.docs_count, count, expected));
+        }
+
         // Configurar información básica del documento usando métodos del modelo
         holder.tvDocumentType.setText(getDocumentDisplayName(document));
 
-        // Mostrar nombre de archivo solo si está disponible
-        if (document.getFileName() != null && !document.getFileName().isEmpty()) {
-            holder.tvFileName.setVisibility(View.VISIBLE);
-            holder.tvFileName.setText(document.getFileName());
-        } else {
-            holder.tvFileName.setVisibility(View.GONE);
-        }
+        // El nombre interno del archivo no aporta: se identifica por tipo y número
+        holder.tvFileName.setVisibility(View.GONE);
 
         // Configurar fecha de subida usando el método del modelo
         holder.tvUploadDate.setText(context.getString(R.string.mydocs_uploaded, document.getFormattedUploadDate()));
@@ -125,7 +135,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
 
     private void setupApprovedStatus(DocumentViewHolder holder, WorkerDocument document) {
         setChip(holder, R.string.mydocs_chip_approved, R.color.ads_chip_strong_bg, R.color.ads_chip_strong_text);
-        holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.ads_line));
+        setCardStroke(holder, false);
 
         // Mostrar fecha de revisión si está disponible
         if (document.isReviewed()) {
@@ -141,7 +151,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
 
     private void setupRejectedStatus(DocumentViewHolder holder, WorkerDocument document) {
         setChip(holder, R.string.mydocs_chip_rejected, R.color.ads_chip_bg, R.color.ads_chip_text);
-        holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.ads_brand_text));
+        setCardStroke(holder, true);
 
         // Mostrar fecha de revisión
         if (document.isReviewed()) {
@@ -166,11 +176,29 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
 
     private void setupPendingStatus(DocumentViewHolder holder, WorkerDocument document) {
         setChip(holder, R.string.mydocs_chip_pending, R.color.ads_tile, R.color.ads_charcoal);
-        holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.ads_line));
+        setCardStroke(holder, false);
 
         holder.tvReviewDate.setVisibility(View.GONE);
         holder.layoutRejectionReason.setVisibility(View.GONE);
         holder.btnUpdateDocument.setVisibility(View.GONE);
+    }
+
+    /** Rechazado: borde naranja más grueso para que se vea qué corregir. */
+    private void setCardStroke(DocumentViewHolder holder, boolean highlight) {
+        holder.cardView.setStrokeColor(ContextCompat.getColor(context,
+                highlight ? R.color.ads_brand : R.color.ads_card_edge));
+        holder.cardView.setStrokeWidth(context.getResources().getDimensionPixelSize(
+                highlight ? R.dimen.stroke_focus : R.dimen.stroke_line));
+    }
+
+    private String groupTitle(int group, WorkerDocument document) {
+        switch (group) {
+            case DocumentOrderHelper.GROUP_CV: return context.getString(R.string.mydocs_group_cv);
+            case DocumentOrderHelper.GROUP_BACKGROUND: return context.getString(R.string.mydocs_group_background);
+            case DocumentOrderHelper.GROUP_LETTERS: return context.getString(R.string.mydocs_group_letters);
+            case DocumentOrderHelper.GROUP_TITLES: return context.getString(R.string.mydocs_group_titles);
+            default: return document.getFormattedDocumentType();
+        }
     }
 
     /** Chip de estado con texto (nunca solo color). */
@@ -240,6 +268,9 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
         LinearLayout layoutActions;
         Button btnViewDocument;
         Button btnUpdateDocument;
+        View layoutSection;
+        TextView tvSection;
+        TextView tvSectionCount;
 
         public DocumentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -256,6 +287,9 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
             layoutActions = itemView.findViewById(R.id.layoutActions);
             btnViewDocument = itemView.findViewById(R.id.btnViewDocument);
             btnUpdateDocument = itemView.findViewById(R.id.btnUpdateDocument);
+            layoutSection = itemView.findViewById(R.id.layoutSection);
+            tvSection = itemView.findViewById(R.id.tvSection);
+            tvSectionCount = itemView.findViewById(R.id.tvSectionCount);
         }
     }
 }

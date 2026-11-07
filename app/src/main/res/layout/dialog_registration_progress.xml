@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ventana de carga del registro del trabajador: crear la cuenta, subir los
+     documentos y enviarlos a revisión. Mientras está abierta no se puede tocar
+     la pantalla de atrás. La maneja helpers/RegistrationProgressDialog. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/space_6">
+
+    <TextView
+        android:id="@+id/tv_regprog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:accessibilityHeading="true"
+        android:text="@string/regprog_title"
+        android:textAppearance="@style/TextAppearance.ADS.Title" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_1"
+        android:text="@string/regprog_message"
+        android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+        android:textColor="@color/ads_muted" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_5"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="24dp"
+            android:layout_height="24dp">
+
+            <ProgressBar
+                android:id="@+id/pb_step1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/ads_brand" />
+
+            <ImageView
+                android:id="@+id/iv_step1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_check_circle"
+                android:visibility="gone"
+                app:tint="@color/ads_brand_text" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_step1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_3"
+            android:layout_weight="1"
+            android:text="@string/regprog_step_account"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_step2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_4"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="24dp"
+            android:layout_height="24dp">
+
+            <ProgressBar
+                android:id="@+id/pb_step2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/ads_brand"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_step2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:src="@drawable/bg_ads_step_pending" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_step2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_3"
+            android:layout_weight="1"
+            android:text="@string/regprog_step_docs"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+            android:textColor="@color/ads_muted" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_documents"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="@dimen/space_2"
+        android:max="100"
+        android:progress="0"
+        android:progressBackgroundTint="@color/ads_card_edge"
+        android:progressTint="@color/ads_brand"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/layout_step3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_4"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="24dp"
+            android:layout_height="24dp">
+
+            <ProgressBar
+                android:id="@+id/pb_step3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/ads_brand"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_step3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:src="@drawable/bg_ads_step_pending" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_step3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_3"
+            android:layout_weight="1"
+            android:text="@string/regprog_step_review"
+            android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+            android:textColor="@color/ads_muted" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_regprog_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_5"
+        android:textAppearance="@style/TextAppearance.ADS.Caption"
+        android:visibility="gone" />
+</LinearLayout>
