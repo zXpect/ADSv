@@ -33,7 +33,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.ads.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class DocumentStatusActivity extends AppCompatActivity {
@@ -219,12 +218,8 @@ public class DocumentStatusActivity extends AppCompatActivity {
 
                             DocumentOrderHelper.renumber(documentsList);
 
-                            // Ordenar documentos por fecha de subida (más recientes primero)
-                            Collections.sort(documentsList, (d1, d2) -> {
-                                Long t1 = d1.getUploadedAt() != 0 ? d1.getUploadedAt() : 0L;
-                                Long t2 = d2.getUploadedAt() != 0 ? d2.getUploadedAt() : 0L;
-                                return t2.compareTo(t1);
-                            });
+                            // Agrupados por requisito: hoja de vida, antecedentes, cartas y títulos
+                            DocumentOrderHelper.sortByGroup(documentsList);
                         }
 
                         currentDocuments.clear();
@@ -258,12 +253,17 @@ public class DocumentStatusActivity extends AppCompatActivity {
             }
         }
 
+        updateMissing(documentsList);
+
         if (documentsList.isEmpty()) {
             cardVerificationStatus.setVisibility(View.GONE);
             return;
         }
 
         cardVerificationStatus.setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.tvCountApproved)).setText(String.valueOf(approved));
+        ((TextView) findViewById(R.id.tvCountPending)).setText(String.valueOf(pending));
+        ((TextView) findViewById(R.id.tvCountRejected)).setText(String.valueOf(rejected));
 
         if (rejected > 0) {
             ivStatusIcon.setImageResource(R.drawable.ic_ads_verify_rejected);
@@ -278,6 +278,38 @@ public class DocumentStatusActivity extends AppCompatActivity {
             tvVerificationStatus.setText(R.string.mydocs_status_approved);
             tvVerificationMessage.setText(R.string.mydocs_status_approved_message);
         }
+    }
+
+    /** "Te falta: ..." con los requisitos obligatorios sin cumplir (3 cartas o al menos 1 título). */
+    private void updateMissing(List<WorkerDocument> documentsList) {
+        int cv = 0, background = 0, letters = 0, titles = 0;
+        for (WorkerDocument doc : documentsList) {
+            switch (DocumentOrderHelper.groupOf(doc)) {
+                case DocumentOrderHelper.GROUP_CV: cv++; break;
+                case DocumentOrderHelper.GROUP_BACKGROUND: background++; break;
+                case DocumentOrderHelper.GROUP_LETTERS: letters++; break;
+                case DocumentOrderHelper.GROUP_TITLES: titles++; break;
+                default: break;
+            }
+        }
+        List<String> parts = new ArrayList<>();
+        if (cv == 0) parts.add(getString(R.string.docs_missing_cv));
+        if (background == 0) parts.add(getString(R.string.docs_missing_background));
+        if (titles == 0 && letters < 3) {
+            int left = 3 - letters;
+            parts.add(left == 1 ? getString(R.string.docs_missing_one_letter)
+                    : getString(R.string.docs_missing_letters, left));
+        }
+        TextView tvMissing = findViewById(R.id.tvMissing);
+        if (parts.isEmpty() || documentsList.isEmpty()) {
+            tvMissing.setVisibility(View.GONE);
+            return;
+        }
+        String text = parts.size() == 1 ? parts.get(0)
+                : android.text.TextUtils.join(", ", parts.subList(0, parts.size() - 1))
+                + getString(R.string.docs_missing_and) + parts.get(parts.size() - 1);
+        tvMissing.setText(getString(R.string.docs_missing, text));
+        tvMissing.setVisibility(View.VISIBLE);
     }
 
     private void updateUI(List<WorkerDocument> documentsList) {

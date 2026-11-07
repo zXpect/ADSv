@@ -16,6 +16,38 @@ public final class DocumentOrderHelper {
     private DocumentOrderHelper() {
     }
 
+    /** Grupos de Mis documentos, en el orden en que se muestran. */
+    public static final int GROUP_CV = 0;
+    public static final int GROUP_BACKGROUND = 1;
+    public static final int GROUP_LETTERS = 2;
+    public static final int GROUP_TITLES = 3;
+    public static final int GROUP_OTHER = 4;
+
+    /** Requisito al que pertenece el documento. */
+    public static int groupOf(WorkerDocument doc) {
+        if (doc.isHojaVida()) return GROUP_CV;
+        if (doc.isAntecedentes()) return GROUP_BACKGROUND;
+        if (doc.isCartaRecomendacion()) return GROUP_LETTERS;
+        if (doc.isTitulo()) return GROUP_TITLES;
+        return GROUP_OTHER;
+    }
+
+    /** Cantidad que pide cada requisito: 1 hoja de vida, 1 antecedentes, 3 cartas, hasta 3 títulos. */
+    public static int expectedFor(int group) {
+        return group == GROUP_LETTERS || group == GROUP_TITLES ? 3 : 1;
+    }
+
+    /** Ordena por requisito y, dentro de cartas y títulos, por su número. */
+    public static void sortByGroup(List<WorkerDocument> documents) {
+        Collections.sort(documents, (a, b) -> {
+            int ga = groupOf(a);
+            int gb = groupOf(b);
+            if (ga != gb) return Integer.compare(ga, gb);
+            if (a.getOrden() != b.getOrden()) return Integer.compare(a.getOrden(), b.getOrden());
+            return Long.compare(a.getUploadedAt(), b.getUploadedAt());
+        });
+    }
+
     /** Pone a cada carta y a cada título su número (1, 2, 3...) dentro de su subcategoría. */
     public static void renumber(List<WorkerDocument> documents) {
         renumberSubcategory(documents, WorkerDocument.SUBCATEGORY_CARTAS);

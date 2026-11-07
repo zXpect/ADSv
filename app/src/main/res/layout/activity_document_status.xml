@@ -56,15 +56,23 @@
                 android:textAppearance="@style/TextAppearance.ADS.BodySmall" />
             </LinearLayout>
 
-            <!-- Estado de la revisión -->
+            <!-- Estado de la revisión y conteo por estado -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardVerificationStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:visibility="gone"
+                app:cardBackgroundColor="@color/ads_header"
                 app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
                 app:contentPadding="@dimen/space_4">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -98,6 +106,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+                            android:textColor="@color/ads_on_navy"
                             tools:text="Verificación en proceso" />
 
                         <TextView
@@ -106,8 +115,96 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:textAppearance="@style/TextAppearance.ADS.Caption"
+                            android:textColor="@color/ads_on_navy_muted"
                             tools:text="Tienes 2 documentos en revisión." />
                     </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_ads_doc_count"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="@dimen/space_2">
+
+                        <TextView
+                            android:id="@+id/tvCountApproved"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                            android:textColor="@color/ads_on_navy"
+                            tools:text="3" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/mydocs_count_approved"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption"
+                            android:textColor="@color/ads_on_navy_muted" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_ads_doc_count"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="@dimen/space_2">
+
+                        <TextView
+                            android:id="@+id/tvCountPending"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                            android:textColor="@color/ads_on_navy"
+                            tools:text="1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/mydocs_count_pending"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption"
+                            android:textColor="@color/ads_on_navy_muted" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCountRejected"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_ads_doc_count"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="@dimen/space_2">
+
+                        <TextView
+                            android:id="@+id/tvCountRejected"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.ADS.Subtitle"
+                            android:textColor="@color/ads_on_navy"
+                            tools:text="1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/mydocs_count_rejected"
+                            android:textAppearance="@style/TextAppearance.ADS.Caption"
+                            android:textColor="@color/ads_on_navy_muted" />
+                    </LinearLayout>
+                </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -192,14 +289,11 @@
                     android:textAppearance="@style/TextAppearance.ADS.Caption" />
             </LinearLayout>
 
+            <!-- El título de la lista ya no se muestra: cada grupo lleva el suyo -->
             <TextView
                 android:id="@+id/tvDocumentsTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_5"
-                android:accessibilityHeading="true"
-                android:text="@string/mydocs_list_title"
-                android:textAppearance="@style/TextAppearance.ADS.BodySmall.Strong"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -207,6 +301,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false" />
+
+            <!-- Lo que falta para cumplir los requisitos obligatorios -->
+            <TextView
+                android:id="@+id/tvMissing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:background="@drawable/bg_ads_notice"
+                android:padding="12dp"
+                android:textAppearance="@style/TextAppearance.ADS.BodySmall"
+                android:textColor="@color/ads_text"
+                android:visibility="gone"
+                tools:text="Te falta: antecedentes y 2 cartas"
+                tools:visibility="visible" />
 
             <TextView
                 android:layout_width="match_parent"
