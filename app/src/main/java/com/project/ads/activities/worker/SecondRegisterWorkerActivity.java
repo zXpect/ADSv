@@ -3,21 +3,21 @@ package com.project.ads.activities.worker;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.widget.ImageViewCompat;
 
-import com.project.ads.helpers.LoadingDialog;
+import com.project.ads.helpers.RegistrationProgressDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -41,24 +41,29 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Registro de trabajador, paso 3: documentos agrupados por requisito. Al enviar,
+ * una ventana de carga muestra que se crea la cuenta, se suben los documentos y
+ * se envían a revisión, y bloquea la pantalla mientras tanto.
+ */
 public class SecondRegisterWorkerActivity extends AppCompatActivity {
 
     private static final String TAG = "SecondRegisterWorker";
 
     // UI Components
-    private CardView layoutHojaVida, layoutAntecedentes;
     private RadioGroup rgCertificationType;
     private RadioButton rbCartas, rbTitulos;
     private LinearLayout layoutCartasSection, layoutTitulosSection;
 
     // Cartas
-    private CardView layoutCarta1, layoutCarta2, layoutCarta3;
     private Button btnSelectCarta1, btnSelectCarta2, btnSelectCarta3;
     private TextView tvCarta1Status, tvCarta2Status, tvCarta3Status;
     private ImageView ivCarta1Check, ivCarta2Check, ivCarta3Check;
 
     // Títulos
-    private CardView layoutTitulo1, layoutTitulo2, layoutTitulo3;
     private Button btnSelectTitulo1, btnSelectTitulo2, btnSelectTitulo3;
     private TextView tvTitulo1Status, tvTitulo2Status, tvTitulo3Status;
     private ImageView ivTitulo1Check, ivTitulo2Check, ivTitulo3Check;
@@ -67,17 +72,22 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     private Button btnSubmitDocuments, btnSkip;
     private TextView tvHojaVidaStatus, tvAntecedentesStatus;
     private ImageView ivHojaVidaCheck, ivAntecedentesCheck;
-    private ProgressBar progressBar;
-    private TextView tvProgress;
+
+    // Avance de los requisitos
+    private TextView tvRequirements, tvMissing, tvCertLabel, tvCertCount;
+    private View segReq1, segReq2, segReq3;
+    private TextView tvStepHojaVida, tvStepAntecedentes, tvStepCert;
+    private ImageView ivStepHojaVida, ivStepAntecedentes, ivStepCert;
+    private final List<View> slots = new ArrayList<>();
 
     // Providers
     private AuthProvider mAuthProvider;
     private WorkerProvider mWorkerProvider;
     private WorkerDocumentProvider documentProvider;
-    private LoadingDialog mProgressDialog;
+    private RegistrationProgressDialog mProgressDialog;
 
     // Datos del usuario
-    private String name, lastName, email, password, work, phone, workerId; // ⭐ AGREGADO phone
+    private String name, lastName, email, password, work, phone, workerId;
     private java.util.ArrayList<String> categories;   // slugs de los oficios (D16)
     private java.util.ArrayList<String> tasks;        // slugs de las tareas que resuelve (mockup 32)
     private String description;                        // descripción opcional (paso 2)
@@ -90,11 +100,11 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     private Uri hojaVidaUri, antecedentesUri;
     private String hojaVidaFileName, antecedentesFileName;
 
-    // Documentos opcionales - Cartas
+    // Certificaciones - Cartas
     private Uri carta1Uri, carta2Uri, carta3Uri;
     private String carta1FileName, carta2FileName, carta3FileName;
 
-    // Documentos opcionales - Títulos
+    // Certificaciones - Títulos
     private Uri titulo1Uri, titulo2Uri, titulo3Uri;
     private String titulo1FileName, titulo2FileName, titulo3FileName;
 
@@ -127,13 +137,14 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         initializeProviders();
         initializeFilePickers();
         setupListeners();
+        updateRequirements();
     }
 
     private void getIntentData() {
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
         lastName = intent.getStringExtra("lastName");
-        phone = intent.getStringExtra("phone"); // ⭐ NUEVO
+        phone = intent.getStringExtra("phone");
         email = intent.getStringExtra("email");
         password = intent.getStringExtra("password");
         work = intent.getStringExtra("work");
@@ -151,7 +162,6 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
             String imageUriString = intent.getStringExtra("imageUri");
             if (imageUriString != null) {
                 profileImageUri = Uri.parse(imageUriString);
-                Log.d(TAG, "Imagen de perfil recibida: " + imageUriString);
             }
         }
 
@@ -168,11 +178,6 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        // Layouts obligatorios
-        layoutHojaVida = findViewById(R.id.layoutHojaVida);
-        layoutAntecedentes = findViewById(R.id.layoutAntecedentes);
-
-        // Radio buttons para selección
         rgCertificationType = findViewById(R.id.rgCertificationType);
         rbCartas = findViewById(R.id.rbCartas);
         rbTitulos = findViewById(R.id.rbTitulos);
@@ -181,9 +186,6 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         layoutTitulosSection = findViewById(R.id.layoutTitulosSection);
 
         // Cartas
-        layoutCarta1 = findViewById(R.id.layoutCarta1);
-        layoutCarta2 = findViewById(R.id.layoutCarta2);
-        layoutCarta3 = findViewById(R.id.layoutCarta3);
         btnSelectCarta1 = findViewById(R.id.btnSelectCarta1);
         btnSelectCarta2 = findViewById(R.id.btnSelectCarta2);
         btnSelectCarta3 = findViewById(R.id.btnSelectCarta3);
@@ -195,9 +197,6 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         ivCarta3Check = findViewById(R.id.ivCarta3Check);
 
         // Títulos
-        layoutTitulo1 = findViewById(R.id.layoutTitulo1);
-        layoutTitulo2 = findViewById(R.id.layoutTitulo2);
-        layoutTitulo3 = findViewById(R.id.layoutTitulo3);
         btnSelectTitulo1 = findViewById(R.id.btnSelectTitulo1);
         btnSelectTitulo2 = findViewById(R.id.btnSelectTitulo2);
         btnSelectTitulo3 = findViewById(R.id.btnSelectTitulo3);
@@ -208,23 +207,32 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         ivTitulo2Check = findViewById(R.id.ivTitulo2Check);
         ivTitulo3Check = findViewById(R.id.ivTitulo3Check);
 
-        // Buttons obligatorios
+        // Obligatorios
         btnSelectHojaVida = findViewById(R.id.btnSelectHojaVida);
         btnSelectAntecedentes = findViewById(R.id.btnSelectAntecedentes);
         btnSubmitDocuments = findViewById(R.id.btnSubmitDocuments);
         btnSkip = findViewById(R.id.btnSkip);
-
-        // Status
         tvHojaVidaStatus = findViewById(R.id.tvHojaVidaStatus);
         tvAntecedentesStatus = findViewById(R.id.tvAntecedentesStatus);
         ivHojaVidaCheck = findViewById(R.id.ivHojaVidaCheck);
         ivAntecedentesCheck = findViewById(R.id.ivAntecedentesCheck);
 
-        // Progress
-        progressBar = findViewById(R.id.progressBar);
-        tvProgress = findViewById(R.id.tvProgress);
+        // Avance
+        tvRequirements = findViewById(R.id.tvRequirements);
+        tvMissing = findViewById(R.id.tvMissing);
+        tvCertLabel = findViewById(R.id.tvCertLabel);
+        tvCertCount = findViewById(R.id.tvCertCount);
+        segReq1 = findViewById(R.id.segReq1);
+        segReq2 = findViewById(R.id.segReq2);
+        segReq3 = findViewById(R.id.segReq3);
+        tvStepHojaVida = findViewById(R.id.tvStepHojaVida);
+        tvStepAntecedentes = findViewById(R.id.tvStepAntecedentes);
+        tvStepCert = findViewById(R.id.tvStepCert);
+        ivStepHojaVida = findViewById(R.id.ivStepHojaVida);
+        ivStepAntecedentes = findViewById(R.id.ivStepAntecedentes);
+        ivStepCert = findViewById(R.id.ivStepCert);
 
-        mProgressDialog = new LoadingDialog(this);
+        mProgressDialog = new RegistrationProgressDialog(this);
 
         // Mostrar cartas por defecto
         layoutCartasSection.setVisibility(View.VISIBLE);
@@ -245,7 +253,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null && !isRepeatedFile(uri, hojaVidaUri)) {
                         hojaVidaUri = uri;
                         hojaVidaFileName = "hoja_vida_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvHojaVidaStatus, ivHojaVidaCheck, getString(R.string.docs_selected), true);
+                        markSlotFilled(tvHojaVidaStatus, ivHojaVidaCheck, btnSelectHojaVida, uri);
                         checkSubmitButton();
                     }
                 }
@@ -257,7 +265,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null && !isRepeatedFile(uri, antecedentesUri)) {
                         antecedentesUri = uri;
                         antecedentesFileName = "antecedentes_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvAntecedentesStatus, ivAntecedentesCheck, getString(R.string.docs_selected), true);
+                        markSlotFilled(tvAntecedentesStatus, ivAntecedentesCheck, btnSelectAntecedentes, uri);
                         checkSubmitButton();
                     }
                 }
@@ -270,7 +278,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null && !isRepeatedFile(uri, carta1Uri)) {
                         carta1Uri = uri;
                         carta1FileName = "carta_recomendacion_1_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvCarta1Status, ivCarta1Check, getString(R.string.docs_selected), true);
+                        markSlotFilled(tvCarta1Status, ivCarta1Check, btnSelectCarta1, uri);
                         checkSubmitButton();
                     }
                 }
@@ -282,7 +290,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null && !isRepeatedFile(uri, carta2Uri)) {
                         carta2Uri = uri;
                         carta2FileName = "carta_recomendacion_2_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvCarta2Status, ivCarta2Check, getString(R.string.docs_selected), true);
+                        markSlotFilled(tvCarta2Status, ivCarta2Check, btnSelectCarta2, uri);
                         checkSubmitButton();
                     }
                 }
@@ -294,7 +302,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null && !isRepeatedFile(uri, carta3Uri)) {
                         carta3Uri = uri;
                         carta3FileName = "carta_recomendacion_3_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvCarta3Status, ivCarta3Check, getString(R.string.docs_selected), true);
+                        markSlotFilled(tvCarta3Status, ivCarta3Check, btnSelectCarta3, uri);
                         checkSubmitButton();
                     }
                 }
@@ -307,7 +315,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null && !isRepeatedFile(uri, titulo1Uri)) {
                         titulo1Uri = uri;
                         titulo1FileName = "titulo_certificado_1_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvTitulo1Status, ivTitulo1Check, getString(R.string.docs_selected), true);
+                        markSlotFilled(tvTitulo1Status, ivTitulo1Check, btnSelectTitulo1, uri);
                         checkSubmitButton();
                     }
                 }
@@ -319,7 +327,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null && !isRepeatedFile(uri, titulo2Uri)) {
                         titulo2Uri = uri;
                         titulo2FileName = "titulo_certificado_2_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvTitulo2Status, ivTitulo2Check, getString(R.string.docs_selected), true);
+                        markSlotFilled(tvTitulo2Status, ivTitulo2Check, btnSelectTitulo2, uri);
                         checkSubmitButton();
                     }
                 }
@@ -331,7 +339,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     if (uri != null && !isRepeatedFile(uri, titulo3Uri)) {
                         titulo3Uri = uri;
                         titulo3FileName = "titulo_certificado_3_" + System.currentTimeMillis() + ".pdf";
-                        updateDocumentStatus(tvTitulo3Status, ivTitulo3Check, getString(R.string.docs_selected), true);
+                        markSlotFilled(tvTitulo3Status, ivTitulo3Check, btnSelectTitulo3, uri);
                         checkSubmitButton();
                     }
                 }
@@ -342,9 +350,9 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     private boolean isRepeatedFile(Uri uri, Uri currentSlot) {
         String hash = FileHashHelper.sha256(getContentResolver(), uri);
         String name = FileHashHelper.displayName(getContentResolver(), uri);
-        Uri[] slots = {hojaVidaUri, antecedentesUri, carta1Uri, carta2Uri, carta3Uri,
+        Uri[] others = {hojaVidaUri, antecedentesUri, carta1Uri, carta2Uri, carta3Uri,
                 titulo1Uri, titulo2Uri, titulo3Uri};
-        for (Uri other : slots) {
+        for (Uri other : others) {
             if (other == null || other == currentSlot) {
                 continue;
             }
@@ -362,21 +370,17 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Obligatorios
-        btnSelectHojaVida.setOnClickListener(v -> hojaVidaLauncher.launch("application/pdf"));
-        btnSelectAntecedentes.setOnClickListener(v -> antecedentesLauncher.launch("application/pdf"));
+        // Cada casilla se toca entera para elegir el PDF; "Cambiar" hace lo mismo
+        bindSlot(btnSelectHojaVida, hojaVidaLauncher);
+        bindSlot(btnSelectAntecedentes, antecedentesLauncher);
+        bindSlot(btnSelectCarta1, carta1Launcher);
+        bindSlot(btnSelectCarta2, carta2Launcher);
+        bindSlot(btnSelectCarta3, carta3Launcher);
+        bindSlot(btnSelectTitulo1, titulo1Launcher);
+        bindSlot(btnSelectTitulo2, titulo2Launcher);
+        bindSlot(btnSelectTitulo3, titulo3Launcher);
 
-        // Cartas
-        btnSelectCarta1.setOnClickListener(v -> carta1Launcher.launch("application/pdf"));
-        btnSelectCarta2.setOnClickListener(v -> carta2Launcher.launch("application/pdf"));
-        btnSelectCarta3.setOnClickListener(v -> carta3Launcher.launch("application/pdf"));
-
-        // Títulos
-        btnSelectTitulo1.setOnClickListener(v -> titulo1Launcher.launch("application/pdf"));
-        btnSelectTitulo2.setOnClickListener(v -> titulo2Launcher.launch("application/pdf"));
-        btnSelectTitulo3.setOnClickListener(v -> titulo3Launcher.launch("application/pdf"));
-
-        // Radio Group para cambiar entre cartas y títulos
+        // Control segmentado: cartas o títulos
         rgCertificationType.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rbCartas) {
                 selectedCertificationType = "cartas";
@@ -400,6 +404,16 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     .setNegativeButton("Cancelar", null)
                     .show();
         });
+    }
+
+    private void bindSlot(Button button, ActivityResultLauncher<String> launcher) {
+        View slot = (View) button.getParent();
+        slots.add(slot);
+        View.OnClickListener pick = v -> {
+            if (!isUploading) launcher.launch("application/pdf");
+        };
+        slot.setOnClickListener(pick);
+        button.setOnClickListener(pick);
     }
 
     private void showConfirmationDialog() {
@@ -428,9 +442,9 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
 
         if (selectedCertificationType.equals("cartas")) {
             if (certCount >= 3) {
-                message += "¡Excelente! Has completado los 3 " + certType + " requeridos.";
+                message += "Has completado las 3 " + certType + " requeridas.";
             } else if (certCount > 0) {
-                message += "Has seleccionado " + certCount + " " + certType + ". Recuerda que se requieren al menos 3.";
+                message += "Has seleccionado " + certCount + " " + certType + ". Recuerda que se requieren 3.";
             }
         } else {
             if (certCount >= 1) {
@@ -438,6 +452,11 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
             } else {
                 message += "Debes seleccionar al menos 1 " + certType + ".";
             }
+        }
+
+        String missing = missingText();
+        if (missing != null) {
+            message += "\n\n" + getString(R.string.docs_missing, missing) + ".";
         }
 
         new MaterialAlertDialogBuilder(this)
@@ -456,8 +475,17 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         return worker;
     }
 
+    /** Abre la ventana de carga desde el primer paso, con o sin documentos. */
+    private void showProgress() {
+        mProgressDialog.setWithDocuments(hasDocumentsToUpload());
+        mProgressDialog.setStep(RegistrationProgressDialog.STEP_ACCOUNT);
+        mProgressDialog.show();
+    }
+
     private void startRegistrationProcess() {
         if (isUploading) return;
+        setUIUploading(true);
+        showProgress();
 
         // Si viene de Google Sign-In, NO crear cuenta nueva
         if (isFromGoogleSignIn) {
@@ -465,11 +493,6 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
             Worker worker = newWorker();
             createWorkerInDatabase(worker);
         } else {
-            // Registro normal con email y contraseña
-            mProgressDialog.setMessage("Creando cuenta...");
-            mProgressDialog.setCanceledOnTouchOutside(false);
-            mProgressDialog.show();
-
             mAuthProvider.register(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -478,8 +501,7 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                         Worker worker = newWorker();
                         createWorkerInDatabase(worker);
                     } else {
-                        mProgressDialog.dismiss();
-                        showMessage("Error al crear cuenta: " + task.getException().getMessage());
+                        onRegistrationFailed("Error al crear cuenta: " + task.getException().getMessage());
                     }
                 }
             });
@@ -487,53 +509,30 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     }
 
     private void createWorkerInDatabase(Worker worker) {
-        if (isFromGoogleSignIn) {
-            mProgressDialog.setMessage("Guardando información...");
-            mProgressDialog.setCanceledOnTouchOutside(false);
-            mProgressDialog.show();
-        } else {
-            mProgressDialog.setMessage("Guardando información...");
-        }
-
-        // ===== SI HAY IMAGEN, SUBIRLA PRIMERO =====
         if (hasProfileImage && profileImageUri != null) {
             uploadProfileImageAndCreateWorker(worker);
         } else {
-            // Si no hay imagen, crear worker sin imagen
             saveWorkerToDatabase(worker, null);
         }
     }
 
     private void uploadProfileImageAndCreateWorker(Worker worker) {
-        mProgressDialog.setMessage("Subiendo foto de perfil...");
-
-        // Crear referencia única para la imagen
         String imageName = "profile_" + workerId + "_" + System.currentTimeMillis() + ".jpg";
         StorageReference imageRef = mStorageReference.child("worker_profiles").child(imageName);
 
-        // Subir imagen
         UploadTask uploadTask = imageRef.putFile(profileImageUri);
 
         uploadTask.addOnSuccessListener(taskSnapshot -> {
-            // Obtener URL de descarga
             imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                String imageUrl = downloadUri.toString();
-                Log.d(TAG, "Imagen subida exitosamente: " + imageUrl);
-
-                // Guardar worker con URL de imagen
-                saveWorkerToDatabase(worker, imageUrl);
-
+                saveWorkerToDatabase(worker, downloadUri.toString());
             }).addOnFailureListener(e -> {
                 Log.e(TAG, "Error al obtener URL de imagen", e);
-                mProgressDialog.dismiss();
-                showMessage("Error al obtener URL de imagen: " + e.getMessage());
+                onRegistrationFailed("Error al obtener URL de imagen: " + e.getMessage());
             });
 
         }).addOnFailureListener(e -> {
             Log.e(TAG, "Error al subir imagen", e);
-            mProgressDialog.dismiss();
             showMessage("Error al subir imagen. Se creará el perfil sin foto.");
-
             // Crear worker sin imagen si falla la subida
             saveWorkerToDatabase(worker, null);
         }).addOnProgressListener(snapshot -> {
@@ -543,46 +542,48 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
     }
 
     private void saveWorkerToDatabase(Worker worker, String imageUrl) {
-        mProgressDialog.setMessage("Guardando información...");
+        mProgressDialog.setMessage(null);
 
-        // Si hay URL de imagen, agregarla al worker
         if (imageUrl != null && !imageUrl.isEmpty()) {
             worker.setImage(imageUrl);
-            Log.d(TAG, "Worker con imagen: " + imageUrl);
         } else {
             worker.setImage("default");
-            Log.d(TAG, "Worker sin imagen");
         }
 
-        // ⭐ ASEGURAR QUE EL TELÉFONO SE GUARDE CORRECTAMENTE
         if (phone != null && !phone.isEmpty()) {
             worker.setPhone(phone);
-            Log.d(TAG, "Worker con teléfono registrado");
         }
 
         worker.setConsentAcceptedAt(getIntent().getLongExtra(ConsentHelper.EXTRA_ACCEPTED_AT, 0));
 
         mWorkerProvider.create(worker).addOnCompleteListener(task -> {
-            mProgressDialog.dismiss();
-
             if (task.isSuccessful()) {
                 isRegistered = true;
-                Toast.makeText(SecondRegisterWorkerActivity.this,
-                        "Cuenta creada exitosamente", Toast.LENGTH_SHORT).show();
-
                 if (hasDocumentsToUpload()) {
+                    // La ventana sigue abierta: ahora sube los documentos
                     startUploadProcess();
                 } else {
+                    mProgressDialog.dismiss();
+                    setUIUploading(false);
+                    Toast.makeText(SecondRegisterWorkerActivity.this,
+                            "Cuenta creada", Toast.LENGTH_SHORT).show();
                     finishRegistration();
                 }
             } else {
-                showMessage("Error al guardar datos: " + task.getException().getMessage());
+                onRegistrationFailed("Error al guardar datos: " + task.getException().getMessage());
                 // Solo eliminar cuenta de Auth si NO viene de Google
                 if (!isFromGoogleSignIn && FirebaseAuth.getInstance().getCurrentUser() != null) {
                     FirebaseAuth.getInstance().getCurrentUser().delete();
                 }
             }
         });
+    }
+
+    private void onRegistrationFailed(String message) {
+        mProgressDialog.dismiss();
+        isUploading = false;
+        setUIUploading(false);
+        showMessage(message);
     }
 
     private boolean hasDocumentsToUpload() {
@@ -598,9 +599,9 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         uploadedCount = 0;
 
         setUIUploading(true);
-        updateProgress(0);
+        mProgressDialog.setStep(RegistrationProgressDialog.STEP_DOCUMENTS);
+        mProgressDialog.setDocuments(0, totalDocuments);
 
-        // Upload obligatorios
         if (hojaVidaUri != null) {
             uploadDocument(WorkerDocument.TYPE_HOJA_VIDA, WorkerDocument.CATEGORY_HOJA_VIDA,
                     null, hojaVidaUri, hojaVidaFileName, 0, "Hoja de Vida");
@@ -611,7 +612,6 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
                     null, antecedentesUri, antecedentesFileName, 0, "Antecedentes Judiciales");
         }
 
-        // Upload según tipo seleccionado
         if (selectedCertificationType.equals("cartas")) {
             if (carta1Uri != null) {
                 uploadDocument(WorkerDocument.TYPE_CARTA_RECOMENDACION, WorkerDocument.CATEGORY_CERTIFICACIONES,
@@ -660,35 +660,38 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
 
         documentProvider.uploadDocument(document, fileUri)
                 .addOnSuccessListener(aVoid -> {
+                    if (!isUploading) return; // otra subida ya falló
                     uploadedCount++;
-                    updateProgress(uploadedCount);
+                    mProgressDialog.setDocuments(uploadedCount, totalDocuments);
 
                     if (uploadedCount == totalDocuments) {
                         onAllDocumentsUploaded();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    setUIUploading(false);
-                    isUploading = false;
-                    showMessage("Error al subir " + description + ": " + e.getMessage());
+                    if (!isUploading) return;
+                    onRegistrationFailed("Error al subir " + description + ": " + e.getMessage());
                 });
     }
 
     private void onAllDocumentsUploaded() {
         isUploading = false;
+        mProgressDialog.setStep(RegistrationProgressDialog.STEP_REVIEW);
 
         documentProvider.updateWorkerVerificationStatus(workerId, "documents_submitted")
                 .addOnSuccessListener(aVoid -> {
+                    mProgressDialog.dismiss();
                     setUIUploading(false);
 
                     new MaterialAlertDialogBuilder(this)
-                            .setTitle("¡Registro completado!")
-                            .setMessage("Tu cuenta ha sido creada y tus documentos han sido enviados exitosamente. Serán revisados por nuestro equipo.")
+                            .setTitle("Registro completado")
+                            .setMessage("Tu cuenta quedó creada y tus documentos se enviaron. Los revisamos en 24 a 48 horas.")
                             .setPositiveButton("Continuar", (dialog, which) -> finishRegistration())
                             .setCancelable(false)
                             .show();
                 })
                 .addOnFailureListener(e -> {
+                    mProgressDialog.dismiss();
                     setUIUploading(false);
                     showMessage("Documentos subidos pero hubo un error actualizando el estado");
                     finishRegistration();
@@ -701,41 +704,32 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
             return;
         }
 
+        // Sin documentos: la ventana solo muestra "Crear tu cuenta"
+        mProgressDialog.setWithDocuments(false);
+        mProgressDialog.setStep(RegistrationProgressDialog.STEP_ACCOUNT);
+        mProgressDialog.show();
+        setUIUploading(true);
+
         if (isFromGoogleSignIn) {
             workerId = googleUserId;
             Worker worker = newWorker();
-
-            mProgressDialog.setMessage("Guardando información...");
-            mProgressDialog.setCanceledOnTouchOutside(false);
-            mProgressDialog.show();
-
-            // ===== CAMBIAR PARA MANEJAR IMAGEN =====
             if (hasProfileImage && profileImageUri != null) {
                 uploadProfileImageAndCreateWorker(worker);
             } else {
                 saveWorkerToDatabase(worker, null);
             }
-
         } else {
-            // Registro normal
-            mProgressDialog.setMessage("Creando cuenta...");
-            mProgressDialog.setCanceledOnTouchOutside(false);
-            mProgressDialog.show();
-
             mAuthProvider.register(email, password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     workerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     Worker worker = newWorker();
-
-                    // ===== CAMBIAR PARA MANEJAR IMAGEN =====
                     if (hasProfileImage && profileImageUri != null) {
                         uploadProfileImageAndCreateWorker(worker);
                     } else {
                         saveWorkerToDatabase(worker, null);
                     }
                 } else {
-                    mProgressDialog.dismiss();
-                    showMessage("Error al crear cuenta: " + task.getException().getMessage());
+                    onRegistrationFailed("Error al crear cuenta: " + task.getException().getMessage());
                 }
             });
         }
@@ -750,33 +744,25 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         finish();
     }
 
-    private void updateProgress(int uploaded) {
-        int percentage = (int) ((uploaded / (float) totalDocuments) * 100);
-        progressBar.setProgress(percentage);
-        tvProgress.setText(uploaded + " de " + totalDocuments + " documentos subidos");
-    }
+    /** Casilla con archivo: fondo lleno, nombre del PDF, visto y "Cambiar". */
+    private void markSlotFilled(TextView statusView, ImageView checkView, Button changeButton, Uri uri) {
+        String fileName = FileHashHelper.displayName(getContentResolver(), uri);
+        statusView.setText(fileName != null ? fileName : getString(R.string.docs_selected));
+        statusView.setTextAppearance(R.style.TextAppearance_ADS_BodySmall);
+        statusView.setTextColor(ContextCompat.getColor(this, R.color.ads_text));
+        checkView.setVisibility(View.VISIBLE);
+        changeButton.setVisibility(View.VISIBLE);
 
-    private void updateDocumentStatus(TextView statusView, ImageView checkView, String status, boolean selected) {
-        statusView.setText(status);
-        checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
-        // Fila con archivo: borde naranja oscuro y ficha naranja clara (mockup 33)
-        View parent = (View) statusView.getParent();
-        while (parent != null && !(parent instanceof com.google.android.material.card.MaterialCardView)) {
-            parent = parent.getParent() instanceof View ? (View) parent.getParent() : null;
-        }
-        if (parent != null) {
-            com.google.android.material.card.MaterialCardView card = (com.google.android.material.card.MaterialCardView) parent;
-            card.setStrokeColor(ContextCompat.getColor(this, selected ? R.color.ads_brand_text : R.color.ads_line));
-            card.setStrokeWidth(getResources().getDimensionPixelSize(selected ? R.dimen.stroke_focus : R.dimen.stroke_control));
-            View tile = ((android.view.ViewGroup) ((android.view.ViewGroup) card.getChildAt(0))).getChildAt(0);
-            androidx.core.view.ViewCompat.setBackgroundTintList(tile, selected
-                    ? android.content.res.ColorStateList.valueOf(ContextCompat.getColor(this, R.color.ads_chip_bg)) : null);
-        }
+        View slot = (View) statusView.getParent();
+        slot.setBackgroundResource(R.drawable.bg_ads_doc_slot_filled);
+        ImageView icon = (ImageView) ((LinearLayout) slot).getChildAt(0);
+        icon.setImageResource(R.drawable.ic_document);
+        ImageViewCompat.setImageTintList(icon, ContextCompat.getColorStateList(this, R.color.ads_text));
     }
 
     private void checkSubmitButton() {
         boolean hasObligatorios = hojaVidaUri != null || antecedentesUri != null;
-        boolean hasCertificaciones = false;
+        boolean hasCertificaciones;
 
         if (selectedCertificationType.equals("cartas")) {
             hasCertificaciones = carta1Uri != null || carta2Uri != null || carta3Uri != null;
@@ -785,9 +771,82 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         }
 
         btnSubmitDocuments.setEnabled((hasObligatorios || hasCertificaciones) && !isUploading);
+        updateRequirements();
     }
 
+    private int letterCount() {
+        return (carta1Uri != null ? 1 : 0) + (carta2Uri != null ? 1 : 0) + (carta3Uri != null ? 1 : 0);
+    }
+
+    private int titleCount() {
+        return (titulo1Uri != null ? 1 : 0) + (titulo2Uri != null ? 1 : 0) + (titulo3Uri != null ? 1 : 0);
+    }
+
+    private boolean certificationsReady() {
+        return selectedCertificationType.equals("cartas") ? letterCount() >= 3 : titleCount() >= 1;
+    }
+
+    /** "hoja de vida, antecedentes y 2 cartas", o null si no falta nada. */
+    private String missingText() {
+        List<String> parts = new ArrayList<>();
+        if (hojaVidaUri == null) parts.add(getString(R.string.docs_missing_cv));
+        if (antecedentesUri == null) parts.add(getString(R.string.docs_missing_background));
+        if (selectedCertificationType.equals("cartas")) {
+            int left = 3 - letterCount();
+            if (left == 1) parts.add(getString(R.string.docs_missing_one_letter));
+            else if (left > 1) parts.add(getString(R.string.docs_missing_letters, left));
+        } else if (titleCount() == 0) {
+            parts.add(getString(R.string.docs_missing_title));
+        }
+        if (parts.isEmpty()) return null;
+        if (parts.size() == 1) return parts.get(0);
+        String head = android.text.TextUtils.join(", ", parts.subList(0, parts.size() - 1));
+        return head + getString(R.string.docs_missing_and) + parts.get(parts.size() - 1);
+    }
+
+    /** Barra de requisitos, números o vistos de cada tarjeta, conteo y "Te falta". */
+    private void updateRequirements() {
+        boolean cv = hojaVidaUri != null;
+        boolean bg = antecedentesUri != null;
+        boolean cert = certificationsReady();
+        int ready = (cv ? 1 : 0) + (bg ? 1 : 0) + (cert ? 1 : 0);
+        tvRequirements.setText(getString(R.string.docs_requirements, ready));
+
+        boolean letters = selectedCertificationType.equals("cartas");
+        int certPartial = letters ? letterCount() : titleCount();
+        paintSegment(segReq1, cv ? R.color.ads_brand : R.color.ads_card_edge);
+        paintSegment(segReq2, bg ? R.color.ads_brand : R.color.ads_card_edge);
+        paintSegment(segReq3, cert ? R.color.ads_brand : certPartial > 0 ? R.color.ads_chip_bg : R.color.ads_card_edge);
+
+        setStepDone(tvStepHojaVida, ivStepHojaVida, cv);
+        setStepDone(tvStepAntecedentes, ivStepAntecedentes, bg);
+        setStepDone(tvStepCert, ivStepCert, cert);
+
+        tvCertLabel.setText(letters ? R.string.docs_letters_label : R.string.docs_titles_label);
+        tvCertCount.setText(getString(R.string.docs_count, certPartial, 3));
+
+        String missing = missingText();
+        if (missing == null) {
+            tvMissing.setText(R.string.docs_ready);
+            tvMissing.setTextColor(ContextCompat.getColor(this, R.color.ads_brand_text));
+        } else {
+            tvMissing.setText(getString(R.string.docs_missing, missing));
+            tvMissing.setTextColor(ContextCompat.getColor(this, R.color.ads_muted));
+        }
+    }
+
+    private void paintSegment(View segment, int colorRes) {
+        ViewCompat.setBackgroundTintList(segment, ColorStateList.valueOf(ContextCompat.getColor(this, colorRes)));
+    }
+
+    private void setStepDone(TextView number, ImageView check, boolean done) {
+        number.setVisibility(done ? View.INVISIBLE : View.VISIBLE);
+        check.setVisibility(done ? View.VISIBLE : View.GONE);
+    }
+
+    /** Mientras se registra y sube, nada de la pantalla responde (la ventana de carga lo explica). */
     private void setUIUploading(boolean uploading) {
+        for (View slot : slots) slot.setEnabled(!uploading);
         btnSelectHojaVida.setEnabled(!uploading);
         btnSelectAntecedentes.setEnabled(!uploading);
         btnSelectCarta1.setEnabled(!uploading);
@@ -798,10 +857,8 @@ public class SecondRegisterWorkerActivity extends AppCompatActivity {
         btnSelectTitulo3.setEnabled(!uploading);
         btnSubmitDocuments.setEnabled(!uploading);
         btnSkip.setEnabled(!uploading);
-        rgCertificationType.setEnabled(!uploading);
-
-        progressBar.setVisibility(uploading ? View.VISIBLE : View.GONE);
-        tvProgress.setVisibility(uploading ? View.VISIBLE : View.GONE);
+        rbCartas.setEnabled(!uploading);
+        rbTitulos.setEnabled(!uploading);
     }
 
     private void showMessage(String message) {

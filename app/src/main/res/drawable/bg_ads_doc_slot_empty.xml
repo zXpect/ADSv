@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Casilla de un documento sin archivo: borde punteado para tocar y subir -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
+    <corners android:radius="12dp" />
+    <stroke
+        android:width="@dimen/stroke_control"
+        android:color="@color/ads_control"
+        android:dashWidth="6dp"
+        android:dashGap="4dp" />
+</shape>
